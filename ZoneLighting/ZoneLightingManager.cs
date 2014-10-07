@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZoneLighting.Communication;
 
 namespace ZoneLighting
 {
-	public interface ILight
+	public class ZoneLightingManager
 	{
-		bool SetColor(Color color);
-		int Index { get; }
+		public IList<Zone> Zones { get; set; }
 	}
 }

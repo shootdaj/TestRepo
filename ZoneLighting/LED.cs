@@ -8,11 +8,15 @@ using ZoneLighting.Communication;
 
 namespace ZoneLighting
 {
-	public class LED : ILight, IFadeCandyPixel
+	/// <summary>
+	/// http://www.codeproject.com/Articles/10072/Simulated-Multiple-Inheritance-Pattern-for-C
+	/// </summary>
+	public class LED : ILight //, FadeCandyPixel - simulated multiple inheritance
 	{
 		#region CORE
 
 		private Color _color;
+		private FadeCandyPixelMI FadeCandyPixel { get; set; }
 
 		#region Color Parts
 
@@ -49,6 +53,20 @@ namespace ZoneLighting
 		{
 			if (color != null)
 				SetColor((Color) color);
+		}
+
+		#endregion
+
+		#region FadeCandyPixelMI 
+
+		public int Index { get { return FadeCandyPixel.Index; } }
+		public int RedIndex { get { return FadeCandyPixel.RedIndex; } }
+		public int GreenIndex { get { return FadeCandyPixel.GreenIndex; } }
+		public int BlueIndex { get { return FadeCandyPixel.BlueIndex; } }
+
+		public static implicit operator FadeCandyPixel(LED led)
+		{
+			return led.FadeCandyPixel;
 		}
 
 		#endregion
