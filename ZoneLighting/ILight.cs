@@ -11,5 +11,6 @@ namespace ZoneLighting
 	{
 		bool SetColor(Color color);
 		int Index { get; }
+		Color GetColor();
 	}
 }

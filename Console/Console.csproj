@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FE00DB62-6C3C-4D04-9F03-23DA814298B6}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{BE535C9B-F450-4F66-ABB3-A157B8D30D42}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ZoneLighting</RootNamespace>
-    <AssemblyName>ZoneLighting</AssemblyName>
+    <RootNamespace>Console</RootNamespace>
+    <AssemblyName>Console</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -31,9 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,22 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Communication\FadeCandyController.cs" />
-    <Compile Include="Communication\FadeCandyPixel.cs" />
-    <Compile Include="Communication\ILightingController.cs" />
-    <Compile Include="Communication\OPCPacket.cs" />
-    <Compile Include="Communication\OPCPixelFrame.cs" />
-    <Compile Include="Communication\WebSocketOPCPacket.cs" />
-    <Compile Include="IInitializable.cs" />
-    <Compile Include="LED.cs" />
-    <Compile Include="LightingFrame.cs" />
-    <Compile Include="LightingPattern.cs" />
-    <Compile Include="MappingNS\Mapping.cs" />
-    <Compile Include="MappingNS\MappingProvider.cs" />
-    <Compile Include="Zone.cs" />
-    <Compile Include="ILight.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ZoneLightingManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZoneLighting\ZoneLighting.csproj">
+      <Project>{FE00DB62-6C3C-4D04-9F03-23DA814298B6}</Project>
+      <Name>ZoneLighting</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

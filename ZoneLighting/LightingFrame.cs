@@ -27,16 +27,16 @@ namespace ZoneLighting
 
 		#region API
 
-		/// <summary>
-		/// Sends this Pixel Frame instance using the given Lighting Controller.
-		/// </summary>
-		/// <param name="controller"></param>
-		public void Send(ILightingController controller)
-		{
-			controller.SendPixelFrame(this);
-		}
+		///// <summary>
+		///// Sends this Pixel Frame instance using the given Lighting Controller.
+		///// </summary>
+		///// <param name="controller"></param>
+		//public void Send(ILightingController controller)
+		//{
+		//	controller.SendPixelFrame(this);
+		//}
 
-		public static LightingFrame ReadFromRGBByteArray<T>(byte[] array) where T : ILight
+		public static LightingFrame CreateFromRGBByteArray<T>(byte[] array) where T : ILight
 		{
 			if (typeof(T) == typeof(LED))
 			{

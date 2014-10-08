@@ -79,6 +79,11 @@ namespace ZoneLighting
 			return true;
 		}
 
+		public Color GetColor()
+		{
+			return _color;
+		}
+
 		#endregion
 	}
 }

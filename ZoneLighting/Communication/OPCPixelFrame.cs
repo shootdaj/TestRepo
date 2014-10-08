@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ZoneLighting.Communication
 {
@@ -21,6 +23,19 @@ namespace ZoneLighting.Communication
 		public void Send(ILightingController controller)
 		{
 			controller.SendPixelFrame(this);
+		}
+
+		public static OPCPixelFrame CreateFromLightsCollection(byte channel, IList<LED> leds)
+		{
+			var data = new List<byte>();
+
+			foreach (LED led in leds)
+			{
+				data.AddRange(new[]{led.Red, led.Green, led.Blue});
+			}
+
+			var returnValue = new OPCPixelFrame(channel, data);
+			return returnValue;
 		}
 
 		#endregion
