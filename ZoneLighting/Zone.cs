@@ -30,41 +30,12 @@ namespace ZoneLighting
 		/// <summary>
 		/// All lights in the zone.
 		/// </summary>
-		private SortedList<int, ILight> Lights { get; set; }
+		public SortedList<int, ILight> Lights { get; set; }
 
 		/// <summary>
 		/// The Lighting Controller used to control this Zone.
 		/// </summary>
 		public ILightingController LightingController { get; private set; }
-
-		/// <summary>
-		/// Scrolls a dot across the entire length of Lights
-		/// </summary>
-		private void ScrollDot()
-		{
-			while (!TaskCTS.IsCancellationRequested)
-			{
-				var Colors = new List<Color>();
-				Colors.Add(Color.Red);
-				Colors.Add(Color.Blue);
-				Colors.Add(Color.Yellow);
-				Colors.Add(Color.Green);
-				Colors.Add(Color.Purple);
-				Colors.Add(Color.RoyalBlue);
-				Colors.Add(Color.MediumSeaGreen);
-
-				for (int i = 0; i < 6; i++)
-				{
-					Lights.Values.ToList().ForEach(x => x.SetColor(Color.FromArgb(0, 0, 0))); //set all lights to black
-					Lights[i].SetColor(Colors[new Random().Next(0, 7)]); //set one to white
-
-					//TODO: This is where the mapping provider would map the Lights collection to the byte order of the data in the OPCPixelFrame
-					//send frame 
-					LightingController.SendPixelFrame(OPCPixelFrame.CreateFromLightsCollection(0, Lights.Values.Cast<LED>().ToList()));
-					Thread.Sleep(50);
-				}
-			}
-		}
 
 		/// <summary>
 		/// Static Red
@@ -76,7 +47,7 @@ namespace ZoneLighting
 				var color = Color.Red;
 
 				Lights.Values.ToList().ForEach(x => x.SetColor(color)); //set all lights to black
-				LightingController.SendPixelFrame(OPCPixelFrame.CreateFromLightsCollection(0, Lights.Values.Cast<LED>().ToList()));
+				LightingController.SendPixelFrame(OPCPixelFrame.CreateFromLEDCollection(0, Lights.Values.Cast<LED>().ToList()));	//set all lights to Red
 			}
 		}
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ZoneLighting.Communication;
+using ZoneLighting.ZoneProgram;
 
 namespace ZoneLighting
 {
@@ -23,6 +24,7 @@ namespace ZoneLighting
 		#region CORE
 
 		public IList<Zone> Zones { get; set; }
+		public IList<IZoneProgram> ZonePrograms { get; set; }
 
 		#endregion
 
@@ -40,6 +42,7 @@ namespace ZoneLighting
 				FadeCandyController.Instance.Initialize();
 				LoadSampleData();	//TODO: Replace
 				Zones.ToList().ForEach(z => z.Initialize());
+				
 				Initialized = true;
 			}
 		}

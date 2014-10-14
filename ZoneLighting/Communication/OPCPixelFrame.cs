@@ -6,6 +6,7 @@ namespace ZoneLighting.Communication
 {
 	/// <summary>
 	/// Represents a single frame of pixels that will be reflected on the channel on which it's sent.
+	/// This can be seen as a unit of data that can be sent to the OPC device (FadeCandy or whatever).
 	/// </summary>
 	public class OPCPixelFrame : WebSocketOPCPacket
 	{
@@ -19,13 +20,18 @@ namespace ZoneLighting.Communication
 		/// <summary>
 		/// Sends this Pixel Frame instance using the given Lighting Controller.
 		/// </summary>
-		/// <param name="controller"></param>
+		/// <param name="controller">The lighting controller to use to </param>
 		public void Send(ILightingController controller)
 		{
 			controller.SendPixelFrame(this);
 		}
 
-		public static OPCPixelFrame CreateFromLightsCollection(byte channel, IList<LED> leds)
+		/// <summary>
+		/// Creates an OPC Pixel Frame from a list of LEDs.
+		/// </summary>
+		/// <param name="channel">Channel this frame will be sent to.</param>
+		/// <param name="leds">List of LEDs to map.</param>
+		public static OPCPixelFrame CreateFromLEDCollection(byte channel, IList<LED> leds)
 		{
 			var data = new List<byte>();
 
