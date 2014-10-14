@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WebSocketSharp;
 
 namespace ZoneLighting.Communication
 {
@@ -29,7 +29,8 @@ namespace ZoneLighting.Communication
 		string ServerURL { get; set; }
 
 		//WebSocketClient WebSocketClient { get; set; }
-		ClientWebSocket WebSocket { get; set; }
+		//ClientWebSocket WebSocket { get; set; }
+		WebSocket WebSocket { get; set; }
 
 		#endregion
 
@@ -37,15 +38,17 @@ namespace ZoneLighting.Communication
 
 		public FadeCandyController(string serverURL)
 		{
-			WebSocket = new ClientWebSocket();
 			ServerURL = serverURL;
+			WebSocket = new WebSocket(ServerURL);
+			//WebSocket = new ClientWebSocket();
 			//WebSocketClient = new WebSocketClient(serverURL);
 		}
 
 		public void Dispose()
 		{
-			WebSocket.Abort();
-			WebSocket.Dispose();
+			WebSocket = null;
+			//WebSocket.Abort();
+			//WebSocket.Dispose();
 			//WebSocketClient = null;
 		}
 
@@ -53,11 +56,11 @@ namespace ZoneLighting.Communication
 
 		public bool Initialized { get; private set; }
 		
-		public async void Initialize()
+		public void Initialize()
 		{
 			if (!Initialized)
 			{
-				await Connect();
+				Connect();
 				Initialized = true;
 			}
 		}
@@ -66,7 +69,7 @@ namespace ZoneLighting.Communication
 		{
 			if (Initialized)
 			{
-				WebSocket.Abort();
+				Disconnect();
 				Initialized = false;
 			}
 		}
@@ -77,16 +80,18 @@ namespace ZoneLighting.Communication
 				throw new Exception("FadeCandyController instance is not initialized.");
 		}
 
-		public async Task Connect()
+		public void Connect()
 		{
+			WebSocket.Connect();
 			//AssertInit();
-			await WebSocket.ConnectAsync(new Uri(ServerURL), new CancellationToken());
+			//WebSocket.ConnectAsync(new Uri(ServerURL), new CancellationToken());
 		}
 
 		public void Disconnect()
 		{
 			AssertInit();
-			WebSocket.Abort();
+			WebSocket.Close();
+			//WebSocket.Abort();
 		}
 
 		#endregion
@@ -102,8 +107,10 @@ namespace ZoneLighting.Communication
 		public void SendPixelFrame(OPCPixelFrame opcPixelFrame)
 		{
 			AssertInit();
-			WebSocket.SendAsync(new ArraySegment<byte>(opcPixelFrame.ToByteArray()), WebSocketMessageType.Binary, true,
-				new CancellationToken());
+			WebSocket.Send(opcPixelFrame.ToByteArray());
+			//WebSocket.Send(opcPixelFrame.ToByteArray());
+			//WebSocket.SendAsync(new ArraySegment<byte>(opcPixelFrame.ToByteArray()), WebSocketMessageType.Binary, true,
+			//	new CancellationToken());
 		}
 
 		#endregion

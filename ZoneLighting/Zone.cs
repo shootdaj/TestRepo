@@ -42,26 +42,85 @@ namespace ZoneLighting
 		/// </summary>
 		private void ScrollDot()
 		{
-			while (!ScrollDotCTS.IsCancellationRequested)
+			while (!TaskCTS.IsCancellationRequested)
 			{
-				for (int i = 0; i < 16; i++)
+				var Colors = new List<Color>();
+				Colors.Add(Color.Red);
+				Colors.Add(Color.Blue);
+				Colors.Add(Color.Yellow);
+				Colors.Add(Color.Green);
+				Colors.Add(Color.Purple);
+				Colors.Add(Color.RoyalBlue);
+				Colors.Add(Color.MediumSeaGreen);
+
+				for (int i = 0; i < 6; i++)
 				{
 					Lights.Values.ToList().ForEach(x => x.SetColor(Color.FromArgb(0, 0, 0))); //set all lights to black
-					Lights[i].SetColor(Color.White); //set one to white
+					Lights[i].SetColor(Colors[new Random().Next(0, 7)]); //set one to white
 
 					//TODO: This is where the mapping provider would map the Lights collection to the byte order of the data in the OPCPixelFrame
 					//send frame 
-					LightingController.SendPixelFrame(OPCPixelFrame.CreateFromLightsCollection(1, Lights.Values.Cast<LED>().ToList()));
+					LightingController.SendPixelFrame(OPCPixelFrame.CreateFromLightsCollection(0, Lights.Values.Cast<LED>().ToList()));
+					Thread.Sleep(50);
 				}
 			}
 		}
 
-		public void CancelScrollDot()
+		/// <summary>
+		/// Static Red
+		/// </summary>
+		private void StaticRed()
 		{
-			ScrollDotCTS.Cancel();
+			while (!TaskCTS.IsCancellationRequested)
+			{
+				var color = Color.Red;
+
+				Lights.Values.ToList().ForEach(x => x.SetColor(color)); //set all lights to black
+				LightingController.SendPixelFrame(OPCPixelFrame.CreateFromLightsCollection(0, Lights.Values.Cast<LED>().ToList()));
+			}
 		}
 
-		private CancellationTokenSource ScrollDotCTS { get; set; }
+		/// <summary>
+		/// Rainbow
+		/// </summary>
+		private void Rainbow()
+		{
+			SetAllLightsColor(Color.FromArgb(0, 0, 0)); //turn all lights off
+
+			while (!TaskCTS.IsCancellationRequested)
+			{
+				var colors = new List<Color>();
+				colors.Add(Color.Violet);
+				colors.Add(Color.Indigo);
+				colors.Add(Color.Blue);
+				colors.Add(Color.Green);
+				colors.Add(Color.Yellow);
+				colors.Add(Color.Orange);
+				colors.Add(Color.Red);
+
+				for (int i = 0; i < 7; i++)
+				{
+					SetAllLightsColor(colors[i]);
+
+					//send frame 
+					LightingController.SendPixelFrame(OPCPixelFrame.CreateFromLightsCollection(0, Lights.Values.Cast<LED>().ToList()));
+					Thread.Sleep(5000);
+				}
+			}
+		}
+
+		private void SetAllLightsColor(Color color)
+		{
+			Lights.Values.ToList().ForEach(x => x.SetColor(color)); //set all lights to black
+		}
+
+
+		public void CancelTask()
+		{
+			TaskCTS.Cancel();
+		}
+
+		private CancellationTokenSource TaskCTS { get; set; }
 
 		#endregion
 
@@ -72,7 +131,7 @@ namespace ZoneLighting
 			Zones = new List<Zone>();
 			Lights = new SortedList<int, ILight>();
 			LightingController = lightingController;
-			ScrollDotCTS = new CancellationTokenSource();
+			TaskCTS = new CancellationTokenSource();
 			Name = name;
 		}
 
@@ -84,7 +143,8 @@ namespace ZoneLighting
 				{
 					zone.Initialize();
 				}
-				Task.Factory.StartNew(ScrollDot);
+				//Task.Factory.StartNew(ScrollDot);
+				Task.Factory.StartNew(Rainbow);
 				Initialized = true;
 			}
 		}
@@ -95,7 +155,7 @@ namespace ZoneLighting
 		{
 			if (Initialized)
 			{
-				CancelScrollDot();
+				CancelTask();
 				Initialized = false;
 			}
 		}

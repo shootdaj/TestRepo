@@ -69,7 +69,7 @@ namespace ZoneLighting
 		{
 			var topLeftZone = new Zone(FadeCandyController.Instance, "TopLeft");
 			Zones.Add(topLeftZone);
-			for (int i = 0; i < 16; i++)
+			for (int i = 0; i < 64; i++)
 			{
 				topLeftZone.AddLight(new LED());
 			}

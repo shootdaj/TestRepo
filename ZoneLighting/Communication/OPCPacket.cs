@@ -43,14 +43,14 @@ namespace ZoneLighting.Communication
 		/// <returns>Byte Array representation of the OPCCommand.</returns>
 		public byte[] ToByteArray()
 		{
-			IList<byte> returnValue = new byte[]
+			List<byte> returnValue = new byte[]
 			{
 				Channel,
 				(byte) Command
-			};
+			}.ToList();
 
-			returnValue.ToList().AddRange(BitConverter.GetBytes(Length));
-			returnValue.ToList().AddRange(Data);
+			returnValue.AddRange(BitConverter.GetBytes(Length));
+			returnValue.AddRange(Data);
 
 			return returnValue.ToArray();
 		}

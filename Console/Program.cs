@@ -13,29 +13,27 @@ namespace Console
 	{
 		static void Main(string[] args)
 		{
-			//ZoneLightingManager.Instance.Initialize();
-			//Thread.Sleep(Timeout.Infinite);
+			ZoneLightingManager.Instance.Initialize();
+			Thread.Sleep(Timeout.Infinite);
 
-			FadeCandyController.Instance.Initialize();
-			FadeCandyController.Instance.SendPixelFrame(new OPCPixelFrame(1, new byte[]
-			{
-				255, 255, 255,
-				0, 0, 0,
-				0, 0, 0,
-				0, 0, 0,
-				0, 0, 0,
-				0, 0, 0,
-				0, 0, 0,
-				0, 0, 0,
-				0, 0, 0,
-				0, 0, 0,
-				0, 0, 0,
-				0, 0, 0,
-				0, 0, 0,
-				0, 0, 0,
-				0, 0, 0,
-				0, 0, 0
-			}));
+			//FadeCandyController.Instance.Initialize();
+			//FadeCandyController.Instance.SendPixelFrame(new OPCPixelFrame(0, new byte[]
+			//{
+			//	127, 127, 127,
+			//	127, 127, 127,
+			//	127, 127, 127,
+			//	127, 127, 127,
+			//	127, 127, 127,
+			//	127, 127, 127,
+			//	127, 127, 127,
+			//	127, 127, 127,
+			//	127, 127, 127,
+			//	127, 127, 127,
+			//	127, 127, 127,
+			//	127, 127, 127,
+			//	127, 127, 127,
+			//	127, 127, 127
+			//}));
 		}
 	}
 }
