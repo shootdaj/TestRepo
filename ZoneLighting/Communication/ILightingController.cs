@@ -7,5 +7,6 @@ namespace ZoneLighting.Communication
 	{
 		void SendPixelFrame(IPixelFrame opcPixelFrame);
 		void SendLEDs(IList<LED> leds);
+		void SendLights(IList<ILogicalRGBLight> lights);
 	}
 }

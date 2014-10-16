@@ -56,7 +56,7 @@ namespace ZoneLighting.Communication
 		{
 			var returnValue = new List<OPCPixelFrame>();
 
-			foreach (var channel in leds.Select(x => x.FadeCandyPixel.Channel))
+			foreach (var channel in leds.Select(x => x.FadeCandyPixel.Channel).Distinct())
 			{
 				returnValue.Add(CreateFromLEDs(channel, leds.Where(x => x.FadeCandyPixel.Channel == channel).ToList()));
 			}

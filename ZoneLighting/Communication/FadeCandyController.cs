@@ -119,6 +119,14 @@ namespace ZoneLighting.Communication
 			OPCPixelFrame.CreateChannelBurstFromLEDs(leds).ToList().ForEach(SendPixelFrame);
 		}
 
+		/// <summary>
+		/// Sends a list of Lights to the connected FadeCandy board.
+		/// </summary>
+		public void SendLights(IList<ILogicalRGBLight> lights)
+		{
+			SendLEDs(lights.Cast<LED>().ToList());
+		}
+
 		#endregion
 	}
 

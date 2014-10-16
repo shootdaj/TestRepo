@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -48,9 +49,9 @@ namespace ZoneLighting
 				InitLightingControllers();
 				LoadSampleZoneData();	//TODO: Replace
 				InitializeAllZones();
-				var sw = File.CreateText(@"C:\Temp\Zones.txt");
-				sw.Write(JsonConvert.SerializeObject(Zones, Formatting.Indented));
-				sw.Close();
+				//var sw = File.CreateText(@"C:\Temp\Zones.txt");
+				//sw.Write(JsonConvert.SerializeObject(Zones, Formatting.Indented));
+				//sw.Close();
 				Initialized = true;
 			}
 		}
@@ -87,7 +88,7 @@ namespace ZoneLighting
 
 		#endregion
 
-		#region Sample Values
+		#region Sample Data
 
 		public void LoadSampleZoneData()
 		{
@@ -98,7 +99,9 @@ namespace ZoneLighting
 			{
 				topLeftZone.AddLight(new LED(logicalIndex: i, fadeCandyChannel: 0, fadeCandyIndex: i));
 			}
-			topLeftZone.StartProgram(new ScrollDot(), new ScrollDotParameter(50));
+			//topLeftZone.StartProgram(new ScrollDot(), new ScrollDotParameter(300));
+			//topLeftZone.StartProgram(new StaticColor(), new StaticColorParameter(Color.Orange));
+			topLeftZone.StartProgram(new Rainbow(), new RainbowParameter(3000));
 		}
 
 		#endregion

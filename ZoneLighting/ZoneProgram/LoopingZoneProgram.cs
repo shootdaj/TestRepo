@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace ZoneLighting.ZoneProgram
 {
@@ -11,10 +12,13 @@ namespace ZoneLighting.ZoneProgram
 
 		protected void StartLoop(IZoneProgramParameter parameter)
 		{
-			while (!LoopCTS.IsCancellationRequested)
+			Task.Run(() =>
 			{
-				Loop(parameter);
-			}
+				while (!LoopCTS.Token.IsCancellationRequested)
+				{
+					Loop(parameter);
+				}
+			}, LoopCTS.Token);
 		}
 
 		public abstract void Loop(IZoneProgramParameter parameter);
