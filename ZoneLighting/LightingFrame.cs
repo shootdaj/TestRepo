@@ -16,7 +16,7 @@ namespace ZoneLighting
 	{
 		#region CORE
 
-		public IList<ILight> Lights { get; private set; }
+		public IList<ILogicalRGBLight> Lights { get; private set; }
 
 		public int NumberOfLights
 		{
@@ -36,7 +36,7 @@ namespace ZoneLighting
 		//	controller.SendPixelFrame(this);
 		//}
 
-		public static LightingFrame CreateFromRGBByteArray<T>(byte[] array) where T : ILight
+		public static LightingFrame CreateFromRGBByteArray<T>(byte[] array) where T : ILogicalRGBLight
 		{
 			if (typeof(T) == typeof(LED))
 			{

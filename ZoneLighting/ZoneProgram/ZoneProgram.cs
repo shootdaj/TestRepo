@@ -7,10 +7,16 @@ using ZoneLighting.Communication;
 
 namespace ZoneLighting.ZoneProgram
 {
+	/// <summary>
+	/// Represents a "program" that can be played on a zone. Something like a loop
+	/// or a periodic notification, or anything else that can be represented by lighting 
+	/// the zones in a certain way.
+	/// </summary>
 	public abstract class ZoneProgram : IZoneProgram
 	{
-		public abstract void Start();
+		public abstract void Start(IZoneProgramParameter parameter);
 		public abstract void Stop();
+
 		public Zone Zone { get; set; }
 
 		public ILightingController LightingController
@@ -18,7 +24,7 @@ namespace ZoneLighting.ZoneProgram
 			get { return Zone.LightingController; }
 		}
 
-		public SortedList<int, ILight> Lights
+		public IList<ILogicalRGBLight> Lights
 		{
 			get { return Zone.Lights;  }
 		}

@@ -1,13 +1,11 @@
 using System;
+using System.Collections.Generic;
 
 namespace ZoneLighting.Communication
 {
 	public interface ILightingController : IInitializable, IDisposable
 	{
-		/// <summary>
-		/// Sends a Pixel Frame to the connected lighting controller.
-		/// </summary>
-		/// <param name="opcPixelFrame"></param>
-		void SendPixelFrame(OPCPixelFrame opcPixelFrame);
+		void SendPixelFrame(IPixelFrame opcPixelFrame);
+		void SendLEDs(IList<LED> leds);
 	}
 }

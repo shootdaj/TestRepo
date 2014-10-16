@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace ZoneLighting
 {
-	public interface ILight
+	public interface ILogicalRGBLight
 	{
 		bool SetColor(Color color);
-		int Index { get; }
+		int LogicalIndex { get; set; }
 		Color GetColor();
 	}
 }

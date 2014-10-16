@@ -2,8 +2,9 @@
 {
 	public interface IZoneProgram
 	{
-		void Start();
+		void Start(IZoneProgramParameter parameter);
 		void Stop();
+		//void Pause();
 		Zone Zone { get; set; }
 	}
 }

@@ -11,12 +11,12 @@ namespace ZoneLighting
 	/// <summary>
 	/// http://www.codeproject.com/Articles/10072/Simulated-Multiple-Inheritance-Pattern-for-C
 	/// </summary>
-	public class LED : ILight //, FadeCandyPixel - simulated multiple inheritance
+	public class LED : ILogicalRGBLight
 	{
 		#region CORE
 
 		private Color _color;
-		private FadeCandyPixelMI FadeCandyPixel { get; set; }
+		public FadeCandyPixel FadeCandyPixel { get; set; }
 
 		#region Color Parts
 
@@ -49,29 +49,34 @@ namespace ZoneLighting
 
 		#region C+I
 
-		public LED(Color? color = null)
+		public LED(Color? color = null, int? logicalIndex = null, byte? fadeCandyChannel = null, int? fadeCandyIndex = null)
 		{
+			FadeCandyPixel = new FadeCandyPixel();
 			if (color != null)
 				SetColor((Color) color);
+			if (logicalIndex != null)
+				LogicalIndex = (int)logicalIndex;
+			if (fadeCandyChannel != null)
+				FadeCandyPixel.Channel = (byte)fadeCandyChannel;
+			if (fadeCandyIndex != null)
+				FadeCandyPixel.PhysicalIndex = (int)fadeCandyIndex;
 		}
 
 		#endregion
 
-		#region FadeCandyPixelMI 
+		#region ILogicalRGBLight
 
-		public int Index { get { return FadeCandyPixel.Index; } }
-		public int RedIndex { get { return FadeCandyPixel.RedIndex; } }
-		public int GreenIndex { get { return FadeCandyPixel.GreenIndex; } }
-		public int BlueIndex { get { return FadeCandyPixel.BlueIndex; } }
-
-		public static implicit operator FadeCandyPixel(LED led)
-		{
-			return led.FadeCandyPixel;
-		}
+		public int LogicalIndex { get; set; }
 
 		#endregion
-
+		
 		#region API
+
+		public void MapToFadeCandyPixel(byte channel, int index)
+		{
+			FadeCandyPixel.Channel = channel;
+			FadeCandyPixel.PhysicalIndex = index;
+		}
 
 		public bool SetColor(Color color)
 		{

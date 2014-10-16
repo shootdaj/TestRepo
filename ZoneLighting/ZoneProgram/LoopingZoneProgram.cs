@@ -4,11 +4,16 @@ namespace ZoneLighting.ZoneProgram
 {
 	public abstract class LoopingZoneProgram : ZoneProgram
 	{
-		public void StartLoop()
+		protected LoopingZoneProgram()
+		{
+			LoopCTS = new CancellationTokenSource();
+		}
+
+		protected void StartLoop(IZoneProgramParameter parameter)
 		{
 			while (!LoopCTS.IsCancellationRequested)
 			{
-				Loop();
+				Loop(parameter);
 			}
 		}
 
@@ -16,9 +21,9 @@ namespace ZoneLighting.ZoneProgram
 
 		public CancellationTokenSource LoopCTS;
 
-		public override void Start()
+		public override void Start(IZoneProgramParameter parameter)
 		{
-			StartLoop();
+			StartLoop(parameter);
 		}
 
 		public override void Stop()

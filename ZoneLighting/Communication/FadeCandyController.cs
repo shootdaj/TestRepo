@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using WebSocketSharp;
 
 namespace ZoneLighting.Communication
 {
+	/// <summary>
+	/// This class is used to connect and send/receive messages to a FadeCandy
+	/// board using WebSockets.
+	/// </summary>
 	public class FadeCandyController : ILightingController
 	{
 		#region Singleton
@@ -17,7 +19,8 @@ namespace ZoneLighting.Communication
 
 		public static FadeCandyController Instance
 		{
-			get {
+			get
+			{
 				return _instance ?? (_instance = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"]));
 			}
 		}
@@ -26,11 +29,15 @@ namespace ZoneLighting.Communication
 
 		#region CORE
 
-		string ServerURL { get; set; }
+		/// <summary>
+		/// URL for the server on which FadeCandy is running.
+		/// </summary>
+		public string ServerURL { get; private set; }
 
-		//WebSocketClient WebSocketClient { get; set; }
-		//ClientWebSocket WebSocket { get; set; }
-		WebSocket WebSocket { get; set; }
+		/// <summary>
+		/// The WebSocket that will be used to send/receive messages to/from the FadeCandy board.
+		/// </summary>
+		private WebSocket WebSocket { get; set; }
 
 		#endregion
 
@@ -40,19 +47,7 @@ namespace ZoneLighting.Communication
 		{
 			ServerURL = serverURL;
 			WebSocket = new WebSocket(ServerURL);
-			//WebSocket = new ClientWebSocket();
-			//WebSocketClient = new WebSocketClient(serverURL);
 		}
-
-		public void Dispose()
-		{
-			WebSocket = null;
-			//WebSocket.Abort();
-			//WebSocket.Dispose();
-			//WebSocketClient = null;
-		}
-
-		#region Un/Initialization
 
 		public bool Initialized { get; private set; }
 		
@@ -65,6 +60,14 @@ namespace ZoneLighting.Communication
 			}
 		}
 
+		/// <summary>
+		/// Starts the WebSocket connections.
+		/// </summary>
+		public void Connect()
+		{
+			WebSocket.Connect();
+		}
+
 		public void Uninitialize()
 		{
 			if (Initialized)
@@ -74,43 +77,46 @@ namespace ZoneLighting.Communication
 			}
 		}
 
+		/// <summary>
+		/// Stops the WebSocket connections.
+		/// </summary>
+		public void Disconnect()
+		{
+			AssertInit();
+			WebSocket.Close();
+		}
+		
+		public void Dispose()
+		{
+			WebSocket = null;
+		}
+
 		public void AssertInit()
 		{
 			if (!Initialized)
 				throw new Exception("FadeCandyController instance is not initialized.");
 		}
 
-		public void Connect()
-		{
-			WebSocket.Connect();
-			//AssertInit();
-			//WebSocket.ConnectAsync(new Uri(ServerURL), new CancellationToken());
-		}
-
-		public void Disconnect()
-		{
-			AssertInit();
-			WebSocket.Close();
-			//WebSocket.Abort();
-		}
-
 		#endregion
-
-		#endregion
-
+		
 		#region API
 
 		/// <summary>
-		/// Sends a Pixel Frame to the connected FadeCandy board
+		/// Sends a Pixel Frame to the connected FadeCandy board.
 		/// </summary>
-		/// <param name="opcPixelFrame"></param>
-		public void SendPixelFrame(OPCPixelFrame opcPixelFrame)
+		/// <param name="opcPixelFrame">The OPCPixelFrame to send to the board.</param>
+		public void SendPixelFrame(IPixelFrame opcPixelFrame)
 		{
 			AssertInit();
-			WebSocket.Send(opcPixelFrame.ToByteArray());
-			//WebSocket.Send(opcPixelFrame.ToByteArray());
-			//WebSocket.SendAsync(new ArraySegment<byte>(opcPixelFrame.ToByteArray()), WebSocketMessageType.Binary, true,
-			//	new CancellationToken());
+			WebSocket.Send(((OPCPixelFrame)opcPixelFrame).ToByteArray()); //TODO: Change this to async?
+		}
+
+		/// <summary>
+		/// Sends a list of LEDs to the connected FadeCandy board.
+		/// </summary>
+		public void SendLEDs(IList<LED> leds)
+		{
+			OPCPixelFrame.CreateChannelBurstFromLEDs(leds).ToList().ForEach(SendPixelFrame);
 		}
 
 		#endregion

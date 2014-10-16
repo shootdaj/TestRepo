@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ZoneLighting.Communication;
+using ZoneLighting.ZoneProgram;
 
 namespace ZoneLighting
 {
@@ -30,7 +31,15 @@ namespace ZoneLighting
 		/// <summary>
 		/// All lights in the zone.
 		/// </summary>
-		public SortedList<int, ILight> Lights { get; set; }
+		public IList<ILogicalRGBLight> Lights { get; set; }
+
+		/// <summary>
+		/// The Lights list as a dictionary with the logical index as the key and the light as the value.
+		/// </summary>
+		public Dictionary<int, ILogicalRGBLight> SortedLights
+		{
+			get { return Lights.ToDictionary(x => x.LogicalIndex); }
+		}
 
 		/// <summary>
 		/// The Lighting Controller used to control this Zone.
@@ -38,72 +47,67 @@ namespace ZoneLighting
 		public ILightingController LightingController { get; private set; }
 
 		/// <summary>
-		/// Static Red
+		/// The program that is active on this zone.
 		/// </summary>
-		private void StaticRed()
-		{
-			while (!TaskCTS.IsCancellationRequested)
-			{
-				var color = Color.Red;
+		public IZoneProgram ActiveZoneProgram { get; private set; }
 
-				Lights.Values.ToList().ForEach(x => x.SetColor(color)); //set all lights to black
-				LightingController.SendPixelFrame(OPCPixelFrame.CreateFromLEDCollection(0, Lights.Values.Cast<LED>().ToList()));	//set all lights to Red
-			}
-		}
+		///// <summary>
+		///// Static Red
+		///// </summary>
+		//private void StaticRed()
+		//{
+		//	while (!TaskCTS.IsCancellationRequested)
+		//	{
+		//		var color = Color.Red;
 
-		/// <summary>
-		/// Rainbow
-		/// </summary>
-		private void Rainbow()
-		{
-			SetAllLightsColor(Color.FromArgb(0, 0, 0)); //turn all lights off
+		//		Lights.ToList().ForEach(x => x.SetColor(color)); //set all lights to black
+		//		LightingController.SendPixelFrame(OPCPixelFrame.CreateFromLEDs(0, Lights.Cast<LED>().ToList()));	//set all lights to Red
+		//	}
+		//}
 
-			while (!TaskCTS.IsCancellationRequested)
-			{
-				var colors = new List<Color>();
-				colors.Add(Color.Violet);
-				colors.Add(Color.Indigo);
-				colors.Add(Color.Blue);
-				colors.Add(Color.Green);
-				colors.Add(Color.Yellow);
-				colors.Add(Color.Orange);
-				colors.Add(Color.Red);
+		///// <summary>
+		///// Rainbow
+		///// </summary>
+		//private void Rainbow()
+		//{
+		//	SetAllLightsColor(Color.FromArgb(0, 0, 0)); //turn all lights off
 
-				for (int i = 0; i < 7; i++)
-				{
-					SetAllLightsColor(colors[i]);
+		//	while (!TaskCTS.IsCancellationRequested)
+		//	{
+		//		var colors = new List<Color>();
+		//		colors.Add(Color.Violet);
+		//		colors.Add(Color.Indigo);
+		//		colors.Add(Color.Blue);
+		//		colors.Add(Color.Green);
+		//		colors.Add(Color.Yellow);
+		//		colors.Add(Color.Orange);
+		//		colors.Add(Color.Red);
 
-					//send frame 
-					LightingController.SendPixelFrame(OPCPixelFrame.CreateFromLightsCollection(0, Lights.Values.Cast<LED>().ToList()));
-					Thread.Sleep(5000);
-				}
-			}
-		}
+		//		for (int i = 0; i < 7; i++)
+		//		{
+		//			SetAllLightsColor(colors[i]);
 
-		private void SetAllLightsColor(Color color)
-		{
-			Lights.Values.ToList().ForEach(x => x.SetColor(color)); //set all lights to black
-		}
-
-
-		public void CancelTask()
-		{
-			TaskCTS.Cancel();
-		}
-
-		private CancellationTokenSource TaskCTS { get; set; }
-
+		//			//send frame 
+		//			LightingController.SendPixelFrame(OPCPixelFrame.CreateFromLEDs(0, Lights.Cast<LED>().ToList()));
+		//			Thread.Sleep(5000);
+		//		}
+		//	}
+		//}
+		
 		#endregion
 
 		#region C+I
 
-		public Zone(ILightingController lightingController, string name = "")
+		public Zone(ILightingController lightingController, string name = "", IZoneProgram program = null, IZoneProgramParameter programParameter = null)
 		{
 			Zones = new List<Zone>();
-			Lights = new SortedList<int, ILight>();
+			Lights = new List<ILogicalRGBLight>();
 			LightingController = lightingController;
-			TaskCTS = new CancellationTokenSource();
 			Name = name;
+			if (program != null && programParameter != null)
+			{
+				StartProgram(program, programParameter);
+			}
 		}
 
 		public void Initialize()
@@ -115,7 +119,7 @@ namespace ZoneLighting
 					zone.Initialize();
 				}
 				//Task.Factory.StartNew(ScrollDot);
-				Task.Factory.StartNew(Rainbow);
+				//Task.Factory.StartNew(Rainbow);
 				Initialized = true;
 			}
 		}
@@ -126,7 +130,6 @@ namespace ZoneLighting
 		{
 			if (Initialized)
 			{
-				CancelTask();
 				Initialized = false;
 			}
 		}
@@ -145,17 +148,26 @@ namespace ZoneLighting
 
 		#region API
 
-		//public void SetColor(Color color)
-		//{
-		//	foreach (var light in Lights)
-		//	{
-		//		light.SetColor(color);
-		//	}
-		//}
-
-		public void AddLight(ILight light)
+		public void StartProgram(IZoneProgram program, IZoneProgramParameter parameter)
 		{
-			Lights.Add(Lights.Count, light);
+			ActiveZoneProgram = program;
+			ActiveZoneProgram.Zone = this;
+			ActiveZoneProgram.Start(parameter);
+		}
+
+		public void StopProgram()
+		{
+			ActiveZoneProgram.Stop();
+		}
+
+		private void SetAllLightsColor(Color color)
+		{
+			Lights.ToList().ForEach(x => x.SetColor(color)); //set all lights to black
+		}
+
+		public void AddLight(ILogicalRGBLight light)
+		{
+			Lights.Add(light);
 		}
 
 		public void AddZone(Zone zone)

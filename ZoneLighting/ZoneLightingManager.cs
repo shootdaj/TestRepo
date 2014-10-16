@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgram;
+using ZoneLighting.ZoneProgram.Programs;
 
 namespace ZoneLighting
 {
+	/// <summary>
+	/// This class will be responsible for managing the higher level tasks for the zones.
+	/// </summary>
 	public class ZoneLightingManager : IInitializable, IDisposable
 	{
 		#region Singleton
@@ -39,12 +45,27 @@ namespace ZoneLighting
 		{
 			if (!Initialized)
 			{
-				FadeCandyController.Instance.Initialize();
-				LoadSampleData();	//TODO: Replace
-				Zones.ToList().ForEach(z => z.Initialize());
-				
+				InitLightingControllers();
+				LoadSampleZoneData();	//TODO: Replace
+				InitializeAllZones();
+				var sw = File.CreateText(@"C:\Temp\Zones.txt");
+				sw.Write(JsonConvert.SerializeObject(Zones, Formatting.Indented));
+				sw.Close();
 				Initialized = true;
 			}
+		}
+
+		private void InitializeAllZones()
+		{
+			Zones.ToList().ForEach(z => z.Initialize());
+		}
+
+		/// <summary>
+		/// Add code here to initialize any other lighting controllers
+		/// </summary>
+		private void InitLightingControllers()
+		{
+			FadeCandyController.Instance.Initialize();
 		}
 
 		public bool Initialized { get; private set; }
@@ -68,14 +89,16 @@ namespace ZoneLighting
 
 		#region Sample Values
 
-		public void LoadSampleData()
+		public void LoadSampleZoneData()
 		{
+			var numLights = 6;
 			var topLeftZone = new Zone(FadeCandyController.Instance, "TopLeft");
 			Zones.Add(topLeftZone);
-			for (int i = 0; i < 64; i++)
+			for (int i = 0; i < numLights; i++)
 			{
-				topLeftZone.AddLight(new LED());
+				topLeftZone.AddLight(new LED(logicalIndex: i, fadeCandyChannel: 0, fadeCandyIndex: i));
 			}
+			topLeftZone.StartProgram(new ScrollDot(), new ScrollDotParameter(50));
 		}
 
 		#endregion

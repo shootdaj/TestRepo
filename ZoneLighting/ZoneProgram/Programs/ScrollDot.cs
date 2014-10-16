@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using ZoneLighting.Communication;
 
@@ -29,19 +27,20 @@ namespace ZoneLighting.ZoneProgram.Programs
 
 			for (int i = 0; i < 6; i++)
 			{
-				Lights.Values.ToList().ForEach(x => x.SetColor(Color.FromArgb(0, 0, 0))); //set all lights to black
-				Lights[i].SetColor(colors[new Random().Next(0, 7)]); //set one to white
-
-				//TODO: This is where the mapping provider would map the Lights collection to the byte order of the data in the OPCPixelFrame
-				//send frame 
-				LightingController.SendPixelFrame(OPCPixelFrame.CreateFromLEDCollection(0, Lights.Values.Cast<LED>().ToList()));
-				Task.WaitAll(Task.Delay(scrollDotParameter.DelayTime));
+				Lights.ToList().ForEach(x => x.SetColor(Color.FromArgb(0, 0, 0))); //set all lights to black
+				Lights[i].SetColor(colors[new Random().Next(0, 6)]);		//set one to white
+				LightingController.SendLEDs(Lights.Cast<LED>().ToList());	//send frame
+				Task.WaitAll(Task.Delay(scrollDotParameter.DelayTime));		//pause before next iteration
 			}
 		}
 	}
 
 	public class ScrollDotParameter : IZoneProgramParameter
 	{
+		public ScrollDotParameter(int delayTime)
+		{
+			DelayTime = delayTime;
+		}
 		public int DelayTime { get; set; }
 	}
 }
