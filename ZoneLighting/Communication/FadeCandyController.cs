@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using WebSocketSharp;
 
 namespace ZoneLighting.Communication
@@ -107,8 +109,13 @@ namespace ZoneLighting.Communication
 		/// <param name="opcPixelFrame">The OPCPixelFrame to send to the board.</param>
 		public void SendPixelFrame(IPixelFrame opcPixelFrame)
 		{
+			var byteArray = ((OPCPixelFrame)opcPixelFrame).ToByteArray();
+			string byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
+			byteArray.ToList().ForEach(x => byteArrayString += x + ",");
+			byteArrayString += "}";
+			Debug.Print(byteArrayString);
 			AssertInit();
-			WebSocket.Send(((OPCPixelFrame)opcPixelFrame).ToByteArray()); //TODO: Change this to async?
+			WebSocket.Send(byteArray); //TODO: Change this to async?
 		}
 
 		/// <summary>

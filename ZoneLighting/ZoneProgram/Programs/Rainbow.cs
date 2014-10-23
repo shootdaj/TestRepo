@@ -12,12 +12,12 @@ namespace ZoneLighting.ZoneProgram.Programs
 		public override void Loop(IZoneProgramParameter parameter)
 		{
 			var colors = new List<Color>();
-			colors.Add(Color.Violet);
-			colors.Add(Color.Indigo);
+			//colors.Add(Color.Violet);
+			//colors.Add(Color.Indigo);
 			colors.Add(Color.Blue);
-			colors.Add(Color.Green);
-			colors.Add(Color.Yellow);
-			colors.Add(Color.Orange);
+			//colors.Add(Color.Green);
+			//colors.Add(Color.Yellow);
+			//colors.Add(Color.Orange);
 			colors.Add(Color.Red);
 
 			for (int i = 0; i < colors.Count; i++)

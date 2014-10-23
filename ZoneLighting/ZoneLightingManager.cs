@@ -59,6 +59,12 @@ namespace ZoneLighting
 		private void InitializeAllZones()
 		{
 			Zones.ToList().ForEach(z => z.Initialize());
+			Zones.ToList()
+				.ForEach(z =>
+				{
+					z.StartProgram(new Rainbow(), new RainbowParameter(3000));
+					ProgramCommon.Delay(500);
+				});
 		}
 
 		/// <summary>
@@ -92,16 +98,20 @@ namespace ZoneLighting
 
 		public void LoadSampleZoneData()
 		{
-			var numLights = 6;
-			var topLeftZone = new Zone(FadeCandyController.Instance, "TopLeft");
-			Zones.Add(topLeftZone);
+			var leftWingZone = AddFadeCandyLEDStripZone("LeftWing", 6, 1);
+			var rightWingZone = AddFadeCandyLEDStripZone("RightWing", 12, 2);
+		}
+
+		private Zone AddFadeCandyLEDStripZone(string name, int numLights, byte fcChannel)
+		{
+			var zone = new Zone(FadeCandyController.Instance, name);
+			Zones.Add(zone);
 			for (int i = 0; i < numLights; i++)
 			{
-				topLeftZone.AddLight(new LED(logicalIndex: i, fadeCandyChannel: 0, fadeCandyIndex: i));
+				zone.AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i));
 			}
-			//topLeftZone.StartProgram(new ScrollDot(), new ScrollDotParameter(300));
-			//topLeftZone.StartProgram(new StaticColor(), new StaticColorParameter(Color.Orange));
-			topLeftZone.StartProgram(new Rainbow(), new RainbowParameter(3000));
+
+			return zone;
 		}
 
 		#endregion
