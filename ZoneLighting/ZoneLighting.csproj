@@ -67,8 +67,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ZoneLightingManager.cs" />
     <Compile Include="ZoneProgram\ProgramCommon.cs" />
-    <Compile Include="ZoneProgram\Programs\ScrollDot.cs" />
     <Compile Include="ZoneProgram\Programs\Rainbow.cs" />
+    <Compile Include="ZoneProgram\Programs\RainbowInterpolating.cs" />
+    <Compile Include="ZoneProgram\Programs\ScrollDot.cs" />
     <Compile Include="ZoneProgram\Programs\StaticColor.cs" />
     <Compile Include="ZoneProgram\ZoneProgram.cs" />
     <Compile Include="ZoneProgram\ZoneProgramEnum.cs" />

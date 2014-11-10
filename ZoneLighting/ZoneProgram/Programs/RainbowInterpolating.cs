@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace ZoneLighting.ZoneProgram.Programs
 {
 	/// <summary>
 	/// Outputs a looping rainbow to the zone using the LightingController's built-in interpolation (currently only works with FadeCandy).
 	/// </summary>
-	public class Rainbow : LoopingZoneProgram
+	public class RainbowInterpolating : LoopingZoneProgram
 	{
 		public override void Loop(IZoneProgramParameter parameter)
 		{
@@ -21,29 +19,21 @@ namespace ZoneLighting.ZoneProgram.Programs
 			colors.Add(Color.Orange);
 			colors.Add(Color.Red);
 
-			RainbowParameter rainbowParameter = (RainbowParameter) parameter;
-
 			for (int i = 0; i < colors.Count; i++)
 			{
-				Color? endingColor;
-
-				ProgramCommon.Fade(Lights[0].GetColor(), colors[i], rainbowParameter.Speed, rainbowParameter.DelayTime, false, (color) =>
-				{
-					Lights.SetColor(color);
-					Lights.Send(LightingController);	
-				}, out endingColor);
+				Lights.SetColor(colors[i]);
+				Lights.Send(LightingController);
+				ProgramCommon.Delay(((RainbowInterpolatingParameter)parameter).DelayTime);
 			}
 		}
 	}
 
-	public class RainbowParameter : IZoneProgramParameter
+	public class RainbowInterpolatingParameter : IZoneProgramParameter
 	{
-		public RainbowParameter(int speed,int delayTime)
+		public RainbowInterpolatingParameter(int delayTime)
 		{
-			Speed = speed;
 			DelayTime = delayTime;
 		}
-		public int Speed { get; set; }
 		public int DelayTime { get; set; }
 	}
 }

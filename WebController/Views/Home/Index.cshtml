@@ -1,0 +1,18 @@
+﻿@model WebController.ViewModels.ZoneLightingCommand
+
+@{
+    ViewBag.Title = "Home Page";
+	
+}
+@section featured {
+    
+}
+
+@using (Html.BeginForm())
+{
+
+    @Html.EditorFor(m => m.CommandName)
+
+    <input type="submit" value="Run Command"/>
+
+}

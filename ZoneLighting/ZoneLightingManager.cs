@@ -58,13 +58,20 @@ namespace ZoneLighting
 
 		private void InitializeAllZones()
 		{
-			Zones.ToList().ForEach(z => z.Initialize());
-			Zones.ToList()
-				.ForEach(z =>
-				{
-					z.StartProgram(new Rainbow(), new RainbowParameter(3000));
-					ProgramCommon.Delay(500);
-				});
+			//Zones.ToList().ForEach(z => z.Initialize());
+			Zones[0].SetProgram(new Rainbow());
+			Zones[0].Initialize(new RainbowParameter(100, 1));
+			Zones[1].SetProgram(new ScrollDot());
+			Zones[1].Initialize(new ScrollDotParameter(100, Color.Yellow));
+			
+			//Zones[0].StartProgram(new Rainbow(), new RainbowParameter(100, 1));
+			
+			//Zones.ToList()
+			//	.ForEach(z =>
+			//	{
+			//		z.StartProgram(new Rainbow(), new RainbowParameter(1, 1));
+			//		ProgramCommon.Delay(3000);	//phasing between the two zones
+			//	});
 		}
 
 		/// <summary>
@@ -90,6 +97,18 @@ namespace ZoneLighting
 		{
 			Zones.Clear();
 			Zones = null;
+		}
+
+		#endregion
+
+		#region API
+
+		/// <summary>
+		/// Stops all programs in all zones.
+		/// </summary>
+		public void StopAllPrograms()
+		{
+			Zones.ToList().ForEach(z => z.StopProgram());
 		}
 
 		#endregion

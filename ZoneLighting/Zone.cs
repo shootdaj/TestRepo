@@ -14,7 +14,7 @@ namespace ZoneLighting
 	/// <summary>
 	/// Represents a zone (room or whatever) that contains the lights to be controlled.
 	/// </summary>
-    public class Zone : IInitializable, IDisposable
+    public class Zone : IDisposable
 	{
 		#region CORE
 
@@ -110,13 +110,16 @@ namespace ZoneLighting
 			}
 		}
 
-		public void Initialize()
+		public void Initialize(IZoneProgramParameter parameter)
 		{
 			if (!Initialized)
 			{
+				if (ActiveZoneProgram != null)
+					ActiveZoneProgram.Start(parameter);
+
 				foreach (var zone in Zones)
 				{
-					zone.Initialize();
+					zone.Initialize(parameter);
 				}
 				//Task.Factory.StartNew(ScrollDot);
 				//Task.Factory.StartNew(Rainbow);
@@ -130,6 +133,13 @@ namespace ZoneLighting
 		{
 			if (Initialized)
 			{
+				ActiveZoneProgram.Stop();
+
+				foreach (var zone in Zones)
+				{
+					zone.Uninitialize();
+				}
+
 				Initialized = false;
 			}
 		}
@@ -150,9 +160,14 @@ namespace ZoneLighting
 
 		public void StartProgram(IZoneProgram program, IZoneProgramParameter parameter)
 		{
+			SetProgram(program);
+			ActiveZoneProgram.Start(parameter);
+		}
+
+		public void SetProgram(IZoneProgram program)
+		{
 			ActiveZoneProgram = program;
 			ActiveZoneProgram.Zone = this;
-			ActiveZoneProgram.Start(parameter);
 		}
 
 		public void StopProgram()
