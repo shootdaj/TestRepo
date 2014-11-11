@@ -13,7 +13,7 @@ namespace ZoneLighting.Communication
 	/// This class is used to connect and send/receive messages to a FadeCandy
 	/// board using WebSockets.
 	/// </summary>
-	public class FadeCandyController : ILightingController
+	public class FadeCandyController : LightingController, IInitializable
 	{
 		#region Singleton
 
@@ -52,7 +52,7 @@ namespace ZoneLighting.Communication
 		}
 
 		public bool Initialized { get; private set; }
-		
+
 		public void Initialize()
 		{
 			if (!Initialized)
@@ -88,7 +88,7 @@ namespace ZoneLighting.Communication
 			WebSocket.Close();
 		}
 		
-		public void Dispose()
+		public override void Dispose()
 		{
 			WebSocket = null;
 		}
@@ -107,7 +107,7 @@ namespace ZoneLighting.Communication
 		/// Sends a Pixel Frame to the connected FadeCandy board.
 		/// </summary>
 		/// <param name="opcPixelFrame">The OPCPixelFrame to send to the board.</param>
-		public void SendPixelFrame(IPixelFrame opcPixelFrame)
+		public override void SendPixelFrame(IPixelFrame opcPixelFrame)
 		{
 			var byteArray = ((OPCPixelFrame)opcPixelFrame).ToByteArray();
 			string byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
@@ -121,19 +121,12 @@ namespace ZoneLighting.Communication
 		/// <summary>
 		/// Sends a list of LEDs to the connected FadeCandy board.
 		/// </summary>
-		public void SendLEDs(IList<LED> leds)
+		public override void SendLEDs(IList<LED> leds)
 		{
 			OPCPixelFrame.CreateChannelBurstFromLEDs(leds).ToList().ForEach(SendPixelFrame);
 		}
 
-		/// <summary>
-		/// Sends a list of Lights to the connected FadeCandy board.
-		/// </summary>
-		public void SendLights(IList<ILogicalRGBLight> lights)
-		{
-			SendLEDs(lights.Cast<LED>().ToList());
-		}
-
+		
 		#endregion
 	}
 

@@ -91,7 +91,7 @@ namespace ZoneLighting.ZoneProgram
 			lights.ToList().ForEach(x => x.SetColor(color));
 		}
 
-		public static void Send(this IList<ILogicalRGBLight> lights, ILightingController lc)
+		public static void Send(this IList<ILogicalRGBLight> lights, LightingController lc)
 		{
 			lc.SendLights(lights);
 		}

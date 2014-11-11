@@ -44,7 +44,7 @@ namespace ZoneLighting
 		/// <summary>
 		/// The Lighting Controller used to control this Zone.
 		/// </summary>
-		public ILightingController LightingController { get; private set; }
+		public LightingController LightingController { get; private set; }
 
 		/// <summary>
 		/// The program that is active on this zone.
@@ -98,7 +98,7 @@ namespace ZoneLighting
 
 		#region C+I
 
-		public Zone(ILightingController lightingController, string name = "", IZoneProgram program = null, IZoneProgramParameter programParameter = null)
+		public Zone(LightingController lightingController, string name = "", IZoneProgram program = null, IZoneProgramParameter programParameter = null)
 		{
 			Zones = new List<Zone>();
 			Lights = new List<ILogicalRGBLight>();

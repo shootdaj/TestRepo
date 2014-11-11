@@ -19,7 +19,7 @@ namespace ZoneLighting.ZoneProgram
 
 		public Zone Zone { get; set; }
 
-		public ILightingController LightingController
+		public LightingController LightingController
 		{
 			get { return Zone.LightingController; }
 		}

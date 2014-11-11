@@ -51,6 +51,7 @@
     <Compile Include="Communication\FadeCandyController.cs" />
     <Compile Include="Communication\FadeCandyPixel.cs" />
     <Compile Include="Communication\ILightingController.cs" />
+    <Compile Include="Communication\LightingController.cs" />
     <Compile Include="Communication\OPCPacket.cs" />
     <Compile Include="Communication\OPCPixelFrame.cs" />
     <Compile Include="Communication\PhysicalRGBLight.cs" />
@@ -76,6 +77,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Doc\ProjectSummary.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

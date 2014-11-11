@@ -20,11 +20,17 @@ namespace ZoneLighting
 
 		#region Color Parts
 
+		#region ARGB
+
 		public byte Red { get { return _color.R; } }
 		public byte Green { get { return _color.G; } }
 		public byte Blue { get { return _color.B; } }
 		public byte Alpha { get { return _color.A; } }
 
+		#endregion
+
+		#region HSB
+		
 		/// <summary>
 		/// The hue, in degrees, of the underlying System.Drawing.Color. 
 		/// The hue is measured in degrees, ranging from 0.0 through 360.0, in HSB color space.
@@ -42,6 +48,8 @@ namespace ZoneLighting
 		/// The brightness ranges from 0.0 through 1.0, where 0.0 represents black and 1.0 represents white.
 		/// </summary>
 		public float Brightness { get { return _color.GetBrightness(); } }
+
+		#endregion
 
 		#endregion
 

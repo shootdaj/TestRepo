@@ -49,9 +49,6 @@ namespace ZoneLighting
 				InitLightingControllers();
 				LoadSampleZoneData();	//TODO: Replace
 				InitializeAllZones();
-				//var sw = File.CreateText(@"C:\Temp\Zones.txt");
-				//sw.Write(JsonConvert.SerializeObject(Zones, Formatting.Indented));
-				//sw.Close();
 				Initialized = true;
 			}
 		}
