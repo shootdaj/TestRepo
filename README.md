@@ -19,11 +19,11 @@ I created this application Zone Lighting to allow for creating some mood lightin
 
 
 
-[------------------]												[-------------------]
-[                  ]												[					]
-[    Left Wing     ]												[	  Right Wing	]
-[                  ]												[					]
-[------------------]												[-------------------]
+ [------------------]												[-------------------]
+ [                  ]												[					]
+ [    Left Wing     ]												[	  Right Wing	]
+ [                  ]												[					]
+ [------------------]												[-------------------]
 
 			\																/
 			  \															  /	
