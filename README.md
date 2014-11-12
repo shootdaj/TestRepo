@@ -25,20 +25,20 @@ I created this application Zone Lighting to allow for creating some mood lightin
 		[                  ]												[					]
 		[------------------]												[-------------------]
 
-			\																/
-			  \															  /	
-                \														/
-                  \													  /	
-                    \												/
-                      \											  /
-                        \										/
-                          \									  /
-							\	[-------------------------] /
-							  \	[						  ]
-								[		FadeCandy 		  ]
-								[	Lighting Controller   ]
-								[						  ]
-								[-------------------------]
+				\																/
+				  \															  /	
+					\														/
+					  \													  /	
+						\												/
+						  \											  /
+							\										/
+							  \									  /
+								\	[-------------------------] /
+								  \	[						  ]
+									[		FadeCandy 		  ]
+									[	Lighting Controller   ]
+									[						  ]
+									[-------------------------]
 
 
 
