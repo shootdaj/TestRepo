@@ -9,15 +9,11 @@ REQUIRED HARDWARE: Lighting Hardware such as FadeCandy with WS2812 strips or (cu
 INSTALLATION: [TODO]
 
 
-
-
-
-
-
+USER/PROGRAMMER GUIDE:
 
 I believe that the best way to explain such an abstract concept is to show an example of how it is intended to be used. So I will do just that:
 
-I created this application to allow for creating some mood lighting in my basement. The lighting is laid out as such:
+I created this application Zone Lighting to allow for creating some mood lighting in my basement. The lighting is laid out as such:
 
 
 
