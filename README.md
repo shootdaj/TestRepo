@@ -5,9 +5,13 @@
 ZoneLighting is a .NET application to create pixel-based lighting for your home or office (or any other space). It abstracts out the logical view of the lights in "zones", which can each run a "zone program". Each zone has a "lighting controller", which is a C# wrapper for lighting controllers such as the FadeCandy board. Zone programs can output any pattern of lights using a zone's lighting controller. The program running on the zone must take the physical configuration into account. Hardware support is currently limited to FadeCandy boards with WS2812 RGB LEDs, but the architecture is designed and intended for extensibility.
 
 ORIGINAL AUTHOR: Anshul Vishwakarma
+
 EMAIL: shootdaj@gmail.com
+
 REQUIRED SOFTWARE: Windows with .NET runtime installed (latest version - 4.5 as of writing)
+
 REQUIRED HARDWARE: Lighting Hardware such as FadeCandy with WS2812 strips or (currently unsupported) an Arduino-based LPD8806 RGB LED Strip
+
 LICENSE: MIT (See file LICENSE)
 
 
