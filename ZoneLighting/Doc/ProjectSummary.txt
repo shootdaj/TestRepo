@@ -7,6 +7,7 @@ EMAIL: shootdaj@gmail.com
 REQUIRED SOFTWARE: Windows with .NET runtime installed (latest version - 4.5 as of writing)
 REQUIRED HARDWARE: Lighting Hardware such as FadeCandy with WS2812 strips or (currently unsupported) an Arduino-based LPD8806 RGB LED Strip
 INSTALLATION: [TODO]
+LICENSE: [TODO]
 
 
 USER/PROGRAMMER GUIDE:
