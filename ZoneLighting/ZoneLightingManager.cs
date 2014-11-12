@@ -30,8 +30,18 @@ namespace ZoneLighting
 
 		#region CORE
 
+		/// <summary>
+		/// All zones that can be managed by this class.
+		/// </summary>
 		public IList<Zone> Zones { get; set; }
-		public IList<IZoneProgram> ZonePrograms { get; set; }
+
+		/// <summary>
+		/// Sum of all zone programs active in all zones.
+		/// </summary>
+		public IList<IZoneProgram> ZonePrograms 
+		{
+			get { return Zones.Select(x => x.ActiveZoneProgram).ToList(); }
+		}
 
 		#endregion
 
@@ -53,22 +63,19 @@ namespace ZoneLighting
 			}
 		}
 
+		/// <summary>
+		/// Loads programs in all zones and starts them. This should be converted to be read from a config file instead of hard-coded here.
+		/// </summary>
 		private void InitializeAllZones()
 		{
-			//Zones.ToList().ForEach(z => z.Initialize());
-			Zones[0].SetProgram(new Rainbow());
-			Zones[0].Initialize(new RainbowParameter(100, 1));
-			Zones[1].SetProgram(new ScrollDot());
-			Zones[1].Initialize(new ScrollDotParameter(100, Color.Yellow));
-			
-			//Zones[0].StartProgram(new Rainbow(), new RainbowParameter(100, 1));
-			
-			//Zones.ToList()
-			//	.ForEach(z =>
-			//	{
-			//		z.StartProgram(new Rainbow(), new RainbowParameter(1, 1));
-			//		ProgramCommon.Delay(3000);	//phasing between the two zones
-			//	});
+			Zones[0].SetProgram(new StaticColor());
+			Zones[0].Initialize(new StaticColorParameter(Color.Green));
+			Zones[1].SetProgram(new StaticColor());
+			Zones[1].Initialize(new StaticColorParameter(Color.Blue));
+			//Zones[1].SetProgram(new Rainbow());
+			//Zones[1].Initialize(new RainbowParameter(100, 1));
+			//Zones[1].SetProgram(new ScrollDot());
+			//Zones[1].Initialize(new ScrollDotParameter(100, Color.Yellow));
 		}
 
 		/// <summary>

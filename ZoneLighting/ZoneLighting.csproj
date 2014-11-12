@@ -76,10 +76,12 @@
     <Compile Include="ZoneProgram\ZoneProgramEnum.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Doc\ZoneLightingClasses.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Doc\ProjectSummary.txt" />
+    <Content Include="Doc\ZoneLightingClasses.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

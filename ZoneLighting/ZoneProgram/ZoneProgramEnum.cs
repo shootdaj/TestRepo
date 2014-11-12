@@ -1,9 +1,9 @@
-﻿namespace ZoneLighting.ZoneProgram
-{
-	public enum ZoneProgramEnum
-	{
-		ScrollDot,
-		StaticRed,
-		Rainbow
-	}
-}
+﻿//namespace ZoneLighting.ZoneProgram
+//{
+//	public enum ZoneProgramEnum
+//	{
+//		ScrollDot,
+//		StaticRed,
+//		Rainbow
+//	}
+//}
