@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoneLighting", "ZoneLighting\ZoneLighting.csproj", "{FE00DB62-6C3C-4D04-9F03-23DA814298B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.csproj", "{BE535C9B-F450-4F66-ABB3-A157B8D30D42}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebController", "WebController\WebController.csproj", "{A5FE64A0-CA0D-4E30-A7FA-333F05A429A4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalPrograms", "ExternalPrograms\ExternalPrograms.csproj", "{477C3DF5-112F-4E18-988E-1AC255034B9A}"
 EndProject
@@ -25,10 +23,6 @@ Global
 		{BE535C9B-F450-4F66-ABB3-A157B8D30D42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE535C9B-F450-4F66-ABB3-A157B8D30D42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE535C9B-F450-4F66-ABB3-A157B8D30D42}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A5FE64A0-CA0D-4E30-A7FA-333F05A429A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A5FE64A0-CA0D-4E30-A7FA-333F05A429A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A5FE64A0-CA0D-4E30-A7FA-333F05A429A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A5FE64A0-CA0D-4E30-A7FA-333F05A429A4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{477C3DF5-112F-4E18-988E-1AC255034B9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{477C3DF5-112F-4E18-988E-1AC255034B9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{477C3DF5-112F-4E18-988E-1AC255034B9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
