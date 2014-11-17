@@ -35,6 +35,17 @@ namespace ZoneLighting.ZoneProgram.Programs
 				ProgramCommon.Delay(scrollDotParameter.DelayTime);						//pause before next iteration
 			}
 		}
+
+		public override IEnumerable<Type> AllowedParameterTypes
+		{
+			get
+			{
+				return new List<Type>()
+				{
+					typeof (ScrollDotParameter)
+				};
+			}
+		}
 	}
 
 	public class ScrollDotParameter : IZoneProgramParameter

@@ -17,7 +17,7 @@ namespace WebController.NetBashCommands
 
 		public string Process(string[] args)
 		{
-			ZoneLightingManager.Instance.StopAllPrograms();
+			ZoneLightingManager.Instance.Uninitialize();
 			return "Success";
 		}
 	}

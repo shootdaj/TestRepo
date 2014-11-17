@@ -14,10 +14,23 @@ namespace ZoneLighting.ZoneProgram
 	/// </summary>
 	public abstract class ZoneProgram : IZoneProgram
 	{
-		public abstract void Start(IZoneProgramParameter parameter);
+		public void StartBase(IZoneProgramParameter parameter)
+		{
+			if (AllowedParameterTypes.Contains(parameter.GetType()))
+			{
+				Start(parameter);
+			}
+			else
+			{
+				throw new Exception("Input parameter type is not an allowed parameter type for this zone program.");
+			}
+		}
+
+		protected abstract void Start(IZoneProgramParameter parameter);
 		public abstract void Stop();
 
 		public Zone Zone { get; set; }
+		public abstract IEnumerable<Type> AllowedParameterTypes { get; }
 
 		public LightingController LightingController
 		{

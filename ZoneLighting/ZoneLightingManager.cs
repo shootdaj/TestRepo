@@ -35,13 +35,10 @@ namespace ZoneLighting
 		/// </summary>
 		public IList<Zone> Zones { get; set; }
 
-		/// <summary>
-		/// Sum of all zone programs active in all zones.
-		/// </summary>
-		public IList<IZoneProgram> ZonePrograms 
-		{
-			get { return Zones.Select(x => x.ActiveZoneProgram).ToList(); }
-		}
+		///// <summary>
+		///// Sum of all zone programs active in all zones.
+		///// </summary>
+		//public IList<IZoneProgram> ZonePrograms { get; set; }
 
 		#endregion
 
@@ -51,6 +48,8 @@ namespace ZoneLighting
 		{
 			Zones = new List<Zone>();
 		}
+
+		public bool Initialized { get; private set; }
 
 		public void Initialize()
 		{
@@ -62,22 +61,7 @@ namespace ZoneLighting
 				Initialized = true;
 			}
 		}
-
-		/// <summary>
-		/// Loads programs in all zones and starts them. This should be converted to be read from a config file instead of hard-coded here.
-		/// </summary>
-		private void InitializeAllZones()
-		{
-			Zones[0].SetProgram(new StaticColor());
-			Zones[0].Initialize(new StaticColorParameter(Color.Green));
-			Zones[1].SetProgram(new StaticColor());
-			Zones[1].Initialize(new StaticColorParameter(Color.Blue));
-			//Zones[1].SetProgram(new Rainbow());
-			//Zones[1].Initialize(new RainbowParameter(100, 1));
-			//Zones[1].SetProgram(new ScrollDot());
-			//Zones[1].Initialize(new ScrollDotParameter(100, Color.Yellow));
-		}
-
+		
 		/// <summary>
 		/// Add code here to initialize any other lighting controllers
 		/// </summary>
@@ -86,34 +70,42 @@ namespace ZoneLighting
 			FadeCandyController.Instance.Initialize();
 		}
 
-		public bool Initialized { get; private set; }
+		/// <summary>
+		/// Loads programs in all zones and starts them. This should be converted to be read from a config file instead of hard-coded here.
+		/// </summary>
+		private void InitializeAllZones()
+		{
+			Zones[0].Initialize(new Rainbow(), new RainbowParameter(1, 1));
+			Zones[1].Initialize(new ScrollDot(), new ScrollDotParameter(50, Color.BlueViolet));
+		}
+
 		public void Uninitialize()
 		{
 			if (Initialized)
 			{
-				Zones.ToList().ForEach(z => z.Uninitialize());
+				UninitializeAllZones();
 				Zones.Clear();
 				Initialized = false;
 			}
 		}
 
+		/// <summary>
+		/// Unintializes all zones.
+		/// </summary>
+		public void UninitializeAllZones()
+		{
+			Zones.ToList().ForEach(z => z.Uninitialize());
+		}
+
 		public void Dispose()
 		{
-			Zones.Clear();
+			Uninitialize();
 			Zones = null;
 		}
 
 		#endregion
 
 		#region API
-
-		/// <summary>
-		/// Stops all programs in all zones.
-		/// </summary>
-		public void StopAllPrograms()
-		{
-			Zones.ToList().ForEach(z => z.StopProgram());
-		}
 
 		#endregion
 

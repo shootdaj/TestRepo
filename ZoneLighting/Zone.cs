@@ -47,53 +47,11 @@ namespace ZoneLighting
 		public LightingController LightingController { get; private set; }
 
 		/// <summary>
+		/// TODO: This member needs to be made importable.
 		/// The program that is active on this zone.
 		/// </summary>
-		public IZoneProgram ActiveZoneProgram { get; private set; }
+		public IZoneProgram ZoneProgram { get; private set; }
 
-		///// <summary>
-		///// Static Red
-		///// </summary>
-		//private void StaticRed()
-		//{
-		//	while (!TaskCTS.IsCancellationRequested)
-		//	{
-		//		var color = Color.Red;
-
-		//		Lights.ToList().ForEach(x => x.SetColor(color)); //set all lights to black
-		//		LightingController.SendPixelFrame(OPCPixelFrame.CreateFromLEDs(0, Lights.Cast<LED>().ToList()));	//set all lights to Red
-		//	}
-		//}
-
-		///// <summary>
-		///// Rainbow
-		///// </summary>
-		//private void Rainbow()
-		//{
-		//	SetAllLightsColor(Color.FromArgb(0, 0, 0)); //turn all lights off
-
-		//	while (!TaskCTS.IsCancellationRequested)
-		//	{
-		//		var colors = new List<Color>();
-		//		colors.Add(Color.Violet);
-		//		colors.Add(Color.Indigo);
-		//		colors.Add(Color.Blue);
-		//		colors.Add(Color.Green);
-		//		colors.Add(Color.Yellow);
-		//		colors.Add(Color.Orange);
-		//		colors.Add(Color.Red);
-
-		//		for (int i = 0; i < 7; i++)
-		//		{
-		//			SetAllLightsColor(colors[i]);
-
-		//			//send frame 
-		//			LightingController.SendPixelFrame(OPCPixelFrame.CreateFromLEDs(0, Lights.Cast<LED>().ToList()));
-		//			Thread.Sleep(5000);
-		//		}
-		//	}
-		//}
-		
 		#endregion
 
 		#region C+I
@@ -104,26 +62,38 @@ namespace ZoneLighting
 			Lights = new List<ILogicalRGBLight>();
 			LightingController = lightingController;
 			Name = name;
-			if (program != null && programParameter != null)
+			if (program == null) return;
+			if (programParameter == null)
 			{
-				StartProgram(program, programParameter);
+				SetProgram(program);
+			}
+			else
+			{
+				Initialize(program, programParameter);
 			}
 		}
 
-		public void Initialize(IZoneProgramParameter parameter)
+		private void Initialize(IZoneProgramParameter parameter)
 		{
 			if (!Initialized)
 			{
-				if (ActiveZoneProgram != null)
-					ActiveZoneProgram.Start(parameter);
+				if (ZoneProgram != null)
+					StartProgram(parameter);
 
 				foreach (var zone in Zones)
 				{
 					zone.Initialize(parameter);
 				}
-				//Task.Factory.StartNew(ScrollDot);
-				//Task.Factory.StartNew(Rainbow);
 				Initialized = true;
+			}
+		}
+
+		public void Initialize(IZoneProgram zoneProgram, IZoneProgramParameter parameter)
+		{
+			if (!Initialized)
+			{
+				SetProgram(zoneProgram);
+				Initialize(parameter);
 			}
 		}
 
@@ -133,7 +103,7 @@ namespace ZoneLighting
 		{
 			if (Initialized)
 			{
-				ActiveZoneProgram.Stop();
+				StopProgram();
 
 				foreach (var zone in Zones)
 				{
@@ -158,33 +128,55 @@ namespace ZoneLighting
 
 		#region API
 
-		public void StartProgram(IZoneProgram program, IZoneProgramParameter parameter)
-		{
-			SetProgram(program);
-			ActiveZoneProgram.Start(parameter);
-		}
-
+		/// <summary>
+		/// Sets this zone's program to the given program.
+		/// </summary>
+		/// <param name="program"></param>
 		public void SetProgram(IZoneProgram program)
 		{
-			ActiveZoneProgram = program;
-			ActiveZoneProgram.Zone = this;
+			ZoneProgram = program;
+			ZoneProgram.Zone = this;
+		}
+	
+		/// <summary>
+		/// Starts this zone's program with the given parameter
+		/// </summary>
+		/// <param name="parameter"></param>
+		public void StartProgram(IZoneProgramParameter parameter)
+		{
+			ZoneProgram.StartBase(parameter);
 		}
 
+		/// <summary>
+		/// Stops this zone's program.
+		/// </summary>
 		public void StopProgram()
 		{
-			ActiveZoneProgram.Stop();
+			ZoneProgram.Stop();
 		}
 
-		private void SetAllLightsColor(Color color)
+		/// <summary>
+		/// Sets all lights in zone to a given color.
+		/// </summary>
+		/// <param name="color"></param>
+		public void SetAllLightsColor(Color color)
 		{
-			Lights.ToList().ForEach(x => x.SetColor(color)); //set all lights to black
+			Lights.ToList().ForEach(x => x.SetColor(color));
 		}
 
+		/// <summary>
+		/// Adds a new light to this zone.
+		/// </summary>
+		/// <param name="light"></param>
 		public void AddLight(ILogicalRGBLight light)
 		{
 			Lights.Add(light);
 		}
 
+		/// <summary>
+		/// Adds a new zone to this zone recursively.
+		/// </summary>
+		/// <param name="zone"></param>
 		public void AddZone(Zone zone)
 		{
 			Zones.Add(zone);

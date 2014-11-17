@@ -25,13 +25,6 @@
   </Class>
   <Class Name="ZoneLighting.Communication.OPCPacket" Collapsed="true">
     <Position X="1.5" Y="5.25" Width="1.5" />
-    <NestedTypes>
-      <Enum Name="ZoneLighting.Communication.OPCPacket.OPCCommand" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Communication\OPCPacket.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAAAAAgAAAAAAAAAIAABABAAAAAABAAAAAAAAAAAAA=</HashCode>
       <FileName>Communication\OPCPacket.cs</FileName>
@@ -93,20 +86,20 @@
   </Class>
   <Class Name="ZoneLighting.Zone" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="6.75" Y="2" Width="1.5" />
-    <AssociationLine Name="ActiveZoneProgram" Type="ZoneLighting.ZoneProgram.IZoneProgram" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+    <AssociationLine Name="ZoneProgram" Type="ZoneLighting.ZoneProgram.IZoneProgram" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="7.75" Y="2.562" />
-        <Point X="7.75" Y="2.938" />
-        <Point X="13" Y="2.938" />
+        <Point X="7.75" Y="3.528" />
+        <Point X="13" Y="3.528" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>IRAAEAAAACgiAQCAAAAAAgQCAAAAGAAAAAAAAAAAAAg=</HashCode>
+      <HashCode>MRAAEAAAACgiAQCAAAAAAgQCAAAAEAAAAAAAAAAAAAg=</HashCode>
       <FileName>Zone.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="ActiveZoneProgram" />
       <Property Name="LightingController" />
+      <Property Name="ZoneProgram" />
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Property Name="Lights" />
@@ -116,7 +109,7 @@
   <Class Name="ZoneLighting.ZoneLightingManager" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="9.25" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>EAAUEAAAADAAAQAAAAFAAAACAAAAAAAAQAAEAAAAAAg=</HashCode>
+      <HashCode>AAAUEAAACDAAAQAAAAEAAAACAAAAAAAAQAAEAAAAAAg=</HashCode>
       <FileName>ZoneLightingManager.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -140,7 +133,7 @@
   <Class Name="ZoneLighting.ZoneProgram.ZoneProgram" Collapsed="true">
     <Position X="14.75" Y="2.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAgAAAAABAAAgAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAIAAAAACAgAAAAABAAAgAQAAAAAAAAIAAAAAAAAAA=</HashCode>
       <FileName>ZoneProgram\ZoneProgram.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -148,14 +141,14 @@
   <Class Name="ZoneLighting.ZoneProgram.Programs.Rainbow" Collapsed="true">
     <Position X="11.75" Y="4.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ZoneProgram\Programs\Rainbow.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ZoneLighting.ZoneProgram.Programs.RainbowInterpolating" Collapsed="true">
     <Position X="16.25" Y="4.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ZoneProgram\Programs\RainbowInterpolating.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -230,17 +223,17 @@
     <Position X="13" Y="1.75" Width="1.5" />
     <AssociationLine Name="Zone" Type="ZoneLighting.Zone" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="13.75" Y="3.046" />
-        <Point X="13.75" Y="3.46" />
-        <Point X="7.5" Y="3.46" />
+        <Point X="13.5" Y="3.69" />
+        <Point X="13.5" Y="4.065" />
+        <Point X="7.5" Y="4.065" />
         <Point X="7.5" Y="2.562" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true">
-        <Position X="-0.565" Y="0.679" />
+        <Position X="-0.555" Y="1.283" />
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAAAAABAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAIAAAAACAAAAAAABAAAAAQAAAAAAAAIAAAAAAAAAA=</HashCode>
       <FileName>ZoneProgram\IZoneProgram.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>

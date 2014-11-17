@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace ZoneLighting.ZoneProgram.Programs
@@ -24,6 +25,17 @@ namespace ZoneLighting.ZoneProgram.Programs
 				Lights.SetColor(colors[i]);
 				Lights.Send(LightingController);
 				ProgramCommon.Delay(((RainbowInterpolatingParameter)parameter).DelayTime);
+			}
+		}
+
+		public override IEnumerable<Type> AllowedParameterTypes
+		{
+			get
+			{
+				return new List<Type>()
+				{
+					typeof(RainbowInterpolatingParameter)
+				};
 			}
 		}
 	}

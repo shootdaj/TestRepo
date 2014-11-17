@@ -5,6 +5,8 @@ namespace ZoneLighting.ZoneProgram
 {
 	public abstract class LoopingZoneProgram : ZoneProgram
 	{
+		#region Looping Stuff
+
 		protected LoopingZoneProgram()
 		{
 			LoopCTS = new CancellationTokenSource();
@@ -25,7 +27,11 @@ namespace ZoneLighting.ZoneProgram
 
 		public CancellationTokenSource LoopCTS;
 
-		public override void Start(IZoneProgramParameter parameter)
+		#endregion
+
+		#region ZoneProgram's Abstract Members
+
+		protected override void Start(IZoneProgramParameter parameter)
 		{
 			StartLoop(parameter);
 		}
@@ -35,6 +41,6 @@ namespace ZoneLighting.ZoneProgram
 			LoopCTS.Cancel();
 		}
 
-		
+		#endregion
 	}
 }

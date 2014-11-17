@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace ZoneLighting.ZoneProgram.Programs
@@ -13,6 +15,17 @@ namespace ZoneLighting.ZoneProgram.Programs
 			Lights.SetColor(((StaticColorParameter)parameter).Color);
 			LightingController.SendLights(Lights);				//send frame
 			ProgramCommon.Delay(1000);
+		}
+
+		public override IEnumerable<Type> AllowedParameterTypes
+		{
+			get
+			{
+				return new List<Type>()
+				{
+					typeof (StaticColorParameter)
+				};
+			}
 		}
 	}
 

@@ -34,6 +34,14 @@ namespace ZoneLighting.ZoneProgram.Programs
 				}, out endingColor);
 			}
 		}
+
+		public override IEnumerable<Type> AllowedParameterTypes
+		{
+			get { return new List<Type>()
+			{
+				typeof (RainbowParameter),
+			}; }
+		}
 	}
 
 	public class RainbowParameter : IZoneProgramParameter
