@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -34,11 +38,29 @@ namespace ZoneLighting
 		/// All zones that can be managed by this class.
 		/// </summary>
 		public IList<Zone> Zones { get; set; }
+		
+		/// <summary>
+		///	This factory member will provide the various implementations of zone programs that are to be loaded from external modules.
+		/// </summary>
+		[ImportMany(typeof(IZoneProgram), AllowRecomposition = true)]
+		private IEnumerable<ExportFactory<IZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; }
 
-		///// <summary>
-		///// Sum of all zone programs active in all zones.
-		///// </summary>
-		//public IList<IZoneProgram> ZonePrograms { get; set; }
+		/// <summary>
+		/// This factory member will provide the various implementations of zone program parameters that are to be loaded from external modules.
+		/// </summary>
+		[ImportMany(typeof (IZoneProgramParameter), AllowRecomposition = true)]
+		private IEnumerable<ExportFactory<IZoneProgramParameter, IZoneProgramParameterMetadata>> ZoneProgramParameterFactories
+		{ get; set; }
+
+		/// <summary>
+		/// Directory Catalog that stores catalog for the external programs
+		/// </summary>
+		private DirectoryCatalog ExternalProgramCatalog { get; set; }
+
+		/// <summary>
+		/// Container for the external programs.
+		/// </summary>
+		private CompositionContainer ExternalProgramContainer { get; set; }
 
 		#endregion
 
@@ -57,6 +79,7 @@ namespace ZoneLighting
 			{
 				InitLightingControllers();
 				LoadSampleZoneData();	//TODO: Replace
+				LoadExternalPrograms();
 				InitializeAllZones();
 				Initialized = true;
 			}
@@ -69,14 +92,34 @@ namespace ZoneLighting
 		{
 			FadeCandyController.Instance.Initialize();
 		}
+		
+		/// <summary>
+		/// Loads external programs using MEF.
+		/// </summary>
+		private void LoadExternalPrograms()
+		{
+			ExternalProgramCatalog = new DirectoryCatalog(ConfigurationManager.AppSettings["ProgramDLLFolder"]);
+			ExternalProgramContainer = new CompositionContainer(ExternalProgramCatalog);
+			ExternalProgramContainer.ComposeParts(this);
+		}
 
 		/// <summary>
 		/// Loads programs in all zones and starts them. This should be converted to be read from a config file instead of hard-coded here.
 		/// </summary>
 		private void InitializeAllZones()
 		{
-			Zones[0].Initialize(new Rainbow(), new RainbowParameter(1, 1));
-			Zones[1].Initialize(new ScrollDot(), new ScrollDotParameter(50, Color.BlueViolet));
+			//Zones[0].Initialize(ZoneProgramFactories.First(x => x.Metadata.Name == "Rainbow").CreateExport().Value,
+			//	ZoneProgramParameterFactories.First(x => x.Metadata.Name == "RainbowParameter").CreateExport().Value);
+
+			var parameterDictionary = new Dictionary<string, object>();
+			parameterDictionary.Add("Speed", 1);
+			parameterDictionary.Add("DelayTime", 1);
+
+			InitializeZone(Zones[0], "Rainbow", parameterDictionary);
+
+
+			//Zones[0].Initialize(new Rainbow(), new RainbowParameter(1, 1));
+			//Zones[1].Initialize(new ScrollDot(), new ScrollDotParameter(50, Color.BlueViolet));
 		}
 
 		public void Uninitialize()
@@ -105,7 +148,59 @@ namespace ZoneLighting
 
 		#endregion
 
+		#region Helpers
+
+		///// <summary>
+		///// Creates a zone program with the given name
+		///// </summary>
+		///// <returns></returns>
+		//private IZoneProgram CreateZoneProgram(string name)
+		//{
+			
+		//}
+
+		#endregion
+
 		#region API
+
+		/// <summary>
+		/// Initializes a zone with the given program name and parameter.
+		/// </summary>
+		public void InitializeZone(Zone zone, string programName, IZoneProgramParameter parameter)
+		{
+			zone.Initialize(ZoneProgramFactories.First(x => x.Metadata.Name == programName).CreateExport().Value, parameter);
+		}
+
+		/// <summary>
+		/// Initializes a zone with the given program name and parameter name-value dictionary.
+		/// </summary>
+		public void InitializeZone(Zone zone, string programName, Dictionary<string, object> parameterDictionary)
+		{
+			var parameter = CreateProgramParameter(programName, parameterDictionary);
+			zone.Initialize(ZoneProgramFactories.First(x => x.Metadata.Name == programName).CreateExport().Value, parameter);
+		}
+
+		/// <summary>
+		/// Creates a program parameter using Reflection, given the name of the program and a dictionary of property names to property values
+		/// </summary>
+		public IZoneProgramParameter CreateProgramParameter(string programName, Dictionary<string, object> parameterDictionary)
+		{
+			var zoneProgramFactory = ZoneProgramFactories.First(x => x.Metadata.Name == programName);
+			var programParameter =
+				ZoneProgramParameterFactories.First(x => x.Metadata.Name == zoneProgramFactory.Metadata.ParameterName)
+					.CreateExport();
+			
+			parameterDictionary.Keys.ToList().ForEach(propertyName =>
+			{
+				var property = programParameter.Value.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
+				if (property != null)
+				{
+					property.SetValue(programParameter.Value, parameterDictionary[propertyName]);
+				}
+			});
+
+			return programParameter.Value;
+		}
 
 		#endregion
 
@@ -132,4 +227,5 @@ namespace ZoneLighting
 		#endregion
 
 	}
+
 }
