@@ -181,6 +181,14 @@ namespace ZoneLighting
 		}
 
 		/// <summary>
+		/// Gets the names of all available programs.
+		/// </summary>
+		public IEnumerable<string> AvailableProgramNames
+		{
+			get { return ZoneProgramFactories.Select(x => x.Metadata.Name); }
+		}
+
+		/// <summary>
 		/// Creates a program parameter using Reflection, given the name of the program and a dictionary of property names to property values
 		/// </summary>
 		public IZoneProgramParameter CreateProgramParameter(string programName, Dictionary<string, object> parameterDictionary)

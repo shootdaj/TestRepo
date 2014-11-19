@@ -23,6 +23,11 @@ namespace ZoneLighting
 		/// </summary>
 		public string Name;
 
+		public string NameCopy
+		{
+			get { return Name; }
+		}
+
 		/// <summary>
 		/// Zones can contain other zones in a recursive fashion.
 		/// </summary>

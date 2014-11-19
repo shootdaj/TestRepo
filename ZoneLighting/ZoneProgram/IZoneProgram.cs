@@ -11,8 +11,10 @@ namespace ZoneLighting.ZoneProgram
 		/// </summary>
 		/// <param name="parameter"></param>
 		void StartBase(IZoneProgramParameter parameter);
-		//void Start(IZoneProgramParameter parameter);
+		
 		void Stop();
+
+		//void Start(IZoneProgramParameter parameter);
 		//void Pause();
 
 
