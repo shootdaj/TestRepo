@@ -3,9 +3,27 @@
 }
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Zone Lighting Manager";
 }
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+		$("#btnInit").click(function() {
+            var url = "@Url.Action("InitializeZLM", "Test")";
+            $.get(url, null, function(data) {
+                $("#result").html(data);
+            });
+        });
 
-<h2>Index</h2>
+    	$("#btnUninit").click(function() {
+    		var url = "@Url.Action("UninitializeZLM", "Test")";
+    		$.get(url, null, function(data) {
+    			$("#result").html(data);
+    		});
+    	});
+    });
+</script>
 
-<p>Hello from our View Template!</p>
+<input type="button" id="btnInit" value="Initialize Zone Lighting Manager" />
+<input type="button" id="btnUninit" value="Uninitialize Zone Lighting Manager" />
+<div id="result"></div>

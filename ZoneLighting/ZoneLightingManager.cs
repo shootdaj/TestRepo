@@ -123,7 +123,7 @@ namespace ZoneLighting
 		}
 
 		public void Uninitialize()
-		{
+		{     
 			if (Initialized)
 			{
 				UninitializeAllZones();
