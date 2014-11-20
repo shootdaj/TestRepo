@@ -1,4 +1,5 @@
 ﻿@model WebController.Controllers.ZLMViewModel
+@using Kendo.Mvc.UI
 @using WebController.Extensions
 @using ZoneLighting
 @{
@@ -58,12 +59,15 @@
 </script>
 
 
+
 @using (Html.BeginForm())
 {
     <fieldset>
         <div class="form-group">
+            @(Html.Kendo().DatePicker().Name("datepicker"))
+
             @Html.LabelFor(m => m.Zone)
-            @Html.DropDownListFor(m => m.Zone, Model.AvailableZones)
+            @Html.DropDownListFor(m => m.Zone, Model.AvailableZones, new { @class = "form-control", @multiple = "yes" })
         </div>
 
         @*<input type="button" id="btnInit" value="Initialize Zone Lighting Manager" />
@@ -73,3 +77,34 @@
 
     </fieldset>
 }
+
+<style scoped="scoped">
+	.info {
+		display: block;
+		line-height: 22px;
+		padding: 0 5px 5px 0;
+		color: #36558e;
+	}
+
+	#shipping {
+		width: 482px;
+		height: 152px;
+		padding: 110px 0 0 30px;
+		background: url('/Content/web/autocomplete/shipping.png') transparent no-repeat 0 0;
+		margin: 30px auto;
+	}
+
+	.k-autocomplete
+	{
+		width: 250px;
+		vertical-align: middle;
+	}
+
+	.hint {
+		line-height: 22px;
+		color: #aaa;
+		font-style: italic;
+		font-size: .9em;
+		color: #7496d4;
+	}
+</style>

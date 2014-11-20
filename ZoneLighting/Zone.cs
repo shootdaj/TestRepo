@@ -22,12 +22,7 @@ namespace ZoneLighting
 		/// Name of the zone.
 		/// </summary>
 		public string Name;
-
-		public string NameCopy
-		{
-			get { return Name; }
-		}
-
+		
 		/// <summary>
 		/// Zones can contain other zones in a recursive fashion.
 		/// </summary>
@@ -127,6 +122,15 @@ namespace ZoneLighting
 			Lights = null;
 			LightingController.Dispose();
 			LightingController = null;
+		}
+
+		#endregion
+
+		#region MISC
+
+		public override string ToString()
+		{
+			return Name;
 		}
 
 		#endregion
