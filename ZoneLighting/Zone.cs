@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgram;
 
@@ -47,7 +43,6 @@ namespace ZoneLighting
 		public LightingController LightingController { get; private set; }
 
 		/// <summary>
-		/// TODO: This member needs to be made importable.
 		/// The program that is active on this zone.
 		/// </summary>
 		public IZoneProgram ZoneProgram { get; private set; }

@@ -4,15 +4,10 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Configuration;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgram;
-using ZoneLighting.ZoneProgram.Programs;
 
 namespace ZoneLighting
 {
@@ -79,7 +74,7 @@ namespace ZoneLighting
 			{
 				InitLightingControllers();
 				LoadSampleZoneData();	//TODO: Replace
-				LoadExternalPrograms();
+				ConfigureAndLoadExternalPrograms();
 				InitializeAllZones();
 				Initialized = true;
 			}
@@ -96,12 +91,22 @@ namespace ZoneLighting
 		/// <summary>
 		/// Loads external programs using MEF.
 		/// </summary>
-		private void LoadExternalPrograms()
+		private void ConfigureAndLoadExternalPrograms()
 		{
+			AppDomain.CurrentDomain.SetupInformation.ShadowCopyFiles = "true";
 			ExternalProgramCatalog = new DirectoryCatalog(ConfigurationManager.AppSettings["ProgramDLLFolder"]);
 			ExternalProgramContainer = new CompositionContainer(ExternalProgramCatalog);
 			ExternalProgramContainer.ComposeParts(this);
 		}
+
+		//TODO: This is not working because MEF has to be "hacked" to have the 
+		//TODO: assemblies load in a different appdomain with ShadowCopyFiles set to true as in the following example:
+		//TODO: http://www.codeproject.com/Articles/633140/MEF-and-AppDomain-Remove-Assemblies-On-The-Fly
+		//public void RefreshExternalPrograms()
+		//{
+		//	ExternalProgramCatalog.Refresh();
+		//	ExternalProgramContainer.ComposeParts(this);
+		//}
 
 		/// <summary>
 		/// Loads programs in all zones and starts them. This should be converted to be read from a config file instead of hard-coded here.
@@ -111,11 +116,17 @@ namespace ZoneLighting
 			//Zones[0].Initialize(ZoneProgramFactories.First(x => x.Metadata.Name == "Rainbow").CreateExport().Value,
 			//	ZoneProgramParameterFactories.First(x => x.Metadata.Name == "RainbowParameter").CreateExport().Value);
 
-			var parameterDictionary = new Dictionary<string, object>();
-			parameterDictionary.Add("Speed", 1);
-			parameterDictionary.Add("DelayTime", 1);
+			var rainbowParameterDictionary = new Dictionary<string, object>();
+			rainbowParameterDictionary.Add("Speed", 1);
+			rainbowParameterDictionary.Add("DelayTime", 1);
+			
+			InitializeZone(Zones[0], "Rainbow", rainbowParameterDictionary);
 
-			InitializeZone(Zones[0], "Rainbow", parameterDictionary);
+			var scrollDotDictionary = new Dictionary<string, object>();
+			scrollDotDictionary.Add("DelayTime", 1);
+			scrollDotDictionary.Add("Color", (Color?)Color.Chartreuse);
+
+			InitializeZone(Zones[1], "ScrollDot", scrollDotDictionary);
 
 
 			//Zones[0].Initialize(new Rainbow(), new RainbowParameter(1, 1));
@@ -168,7 +179,7 @@ namespace ZoneLighting
 		/// </summary>
 		public void InitializeZone(Zone zone, string programName, IZoneProgramParameter parameter)
 		{
-			zone.Initialize(ZoneProgramFactories.First(x => x.Metadata.Name == programName).CreateExport().Value, parameter);
+			zone.Initialize(ZoneProgramFactories.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value, parameter);
 		}
 
 		/// <summary>
@@ -177,7 +188,7 @@ namespace ZoneLighting
 		public void InitializeZone(Zone zone, string programName, Dictionary<string, object> parameterDictionary)
 		{
 			var parameter = CreateProgramParameter(programName, parameterDictionary);
-			zone.Initialize(ZoneProgramFactories.First(x => x.Metadata.Name == programName).CreateExport().Value, parameter);
+			zone.Initialize(ZoneProgramFactories.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value, parameter);
 		}
 
 		/// <summary>
@@ -193,9 +204,9 @@ namespace ZoneLighting
 		/// </summary>
 		public IZoneProgramParameter CreateProgramParameter(string programName, Dictionary<string, object> parameterDictionary)
 		{
-			var zoneProgramFactory = ZoneProgramFactories.First(x => x.Metadata.Name == programName);
+			var zoneProgramFactory = ZoneProgramFactories.ToDictionary(x => x.Metadata.Name)[programName];//.First(x => x.Metadata.Name == programName);
 			var programParameter =
-				ZoneProgramParameterFactories.First(x => x.Metadata.Name == zoneProgramFactory.Metadata.ParameterName)
+				ZoneProgramParameterFactories.ToDictionary(x => x.Metadata.Name)[zoneProgramFactory.Metadata.ParameterName]
 					.CreateExport();
 			
 			parameterDictionary.Keys.ToList().ForEach(propertyName =>
