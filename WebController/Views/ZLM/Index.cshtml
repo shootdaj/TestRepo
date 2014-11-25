@@ -1,5 +1,4 @@
 ﻿@model WebController.Controllers.ZLMViewModel
-@*@using Kendo.Mvc.UI*@
 @using WebController.Extensions
 @using ZoneLighting
 @{
@@ -64,8 +63,6 @@
 {
     <fieldset>
         <div class="form-group">
-            @*@(Html.Kendo().DatePicker().Name("datepicker"))*@
-            
             
             @Html.LabelFor(m => m.Zone)
             @Html.DropDownListFor(m => m.Zone, Model.AvailableZones, new { @class = "form-control", @multiple = "yes" })
