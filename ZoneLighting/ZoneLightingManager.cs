@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using ZoneLighting.Communication;
+using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgram;
 
 namespace ZoneLighting
@@ -32,6 +33,7 @@ namespace ZoneLighting
 		/// <summary>
 		/// All zones that can be managed by this class.
 		/// </summary>
+		[ImportMany(typeof(Zone), AllowRecomposition = true)]
 		public IList<Zone> Zones { get; set; }
 		
 		/// <summary>
@@ -51,11 +53,16 @@ namespace ZoneLighting
 		/// Directory Catalog that stores catalog for the external programs
 		/// </summary>
 		private DirectoryCatalog ExternalProgramCatalog { get; set; }
+		
+		/// <summary>
+		/// Directory Catalog that stores catalog for the external zones.
+		/// </summary>
+		private DirectoryCatalog ExternalZoneCatalog { get; set; }
 
 		/// <summary>
-		/// Container for the external programs.
+		/// Container for the external modules.
 		/// </summary>
-		private CompositionContainer ExternalProgramContainer { get; set; }
+		private CompositionContainer ExternalModuleContainer { get; set; }
 
 		#endregion
 
@@ -73,8 +80,8 @@ namespace ZoneLighting
 			if (!Initialized)
 			{
 				InitLightingControllers();
-				LoadSampleZoneData();	//TODO: Replace
-				ConfigureAndLoadExternalPrograms();
+				//LoadSampleZoneData();	//TODO: Replace
+				ComposeWithExternalModules();
 				InitializeAllZones();
 				Initialized = true;
 			}
@@ -87,16 +94,34 @@ namespace ZoneLighting
 		{
 			FadeCandyController.Instance.Initialize();
 		}
-		
+
 		/// <summary>
-		/// Loads external programs using MEF.
+		/// Creates catalog for external zones.
 		/// </summary>
-		private void ConfigureAndLoadExternalPrograms()
+		private void CatalogExternalZones()
 		{
-			AppDomain.CurrentDomain.SetupInformation.ShadowCopyFiles = "true";
+			ExternalZoneCatalog = new DirectoryCatalog(ConfigurationManager.AppSettings["ZoneDLLFolder"]);
+		}
+
+		/// <summary>
+		/// Creates catalog for external programs.
+		/// </summary>
+		private void CatalogExternalPrograms()
+		{
 			ExternalProgramCatalog = new DirectoryCatalog(ConfigurationManager.AppSettings["ProgramDLLFolder"]);
-			ExternalProgramContainer = new CompositionContainer(ExternalProgramCatalog);
-			ExternalProgramContainer.ComposeParts(this);
+		}
+
+		/// <summary>
+		/// Composes this class with external zones and programs.
+		/// </summary>
+		private void ComposeWithExternalModules()
+		{
+			//AppDomain.CurrentDomain.SetupInformation.ShadowCopyFiles = "true";
+			CatalogExternalZones();
+			CatalogExternalPrograms();
+			AggregateCatalog aggregateCatalog = new AggregateCatalog(ExternalZoneCatalog, ExternalProgramCatalog);
+			ExternalModuleContainer = new CompositionContainer(aggregateCatalog);
+			ExternalModuleContainer.ComposeParts(this);
 		}
 
 		//TODO: This is not working because MEF has to be "hacked" to have the 
@@ -225,23 +250,23 @@ namespace ZoneLighting
 
 		#region Sample Data
 
-		public void LoadSampleZoneData()
-		{
-			var leftWingZone = AddFadeCandyLEDStripZone("LeftWing", 6, 1);
-			var rightWingZone = AddFadeCandyLEDStripZone("RightWing", 12, 2);
-		}
+		//public void LoadSampleZoneData()
+		//{
+		//	var leftWingZone = AddFadeCandyLEDStripZone("LeftWing", 6, 1);
+		//	var rightWingZone = AddFadeCandyLEDStripZone("RightWing", 12, 2);
+		//}
 
-		private Zone AddFadeCandyLEDStripZone(string name, int numLights, byte fcChannel)
-		{
-			var zone = new Zone(FadeCandyController.Instance, name);
-			Zones.Add(zone);
-			for (int i = 0; i < numLights; i++)
-			{
-				zone.AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i));
-			}
+		//private Zone AddFadeCandyLEDStripZone(string name, int numLights, byte fcChannel)
+		//{
+		//	var zone = new Zone(FadeCandyController.Instance, name);
+		//	Zones.Add(zone);
+		//	for (int i = 0; i < numLights; i++)
+		//	{
+		//		zone.AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i));
+		//	}
 
-			return zone;
-		}
+		//	return zone;
+		//}
 
 		#endregion
 

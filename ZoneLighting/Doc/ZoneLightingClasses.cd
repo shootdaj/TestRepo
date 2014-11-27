@@ -86,15 +86,8 @@
   </Class>
   <Class Name="ZoneLighting.Zone" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="6.75" Y="2" Width="1.5" />
-    <AssociationLine Name="ZoneProgram" Type="ZoneLighting.ZoneProgram.IZoneProgram" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="7.75" Y="2.562" />
-        <Point X="7.75" Y="3.528" />
-        <Point X="13" Y="3.528" />
-      </Path>
-    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>MRAAEAAAACgiAQCAAAAAAgQCAAAAEAAAAAAAAAAAAAg=</HashCode>
+      <HashCode>MRAAEAAAACgiAQCEAAAAAgQCAAAAEAAAAAAAAAAAAAg=</HashCode>
       <FileName>Zone.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -109,7 +102,7 @@
   <Class Name="ZoneLighting.ZoneLightingManager" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="9.25" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAUEAAACDAAAQAAAAEAAAACAAAAAAAAQAAEAAAAAAg=</HashCode>
+      <HashCode>iAAUEAAACTAAAUAAAAMAAAACAIQAAAAAQAAEAAAAAAg=</HashCode>
       <FileName>ZoneLightingManager.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -138,13 +131,6 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="ZoneLighting.ZoneProgram.Programs.Rainbow" Collapsed="true">
-    <Position X="11.75" Y="4.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ZoneProgram\Programs\Rainbow.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="ZoneLighting.ZoneProgram.Programs.RainbowInterpolating" Collapsed="true">
     <Position X="16.25" Y="4.75" Width="1.5" />
     <TypeIdentifier>
@@ -152,17 +138,10 @@
       <FileName>ZoneProgram\Programs\RainbowInterpolating.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="ZoneLighting.ZoneProgram.Programs.ScrollDot" Collapsed="true">
-    <Position X="18.5" Y="4.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ZoneProgram\Programs\ScrollDot.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="ZoneLighting.ZoneProgram.Programs.StaticColor" Collapsed="true">
     <Position X="14" Y="4.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ZoneProgram\Programs\StaticColor.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -174,27 +153,11 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="ZoneLighting.ZoneProgram.Programs.ScrollDotParameter" Collapsed="true">
-    <Position X="18.5" Y="5.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAACAA=</HashCode>
-      <FileName>ZoneProgram\Programs\ScrollDot.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
   <Class Name="ZoneLighting.ZoneProgram.Programs.RainbowInterpolatingParameter" Collapsed="true">
     <Position X="16.25" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
       <FileName>ZoneProgram\Programs\RainbowInterpolating.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="ZoneLighting.ZoneProgram.Programs.RainbowParameter" Collapsed="true">
-    <Position X="11.75" Y="5.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAACAA=</HashCode>
-      <FileName>ZoneProgram\Programs\Rainbow.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -221,19 +184,13 @@
   </Interface>
   <Interface Name="ZoneLighting.ZoneProgram.IZoneProgram">
     <Position X="13" Y="1.75" Width="1.5" />
-    <AssociationLine Name="Zone" Type="ZoneLighting.Zone" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="13.5" Y="3.69" />
-        <Point X="13.5" Y="4.065" />
-        <Point X="7.5" Y="4.065" />
-        <Point X="7.5" Y="2.562" />
-      </Path>
+    <AssociationLine Name="Zone" Type="ZoneLighting.Zone">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="-0.555" Y="1.283" />
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAIAAAAACAAAAAAABAAAAAQAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAIAAAAAAAAAAAAABAAAAAQAAAAAAAAIAAAAAAAAAA=</HashCode>
       <FileName>ZoneProgram\IZoneProgram.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>

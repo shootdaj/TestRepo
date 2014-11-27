@@ -5,7 +5,7 @@ using System.Linq;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgram;
 
-namespace ZoneLighting
+namespace ZoneLighting.ZoneNS
 {
 	/// <summary>
 	/// Represents a zone (room or whatever) that contains the lights to be controlled.
