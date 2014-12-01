@@ -13,6 +13,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebController", "WebControl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalZones", "ExternalZones\ExternalZones.csproj", "{E23813D3-7B7D-4D72-8B1D-899E52DFD60A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoneLightingTests", "Tests\ZoneLightingTests\ZoneLightingTests.csproj", "{C4A346A2-F4A2-49E6-81B8-B56C2632DF72}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4CF8894A-26F4-444E-B3D6-038B853AE2F8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9F3FC046-7B87-4EDD-8794-C8A8E8B156E8}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,8 +48,15 @@ Global
 		{E23813D3-7B7D-4D72-8B1D-899E52DFD60A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E23813D3-7B7D-4D72-8B1D-899E52DFD60A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E23813D3-7B7D-4D72-8B1D-899E52DFD60A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4A346A2-F4A2-49E6-81B8-B56C2632DF72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4A346A2-F4A2-49E6-81B8-B56C2632DF72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4A346A2-F4A2-49E6-81B8-B56C2632DF72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4A346A2-F4A2-49E6-81B8-B56C2632DF72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C4A346A2-F4A2-49E6-81B8-B56C2632DF72} = {4CF8894A-26F4-444E-B3D6-038B853AE2F8}
 	EndGlobalSection
 EndGlobal

@@ -33,7 +33,7 @@ namespace ZoneLighting
 		/// <summary>
 		/// All zones that can be managed by this class.
 		/// </summary>
-		[ImportMany(typeof(Zone), AllowRecomposition = true)]
+		[ImportMany(typeof(Zone), AllowRecomposition = true)] //TODO: Do composition at runtime rather than using attributes.
 		public IList<Zone> Zones { get; set; }
 		
 		/// <summary>
@@ -141,17 +141,17 @@ namespace ZoneLighting
 			//Zones[0].Initialize(ZoneProgramFactories.First(x => x.Metadata.Name == "Rainbow").CreateExport().Value,
 			//	ZoneProgramParameterFactories.First(x => x.Metadata.Name == "RainbowParameter").CreateExport().Value);
 
-			var rainbowParameterDictionary = new Dictionary<string, object>();
-			rainbowParameterDictionary.Add("Speed", 1);
-			rainbowParameterDictionary.Add("DelayTime", 1);
-			
-			InitializeZone(Zones[0], "Rainbow", rainbowParameterDictionary);
+			//var rainbowParameterDictionary = new Dictionary<string, object>();
+			//rainbowParameterDictionary.Add("Speed", 100);
+			//rainbowParameterDictionary.Add("DelayTime", 0);
+
+			//InitializeZone(Zones[0], "Rainbow", rainbowParameterDictionary);
 
 			var scrollDotDictionary = new Dictionary<string, object>();
-			scrollDotDictionary.Add("DelayTime", 1);
-			scrollDotDictionary.Add("Color", (Color?)Color.Chartreuse);
+			scrollDotDictionary.Add("DelayTime", 30);
+			//scrollDotDictionary.Add("Color", (Color?)Color.Chartreuse);
 
-			InitializeZone(Zones[1], "ScrollDot", scrollDotDictionary);
+			InitializeZone(Zones[0], "ScrollDot", scrollDotDictionary);
 
 
 			//Zones[0].Initialize(new Rainbow(), new RainbowParameter(1, 1));

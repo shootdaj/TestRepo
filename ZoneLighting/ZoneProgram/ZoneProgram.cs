@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ZoneLighting.Communication;
+using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneNS;
 
 namespace ZoneLighting.ZoneProgram
@@ -19,6 +20,7 @@ namespace ZoneLighting.ZoneProgram
 		{
 			if (AllowedParameterTypes.Contains(parameter.GetType()))
 			{
+				ProgramParameter = parameter;
 				Start(parameter);
 			}
 			else
@@ -29,9 +31,16 @@ namespace ZoneLighting.ZoneProgram
 
 		protected abstract void Start(IZoneProgramParameter parameter);
 		public abstract void Stop();
+		public IZoneProgramParameter ProgramParameter { get; set; }
 
 		public Zone Zone { get; set; }
 		public abstract IEnumerable<Type> AllowedParameterTypes { get; }
+
+		private Trigger _stopTrigger;
+		public Trigger StopTrigger
+		{
+			get { return _stopTrigger; }
+		}
 
 		public LightingController LightingController
 		{

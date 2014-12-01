@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
+using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneNS;
 
 namespace ZoneLighting.ZoneProgram
@@ -18,8 +18,11 @@ namespace ZoneLighting.ZoneProgram
 		//void Start(IZoneProgramParameter parameter);
 		//void Pause();
 
+		IZoneProgramParameter ProgramParameter { get; }
 
 		Zone Zone { get; set; }
+
+		Trigger StopTrigger { get; }
 
 		/// <summary>
 		/// This allows the ZLM to check which parameter types are allowed for this specific type of program.

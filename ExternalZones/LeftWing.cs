@@ -5,6 +5,7 @@ using ZoneLighting.ZoneNS;
 namespace ExternalZones
 {
 	[Export(typeof(Zone))]
+	[Export("BasementLighting")]
 	public class LeftWing : FadeCandyZone
 	{
 		public LeftWing() : base("LeftWing")

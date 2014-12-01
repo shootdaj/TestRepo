@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="Contains loaded Program/Parameter factories">
+    <Position X="11.15" Y="1.212" Height="0.64" Width="1.7" />
+  </Comment>
   <Class Name="ZoneLighting.Communication.FadeCandyController" Collapsed="true">
     <Position X="1.5" Y="2" Width="1.75" />
     <TypeIdentifier>
@@ -16,7 +19,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="ZoneLighting.Communication.LightingController" Collapsed="true">
-    <Position X="3.75" Y="2" Width="1.5" />
+    <Position X="4" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAgAEAAACAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Communication\LightingController.cs</FileName>
@@ -84,11 +87,53 @@
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="ZoneLighting.Zone" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="6.75" Y="2" Width="1.5" />
+  <Class Name="ZoneLighting.ZoneLightingManager" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.25" Y="0.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>iAAEkAQAjTAAQUAAAAIAAAACAIAAAAAAQAAEAAAAAAg=</HashCode>
+      <FileName>ZoneLightingManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Zones" />
+      <Property Name="ZoneProgramFactories" />
+      <Property Name="ZoneProgramParameterFactories" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.179" Collapsed="true" />
+  </Class>
+  <Class Name="ZoneLighting.ZoneProgram.LoopingZoneProgram" Collapsed="true">
+    <Position X="15" Y="3.25" Width="1.75" />
+    <InheritanceLine Type="ZoneLighting.ZoneProgram.ZoneProgram" FixedFromPoint="true">
+      <Path>
+        <Point X="15.875" Y="2.562" />
+        <Point X="15.875" Y="3.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIACAAAAAgAAIAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>ZoneProgram\LoopingZoneProgram.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ZoneLighting.ZoneProgram.ZoneProgram" Collapsed="true">
+    <Position X="15" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAACAgAAAAABAAAgAQAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>ZoneProgram\ZoneProgram.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ZoneLighting.ZoneNS.Zone" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="2" Width="1.5" />
+    <AssociationLine Name="ZoneProgram" Type="ZoneLighting.ZoneProgram.IZoneProgram" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="7.938" Y="2.562" />
+        <Point X="7.938" Y="2.937" />
+        <Point X="13.562" Y="2.937" />
+        <Point X="13.562" Y="2.562" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>MRAAEAAAACgiAQCEAAAAAgQCAAAAEAAAAAAAAAAAAAg=</HashCode>
-      <FileName>Zone.cs</FileName>
+      <FileName>ZoneNS\Zone.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="LightingController" />
@@ -99,67 +144,9 @@
     </ShowAsCollectionAssociation>
     <Lollipop Position="0.1" />
   </Class>
-  <Class Name="ZoneLighting.ZoneLightingManager" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="9.25" Y="0.5" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>iAAUEAAACTAAAUAAAAMAAAACAIQAAAAAQAAEAAAAAAg=</HashCode>
-      <FileName>ZoneLightingManager.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Property Name="Zones" />
-    </ShowAsCollectionAssociation>
-    <Lollipop Position="0.179" Collapsed="true" />
-  </Class>
-  <Class Name="ZoneLighting.ZoneProgram.LoopingZoneProgram" Collapsed="true">
-    <Position X="14.75" Y="3.5" Width="1.75" />
-    <InheritanceLine Type="ZoneLighting.ZoneProgram.ZoneProgram" FixedFromPoint="true">
-      <Path>
-        <Point X="15.625" Y="2.812" />
-        <Point X="15.625" Y="3.5" />
-      </Path>
-    </InheritanceLine>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAIACAAAAAgAAIAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
-      <FileName>ZoneProgram\LoopingZoneProgram.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ZoneLighting.ZoneProgram.ZoneProgram" Collapsed="true">
-    <Position X="14.75" Y="2.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAIAAAAACAgAAAAABAAAgAQAAAAAAAAIAAAAAAAAAA=</HashCode>
-      <FileName>ZoneProgram\ZoneProgram.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="ZoneLighting.ZoneProgram.Programs.RainbowInterpolating" Collapsed="true">
-    <Position X="16.25" Y="4.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ZoneProgram\Programs\RainbowInterpolating.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ZoneLighting.ZoneProgram.Programs.StaticColor" Collapsed="true">
-    <Position X="14" Y="4.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ZoneProgram\Programs\StaticColor.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ZoneLighting.ZoneProgram.Programs.StaticColorParameter" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="14" Y="5.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
-      <FileName>ZoneProgram\Programs\StaticColor.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="ZoneLighting.ZoneProgram.Programs.RainbowInterpolatingParameter" Collapsed="true">
-    <Position X="16.25" Y="5.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
-      <FileName>ZoneProgram\Programs\RainbowInterpolating.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
+  <Class Name="System.ComponentModel.Composition.ExportFactory&lt;T, TMetadata&gt;" Collapsed="true">
+    <Position X="13.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier />
   </Class>
   <Interface Name="ZoneLighting.Communication.ILightingController" Collapsed="true">
     <Position X="3.75" Y="3.25" Width="1.75" />
@@ -182,23 +169,15 @@
       <FileName>ILogicalRGBLight.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="ZoneLighting.ZoneProgram.IZoneProgram">
-    <Position X="13" Y="1.75" Width="1.5" />
-    <AssociationLine Name="Zone" Type="ZoneLighting.Zone">
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="-0.555" Y="1.283" />
-      </MemberNameLabel>
-    </AssociationLine>
+  <Interface Name="ZoneLighting.ZoneProgram.IZoneProgram" Collapsed="true">
+    <Position X="13.25" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAIAAAAAAAAAAAAABAAAAAQAAAAAAAAIAAAAAAAAAA=</HashCode>
       <FileName>ZoneProgram\IZoneProgram.cs</FileName>
     </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="Zone" />
-    </ShowAsAssociation>
   </Interface>
   <Interface Name="ZoneLighting.ZoneProgram.IZoneProgramParameter" Collapsed="true">
-    <Position X="17" Y="2.25" Width="2" />
+    <Position X="15" Y="0.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ZoneProgram\IZoneProgramParameter.cs</FileName>

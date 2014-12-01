@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgram;
 
@@ -111,12 +112,11 @@ namespace ZoneLighting.ZoneNS
 
 		public void Dispose()
 		{
+			Uninitialize();
 			Zones.Clear();
 			Zones = null;
 			Lights.Clear();
-			Lights = null;
-			LightingController.Dispose();
-			LightingController = null;
+			Lights = null;	
 		}
 
 		#endregion
@@ -157,6 +157,7 @@ namespace ZoneLighting.ZoneNS
 		public void StopProgram()
 		{
 			ZoneProgram.Stop();
+			Task.WaitAll(ZoneProgram)
 		}
 
 		/// <summary>
