@@ -36,7 +36,7 @@ namespace ZoneLighting.ZoneProgram
 		public Zone Zone { get; set; }
 		public abstract IEnumerable<Type> AllowedParameterTypes { get; }
 
-		private Trigger _stopTrigger;
+		protected Trigger _stopTrigger;
 		public Trigger StopTrigger
 		{
 			get { return _stopTrigger; }

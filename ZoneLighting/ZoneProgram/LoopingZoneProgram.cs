@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using ZoneLighting.TriggerDependencyNS;
 
 namespace ZoneLighting.ZoneProgram
 {
@@ -10,6 +11,7 @@ namespace ZoneLighting.ZoneProgram
 		protected LoopingZoneProgram()
 		{
 			LoopCTS = new CancellationTokenSource();
+			_stopTrigger = new Trigger();
 		}
 
 		protected void StartLoop(IZoneProgramParameter parameter)
@@ -20,6 +22,7 @@ namespace ZoneLighting.ZoneProgram
 				{
 					Loop(parameter);
 				}
+				StopTrigger.Fire(null, null);
 			}, LoopCTS.Token);
 		}
 
@@ -39,6 +42,7 @@ namespace ZoneLighting.ZoneProgram
 		public override void Stop()
 		{
 			LoopCTS.Cancel();
+			StopTrigger.WaitForFire();
 		}
 
 		#endregion

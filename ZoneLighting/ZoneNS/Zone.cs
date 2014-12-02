@@ -157,7 +157,6 @@ namespace ZoneLighting.ZoneNS
 		public void StopProgram()
 		{
 			ZoneProgram.Stop();
-			Task.WaitAll(ZoneProgram)
 		}
 
 		/// <summary>

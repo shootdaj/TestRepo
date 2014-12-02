@@ -148,7 +148,7 @@ namespace ZoneLighting.TriggerDependencyNS
 		{
 			Name = name;
 			if (trigger == null)
-				throw new Exception(Properties.ResErrorMsgs.DependencyTriggerCannotBeNull);
+				throw new Exception("Dependency trigger cannot be null");
 			Trigger = trigger;
 			Active = active;
 		}
