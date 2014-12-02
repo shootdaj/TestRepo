@@ -63,6 +63,7 @@
     <Compile Include="TriggerDependencyNS\Interfaces.cs" />
     <Compile Include="TriggerDependencyNS\Trigger.cs" />
     <Compile Include="ZoneNS\FadeCandyZone.cs" />
+    <Compile Include="ZoneNS\ZoneJsonConverter.cs" />
     <Compile Include="ZoneProgram\IZoneProgram.cs" />
     <Compile Include="LED.cs" />
     <Compile Include="LightingFrame.cs" />

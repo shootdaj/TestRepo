@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgram;
 
@@ -11,6 +12,7 @@ namespace ZoneLighting.ZoneNS
 	/// <summary>
 	/// Represents a zone (room or whatever) that contains the lights to be controlled.
 	/// </summary>
+	[JsonConverter(typeof(ZoneJsonConverter))]
     public class Zone : IDisposable
 	{
 		#region CORE

@@ -40,13 +40,13 @@ namespace ZoneLighting
 		///	This factory member will provide the various implementations of zone programs that are to be loaded from external modules.
 		/// </summary>
 		[ImportMany(typeof(IZoneProgram), AllowRecomposition = true)]
-		private IEnumerable<ExportFactory<IZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; }
+		private static IEnumerable<ExportFactory<IZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; }
 
 		/// <summary>
 		/// This factory member will provide the various implementations of zone program parameters that are to be loaded from external modules.
 		/// </summary>
 		[ImportMany(typeof (IZoneProgramParameter), AllowRecomposition = true)]
-		private IEnumerable<ExportFactory<IZoneProgramParameter, IZoneProgramParameterMetadata>> ZoneProgramParameterFactories
+		private static IEnumerable<ExportFactory<IZoneProgramParameter, IZoneProgramParameterMetadata>> ZoneProgramParameterFactories
 		{ get; set; }
 
 		/// <summary>
@@ -112,7 +112,8 @@ namespace ZoneLighting
 		}
 
 		/// <summary>
-		/// Composes this class with external zones and programs.
+		/// Composes this class with external zones and programs. 
+		/// This method populates the Zones and their respective ZoneProgram properties.
 		/// </summary>
 		private void ComposeWithExternalModules()
 		{
