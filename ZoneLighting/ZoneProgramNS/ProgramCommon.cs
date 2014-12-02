@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ZoneLighting.Communication;
 
-namespace ZoneLighting.ZoneProgram
+namespace ZoneLighting.ZoneProgramNS
 {
 	public class ProgramCommon
 	{

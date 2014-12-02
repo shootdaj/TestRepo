@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZoneLighting.ZoneProgram;
+using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLightingTests.Programs
 {
@@ -13,7 +10,7 @@ namespace ZoneLightingTests.Programs
 	/// </summary>
 	public class Rainbow : LoopingZoneProgram
 	{
-		public override void Loop(IZoneProgramParameter parameter)
+		public override void Loop(ZoneProgramParameter parameter)
 		{
 			var colors = new List<Color>();
 			colors.Add(Color.Violet);
@@ -50,7 +47,7 @@ namespace ZoneLightingTests.Programs
 		}
 	}
 
-	public class RainbowParameter : IZoneProgramParameter
+	public class RainbowParameter : ZoneProgramParameter
 	{
 		public RainbowParameter(int speed, int delayTime)
 		{

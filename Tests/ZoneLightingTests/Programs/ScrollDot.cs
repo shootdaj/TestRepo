@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using ZoneLighting;
-using ZoneLighting.ZoneProgram;
+using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLightingTests.Programs
 {
@@ -12,7 +12,7 @@ namespace ZoneLightingTests.Programs
 	/// </summary>
 	public class ScrollDot : LoopingZoneProgram
 	{
-		public override void Loop(IZoneProgramParameter parameter)
+		public override void Loop(ZoneProgramParameter parameter)
 		{
 			var scrollDotParameter = (ScrollDotParameter)parameter;
 
@@ -48,7 +48,7 @@ namespace ZoneLightingTests.Programs
 		}
 	}
 
-	public class ScrollDotParameter : IZoneProgramParameter
+	public class ScrollDotParameter : ZoneProgramParameter
 	{
 		public ScrollDotParameter(int delayTime, Color? color = null)
 		{

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZoneLighting.Communication;
-using ZoneLighting.ZoneProgram;
+﻿using ZoneLighting.Communication;
+using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.ZoneNS
 {
 	public class FadeCandyZone : Zone
 	{
-		public FadeCandyZone(string name = "", IZoneProgram program = null, IZoneProgramParameter programParameter = null) : base(FadeCandyController.Instance, name, program, programParameter)
+		public FadeCandyZone(string name = "", ZoneProgram program = null, ZoneProgramParameter programParameter = null) : base(FadeCandyController.Instance, name, program, programParameter)
 		{
 		}
 	}

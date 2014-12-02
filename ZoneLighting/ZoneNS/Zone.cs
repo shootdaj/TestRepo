@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ZoneLighting.Communication;
-using ZoneLighting.ZoneProgram;
+using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.ZoneNS
 {
@@ -48,13 +47,13 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// The program that is active on this zone.
 		/// </summary>
-		public IZoneProgram ZoneProgram { get; private set; }
+		public ZoneProgram ZoneProgram { get; private set; }
 
 		#endregion
 
 		#region C+I
 
-		public Zone(LightingController lightingController, string name = "", IZoneProgram program = null, IZoneProgramParameter programParameter = null)
+		public Zone(LightingController lightingController, string name = "", ZoneProgram program = null, ZoneProgramParameter programParameter = null)
 		{
 			Zones = new List<Zone>();
 			Lights = new List<ILogicalRGBLight>();
@@ -71,7 +70,7 @@ namespace ZoneLighting.ZoneNS
 			}
 		}
 
-		private void Initialize(IZoneProgramParameter parameter)
+		private void Initialize(ZoneProgramParameter parameter)
 		{
 			if (!Initialized)
 			{
@@ -86,7 +85,7 @@ namespace ZoneLighting.ZoneNS
 			}
 		}
 
-		public void Initialize(IZoneProgram zoneProgram, IZoneProgramParameter parameter)
+		public void Initialize(ZoneProgram zoneProgram, ZoneProgramParameter parameter)
 		{
 			if (!Initialized)
 			{
@@ -138,7 +137,7 @@ namespace ZoneLighting.ZoneNS
 		/// Sets this zone's program to the given program.
 		/// </summary>
 		/// <param name="program"></param>
-		public void SetProgram(IZoneProgram program)
+		public void SetProgram(ZoneProgram program)
 		{
 			ZoneProgram = program;
 			ZoneProgram.Zone = this;
@@ -148,7 +147,7 @@ namespace ZoneLighting.ZoneNS
 		/// Starts this zone's program with the given parameter
 		/// </summary>
 		/// <param name="parameter"></param>
-		public void StartProgram(IZoneProgramParameter parameter)
+		public void StartProgram(ZoneProgramParameter parameter)
 		{
 			ZoneProgram.StartBase(parameter);
 		}

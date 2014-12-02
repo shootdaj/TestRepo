@@ -1,4 +1,4 @@
-﻿namespace ZoneLighting.ZoneProgram
+﻿namespace ZoneLighting.ZoneProgramNS
 {
 	public interface IZoneProgramParameterMetadata
 	{

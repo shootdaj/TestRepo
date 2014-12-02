@@ -4,19 +4,19 @@ using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
 using ZoneLighting;
-using ZoneLighting.ZoneProgram;
+using ZoneLighting.ZoneProgramNS;
 
 namespace ExternalPrograms
 {
 	/// <summary>
 	/// Scrolls a dot across the entire length of Lights
 	/// </summary>
-	[Export(typeof(IZoneProgram))]
+	[Export(typeof(ZoneProgram))]
 	[ExportMetadata("Name", "ScrollDot")]
 	[ExportMetadata("ParameterName", "ScrollDotParameter")]
 	public class ScrollDot : LoopingZoneProgram
 	{
-		public override void Loop(IZoneProgramParameter parameter)
+		public override void Loop(ZoneProgramParameter parameter)
 		{
 			var scrollDotParameter = (ScrollDotParameter)parameter;
 
@@ -52,9 +52,9 @@ namespace ExternalPrograms
 		}
 	}
 
-	[Export(typeof(IZoneProgramParameter))]
+	[Export(typeof(ZoneProgramParameter))]
 	[ExportMetadata("Name", "ScrollDotParameter")]
-	public class ScrollDotParameter : IZoneProgramParameter
+	public class ScrollDotParameter : ZoneProgramParameter
 	{
 		public ScrollDotParameter(int delayTime, Color? color = null)
 		{

@@ -2,22 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZoneLighting.ZoneProgram;
+using ZoneLighting.ZoneProgramNS;
 
 namespace ExternalPrograms
 {
 	/// <summary>
 	/// Outputs a looping rainbow to the zone using the LightingController's built-in interpolation (currently only works with FadeCandy).
 	/// </summary>
-	[Export(typeof(IZoneProgram))]
+	[Export(typeof(ZoneProgram))]
 	[ExportMetadata("Name", "Rainbow")]
 	[ExportMetadata("ParameterName", "RainbowParameter")]
 	public class Rainbow : LoopingZoneProgram
 	{
-		public override void Loop(IZoneProgramParameter parameter)
+		public override void Loop(ZoneProgramParameter parameter)
 		{
 			var colors = new List<Color>();
 			colors.Add(Color.Violet);
@@ -54,9 +51,9 @@ namespace ExternalPrograms
 		}
 	}
 
-	[Export(typeof(IZoneProgramParameter))]
+	[Export(typeof(ZoneProgramParameter))]
 	[ExportMetadata("Name", "RainbowParameter")]
-	public class RainbowParameter : IZoneProgramParameter
+	public class RainbowParameter : ZoneProgramParameter
 	{
 		public RainbowParameter(int speed, int delayTime)
 		{

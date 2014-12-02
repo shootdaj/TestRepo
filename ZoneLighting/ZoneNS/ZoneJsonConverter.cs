@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace ZoneLighting.ZoneNS
@@ -14,7 +10,7 @@ namespace ZoneLighting.ZoneNS
 			var zone = (Zone)value;
 			writer.WriteStartObject();
 			writer.WritePropertyName("$" + zone.Name);
-			//serializer.Serialize(writer, );
+			serializer.Serialize(writer, zone.ZoneProgram); //TODO: fill in how to serialize ZoneProgram (as in Notepad++ zoneconfigurationexample.txt)
 			writer.WriteEndObject();
 		}
 

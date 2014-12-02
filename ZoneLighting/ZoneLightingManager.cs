@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Configuration;
-using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
-using ZoneLighting.ZoneProgram;
+using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting
 {
@@ -39,14 +38,14 @@ namespace ZoneLighting
 		/// <summary>
 		///	This factory member will provide the various implementations of zone programs that are to be loaded from external modules.
 		/// </summary>
-		[ImportMany(typeof(IZoneProgram), AllowRecomposition = true)]
-		private static IEnumerable<ExportFactory<IZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; }
+		[ImportMany(typeof(ZoneProgram), AllowRecomposition = true)]
+		private IEnumerable<ExportFactory<ZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; }
 
 		/// <summary>
 		/// This factory member will provide the various implementations of zone program parameters that are to be loaded from external modules.
 		/// </summary>
-		[ImportMany(typeof (IZoneProgramParameter), AllowRecomposition = true)]
-		private static IEnumerable<ExportFactory<IZoneProgramParameter, IZoneProgramParameterMetadata>> ZoneProgramParameterFactories
+		[ImportMany(typeof(ZoneProgramParameter), AllowRecomposition = true)]
+		private IEnumerable<ExportFactory<ZoneProgramParameter, IZoneProgramParameterMetadata>> ZoneProgramParameterFactories
 		{ get; set; }
 
 		/// <summary>
@@ -203,7 +202,7 @@ namespace ZoneLighting
 		/// <summary>
 		/// Initializes a zone with the given program name and parameter.
 		/// </summary>
-		public void InitializeZone(Zone zone, string programName, IZoneProgramParameter parameter)
+		public void InitializeZone(Zone zone, string programName, ZoneProgramParameter parameter)
 		{
 			zone.Initialize(ZoneProgramFactories.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value, parameter);
 		}
@@ -228,7 +227,7 @@ namespace ZoneLighting
 		/// <summary>
 		/// Creates a program parameter using Reflection, given the name of the program and a dictionary of property names to property values
 		/// </summary>
-		public IZoneProgramParameter CreateProgramParameter(string programName, Dictionary<string, object> parameterDictionary)
+		public ZoneProgramParameter CreateProgramParameter(string programName, Dictionary<string, object> parameterDictionary)
 		{
 			var zoneProgramFactory = ZoneProgramFactories.ToDictionary(x => x.Metadata.Name)[programName];//.First(x => x.Metadata.Name == programName);
 			var programParameter =

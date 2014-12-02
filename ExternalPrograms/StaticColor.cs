@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
-using ZoneLighting.ZoneProgram;
+using ZoneLighting.ZoneProgramNS;
 
 namespace ExternalPrograms
 {
 	/// <summary>
 	/// Outputs a static color to the zone.
 	/// </summary>
-	[Export(typeof(IZoneProgram))]
+	[Export(typeof(ZoneProgram))]
 	[ExportMetadata("Name", "StaticColor")]
 	[ExportMetadata("ParameterName", "StaticColorParameter")]
 	public class StaticColor : LoopingZoneProgram
 	{
-		public override void Loop(IZoneProgramParameter parameter)
+		public override void Loop(ZoneProgramParameter parameter)
 		{
 			Lights.SetColor(((StaticColorParameter)parameter).Color);
 			LightingController.SendLights(Lights);				//send frame
@@ -33,9 +33,9 @@ namespace ExternalPrograms
 		}
 	}
 
-	[Export(typeof(IZoneProgramParameter))]
+	[Export(typeof(ZoneProgramParameter))]
 	[ExportMetadata("Name", "StaticColorParameter")]
-	public class StaticColorParameter : IZoneProgramParameter
+	public class StaticColorParameter : ZoneProgramParameter
 	{
 		public StaticColorParameter(Color color)
 		{

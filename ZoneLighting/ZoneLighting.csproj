@@ -64,21 +64,20 @@
     <Compile Include="TriggerDependencyNS\Trigger.cs" />
     <Compile Include="ZoneNS\FadeCandyZone.cs" />
     <Compile Include="ZoneNS\ZoneJsonConverter.cs" />
-    <Compile Include="ZoneProgram\IZoneProgram.cs" />
     <Compile Include="LED.cs" />
     <Compile Include="LightingFrame.cs" />
     <Compile Include="LightingPattern.cs" />
-    <Compile Include="ZoneProgram\IZoneProgramMetadata.cs" />
-    <Compile Include="ZoneProgram\IZoneProgramParameter.cs" />
-    <Compile Include="ZoneProgram\IZoneProgramParameterMetadata.cs" />
-    <Compile Include="ZoneProgram\LoopingZoneProgram.cs" />
+    <Compile Include="ZoneProgramNS\IZoneProgramMetadata.cs" />
+    <Compile Include="ZoneProgramNS\ZoneProgramParameter.cs" />
+    <Compile Include="ZoneProgramNS\IZoneProgramParameterMetadata.cs" />
+    <Compile Include="ZoneProgramNS\LoopingZoneProgram.cs" />
     <Compile Include="ZoneNS\Zone.cs" />
     <Compile Include="ILogicalRGBLight.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ZoneLightingManager.cs" />
-    <Compile Include="ZoneProgram\ProgramCommon.cs" />
-    <Compile Include="ZoneProgram\ZoneProgram.cs" />
-    <Compile Include="ZoneProgram\ZoneProgramEnum.cs" />
+    <Compile Include="ZoneProgramNS\ProgramCommon.cs" />
+    <Compile Include="ZoneProgramNS\ZoneProgram.cs" />
+    <Compile Include="ZoneProgramNS\ZoneProgramEnum.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Doc\ZoneLightingClasses.cd" />
@@ -86,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Doc\ProjectSummary.txt" />
+    <Content Include="Doc\zoneconfigurationexample.txt" />
     <Content Include="Doc\ZoneLightingClasses.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

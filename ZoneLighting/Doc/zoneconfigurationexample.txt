@@ -1,0 +1,11 @@
+{
+	"zone": [
+		"Name": "LeftWing",
+		"ZoneProgram": [
+			"Name": "Rainbow"
+			"ProgramParameter" : [
+				
+			]
+		]
+	]	
+}
