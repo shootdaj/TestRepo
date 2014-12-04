@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using ZoneLighting;
 
 namespace Console
@@ -8,6 +9,8 @@ namespace Console
 		static void Main(string[] args)
 		{
 			ZoneLightingManager.Instance.Initialize();
+			System.Console.WriteLine(ZoneLightingManager.Instance.GetZoneSummary());
+
 			Thread.Sleep(Timeout.Infinite);
 
 			//ZoneLightingManager.Instance.Initialize();

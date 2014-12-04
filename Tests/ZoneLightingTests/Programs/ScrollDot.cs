@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
 using ZoneLighting;
@@ -10,8 +11,16 @@ namespace ZoneLightingTests.Programs
 	/// <summary>
 	/// Scrolls a dot across the entire length of Lights
 	/// </summary>
+	[Export(typeof(ZoneProgram))]
+	[ExportMetadata("Name", "ScrollDot")]
+	[ExportMetadata("ParameterName", "ScrollDotParameter")]
 	public class ScrollDot : LoopingZoneProgram
 	{
+		public override void Setup(ZoneProgramParameter parameter)
+		{
+			
+		}
+
 		public override void Loop(ZoneProgramParameter parameter)
 		{
 			var scrollDotParameter = (ScrollDotParameter)parameter;

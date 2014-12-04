@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Configuration;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json.Serialization;
 using ZoneLighting.Communication;
+using ZoneLighting.ConfigNS;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
+using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLighting
 {
@@ -79,19 +83,79 @@ namespace ZoneLighting
 			if (!Initialized)
 			{
 				InitLightingControllers();
-				//LoadSampleZoneData();	//TODO: Replace
 				ComposeWithExternalModules();
+				InitZoneScaffolder();
 				InitializeAllZones();
 				Initialized = true;
 			}
 		}
 		
 		/// <summary>
-		/// Add code here to initialize any other lighting controllers
+		/// Add code here to initialize any other lighting controllers.
 		/// </summary>
 		private void InitLightingControllers()
 		{
 			FadeCandyController.Instance.Initialize();
+		}
+
+		/// <summary>
+		/// Add code here to uninitialize any other lighting controllers.
+		/// </summary>
+		private void UninitLightingControllers()
+		{
+			FadeCandyController.Instance.Uninitialize();
+		}
+
+		/// <summary>
+		/// Initializes the ZoneScaffolder singleton instance by feeding the factories into it.
+		/// </summary>
+		private void InitZoneScaffolder()
+		{
+			ZoneScaffolder.Initialize(ZoneProgramFactories, ZoneProgramParameterFactories);
+		}
+
+		/// <summary>
+		/// Uninitializes the ZoneScaffolder singleton instance.
+		/// </summary>
+		private void UninitZoneScaffolder()
+		{
+			ZoneScaffolder.Uninitialize();
+		}
+
+		#region MEF
+		
+		/// <summary>
+		/// Composes this class with external zones and programs. 
+		/// This method populates the Zones and their respective ZoneProgram properties.
+		/// </summary>
+		private void ComposeWithExternalModules(bool programModules = true, bool zoneModules = true)
+		{
+			//AppDomain.CurrentDomain.SetupInformation.ShadowCopyFiles = "true";
+			if (!programModules && !zoneModules)
+				return;
+
+			if (zoneModules)
+				CatalogExternalZones();
+			if (programModules)
+				CatalogExternalPrograms();
+
+			AggregateCatalog aggregateCatalog;
+			
+			if (programModules && zoneModules)
+			{
+				aggregateCatalog = new AggregateCatalog(ExternalZoneCatalog, ExternalProgramCatalog);
+			}
+			else if (programModules)
+			{
+				aggregateCatalog = new AggregateCatalog(ExternalProgramCatalog);
+			}
+			else
+			{
+				aggregateCatalog = new AggregateCatalog(ExternalZoneCatalog);	
+			}
+
+			ExternalModuleContainer = new CompositionContainer(aggregateCatalog);
+			ExternalModuleContainer.ComposeParts(this);
 		}
 
 		/// <summary>
@@ -110,20 +174,6 @@ namespace ZoneLighting
 			ExternalProgramCatalog = new DirectoryCatalog(ConfigurationManager.AppSettings["ProgramDLLFolder"]);
 		}
 
-		/// <summary>
-		/// Composes this class with external zones and programs. 
-		/// This method populates the Zones and their respective ZoneProgram properties.
-		/// </summary>
-		private void ComposeWithExternalModules()
-		{
-			//AppDomain.CurrentDomain.SetupInformation.ShadowCopyFiles = "true";
-			CatalogExternalZones();
-			CatalogExternalPrograms();
-			AggregateCatalog aggregateCatalog = new AggregateCatalog(ExternalZoneCatalog, ExternalProgramCatalog);
-			ExternalModuleContainer = new CompositionContainer(aggregateCatalog);
-			ExternalModuleContainer.ComposeParts(this);
-		}
-
 		//TODO: This is not working because MEF has to be "hacked" to have the 
 		//TODO: assemblies load in a different appdomain with ShadowCopyFiles set to true as in the following example:
 		//TODO: http://www.codeproject.com/Articles/633140/MEF-and-AppDomain-Remove-Assemblies-On-The-Fly
@@ -133,29 +183,28 @@ namespace ZoneLighting
 		//	ExternalProgramContainer.ComposeParts(this);
 		//}
 
+		#endregion
+
 		/// <summary>
 		/// Loads programs in all zones and starts them. This should be converted to be read from a config file instead of hard-coded here.
 		/// </summary>
 		private void InitializeAllZones()
 		{
-			//Zones[0].Initialize(ZoneProgramFactories.First(x => x.Metadata.Name == "Rainbow").CreateExport().Value,
-			//	ZoneProgramParameterFactories.First(x => x.Metadata.Name == "RainbowParameter").CreateExport().Value);
-
-			//var rainbowParameterDictionary = new Dictionary<string, object>();
-			//rainbowParameterDictionary.Add("Speed", 100);
-			//rainbowParameterDictionary.Add("DelayTime", 0);
-
-			//InitializeZone(Zones[0], "Rainbow", rainbowParameterDictionary);
-
-			var scrollDotDictionary = new Dictionary<string, object>();
-			scrollDotDictionary.Add("DelayTime", 30);
+			//var scrollDotDictionary = new Dictionary<string, object>();
+			//scrollDotDictionary.Add("DelayTime", 30);
 			//scrollDotDictionary.Add("Color", (Color?)Color.Chartreuse);
 
-			InitializeZone(Zones[0], "ScrollDot", scrollDotDictionary);
+			//ZoneScaffolder.InitializeZone(Zones[0], "ScrollDot", scrollDotDictionary);
 
+			//var rainbowDictionary = new Dictionary<string, object>();
+			//rainbowDictionary.Add("DelayTime", 1);
+			//rainbowDictionary.Add("Speed", 1);
 
-			//Zones[0].Initialize(new Rainbow(), new RainbowParameter(1, 1));
-			//Zones[1].Initialize(new ScrollDot(), new ScrollDotParameter(50, Color.BlueViolet));
+			//ZoneScaffolder.InitializeZone(Zones[1], "Rainbow", rainbowDictionary);
+
+			//Config.SaveZones(Zones, ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"]);
+
+			ZoneScaffolder.InitializeFromZoneConfiguration(Zones.ToList());
 		}
 
 		public void Uninitialize()
@@ -163,8 +212,12 @@ namespace ZoneLighting
 			if (Initialized)
 			{
 				UninitializeAllZones();
-				Zones.Clear();
+				UninitZoneScaffolder();
+				UninitLightingControllers();
 				Initialized = false;
+				ExternalProgramCatalog = null;
+				ExternalZoneCatalog = null;
+				ExternalModuleContainer = null;
 			}
 		}
 
@@ -179,7 +232,47 @@ namespace ZoneLighting
 		public void Dispose()
 		{
 			Uninitialize();
+			Zones.Clear();
 			Zones = null;
+			ZoneProgramFactories = null;
+			ZoneProgramParameterFactories = null;
+		}
+
+		#endregion
+
+		#region API
+
+		public string GetZoneSummary()
+		{
+			var newline = Environment.NewLine;
+			string summary = string.Format("Currently {0} zones are loaded." + newline, Zones.Count);
+			Zones.ToList().ForEach(zone =>
+			{
+				summary += "Zone: " + zone.Name + newline;
+				summary += "Program: ";
+
+				if (zone.ZoneProgram != null)
+				{
+					summary += zone.ZoneProgram.Name + newline;
+
+					if (zone.ZoneProgram is ParameterizedZoneProgram)
+					{
+						var parameterDictionary = ((ParameterizedZoneProgram)zone.ZoneProgram).ProgramParameter.ToKeyValueDictionary();
+
+						parameterDictionary.Keys.ToList().ForEach(key =>
+						{
+							summary += string.Format("    {0}: {1}", key, parameterDictionary[key].ToString()) + newline;
+						});
+					}
+				}
+				else
+				{
+					summary += "None" + newline;
+				}
+
+			});
+
+			return summary;
 		}
 
 		#endregion
@@ -196,80 +289,5 @@ namespace ZoneLighting
 		//}
 
 		#endregion
-
-		#region API
-
-		/// <summary>
-		/// Initializes a zone with the given program name and parameter.
-		/// </summary>
-		public void InitializeZone(Zone zone, string programName, ZoneProgramParameter parameter)
-		{
-			zone.Initialize(ZoneProgramFactories.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value, parameter);
-		}
-
-		/// <summary>
-		/// Initializes a zone with the given program name and parameter name-value dictionary.
-		/// </summary>
-		public void InitializeZone(Zone zone, string programName, Dictionary<string, object> parameterDictionary)
-		{
-			var parameter = CreateProgramParameter(programName, parameterDictionary);
-			zone.Initialize(ZoneProgramFactories.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value, parameter);
-		}
-
-		/// <summary>
-		/// Gets the names of all available programs.
-		/// </summary>
-		public IEnumerable<string> AvailableProgramNames
-		{
-			get { return ZoneProgramFactories.Select(x => x.Metadata.Name); }
-		}
-
-		/// <summary>
-		/// Creates a program parameter using Reflection, given the name of the program and a dictionary of property names to property values
-		/// </summary>
-		public ZoneProgramParameter CreateProgramParameter(string programName, Dictionary<string, object> parameterDictionary)
-		{
-			var zoneProgramFactory = ZoneProgramFactories.ToDictionary(x => x.Metadata.Name)[programName];//.First(x => x.Metadata.Name == programName);
-			var programParameter =
-				ZoneProgramParameterFactories.ToDictionary(x => x.Metadata.Name)[zoneProgramFactory.Metadata.ParameterName]
-					.CreateExport();
-			
-			parameterDictionary.Keys.ToList().ForEach(propertyName =>
-			{
-				var property = programParameter.Value.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
-				if (property != null)
-				{
-					property.SetValue(programParameter.Value, parameterDictionary[propertyName]);
-				}
-			});
-
-			return programParameter.Value;
-		}
-
-		#endregion
-
-		#region Sample Data
-
-		//public void LoadSampleZoneData()
-		//{
-		//	var leftWingZone = AddFadeCandyLEDStripZone("LeftWing", 6, 1);
-		//	var rightWingZone = AddFadeCandyLEDStripZone("RightWing", 12, 2);
-		//}
-
-		//private Zone AddFadeCandyLEDStripZone(string name, int numLights, byte fcChannel)
-		//{
-		//	var zone = new Zone(FadeCandyController.Instance, name);
-		//	Zones.Add(zone);
-		//	for (int i = 0; i < numLights; i++)
-		//	{
-		//		zone.AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i));
-		//	}
-
-		//	return zone;
-		//}
-
-		#endregion
-
 	}
-
 }

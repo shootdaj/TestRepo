@@ -1,0 +1,36 @@
+{
+  "$type": "System.Collections.Generic.List`1[[ZoneLighting.ZoneNS.Zone, ZoneLighting]], mscorlib",
+  "$values": [
+    {
+      "$type": "ExternalZones.LeftWing, ExternalZones",
+      "Name": "LeftWing",
+      "ZoneProgram": {
+        "$type": "ExternalPrograms.ScrollDot, ExternalPrograms",
+        "Name": "ScrollDot",
+        "ProgramParameter": {
+          "$type": "ExternalPrograms.ScrollDotParameter, ExternalPrograms",
+          "DelayTime": 30,
+          "Color": "Chartreuse"
+        }
+      }
+    },
+    {
+      "$type": "ExternalZones.RightWing, ExternalZones",
+      "Name": "RightWing",
+      "ZoneProgram": {
+        "$type": "ExternalPrograms.Rainbow, ExternalPrograms",
+        "Name": "Rainbow",
+        "ProgramParameter": {
+          "$type": "ExternalPrograms.RainbowParameter, ExternalPrograms",
+          "Speed": 1,
+          "DelayTime": 1
+        }
+      }
+    },
+    {
+      "$type": "NeopixelZone.Neopixel, NeopixelZone",
+      "Name": "Neopixel",
+      "ZoneProgram": null
+    }
+  ]
+}

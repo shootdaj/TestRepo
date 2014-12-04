@@ -39,6 +39,19 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,17 +70,24 @@
     <Compile Include="Communication\OPCPixelFrame.cs" />
     <Compile Include="Communication\PhysicalRGBLight.cs" />
     <Compile Include="Communication\WebSocketOPCPacket.cs" />
-    <Compile Include="Config\Config.cs" />
+    <Compile Include="ConfigNS\Config.cs" />
     <Compile Include="IInitializable.cs" />
     <Compile Include="TriggerDependencyNS\Dependency.cs" />
     <Compile Include="TriggerDependencyNS\Interfaces.cs" />
     <Compile Include="TriggerDependencyNS\Trigger.cs" />
     <Compile Include="ZoneNS\FadeCandyZone.cs" />
-    <Compile Include="ZoneNS\ZoneJsonConverter.cs" />
+    <Compile Include="ZoneNS\ZonesJsonConverter.cs" />
     <Compile Include="LED.cs" />
     <Compile Include="LightingFrame.cs" />
     <Compile Include="LightingPattern.cs" />
+    <Compile Include="ZoneProgramNS\Factories\ZoneScaffolder.cs" />
+    <Compile Include="ZoneProgramNS\IParametrizedZoneProgram.cs" />
     <Compile Include="ZoneProgramNS\IZoneProgramMetadata.cs" />
+    <Compile Include="ZoneProgramNS\ParametrizedZoneProgram.cs" />
+    <Compile Include="ZoneProgramNS\ReactiveZoneProgram.cs" />
+    <Compile Include="ZoneProgramNS\ZoneProgramInput.cs" />
+    <Compile Include="ZoneProgramNS\ZoneProgramInputCollection.cs" />
+    <Compile Include="ZoneProgramNS\ZoneProgramJsonConverter.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgramParameter.cs" />
     <Compile Include="ZoneProgramNS\IZoneProgramParameterMetadata.cs" />
     <Compile Include="ZoneProgramNS\LoopingZoneProgram.cs" />
@@ -78,6 +98,7 @@
     <Compile Include="ZoneProgramNS\ProgramCommon.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgram.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgramEnum.cs" />
+    <Compile Include="ZoneProgramNS\ZoneProgramTriggerCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Doc\ZoneLightingClasses.cd" />

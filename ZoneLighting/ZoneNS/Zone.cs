@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Net.Configuration;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgramNS;
@@ -11,7 +13,8 @@ namespace ZoneLighting.ZoneNS
 	/// <summary>
 	/// Represents a zone (room or whatever) that contains the lights to be controlled.
 	/// </summary>
-	[JsonConverter(typeof(ZoneJsonConverter))]
+	//[JsonConverter(typeof(ZoneJsonConverter))]
+	[DataContract]
     public class Zone : IDisposable
 	{
 		#region CORE
@@ -19,6 +22,7 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// Name of the zone.
 		/// </summary>
+		[DataMember]
 		public string Name;
 		
 		/// <summary>
@@ -47,6 +51,7 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// The program that is active on this zone.
 		/// </summary>
+		[DataMember]
 		public ZoneProgram ZoneProgram { get; private set; }
 
 		#endregion
@@ -96,11 +101,11 @@ namespace ZoneLighting.ZoneNS
 
 		public bool Initialized { get; private set; }
 
-		public void Uninitialize()
+		public void Uninitialize(bool force = false)
 		{
 			if (Initialized)
 			{
-				StopProgram();
+				StopProgram(force);
 
 				foreach (var zone in Zones)
 				{
@@ -111,13 +116,21 @@ namespace ZoneLighting.ZoneNS
 			}
 		}
 
-		public void Dispose()
+		public void Dispose(bool force)
 		{
-			Uninitialize();
+			Uninitialize(force);
 			Zones.Clear();
 			Zones = null;
 			Lights.Clear();
-			Lights = null;	
+			Lights = null;
+			ZoneProgram = null;
+			LightingController = null;
+			Name = null;
+		}
+
+		public void Dispose()
+		{
+			Dispose(false);
 		}
 
 		#endregion
@@ -149,15 +162,18 @@ namespace ZoneLighting.ZoneNS
 		/// <param name="parameter"></param>
 		public void StartProgram(ZoneProgramParameter parameter)
 		{
-			ZoneProgram.StartBase(parameter);
+			if (ZoneProgram is ParameterizedZoneProgram)
+				((ParameterizedZoneProgram)ZoneProgram).StartBase(parameter);
+			else
+				ZoneProgram.StartBase();
 		}
 
 		/// <summary>
 		/// Stops this zone's program.
 		/// </summary>
-		public void StopProgram()
+		public void StopProgram(bool force = false)
 		{
-			ZoneProgram.Stop();
+			ZoneProgram.Stop(force);
 		}
 
 		/// <summary>

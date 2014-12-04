@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using ZoneLighting.ZoneProgramNS;
 
@@ -8,8 +9,16 @@ namespace ZoneLightingTests.Programs
 	/// <summary>
 	/// Outputs a looping rainbow to the zone using the LightingController's built-in interpolation (currently only works with FadeCandy).
 	/// </summary>
+	[Export(typeof(ZoneProgram))]
+	[ExportMetadata("Name", "Rainbow")]
+	[ExportMetadata("ParameterName", "RainbowParameter")]
 	public class Rainbow : LoopingZoneProgram
 	{
+		public override void Setup(ZoneProgramParameter parameter)
+		{
+			
+		}
+
 		public override void Loop(ZoneProgramParameter parameter)
 		{
 			var colors = new List<Color>();

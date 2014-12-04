@@ -16,6 +16,11 @@ namespace ExternalPrograms
 	[ExportMetadata("ParameterName", "ScrollDotParameter")]
 	public class ScrollDot : LoopingZoneProgram
 	{
+		public override void Setup(ZoneProgramParameter parameter)
+		{
+			
+		}
+
 		public override void Loop(ZoneProgramParameter parameter)
 		{
 			var scrollDotParameter = (ScrollDotParameter)parameter;

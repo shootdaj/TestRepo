@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Runtime.Serialization;
 using ZoneLighting.Communication;
 using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneNS;
@@ -13,16 +14,25 @@ namespace ZoneLighting.ZoneProgramNS
 	/// or a periodic notification, or anything else that can be represented by lighting 
 	/// the zones in a certain way.
 	/// </summary>
-	public abstract class ZoneProgram// : IZoneProgram
+	[DataContract]
+	public abstract class ZoneProgram
 	{
 		#region CORE
 
+		/// <summary>
+		/// Name of the zone program.
+		/// </summary>
+		[DataMember]
 		public string Name { get; protected set; }
-		
-		public ZoneProgramParameter ProgramParameter { get; set; }
 
+		/// <summary>
+		/// Zone on which the program is being run.
+		/// </summary>
 		public Zone Zone { get; set; }
 		
+		/// <summary>
+		/// Trigger that fires when the program has fully stopped - only applies for non-force stop calls.
+		/// </summary>
 		public Trigger StopTrigger { get; private set; }
 		
 		/// <summary>
@@ -33,10 +43,15 @@ namespace ZoneLighting.ZoneProgramNS
 			get { return Zone.LightingController; }
 		}
 
+		/// <summary>
+		/// Easy accessor for Lights in Zone.
+		/// </summary>
 		public IList<ILogicalRGBLight> Lights
 		{
 			get { return Zone.Lights;  }
 		}
+
+		private ZoneProgramInputCollection Inputs { get; set; }
 
 		#endregion CORE
 
@@ -60,33 +75,49 @@ namespace ZoneLighting.ZoneProgramNS
 		private void Construct()
 		{
 			StopTrigger = new Trigger();
+			Inputs = new ZoneProgramInputCollection();
 		}
 
 		#endregion
 
 		#region Base Methods
 
-		public void StartBase(ZoneProgramParameter parameter)
+		public virtual void StartBase()
 		{
-			if (AllowedParameterTypes.Contains(parameter.GetType()))
-			{
-				ProgramParameter = parameter;
-				Start(parameter);
-			}
-			else
-			{
-				throw new Exception("Input parameter type is not an allowed parameter type for this zone program.");
-			}
+			Start();
 		}
-
-
+		
 		#endregion
 
 		#region Overridables
 
-		protected abstract void Start(ZoneProgramParameter parameter);
-		public abstract void Stop();
-		public abstract IEnumerable<Type> AllowedParameterTypes { get; }
+		protected abstract void Start();
+		public abstract void Stop(bool force);
+
+		#endregion
+
+		#region API
+
+		protected ZoneProgramInput<object> AddInput(string name = "", Action<object> action = null)
+		{
+			var input = new ZoneProgramInput<object>(name);
+			Inputs.Add(input);
+			if (action != null)
+			{
+				input.Subscribe(action);
+			}
+			return input;
+		}
+
+		protected void RemoveInput(string name)
+		{
+			GetInput(name).Unsubscribe();
+		}
+
+		protected ZoneProgramInput<object> GetInput(string name)
+		{
+			return Inputs[name];
+		}
 
 		#endregion
 	}

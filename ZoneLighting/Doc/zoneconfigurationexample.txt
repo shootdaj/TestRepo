@@ -1,11 +1,23 @@
-{
-	"zone": [
-		"Name": "LeftWing",
-		"ZoneProgram": [
-			"Name": "Rainbow"
-			"ProgramParameter" : [
-				
-			]
-		]
+{Zones:
+	[
+		{
+			"Name": "LeftWing",
+			"ZoneProgram": {
+				"Name": "Rainbow"
+				"ProgramParameter": {
+					"Speed": "1",
+					"DelayTime": "1"
+				}
+			}
+		},
+		{
+			"Name": "RightWing",
+			"ZoneProgram": {
+				"Name": "ScrollDot"
+				"ScrollDotParameter": {
+					"DelayTime": "1"
+				}
+			}
+		}
 	]	
 }

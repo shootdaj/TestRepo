@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using Xunit;
 using ZoneLighting;
 using ZoneLighting.Communication;
+using ZoneLighting.ConfigNS;
 using ZoneLighting.ZoneNS;
 using ZoneLightingTests.Programs;
 
@@ -36,22 +38,24 @@ namespace ZoneLightingTests
 			zones[1].Initialize(new ScrollDot(), new ScrollDotParameter() { DelayTime = 1, Color = Color.BlueViolet });
 			
 			//act
-			ZoneLighting.Config.Config.SaveZone(zones, filename);
+			Config.SaveZones(zones, filename);
 			
 			//assert
-			zones.ForEach(x => x.Dispose());
-
 			var deserializedZones = JsonConvert.DeserializeObject<IEnumerable<Zone>>(File.ReadAllText(filename), new JsonSerializerSettings
 			{
-				PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.All,
+				//PreserveReferencesHandling = PreserveReferencesHandling.All,
 				TypeNameHandling = TypeNameHandling.All,
-				Formatting = Formatting.Indented
-			});
+				Formatting = Formatting.Indented,
+				//Converters = new List<JsonConverter>() { new ZonesJsonConverter() }
+			}).ToList();
 
-			
-
-			//var fileContents = File.ReadAllText(filename);
-			Assert.Equal(zones, deserializedZones);
+			Assert.Equal(zones.Count, deserializedZones.Count());
+			for (var i = 0; i < zones.Count; i++)
+			{
+				Assert.Equal(zones[i].Name, deserializedZones[i].Name);
+				Assert.Equal(zones[i].ZoneProgram.Name, deserializedZones[i].ZoneProgram.Name);
+				Assert.Equal(zones[i].ZoneProgram.ProgramParameter, deserializedZones[i].ZoneProgram.ProgramParameter);
+			}
 	    }
     }
 }

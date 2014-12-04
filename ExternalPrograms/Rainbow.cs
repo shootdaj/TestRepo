@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
+using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ExternalPrograms
@@ -14,6 +15,11 @@ namespace ExternalPrograms
 	[ExportMetadata("ParameterName", "RainbowParameter")]
 	public class Rainbow : LoopingZoneProgram
 	{
+		public override void Setup(ZoneProgramParameter parameter)
+		{
+			
+		}
+
 		public override void Loop(ZoneProgramParameter parameter)
 		{
 			var colors = new List<Color>();
@@ -44,9 +50,9 @@ namespace ExternalPrograms
 			get
 			{
 				return new List<Type>()
-			{
-				typeof (RainbowParameter),
-			};
+				{
+					typeof (RainbowParameter),
+				};
 			}
 		}
 	}
@@ -68,5 +74,15 @@ namespace ExternalPrograms
 
 		public int Speed { get; set; }
 		public int DelayTime { get; set; }
+	}
+
+	public class RainbowTriggerCollection : ZoneProgramTriggerCollection
+	{
+		public RainbowTriggerCollection()
+		{
+			RainbowColorsTrigger = new Trigger("RainbowColorsTrigger");
+		}
+
+		public Trigger RainbowColorsTrigger { get; set; }
 	}
 }

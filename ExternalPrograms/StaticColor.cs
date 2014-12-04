@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Drawing;
+using System.Linq;
+using System.Reactive.Linq;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ExternalPrograms
@@ -11,36 +14,20 @@ namespace ExternalPrograms
 	/// </summary>
 	[Export(typeof(ZoneProgram))]
 	[ExportMetadata("Name", "StaticColor")]
-	[ExportMetadata("ParameterName", "StaticColorParameter")]
-	public class StaticColor : LoopingZoneProgram
+	public class StaticColor : ReactiveZoneProgram
 	{
-		public override void Loop(ZoneProgramParameter parameter)
+		protected override void Start()
 		{
-			Lights.SetColor(((StaticColorParameter)parameter).Color);
-			LightingController.SendLights(Lights);				//send frame
-			ProgramCommon.Delay(1000);
-		}
-
-		public override IEnumerable<Type> AllowedParameterTypes
-		{
-			get
+			AddInput("LiveColor", color =>
 			{
-				return new List<Type>()
-				{
-					typeof (StaticColorParameter)
-				};
-			}
+				Lights.SetColor((Color)color);
+				LightingController.SendLights(Lights);	//send frame
+			});
 		}
-	}
 
-	[Export(typeof(ZoneProgramParameter))]
-	[ExportMetadata("Name", "StaticColorParameter")]
-	public class StaticColorParameter : ZoneProgramParameter
-	{
-		public StaticColorParameter(Color color)
+		public override void Stop(bool force)
 		{
-			Color = color;
+			RemoveInput("LiveColor");
 		}
-		public Color Color { get; set; }
 	}
 }
