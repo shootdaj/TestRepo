@@ -12,15 +12,18 @@ namespace ExternalPrograms
 	/// </summary>
 	[Export(typeof(ZoneProgram))]
 	[ExportMetadata("Name", "Rainbow")]
-	[ExportMetadata("ParameterName", "RainbowParameter")]
 	public class Rainbow : LoopingZoneProgram
 	{
-		public override void Setup(ZoneProgramParameter parameter)
+		public int DelayTime { get; set; }
+		public int Speed { get; set; }
+
+		public override void Setup()
 		{
-			
+			AddInput("Speed", speed => Speed = (int) speed);
+			AddInput("DelayTime", delayTime => DelayTime = (int) delayTime);
 		}
 
-		public override void Loop(ZoneProgramParameter parameter)
+		public override void Loop()
 		{
 			var colors = new List<Color>();
 			colors.Add(Color.Violet);
@@ -31,58 +34,16 @@ namespace ExternalPrograms
 			colors.Add(Color.Orange);
 			colors.Add(Color.Red);
 
-			RainbowParameter rainbowParameter = (RainbowParameter)parameter;
-
 			for (int i = 0; i < colors.Count; i++)
 			{
 				Color? endingColor;
 
-				ProgramCommon.Fade(Lights[0].GetColor(), colors[i], rainbowParameter.Speed, rainbowParameter.DelayTime, false, (color) =>
+				ProgramCommon.Fade(Lights[0].GetColor(), colors[i], Speed, DelayTime, false, (color) =>
 				{
 					Lights.SetColor(color);
 					Lights.Send(LightingController);
 				}, out endingColor);
 			}
 		}
-
-		public override IEnumerable<Type> AllowedParameterTypes
-		{
-			get
-			{
-				return new List<Type>()
-				{
-					typeof (RainbowParameter),
-				};
-			}
-		}
-	}
-
-	[Export(typeof(ZoneProgramParameter))]
-	[ExportMetadata("Name", "RainbowParameter")]
-	public class RainbowParameter : ZoneProgramParameter
-	{
-		public RainbowParameter(int speed, int delayTime)
-		{
-			Speed = speed;
-			DelayTime = delayTime;
-		}
-
-		public RainbowParameter()
-		{
-			
-		}
-
-		public int Speed { get; set; }
-		public int DelayTime { get; set; }
-	}
-
-	public class RainbowTriggerCollection : ZoneProgramTriggerCollection
-	{
-		public RainbowTriggerCollection()
-		{
-			RainbowColorsTrigger = new Trigger("RainbowColorsTrigger");
-		}
-
-		public Trigger RainbowColorsTrigger { get; set; }
 	}
 }

@@ -81,6 +81,7 @@
     <Compile Include="LightingFrame.cs" />
     <Compile Include="LightingPattern.cs" />
     <Compile Include="ZoneProgramNS\Factories\ZoneScaffolder.cs" />
+    <Compile Include="ZoneProgramNS\InputStartingValues.cs" />
     <Compile Include="ZoneProgramNS\IParametrizedZoneProgram.cs" />
     <Compile Include="ZoneProgramNS\IZoneProgramMetadata.cs" />
     <Compile Include="ZoneProgramNS\ParametrizedZoneProgram.cs" />
@@ -98,7 +99,6 @@
     <Compile Include="ZoneProgramNS\ProgramCommon.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgram.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgramEnum.cs" />
-    <Compile Include="ZoneProgramNS\ZoneProgramTriggerCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Doc\ZoneLightingClasses.cd" />

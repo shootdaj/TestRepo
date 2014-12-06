@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ZoneLighting.ZoneProgramNS
 {
-	public abstract class LoopingZoneProgram : ParameterizedZoneProgram
+	public abstract class LoopingZoneProgram : ZoneProgram
 	{
 		protected LoopingZoneProgram()
 		{
@@ -18,14 +19,14 @@ namespace ZoneLighting.ZoneProgramNS
 		protected Task RunProgram { get; set; }
 		protected Thread RunProgramThread { get; set; }
 
-		protected void StartLoop(ZoneProgramParameter parameter)
+		protected void StartLoop()
 		{
 			RunProgram = new Task(() =>
 			{
 				RunProgramThread = Thread.CurrentThread;
 				while (true)
 				{
-					Loop(parameter);
+					Loop();
 					if (LoopCTS.IsCancellationRequested)
 						break;
 				}
@@ -37,8 +38,8 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Overrideables
 
-		public abstract void Setup(ZoneProgramParameter parameter);
-		public abstract void Loop(ZoneProgramParameter parameter);
+		public abstract void Setup();
+		public abstract void Loop();
 
 		#endregion
 
@@ -46,10 +47,21 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Overridden
 
-		protected override void Start(ZoneProgramParameter parameter)
+		public override void StartBase()
 		{
-			Setup(parameter);
-			StartLoop(parameter);
+			throw new Exception("Call the parameterized StartBase(ZoneProgramParameter parameter) instead.");
+		}
+
+		public void StartBase(InputStartingValues inputStartingValues)
+		{
+			SetInputs(inputStartingValues);
+			Start();
+		}
+		
+		protected override void Start()
+		{
+			Setup();
+			StartLoop();
 		}
 
 		public override void Stop(bool force)

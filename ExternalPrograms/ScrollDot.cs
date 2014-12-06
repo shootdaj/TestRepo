@@ -13,18 +13,19 @@ namespace ExternalPrograms
 	/// </summary>
 	[Export(typeof(ZoneProgram))]
 	[ExportMetadata("Name", "ScrollDot")]
-	[ExportMetadata("ParameterName", "ScrollDotParameter")]
 	public class ScrollDot : LoopingZoneProgram
 	{
-		public override void Setup(ZoneProgramParameter parameter)
+		public int DelayTime { get; set; }
+		public Color? DotColor { get; set; }
+
+		public override void Setup()
 		{
-			
+			AddInput("DotColor", dotColor => DotColor = (Color?)dotColor);
+			AddInput("DelayTime", delayTime => DelayTime = (int)delayTime);
 		}
 
-		public override void Loop(ZoneProgramParameter parameter)
+		public override void Loop()
 		{
-			var scrollDotParameter = (ScrollDotParameter)parameter;
-
 			var colors = new List<Color>();
 			colors.Add(Color.Red);
 			colors.Add(Color.Blue);
@@ -37,42 +38,12 @@ namespace ExternalPrograms
 			for (int i = 0; i < Zone.Lights.Count; i++)
 			{
 				Lights.SetColor(Color.FromArgb(0, 0, 0));								//set all lights to black
-				Lights[i].SetColor(scrollDotParameter.Color != null
-					? (Color)scrollDotParameter.Color
+				Lights[i].SetColor(DotColor != null
+					? (Color)DotColor
 					: colors[new Random().Next(0, colors.Count - 1)]);					//set one to white
 				LightingController.SendLEDs(Lights.Cast<LED>().ToList());				//send frame
-				ProgramCommon.Delay(scrollDotParameter.DelayTime);						//pause before next iteration
+				ProgramCommon.Delay(DelayTime);											//pause before next iteration
 			}
 		}
-
-		public override IEnumerable<Type> AllowedParameterTypes
-		{
-			get
-			{
-				return new List<Type>()
-				{
-					typeof (ScrollDotParameter)
-				};
-			}
-		}
-	}
-
-	[Export(typeof(ZoneProgramParameter))]
-	[ExportMetadata("Name", "ScrollDotParameter")]
-	public class ScrollDotParameter : ZoneProgramParameter
-	{
-		public ScrollDotParameter(int delayTime, Color? color = null)
-		{
-			DelayTime = delayTime;
-			Color = color;
-		}
-
-		public ScrollDotParameter()
-		{
-			
-		}
-
-		public int DelayTime { get; set; }
-		public Color? Color { get; set; }
 	}
 }

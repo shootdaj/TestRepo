@@ -27,11 +27,12 @@ namespace ZoneLighting.ZoneNS
 				writer.WriteStartObject();
 				writer.WritePropertyName("Name");
 				serializer.Serialize(writer, zone.ZoneProgram.Name);
-				if (zone.ZoneProgram is ParameterizedZoneProgram)
-				{
-					writer.WritePropertyName("ProgramParameter");
-					serializer.Serialize(writer, ((ParameterizedZoneProgram)zone.ZoneProgram).ProgramParameter);
-				}
+				//TODO: Replace with starting value for input
+				//if (zone.ZoneProgram is ParameterizedZoneProgram)
+				//{
+				//	writer.WritePropertyName("ProgramParameter");
+				//	serializer.Serialize(writer, ((ParameterizedZoneProgram)zone.ZoneProgram).ProgramParameter);
+				//}
 				writer.WriteEndObject();
 				writer.WriteEndObject();
 

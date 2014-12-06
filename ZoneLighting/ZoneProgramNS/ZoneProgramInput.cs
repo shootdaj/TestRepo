@@ -36,5 +36,14 @@ namespace ZoneLighting.ZoneProgramNS
 			if (InputDisposable != null)
 				InputDisposable.Dispose();
 		}
+
+		/// <summary>
+		/// Sends data through the input to the program it's attached to.
+		/// </summary>
+		/// <param name="data">The data will be deconstructed/cast to the underlying type in the program.</param>
+		public void Set(T data)
+		{
+			InputSubject.OnNext(data);
+		}
 	}
 }

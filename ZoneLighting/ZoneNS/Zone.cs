@@ -58,44 +58,45 @@ namespace ZoneLighting.ZoneNS
 
 		#region C+I
 
-		public Zone(LightingController lightingController, string name = "", ZoneProgram program = null, ZoneProgramParameter programParameter = null)
+		public Zone(LightingController lightingController, string name = "", ZoneProgram program = null, Dictionary<string, object> inputStartingValues = null)
 		{
 			Zones = new List<Zone>();
 			Lights = new List<ILogicalRGBLight>();
 			LightingController = lightingController;
 			Name = name;
 			if (program == null) return;
-			if (programParameter == null)
+			if (inputStartingValues == null)
 			{
 				SetProgram(program);
 			}
 			else
 			{
-				Initialize(program, programParameter);
+				Initialize(program, inputStartingValues);
 			}
 		}
 
-		private void Initialize(ZoneProgramParameter parameter)
+		private void Initialize(InputStartingValues inputStartingValues)
 		{
 			if (!Initialized)
 			{
 				if (ZoneProgram != null)
-					StartProgram(parameter);
+					StartProgram(inputStartingValues);
 
-				foreach (var zone in Zones)
-				{
-					zone.Initialize(parameter);
-				}
+				//TODO: this needs to be figured out - if passing the same dictionary will work or not
+				//foreach (var zone in Zones)
+				//{
+				//	zone.Initialize(inputStartingValues);
+				//}
 				Initialized = true;
 			}
 		}
 
-		public void Initialize(ZoneProgram zoneProgram, ZoneProgramParameter parameter)
+		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues)
 		{
 			if (!Initialized)
 			{
 				SetProgram(zoneProgram);
-				Initialize(parameter);
+				Initialize(inputStartingValues);
 			}
 		}
 
@@ -157,13 +158,12 @@ namespace ZoneLighting.ZoneNS
 		}
 	
 		/// <summary>
-		/// Starts this zone's program with the given parameter
+		/// Starts this zone's program with the given starting values for the inputs.
 		/// </summary>
-		/// <param name="parameter"></param>
-		public void StartProgram(ZoneProgramParameter parameter)
+		public void StartProgram(InputStartingValues inputStartingValues)
 		{
-			if (ZoneProgram is ParameterizedZoneProgram)
-				((ParameterizedZoneProgram)ZoneProgram).StartBase(parameter);
+			if (ZoneProgram is LoopingZoneProgram)
+				((LoopingZoneProgram)ZoneProgram).StartBase(inputStartingValues);
 			else
 				ZoneProgram.StartBase();
 		}

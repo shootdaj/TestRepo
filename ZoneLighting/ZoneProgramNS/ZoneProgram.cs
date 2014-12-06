@@ -98,16 +98,23 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region API
 
-		protected ZoneProgramInput<object> AddInput(string name = "", Action<object> action = null)
+		protected ZoneProgramInput<object> AddInput(string name, Action<object> action)
 		{
 			var input = new ZoneProgramInput<object>(name);
 			Inputs.Add(input);
-			if (action != null)
-			{
-				input.Subscribe(action);
-			}
+			input.Subscribe(action);
 			return input;
 		}
+
+		//protected ZoneProgramInput<object> AddPropertyInput(string name, ref object property)
+		//{
+		//	return AddInput(name, data => property = data);
+		//}
+
+		//private void PropertyInputAction(object data, ref object property)
+		//{
+		//	property = data;
+		//}
 
 		protected void RemoveInput(string name)
 		{
@@ -117,6 +124,16 @@ namespace ZoneLighting.ZoneProgramNS
 		protected ZoneProgramInput<object> GetInput(string name)
 		{
 			return Inputs[name];
+		}
+
+		public void SetInput(string name, object data)
+		{
+			GetInput(name).Set(data);
+		}
+
+		public void SetInputs(InputStartingValues inputStartingValues)
+		{
+			inputStartingValues.Keys.ToList().ForEach(key => SetInput(key, inputStartingValues[key]));
 		}
 
 		#endregion

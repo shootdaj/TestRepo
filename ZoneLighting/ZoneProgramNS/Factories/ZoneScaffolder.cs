@@ -65,46 +65,45 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 
 		#region API
 
-		/// <summary>
-		/// Creates a program parameter using Reflection, given the name of the program and a dictionary of property names to property values
-		/// </summary>
-		public static ZoneProgramParameter CreateProgramParameter(string programName, Dictionary<string, object> parameterDictionary)
-		{
-			var zoneProgramFactory = ZoneProgramFactories.ToDictionary(x => x.Metadata.Name)[programName];
-			var programParameter =
-				ZoneProgramParameterFactories.ToDictionary(x => x.Metadata.Name)[zoneProgramFactory.Metadata.ParameterName]
-					.CreateExport();
+		///// <summary>
+		///// Creates a program parameter using Reflection, given the name of the program and a dictionary of property names to property values
+		///// </summary>
+		//public static ZoneProgramParameter CreateProgramParameter(string programName, Dictionary<string, object> parameterDictionary)
+		//{
+		//	var zoneProgramFactory = ZoneProgramFactories.ToDictionary(x => x.Metadata.Name)[programName];
+		//	var programParameter =
+		//		ZoneProgramParameterFactories.ToDictionary(x => x.Metadata.Name)[zoneProgramFactory.Metadata.ParameterName]
+		//			.CreateExport();
 
-			parameterDictionary.Keys.ToList().ForEach(propertyName =>
-			{
-				var property = programParameter.Value.GetType()
-					.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
-				if (property != null)
-				{
-					property.SetValue(programParameter.Value, parameterDictionary[propertyName]);
-				}
-			});
+		//	parameterDictionary.Keys.ToList().ForEach(propertyName =>
+		//	{
+		//		var property = programParameter.Value.GetType()
+		//			.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
+		//		if (property != null)
+		//		{
+		//			property.SetValue(programParameter.Value, parameterDictionary[propertyName]);
+		//		}
+		//	});
 
-			return programParameter.Value;
-		}
+		//	return programParameter.Value;
+		//}
 
 		/// <summary>
 		/// Initializes a zone with the given program name and parameter name-value dictionary.
 		/// </summary>
-		public static void InitializeZone(Zone zone, string programName, Dictionary<string, object> parameterDictionary)
+		public static void InitializeZone(Zone zone, string programName, InputStartingValues inputStartingValues)
 		{
 			var zoneProgramFactoriesList = ZoneProgramFactories.ToList();
-			var parameter = CreateProgramParameter(programName, parameterDictionary);
-			zone.Initialize(zoneProgramFactoriesList.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value, parameter);
+			zone.Initialize(zoneProgramFactoriesList.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value, inputStartingValues);
 		}
 
-		/// <summary>
-		/// Initializes a zone with the given program name and parameter.
-		/// </summary>
-		public static void InitializeZone(Zone zone, string programName, ZoneProgramParameter parameter = null)
-		{
-			zone.Initialize(ZoneProgramFactories.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value, parameter);
-		}
+		///// <summary>
+		///// Initializes a zone with the given program name and parameter.
+		///// </summary>
+		//public static void InitializeZone(Zone zone, string programName, ZoneProgramParameter parameter = null)
+		//{
+		//	zone.Initialize(ZoneProgramFactories.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value, parameter);
+		//}
 
 		/// <summary>
 		/// Gets the names of all available programs.
@@ -140,9 +139,12 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 							zonesToLoadInto.First(z => zoneToLoadFrom.Name == z.Name);
 						
 						var zoneProgramName = zoneToLoadFrom.ZoneProgram.Name;
-						var zoneProgramParameter = zoneToLoadFrom.ZoneProgram is ParameterizedZoneProgram
-							? ((ParameterizedZoneProgram) zoneToLoadFrom.ZoneProgram).ProgramParameter
-							: null;
+
+						//TODO: Replace with starting value for input
+						//var zoneProgramParameter = zoneToLoadFrom.ZoneProgram is ParameterizedZoneProgram
+						//	? ((ParameterizedZoneProgram) zoneToLoadFrom.ZoneProgram).ProgramParameter
+						//	: null;
+
 						
 						InitializeZone(zoneToLoadInto, zoneProgramName, zoneProgramParameter);
 					}

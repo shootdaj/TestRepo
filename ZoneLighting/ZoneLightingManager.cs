@@ -255,15 +255,16 @@ namespace ZoneLighting
 				{
 					summary += zone.ZoneProgram.Name + newline;
 
-					if (zone.ZoneProgram is ParameterizedZoneProgram)
-					{
-						var parameterDictionary = ((ParameterizedZoneProgram)zone.ZoneProgram).ProgramParameter.ToKeyValueDictionary();
+					//TODO: Add current input values output
+					//if (zone.ZoneProgram is ParameterizedZoneProgram)
+					//{
+					//	var parameterDictionary = ((ParameterizedZoneProgram)zone.ZoneProgram).ProgramParameter.ToKeyValueDictionary();
 
-						parameterDictionary.Keys.ToList().ForEach(key =>
-						{
-							summary += string.Format("    {0}: {1}", key, parameterDictionary[key].ToString()) + newline;
-						});
-					}
+					//	parameterDictionary.Keys.ToList().ForEach(key =>
+					//	{
+					//		summary += string.Format("    {0}: {1}", key, parameterDictionary[key].ToString()) + newline;
+					//	});
+					//}
 				}
 				else
 				{
