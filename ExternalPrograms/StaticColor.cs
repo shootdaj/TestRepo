@@ -18,16 +18,16 @@ namespace ExternalPrograms
 	{
 		protected override void Start()
 		{
-			AddInput("LiveColor", color =>
+			AddInput<Color>("Color", color =>
 			{
 				Lights.SetColor((Color)color);
 				LightingController.SendLights(Lights);	//send frame
-			});
+			});	
 		}
 
 		public override void Stop(bool force)
 		{
-			RemoveInput("LiveColor");
+			RemoveInput("Color");
 		}
 	}
 }

@@ -46,17 +46,11 @@ namespace ZoneLighting.ZoneProgramNS
 		#endregion
 
 		#region Overridden
-
-		public override void StartBase()
-		{
-			throw new Exception("Call the parameterized StartBase(ZoneProgramParameter parameter) instead.");
-		}
-
-		public void StartBase(InputStartingValues inputStartingValues)
-		{
-			SetInputs(inputStartingValues);
-			Start();
-		}
+		
+		//public override void StartBase(InputStartingValues inputStartingValues = null)
+		//{
+		//	Start();
+		//}
 		
 		protected override void Start()
 		{

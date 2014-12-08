@@ -24,7 +24,13 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		[DataMember]
 		public string Name;
-		
+
+
+		//TODO: Test and remove
+		[DataMember]
+		public dynamic temp = Color.Brown;
+
+
 		/// <summary>
 		/// Zones can contain other zones in a recursive fashion.
 		/// </summary>
@@ -58,7 +64,7 @@ namespace ZoneLighting.ZoneNS
 
 		#region C+I
 
-		public Zone(LightingController lightingController, string name = "", ZoneProgram program = null, Dictionary<string, object> inputStartingValues = null)
+		public Zone(LightingController lightingController, string name = "", ZoneProgram program = null, InputStartingValues inputStartingValues = null)
 		{
 			Zones = new List<Zone>();
 			Lights = new List<ILogicalRGBLight>();
@@ -75,14 +81,14 @@ namespace ZoneLighting.ZoneNS
 			}
 		}
 
-		private void Initialize(InputStartingValues inputStartingValues)
+		private void Initialize(InputStartingValues inputStartingValues = null)
 		{
 			if (!Initialized)
 			{
 				if (ZoneProgram != null)
 					StartProgram(inputStartingValues);
 
-				//TODO: this needs to be figured out - if passing the same dictionary will work or not
+				//TODO: this needs to be figured out - if passing the same dictionary to the subzone will work or not
 				//foreach (var zone in Zones)
 				//{
 				//	zone.Initialize(inputStartingValues);
@@ -91,7 +97,7 @@ namespace ZoneLighting.ZoneNS
 			}
 		}
 
-		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues)
+		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null)
 		{
 			if (!Initialized)
 			{
@@ -160,12 +166,14 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// Starts this zone's program with the given starting values for the inputs.
 		/// </summary>
-		public void StartProgram(InputStartingValues inputStartingValues)
+		public void StartProgram(InputStartingValues inputStartingValues = null)
 		{
-			if (ZoneProgram is LoopingZoneProgram)
-				((LoopingZoneProgram)ZoneProgram).StartBase(inputStartingValues);
-			else
-				ZoneProgram.StartBase();
+			ZoneProgram.StartBase(inputStartingValues);
+
+			//if (ZoneProgram is LoopingZoneProgram)
+			//	((LoopingZoneProgram)ZoneProgram).StartBase(inputStartingValues);
+			//else
+			//	ZoneProgram.StartBase();
 		}
 
 		/// <summary>

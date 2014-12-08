@@ -52,6 +52,7 @@
     <Compile Include="Programs\Rainbow.cs" />
     <Compile Include="Programs\ScrollDot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ZoneProgramInputTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

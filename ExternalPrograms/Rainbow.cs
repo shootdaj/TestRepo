@@ -19,8 +19,8 @@ namespace ExternalPrograms
 
 		public override void Setup()
 		{
-			AddInput("Speed", speed => Speed = (int) speed);
-			AddInput("DelayTime", delayTime => DelayTime = (int) delayTime);
+			AddInput<int>("Speed", speed => Speed = (int) speed);
+			AddInput<int>("DelayTime", delayTime => DelayTime = (int) delayTime);
 		}
 
 		public override void Loop()

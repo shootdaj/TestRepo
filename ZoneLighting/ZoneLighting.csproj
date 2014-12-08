@@ -82,15 +82,13 @@
     <Compile Include="LightingPattern.cs" />
     <Compile Include="ZoneProgramNS\Factories\ZoneScaffolder.cs" />
     <Compile Include="ZoneProgramNS\InputStartingValues.cs" />
-    <Compile Include="ZoneProgramNS\IParametrizedZoneProgram.cs" />
+    <Compile Include="ZoneProgramNS\IZoneProgramInput.cs" />
     <Compile Include="ZoneProgramNS\IZoneProgramMetadata.cs" />
-    <Compile Include="ZoneProgramNS\ParametrizedZoneProgram.cs" />
     <Compile Include="ZoneProgramNS\ReactiveZoneProgram.cs" />
+    <Compile Include="ZoneProgramNS\UnderlyingTypeConverter.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgramInput.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgramInputCollection.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgramJsonConverter.cs" />
-    <Compile Include="ZoneProgramNS\ZoneProgramParameter.cs" />
-    <Compile Include="ZoneProgramNS\IZoneProgramParameterMetadata.cs" />
     <Compile Include="ZoneProgramNS\LoopingZoneProgram.cs" />
     <Compile Include="ZoneNS\Zone.cs" />
     <Compile Include="ILogicalRGBLight.cs" />

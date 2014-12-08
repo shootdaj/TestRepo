@@ -1,23 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace ZoneLighting.ZoneProgramNS
 {
-	public class ZoneProgramInput<T>
+	[DataContract]
+	[JsonConverter(typeof(UnderlyingTypeConverter))]
+	public class ZoneProgramInput<T> : IZoneProgramInput
 	{
+		[DataMember]
 		public string Name { get; set; }
-		public Subject<T> InputSubject { get; private set; }
+
+		public Subject<T> InputSubject { get; }
+
 		private IDisposable InputDisposable { get; set; }
 
-		public ZoneProgramInput(string name = "")
+		[DataMember]
+		public Type Type { get; private set; }
+
+		[DataMember]
+		public object Value { get; private set; }
+
+		public ZoneProgramInput(string name, Type type)
 		{
 			Name = name;
+			Type = type;
 			InputSubject = new Subject<T>();
 		}
 
@@ -33,8 +41,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public void Unsubscribe()
 		{
-			if (InputDisposable != null)
-				InputDisposable.Dispose();
+			InputDisposable?.Dispose();
 		}
 
 		/// <summary>
@@ -44,6 +51,14 @@ namespace ZoneLighting.ZoneProgramNS
 		public void Set(T data)
 		{
 			InputSubject.OnNext(data);
+			Value = data;
 		}
+	}
+
+	public interface IZoneProgramInput
+	{
+		string Name { get; }
+		Type Type { get; }
+		object Value { get; }
 	}
 }

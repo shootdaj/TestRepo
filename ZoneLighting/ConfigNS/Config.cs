@@ -2,6 +2,7 @@
 using System.IO;
 using Newtonsoft.Json;
 using ZoneLighting.ZoneNS;
+using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.ConfigNS
 {
@@ -14,6 +15,7 @@ namespace ZoneLighting.ConfigNS
 				//PreserveReferencesHandling = PreserveReferencesHandling.All,
 				TypeNameHandling = TypeNameHandling.All,
 				Formatting = Formatting.Indented,
+				Converters = new List<JsonConverter> { new UnderlyingTypeConverter() }
 				//Converters = new List<JsonConverter>() { new ZonesJsonConverter() }
 			};
 
@@ -23,16 +25,17 @@ namespace ZoneLighting.ConfigNS
 
 		public static IEnumerable<Zone> LoadZones(string filename)
 		{
-			var deserializedZones = JsonConvert.DeserializeObject<IEnumerable<Zone>>(File.ReadAllText(filename),
+			var deserializedZones = JsonConvert.DeserializeObject(File.ReadAllText(filename),
 				new JsonSerializerSettings
 				{
 					//PreserveReferencesHandling = PreserveReferencesHandling.All,
 					TypeNameHandling = TypeNameHandling.All,
 					Formatting = Formatting.Indented,
+					Converters = new List<JsonConverter> { new UnderlyingTypeConverter() }
 					//Converters = new List<JsonConverter>() { new ZonesJsonConverter() }
 				});
 
-			return deserializedZones;
+			return (IEnumerable<Zone>)deserializedZones;
 		}
 	}
 }

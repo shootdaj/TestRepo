@@ -44,14 +44,7 @@ namespace ZoneLighting
 		/// </summary>
 		[ImportMany(typeof(ZoneProgram), AllowRecomposition = true)]
 		private IEnumerable<ExportFactory<ZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; }
-
-		/// <summary>
-		/// This factory member will provide the various implementations of zone program parameters that are to be loaded from external modules.
-		/// </summary>
-		[ImportMany(typeof(ZoneProgramParameter), AllowRecomposition = true)]
-		private IEnumerable<ExportFactory<ZoneProgramParameter, IZoneProgramParameterMetadata>> ZoneProgramParameterFactories
-		{ get; set; }
-
+		
 		/// <summary>
 		/// Directory Catalog that stores catalog for the external programs
 		/// </summary>
@@ -111,7 +104,7 @@ namespace ZoneLighting
 		/// </summary>
 		private void InitZoneScaffolder()
 		{
-			ZoneScaffolder.Initialize(ZoneProgramFactories, ZoneProgramParameterFactories);
+			ZoneScaffolder.Initialize(ZoneProgramFactories);
 		}
 
 		/// <summary>
@@ -202,9 +195,16 @@ namespace ZoneLighting
 
 			//ZoneScaffolder.InitializeZone(Zones[1], "Rainbow", rainbowDictionary);
 
-			//Config.SaveZones(Zones, ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"]);
+			InputStartingValues startingValues = //null;
+				new InputStartingValues();
+			startingValues.Add("DelayTime", 30);
+			startingValues.Add("DotColor", Color.Chartreuse);
 
-			ZoneScaffolder.InitializeFromZoneConfiguration(Zones.ToList());
+			ZoneScaffolder.InitializeZone(Zones[0], "ScrollDot", startingValues);
+
+			Config.SaveZones(Zones, ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"]);
+
+			//ZoneScaffolder.InitializeFromZoneConfiguration(Zones.ToList());
 		}
 
 		public void Uninitialize()
@@ -235,7 +235,6 @@ namespace ZoneLighting
 			Zones.Clear();
 			Zones = null;
 			ZoneProgramFactories = null;
-			ZoneProgramParameterFactories = null;
 		}
 
 		#endregion
@@ -246,6 +245,7 @@ namespace ZoneLighting
 		{
 			var newline = Environment.NewLine;
 			string summary = string.Format("Currently {0} zones are loaded." + newline, Zones.Count);
+			summary += "===================" + newline;
 			Zones.ToList().ForEach(zone =>
 			{
 				summary += "Zone: " + zone.Name + newline;
@@ -270,6 +270,7 @@ namespace ZoneLighting
 				{
 					summary += "None" + newline;
 				}
+				summary += "-------------------" + newline;
 
 			});
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using ZoneLighting.Communication;
 using ZoneLighting.TriggerDependencyNS;
@@ -51,6 +52,10 @@ namespace ZoneLighting.ZoneProgramNS
 			get { return Zone.Lights;  }
 		}
 
+		/// <summary>
+		/// Inputs for this program.
+		/// </summary>
+		[DataMember]
 		private ZoneProgramInputCollection Inputs { get; set; }
 
 		#endregion CORE
@@ -82,9 +87,11 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Base Methods
 
-		public virtual void StartBase()
+		public virtual void StartBase(InputStartingValues inputStartingValues = null)
 		{
 			Start();
+			if (inputStartingValues != null)
+				SetInputs(inputStartingValues);
 		}
 		
 		#endregion
@@ -98,23 +105,58 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region API
 
-		protected ZoneProgramInput<object> AddInput(string name, Action<object> action)
+		/// <summary>
+		/// Returns the names of all inputs.
+		/// </summary>
+		/// <returns></returns>
+		public List<string> GetInputNames()
 		{
-			var input = new ZoneProgramInput<object>(name);
+			return Inputs.Select(input => input.Name).ToList();
+		}
+
+		public InputStartingValues GetInputValues()
+		{
+			var inputStartingValues = new InputStartingValues();
+			Inputs.ToList().ForEach(input => inputStartingValues.Add(input.Name, input.Value));
+			return inputStartingValues;
+		}
+
+		/// <summary>
+		/// Returns the name of all inputs of all types T.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public List<string> GetInputNames<T>()
+		{
+			return Inputs.Where(i => i.Type == typeof(T)).Select(input => input.Name).ToList();
+		}
+		
+
+		/// <summary>
+		/// Adds a live input to the zone program. A live input is an input that can be controlled while
+		/// the program is running and the program will respond to it in the way it's designed to.
+		/// </summary>
+		/// <param name="name">Name of the input.</param>
+		/// <param name="type">Type of the input. This type must match the type of the incoming parameter of the action.</param>
+		/// <param name="action">The action that should occur when the input is set to a certain value. This will be defined by the 
+		/// subclasses of this class to perform certain actions when the this input is set to a value.</param>
+		/// <returns>The input that was just added.</returns>
+		protected ZoneProgramInput<object> AddInput<T>(string name, Action<object> action)
+		{
+			var input = new ZoneProgramInput<object>(name, typeof(T));
 			Inputs.Add(input);
 			input.Subscribe(action);
 			return input;
 		}
 
-		//protected ZoneProgramInput<object> AddPropertyInput(string name, ref object property)
-		//{
-		//	return AddInput(name, data => property = data);
-		//}
-
-		//private void PropertyInputAction(object data, ref object property)
-		//{
-		//	property = data;
-		//}
+		protected ZoneProgramInput<object> AddMappedInput(object instance, string propertyName)
+		{
+			var propertyInfo = instance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
+			var input = new ZoneProgramInput<object>(propertyInfo.Name, propertyInfo.PropertyType);
+			Inputs.Add(input);
+			input.Subscribe(incomingValue => propertyInfo.SetValue(instance, incomingValue));
+			return input;
+		}
 
 		protected void RemoveInput(string name)
 		{

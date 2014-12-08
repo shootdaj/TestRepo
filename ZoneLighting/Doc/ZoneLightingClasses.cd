@@ -90,27 +90,26 @@
   <Class Name="ZoneLighting.ZoneLightingManager" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="8.25" Y="0.75" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>iAAEkAQAjTAAQUAAAAIAAAACAIAAAAAAQAAEAAAAAAg=</HashCode>
+      <HashCode>gAAE0AQAjDEAQQAAAAAAAAACQIAAAAAAQAAEAAAAAAg=</HashCode>
       <FileName>ZoneLightingManager.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
       <Property Name="Zones" />
       <Property Name="ZoneProgramFactories" />
-      <Property Name="ZoneProgramParameterFactories" />
     </ShowAsCollectionAssociation>
     <Lollipop Position="0.179" Collapsed="true" />
   </Class>
   <Class Name="ZoneLighting.ZoneProgramNS.LoopingZoneProgram" Collapsed="true">
     <Position X="15" Y="3.25" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAIACAAAAAgAAIAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAIAAAICCABAAAgAAIAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
       <FileName>ZoneProgramNS\LoopingZoneProgram.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ZoneLighting.ZoneProgramNS.ZoneProgram" Collapsed="true">
     <Position X="15" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAIAAAAACQgQAAAABAAAgAQAAAAAAAAIAAAAAAAAAQ=</HashCode>
+      <HashCode>AQAIAAAAACAggACAABAAAgQAEAAAAAAAIAAAAAAQAAQ=</HashCode>
       <FileName>ZoneProgramNS\ZoneProgram.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -132,6 +131,13 @@
     <Position X="13.25" Y="0.75" Width="1.5" />
     <TypeIdentifier />
   </Class>
+  <Class Name="ZoneLighting.ZoneProgramNS.InputStartingValues" Collapsed="true">
+    <Position X="15" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ZoneProgramNS\InputStartingValues.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="ZoneLighting.Communication.ILightingController" Collapsed="true">
     <Position X="3.75" Y="3.25" Width="1.75" />
     <TypeIdentifier>
@@ -151,13 +157,6 @@
     <TypeIdentifier>
       <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAgAAAAAAAA=</HashCode>
       <FileName>ILogicalRGBLight.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="ZoneLighting.ZoneProgramNS.IZoneProgramParameter" Collapsed="true">
-    <Position X="15" Y="0.75" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ZoneProgramNS\IZoneProgramParameter.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />
