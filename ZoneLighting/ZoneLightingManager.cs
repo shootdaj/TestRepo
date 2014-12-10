@@ -22,12 +22,9 @@ namespace ZoneLighting
 	{
 		#region Singleton
 
-		public static ZoneLightingManager _instance;
+		private static ZoneLightingManager _instance;
 
-		public static ZoneLightingManager Instance
-		{
-			get { return _instance ?? (_instance = new ZoneLightingManager()); }
-		}
+		public static ZoneLightingManager Instance => _instance ?? (_instance = new ZoneLightingManager());
 
 		#endregion
 
@@ -37,18 +34,13 @@ namespace ZoneLighting
 		/// All zones that can be managed by this class.
 		/// </summary>
 		[ImportMany(typeof(Zone), AllowRecomposition = true)] //TODO: Do composition at runtime rather than using attributes.
-		public IList<Zone> Zones { get; set; }
-		
-		/// <summary>
-		///	This factory member will provide the various implementations of zone programs that are to be loaded from external modules.
-		/// </summary>
-		[ImportMany(typeof(ZoneProgram), AllowRecomposition = true)]
-		private IEnumerable<ExportFactory<ZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; }
-		
-		/// <summary>
-		/// Directory Catalog that stores catalog for the external programs
-		/// </summary>
-		private DirectoryCatalog ExternalProgramCatalog { get; set; }
+		public IList<Zone> Zones { get; set; } = new List<Zone>();
+
+		///// <summary>
+		/////	This factory member will provide the various implementations of zone programs that are to be loaded from external modules.
+		///// </summary>
+		//[ImportMany(typeof(ZoneProgram), AllowRecomposition = true)]
+		//private IEnumerable<ExportFactory<ZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; }
 		
 		/// <summary>
 		/// Directory Catalog that stores catalog for the external zones.
@@ -58,7 +50,7 @@ namespace ZoneLighting
 		/// <summary>
 		/// Container for the external modules.
 		/// </summary>
-		private CompositionContainer ExternalModuleContainer { get; set; }
+		private CompositionContainer ExternalZoneContainer { get; set; }
 
 		#endregion
 
@@ -66,7 +58,6 @@ namespace ZoneLighting
 
 		public ZoneLightingManager()
 		{
-			Zones = new List<Zone>();
 		}
 
 		public bool Initialized { get; private set; }
@@ -104,7 +95,7 @@ namespace ZoneLighting
 		/// </summary>
 		private void InitZoneScaffolder()
 		{
-			ZoneScaffolder.Initialize(ZoneProgramFactories);
+			ZoneScaffolder.Instance.Initialize(ConfigurationManager.AppSettings["ProgramDLLFolder"]);
 		}
 
 		/// <summary>
@@ -112,7 +103,7 @@ namespace ZoneLighting
 		/// </summary>
 		private void UninitZoneScaffolder()
 		{
-			ZoneScaffolder.Uninitialize();
+			ZoneScaffolder.Instance.Uninitialize();
 		}
 
 		#region MEF
@@ -121,34 +112,12 @@ namespace ZoneLighting
 		/// Composes this class with external zones and programs. 
 		/// This method populates the Zones and their respective ZoneProgram properties.
 		/// </summary>
-		private void ComposeWithExternalModules(bool programModules = true, bool zoneModules = true)
+		private void ComposeWithExternalModules()
 		{
-			//AppDomain.CurrentDomain.SetupInformation.ShadowCopyFiles = "true";
-			if (!programModules && !zoneModules)
-				return;
-
-			if (zoneModules)
-				CatalogExternalZones();
-			if (programModules)
-				CatalogExternalPrograms();
-
-			AggregateCatalog aggregateCatalog;
-			
-			if (programModules && zoneModules)
-			{
-				aggregateCatalog = new AggregateCatalog(ExternalZoneCatalog, ExternalProgramCatalog);
-			}
-			else if (programModules)
-			{
-				aggregateCatalog = new AggregateCatalog(ExternalProgramCatalog);
-			}
-			else
-			{
-				aggregateCatalog = new AggregateCatalog(ExternalZoneCatalog);	
-			}
-
-			ExternalModuleContainer = new CompositionContainer(aggregateCatalog);
-			ExternalModuleContainer.ComposeParts(this);
+			CatalogExternalZones();
+			var aggregateCatalog = new AggregateCatalog(ExternalZoneCatalog);	
+			ExternalZoneContainer = new CompositionContainer(aggregateCatalog);
+			ExternalZoneContainer.ComposeParts(this);
 		}
 
 		/// <summary>
@@ -158,14 +127,7 @@ namespace ZoneLighting
 		{
 			ExternalZoneCatalog = new DirectoryCatalog(ConfigurationManager.AppSettings["ZoneDLLFolder"]);
 		}
-
-		/// <summary>
-		/// Creates catalog for external programs.
-		/// </summary>
-		private void CatalogExternalPrograms()
-		{
-			ExternalProgramCatalog = new DirectoryCatalog(ConfigurationManager.AppSettings["ProgramDLLFolder"]);
-		}
+		
 
 		//TODO: This is not working because MEF has to be "hacked" to have the 
 		//TODO: assemblies load in a different appdomain with ShadowCopyFiles set to true as in the following example:
@@ -200,11 +162,13 @@ namespace ZoneLighting
 			startingValues.Add("DelayTime", 30);
 			startingValues.Add("DotColor", Color.Chartreuse);
 
-			ZoneScaffolder.InitializeZone(Zones[0], "ScrollDot", startingValues);
+			ZoneScaffolder.Instance.InitializeZone(Zones[0], "ScrollDot", startingValues);
 
 			Config.SaveZones(Zones, ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"]);
 
-			//ZoneScaffolder.InitializeFromZoneConfiguration(Zones.ToList());
+			Zones.ToList().ForEach(z => z.Uninitialize(true));
+
+			ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones);
 		}
 
 		public void Uninitialize()
@@ -215,9 +179,8 @@ namespace ZoneLighting
 				UninitZoneScaffolder();
 				UninitLightingControllers();
 				Initialized = false;
-				ExternalProgramCatalog = null;
 				ExternalZoneCatalog = null;
-				ExternalModuleContainer = null;
+				ExternalZoneContainer = null;
 			}
 		}
 
@@ -234,7 +197,6 @@ namespace ZoneLighting
 			Uninitialize();
 			Zones.Clear();
 			Zones = null;
-			ZoneProgramFactories = null;
 		}
 
 		#endregion

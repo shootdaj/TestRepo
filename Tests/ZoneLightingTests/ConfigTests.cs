@@ -42,7 +42,7 @@ namespace ZoneLightingTests
 			}
 			InputStartingValues startingValuesTZ2 = new InputStartingValues();
 			startingValuesTZ2.Add("DelayTime", 1);
-			startingValuesTZ2.Add("Color", Color.BlueViolet);
+			startingValuesTZ2.Add("DotColor", Color.BlueViolet);
 
 			zones[1].Initialize(new ScrollDot(), startingValuesTZ2);
 			

@@ -23,51 +23,81 @@ namespace ZoneLighting.ZoneProgramNS
 			//writer.WriteEndObject();
 			//writer.WriteEndObject();
 
-			var zoneProgramInput = (IZoneProgramInput) value;
+			//var zoneProgramInput = (ZoneProgramInput) value;
 
-			writer.WriteStartObject();
-			writer.WritePropertyName("$type");
-			serializer.Serialize(writer, zoneProgramInput.GetType());
-			writer.WritePropertyName("Name");
-			serializer.Serialize(writer, zoneProgramInput.Name);
-			writer.WritePropertyName("Type");
-			serializer.Serialize(writer, zoneProgramInput.Type);
-			writer.WritePropertyName("Value");
-			serializer.Serialize(writer, zoneProgramInput.Value, zoneProgramInput.Type);
-			writer.WriteEndObject();
+			//writer.WriteStartObject();
+			//writer.WritePropertyName("$type");
+			//serializer.Serialize(writer, zoneProgramInput.GetType());
+			//writer.WritePropertyName("Name");
+			//serializer.Serialize(writer, zoneProgramInput.Name);
+			//writer.WritePropertyName("Type");
+			//serializer.Serialize(writer, zoneProgramInput.Type);
+			//writer.WritePropertyName("Value");
+			//serializer.Serialize(writer, zoneProgramInput.Value, zoneProgramInput.Type);
+			//writer.WriteEndObject();
 
 
 			//serializer.Serialize(writer, value);
+
+			throw new NotImplementedException();
 		}
 
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 		{
-			JObject jsonObject = JObject.Load(reader);
 
-			Color color = JsonConvert.DeserializeObject<Color>(jsonObject["Value"].ToString());
+			var result = new ZoneProgramInput();
 
-			string name = "";
-			Type type = typeof (object);
-			reader.Read();
-			reader.Read();
-			//var 
+			// Deserialize into a temporary JObject
+			JObject obj = serializer.Deserialize<JObject>(reader);
 
-			//type = (Type)serializer.Deserialize(reader, type);
-				
-				//(Type) reader.Value;
+			// Populate the ZoneProgramInput object with the contents
+			serializer.Populate(obj.CreateReader(), result);
 
-			
-			IZoneProgramInput zoneProgramInput = new ZoneProgramInput<object>(name, type);
-			//zoneProgramInput.Value = serializer.Deserialize()
+			// Overwrite the "Value" property with the correct value based on the 
+			// "Type" property.
+			result.Set(obj.GetValue("value", StringComparison.OrdinalIgnoreCase)
+					.ToObject(result.Type, serializer));
 
-			//var tempObject = (IZoneProgramInput)serializer.Deserialize(reader);
-			//var realObject = serializer.Deserialize(reader, tempObject.Type);
-			return zoneProgramInput;
+			return result;
+
+
+
+
+
+
+
+
+
+
+
+
+
+			//JObject jsonObject = JObject.Load(reader);
+
+			//Color color = JsonConvert.DeserializeObject<Color>(jsonObject["Value"].ToString());
+
+			//string name = "";
+			//Type type = typeof (object);
+			//reader.Read();
+			//reader.Read();
+			////var 
+
+			////type = (Type)serializer.Deserialize(reader, type);
+
+			//	//(Type) reader.Value;
+
+
+			////IZoneProgramInput zoneProgramInput = new ZoneProgramInput<object>(name, type);
+			////zoneProgramInput.Value = serializer.Deserialize()
+
+			////var tempObject = (IZoneProgramInput)serializer.Deserialize(reader);
+			////var realObject = serializer.Deserialize(reader, tempObject.Type);
+			//return null; //zoneProgramInput;
 		}
 
 		public override bool CanConvert(Type objectType)
 		{
-			return objectType == typeof(ZoneProgramInput<object>);
+			return objectType == typeof(ZoneProgramInput);
 		}
 	}
 }

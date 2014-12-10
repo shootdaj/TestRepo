@@ -20,8 +20,6 @@ namespace ZoneLightingTests.Programs
 		{
 			AddInput<int>("Speed", speed => Speed = (int)speed);
 			AddInput<int>("DelayTime", delayTime => DelayTime = (int)delayTime);
-
-			//AddMappedInput(this, "Speed");
 		}
 
 		public override void Loop()

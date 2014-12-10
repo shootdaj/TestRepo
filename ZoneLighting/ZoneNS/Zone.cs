@@ -13,7 +13,6 @@ namespace ZoneLighting.ZoneNS
 	/// <summary>
 	/// Represents a zone (room or whatever) that contains the lights to be controlled.
 	/// </summary>
-	//[JsonConverter(typeof(ZoneJsonConverter))]
 	[DataContract]
     public class Zone : IDisposable
 	{
@@ -24,12 +23,6 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		[DataMember]
 		public string Name;
-
-
-		//TODO: Test and remove
-		[DataMember]
-		public dynamic temp = Color.Brown;
-
 
 		/// <summary>
 		/// Zones can contain other zones in a recursive fashion.
@@ -168,7 +161,7 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public void StartProgram(InputStartingValues inputStartingValues = null)
 		{
-			ZoneProgram.StartBase(inputStartingValues);
+			ZoneProgram.Start(inputStartingValues);
 
 			//if (ZoneProgram is LoopingZoneProgram)
 			//	((LoopingZoneProgram)ZoneProgram).StartBase(inputStartingValues);

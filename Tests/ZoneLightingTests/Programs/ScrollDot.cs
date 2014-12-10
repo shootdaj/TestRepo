@@ -20,10 +20,8 @@ namespace ZoneLightingTests.Programs
 
 		public override void Setup()
 		{
-			//AddInput("DotColor", typeof(Color?), dotColor => DotColor = (Color?)dotColor);
-			//AddInput("DelayTime", typeof(int), delayTime => DelayTime = (int)delayTime);
-			AddMappedInput(this, "DotColor");
-			AddMappedInput(this, "DelayTime");
+			AddMappedInput<int>(this, "DelayTime");
+			AddMappedInput<Color?>(this, "DotColor");
 		}
 
 		public override void Loop()

@@ -20,8 +20,8 @@ namespace ExternalPrograms
 
 		public override void Setup()
 		{
-			AddMappedInput(this, "DelayTime");
-			AddMappedInput(this, "DotColor");
+			AddMappedInput<int>(this, "DelayTime");
+			AddMappedInput<Color?>(this, "DotColor");
 		}
 
 		public override void Loop()

@@ -16,7 +16,7 @@ namespace ExternalPrograms
 	[ExportMetadata("Name", "StaticColor")]
 	public class StaticColor : ReactiveZoneProgram
 	{
-		protected override void Start()
+		protected override void StartCore()
 		{
 			AddInput<Color>("Color", color =>
 			{

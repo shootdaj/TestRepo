@@ -52,7 +52,7 @@ namespace ZoneLighting.ZoneProgramNS
 		//	Start();
 		//}
 		
-		protected override void Start()
+		protected override void StartCore()
 		{
 			Setup();
 			StartLoop();

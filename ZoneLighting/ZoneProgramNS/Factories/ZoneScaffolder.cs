@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -9,29 +10,46 @@ using ZoneLighting.ZoneNS;
 
 namespace ZoneLighting.ZoneProgramNS.Factories
 {
-	public static class ZoneScaffolder
+	public class ZoneScaffolder
 	{
-		#region CORE
+		#region Singleton
 
-		public static IEnumerable<ExportFactory<ZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; }
-		
+		private static ZoneScaffolder _instance;
+		public static ZoneScaffolder Instance => _instance ?? (_instance = new ZoneScaffolder());
+
+		#endregion
+
+		#region CORE + MEF
+
+		[ImportMany(typeof (ZoneProgram), AllowRecomposition = true)]
+		public IList<ExportFactory<ZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; } = new List<ExportFactory<ZoneProgram, IZoneProgramMetadata>>();
+
+		/// <summary>
+		/// Container for the external programs.
+		/// </summary>
+		private CompositionContainer ExternalProgramContainer { get; set; }
+
+		/// <summary>
+		/// Directory Catalog that stores catalog for the external programs
+		/// </summary>
+		private DirectoryCatalog ExternalProgramCatalog { get; set; }
+
 		#endregion
 
 		#region C+I
 
-		public static bool Initialized { get; private set; }
-		
-		public static void Initialize(IEnumerable<ExportFactory<ZoneProgram, IZoneProgramMetadata>> zoneProgramFactories)
+		public bool Initialized { get; private set; }
 
+		public void Initialize(string programModuleDirectory)
 		{
 			if (!Initialized)
 			{
-				ZoneProgramFactories = zoneProgramFactories;
+				ComposeWithExternalModules(programModuleDirectory);
 				Initialized = true;
 			}
 		}
 
-		public static void Uninitialize()
+		public void Uninitialize()
 		{
 			if (Initialized)
 			{
@@ -40,23 +58,55 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 			}
 		}
 
+		/// <summary>
+		/// Creates catalog for external programs.
+		/// </summary>
+		private void CatalogExternalPrograms(string programModuleDirectory)
+		{
+			ExternalProgramCatalog = new DirectoryCatalog(programModuleDirectory);
+		}
+
+		/// <summary>
+		/// Composes this class with external programs. 
+		/// </summary>
+		private void ComposeWithExternalModules(string programModuleDirectory)
+		{
+			CatalogExternalPrograms(programModuleDirectory);
+			var aggregateCatalog = new AggregateCatalog(ExternalProgramCatalog);
+			ExternalProgramContainer = new CompositionContainer(aggregateCatalog);
+			ExternalProgramContainer.ComposeParts(this);
+		}
+
 		#endregion
 
 		#region API
-		
+
+		private ZoneProgram CreateZoneProgram(string programName, IList<ExportFactory<ZoneProgram, IZoneProgramMetadata>> zoneProgramFactoriesList)
+		{
+			return zoneProgramFactoriesList.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value;
+		}
+
 		/// <summary>
-		/// Initializes a zone with the given program name and parameter name-value dictionary.
+		/// Initializes a zone with the given program name and starting values of the inputs as a name-value dictionary.
 		/// </summary>
-		public static void InitializeZone(Zone zone, string programName, InputStartingValues inputStartingValues = null)
+		public void InitializeZone(Zone zone, string programName, InputStartingValues inputStartingValues = null)
 		{
 			var zoneProgramFactoriesList = ZoneProgramFactories.ToList();
-			zone.Initialize(zoneProgramFactoriesList.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value, inputStartingValues);
+			zone.Initialize(CreateZoneProgram(programName, zoneProgramFactoriesList), inputStartingValues);
+		}
+
+		/// <summary>
+		/// Initializes a zone with the given program instance and starting values of the inputs as a name-value dictionary.
+		/// </summary>
+		public void InitializeZone(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null)
+		{
+			zone.Initialize(zoneProgram, inputStartingValues);
 		}
 
 		/// <summary>
 		/// Gets the names of all available programs.
 		/// </summary>
-		public static IEnumerable<string> AvailableProgramNames
+		public IEnumerable<string> AvailableProgramNames
 		{
 			get { return ZoneProgramFactories.Select(x => x.Metadata.Name); }
 		}
@@ -66,35 +116,35 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		#region Macro API
 
 		/// <summary>
-		/// Initializes the given zones with information in the zone configuration saved in the zone configuration file.
+		/// Initializes the given zones with information about the zone configuration saved in the zone configuration file.
+		/// Note that this method does not create any zones. It simply loads up the configuration and matches up the loaded configuration
+		/// with zones that already exist in zonesToLoadInto using the name. If there exist zones with the same name,
+		/// it will "map" the loaded zones to its respective complement in zonesToLoadInto.
 		/// </summary>
-		public static bool InitializeFromZoneConfiguration(List<Zone> zonesToLoadInto)
+		/// <param name="zonesToLoadInto">Zones to initialize new zones into</param>
+		/// <param name="configFile">If provided, use this configuration file to load zones from</param>
+		public bool InitializeFromZoneConfiguration(IList<Zone> zonesToLoadInto, string configFile = "")
 		{
-			var configFile = ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"];
+			if (string.IsNullOrEmpty(configFile))
+				configFile = ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"];
 
 			if (string.IsNullOrEmpty(configFile) || !File.Exists(configFile))
 				return false;
 
 			try
 			{
+				//strategy is to load a temporary list of zones from the configuration which will then be 
+				//used to initialize 
 				var zonesToLoadFrom = Config.LoadZones(configFile);
-
+				
 				zonesToLoadFrom.ToList().ForEach(zoneToLoadFrom =>
 				{
 					if (zonesToLoadInto.Select(zone => zone.Name).Contains(zoneToLoadFrom.Name) && zoneToLoadFrom.ZoneProgram != null)
 					{
-						var zoneToLoadInto =
-							zonesToLoadInto.First(z => zoneToLoadFrom.Name == z.Name);
-						
+						var zoneToLoadInto = zonesToLoadInto.First(z => zoneToLoadFrom.Name == z.Name);
 						var zoneProgramName = zoneToLoadFrom.ZoneProgram.Name;
-
 						InputStartingValues startingValues = zoneToLoadFrom.ZoneProgram.GetInputValues();
 
-						//TODO: Replace with starting value for input
-						//var zoneProgramParameter = zoneToLoadFrom.ZoneProgram is ParameterizedZoneProgram
-						//	? ((ParameterizedZoneProgram) zoneToLoadFrom.ZoneProgram).ProgramParameter
-						//	: null;
-						
 						InitializeZone(zoneToLoadInto, zoneProgramName, startingValues);
 					}
 				});

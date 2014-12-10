@@ -9,7 +9,7 @@ namespace ZoneLighting.ZoneProgramNS
 {
 	public abstract class ReactiveZoneProgram : ZoneProgram
 	{
-		protected abstract override void Start();
+		protected abstract override void StartCore();
 
 		public override void Stop(bool force)
 		{
