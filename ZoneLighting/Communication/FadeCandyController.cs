@@ -18,12 +18,7 @@ namespace ZoneLighting.Communication
 		private static FadeCandyController _instance;
 
 		public static FadeCandyController Instance
-		{
-			get
-			{
-				return _instance ?? (_instance = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"]));
-			}
-		}
+			=> _instance ?? (_instance = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"]));
 
 		#endregion
 
@@ -125,7 +120,6 @@ namespace ZoneLighting.Communication
 		{
 			OPCPixelFrame.CreateChannelBurstFromLEDs(leds.Cast<IFadeCandyPixel>().ToList()).ToList().ForEach(SendPixelFrame);
 		}
-
 
 		#endregion
 	}
