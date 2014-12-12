@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
 using ZoneLighting;
+using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLightingTests.Programs
@@ -41,7 +42,7 @@ namespace ZoneLightingTests.Programs
 				Lights[i].SetColor(DotColor != null
 					? (Color)DotColor
 					: colors[new Random().Next(0, colors.Count - 1)]);					//set one to white
-				LightingController.SendLEDs(Lights.Cast<LED>().ToList());				//send frame
+				LightingController.SendLEDs(Lights.Cast<ILightingControllerPixel>().ToList());				//send frame
 				ProgramCommon.Delay(DelayTime);											//pause before next iteration
 			}
 		}

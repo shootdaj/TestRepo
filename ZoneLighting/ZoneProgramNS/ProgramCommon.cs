@@ -92,7 +92,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public static void Send(this IList<ILogicalRGBLight> lights, LightingController lc)
 		{
-			lc.SendLights(lights);
+			lc.SendLights(lights.Cast<ILightingControllerPixel>().ToList());
 		}
 	}
 }

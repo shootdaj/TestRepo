@@ -8,7 +8,7 @@ using ZoneLighting.ZoneProgramNS;
 namespace ExternalPrograms
 {
 	/// <summary>
-	/// Outputs a looping rainbow to the zone using the LightingController's built-in interpolation (currently only works with FadeCandy).
+	/// Outputs a looping rainbow to the zone (currently only works with FadeCandy).
 	/// </summary>
 	[Export(typeof(ZoneProgram))]
 	[ExportMetadata("Name", "Rainbow")]

@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
 using System.Reactive.Linq;
+using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ExternalPrograms
@@ -21,7 +22,7 @@ namespace ExternalPrograms
 			AddInput<Color>("Color", color =>
 			{
 				Lights.SetColor((Color)color);
-				LightingController.SendLights(Lights);	//send frame
+				LightingController.SendLights(Lights.Cast<ILightingControllerPixel>().ToList());	//send frame
 			});	
 		}
 
