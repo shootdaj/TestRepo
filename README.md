@@ -14,6 +14,9 @@ ZoneLighting is a .NET application to create pixel-based lighting for your home 
 
 ## USER/PROGRAMMER GUIDE:
 
+**This guide is incomplete. I will be adding to it as I get time and the project takes shape. I'm still in the experimentation phase and this project may not always be in a buildable state and it may not be usable without setting up some external things. I can help anyone set it up, so if needed, please email me or post it in the issue tracker, and I will help you get your environment setup. This is a preliminary documentation and as the project matures, it will change and become more comprehensive.*
+
+
 ###Basic Concepts
 
 This application is a software layer that is designed to give the user very powerful, modular, customizable, and high-level control over lights. This statement may bring up more questions than it answers. What kind of lights? Currently it only supports the the WS2812 light strips (http://www.adafruit.com/product/1138) through the FadeCandy board. FadeCandy is a PCB that connects to a computer/microcontroller over USB and receives lighting commands which are then sent to the light strips attached to the PCB. But I've written this application in a way that allows addition of other lighting controllers. I plan on adding support for LPD8806 (http://www.adafruit.com/product/306) through Arduino or Raspberry Pi. 
@@ -81,7 +84,6 @@ Left Wing and Right Wing are zones that sit on the left and right side of my com
 
 The code for these zones is stored in the ExternalZones project and the example programs to run on this are in the ZonePrograms project. Please see those for an example on how to implement your own setup. 
 
-**This guide is incomplete. I will be adding to it as I get time and the project takes shape. I'm still in the experimentation phase and this project may not always be in a buildable state and it may not be usable without setting up some external things. I can help anyone set it up, so if needed, please email me or post it in the issue tracker, and I will help you get your environment setup. This is a preliminary documentation and as the project matures, it will change and become more comprehensive.**
 
 ## FINAL NOTES AND FUTURE PLANS
 
