@@ -9,7 +9,8 @@ namespace ZoneLighting.Communication
 		#region ILightingController
 
 		public abstract void SendPixelFrame(IPixelFrame opcPixelFrame);
-		public abstract void SendLEDs(IList<LED> leds);
+		public abstract void SendLEDs(IList<ILightingControllerPixel> leds);
+		public abstract Type PixelType { get; }
 
 		#endregion
 
@@ -27,9 +28,9 @@ namespace ZoneLighting.Communication
 		/// <summary>
 		/// Sends a list of Lights to the implementing lighting controller
 		/// </summary>
-		public void SendLights(IList<ILogicalRGBLight> lights)
+		public void SendLights(IList<ILightingControllerPixel> lights)
 		{
-			SendLEDs(lights.Cast<LED>().ToList());
+			SendLEDs(lights);
 		}
 
 		#endregion

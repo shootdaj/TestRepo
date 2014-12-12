@@ -30,15 +30,15 @@ namespace ZoneLighting.Communication
 		/// </summary>
 		/// <param name="channel">Channel this frame will be sent to.</param>
 		/// <param name="leds">List of LEDs to map.</param>
-		public static OPCPixelFrame CreateFromLEDs(byte channel, IList<LED> leds)
+		public static OPCPixelFrame CreateFromLEDs(byte channel, IList<IFadeCandyPixel> leds)
 		{
 			var data = new List<byte>(leds.Count);
 
-			foreach (LED led in leds)
+			foreach (IFadeCandyPixel led in leds)
 			{
-				data.Insert(led.FadeCandyPixel.RedIndex, led.Red);
-				data.Insert(led.FadeCandyPixel.GreenIndex, led.Green);
-				data.Insert(led.FadeCandyPixel.BlueIndex, led.Blue);
+				data.Insert(led.FadeCandyPixel.RedIndex, led.Color.R);
+				data.Insert(led.FadeCandyPixel.GreenIndex, led.Color.G);
+				data.Insert(led.FadeCandyPixel.BlueIndex, led.Color.B);
 			}
 
 			var returnValue = new OPCPixelFrame(channel, data);
@@ -51,13 +51,14 @@ namespace ZoneLighting.Communication
 		/// </summary>
 		/// <param name="leds"></param>
 		/// <returns></returns>
-		public static IList<OPCPixelFrame> CreateChannelBurstFromLEDs(IList<LED> leds)
+		public static IList<OPCPixelFrame> CreateChannelBurstFromLEDs(IList<IFadeCandyPixel> leds)
 		{
 			var returnValue = new List<OPCPixelFrame>();
 
 			foreach (var channel in leds.Select(x => x.FadeCandyPixel.Channel).Distinct())
 			{
-				returnValue.Add(CreateFromLEDs(channel, leds.Where(x => x.FadeCandyPixel.Channel == channel).ToList()));
+				returnValue.Add(CreateFromLEDs(channel,
+					leds.Where(x => x.FadeCandyPixel.Channel == channel).ToList()));
 			}
 
 			return returnValue;

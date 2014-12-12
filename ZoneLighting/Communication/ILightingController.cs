@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ZoneLighting.Communication
@@ -5,7 +6,7 @@ namespace ZoneLighting.Communication
 	public interface ILightingController
 	{
 		void SendPixelFrame(IPixelFrame opcPixelFrame);
-		void SendLEDs(IList<LED> leds);
-		
+		void SendLEDs(IList<ILightingControllerPixel> leds);
+		Type PixelType { get; }
 	}
 }

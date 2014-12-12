@@ -65,12 +65,14 @@
     <Compile Include="Communication\FadeCandyController.cs" />
     <Compile Include="Communication\FadeCandyPixel.cs" />
     <Compile Include="Communication\ILightingController.cs" />
+    <Compile Include="Communication\ILightingControllerPixel.cs" />
     <Compile Include="Communication\LightingController.cs" />
     <Compile Include="Communication\OPCPacket.cs" />
     <Compile Include="Communication\OPCPixelFrame.cs" />
     <Compile Include="Communication\PhysicalRGBLight.cs" />
     <Compile Include="Communication\WebSocketOPCPacket.cs" />
     <Compile Include="ConfigNS\Config.cs" />
+    <Compile Include="Communication\IFadeCandyPixel.cs" />
     <Compile Include="IInitializable.cs" />
     <Compile Include="TriggerDependencyNS\Dependency.cs" />
     <Compile Include="TriggerDependencyNS\Interfaces.cs" />

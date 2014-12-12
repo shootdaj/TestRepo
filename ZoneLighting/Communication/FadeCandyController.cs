@@ -39,6 +39,8 @@ namespace ZoneLighting.Communication
 		/// </summary>
 		private WebSocket WebSocket { get; set; }
 
+		public override Type PixelType => typeof(IFadeCandyPixel);
+
 		#endregion
 
 		#region C+I+D
@@ -119,12 +121,12 @@ namespace ZoneLighting.Communication
 		/// <summary>
 		/// Sends a list of LEDs to the connected FadeCandy board.
 		/// </summary>
-		public override void SendLEDs(IList<LED> leds)
+		public override void SendLEDs(IList<ILightingControllerPixel> leds)
 		{
-			OPCPixelFrame.CreateChannelBurstFromLEDs(leds).ToList().ForEach(SendPixelFrame);
+			OPCPixelFrame.CreateChannelBurstFromLEDs(leds.Cast<IFadeCandyPixel>().ToList()).ToList().ForEach(SendPixelFrame);
 		}
 
-		
+
 		#endregion
 	}
 

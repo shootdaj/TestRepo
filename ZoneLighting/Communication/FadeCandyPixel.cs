@@ -17,8 +17,8 @@ namespace ZoneLighting.Communication
 		}
 
 		public byte Channel { get; set; }
-		public int RedIndex { get { return PhysicalIndex * 3; }}
-		public int GreenIndex { get { return PhysicalIndex * 3 + 1; }}
-		public int BlueIndex { get { return PhysicalIndex * 3 + 2; }}
+		public int RedIndex => PhysicalIndex * 3;
+		public int GreenIndex => PhysicalIndex * 3 + 1;
+		public int BlueIndex => PhysicalIndex * 3 + 2;
 	}
 }
