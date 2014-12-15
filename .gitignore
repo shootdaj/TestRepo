@@ -33,3 +33,4 @@ ProgramDLLs
 ZoneDLLs
 ZoneLighting.sln.ide/*
 *.config
+packages*/
