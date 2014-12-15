@@ -244,3 +244,4 @@ ZoneDLLs
 ZoneLighting.sln.ide/*
 *.config
 packages*/
+!NuGet.exe
