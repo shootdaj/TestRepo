@@ -17,6 +17,9 @@ namespace ZoneLightingTests
 {
 	public class ZoneScaffolderTests
 	{
+		/// <summary>
+		/// Makes sure that Initi
+		/// </summary>
 		[Fact]
 		public void InitializeFromZoneConfiguration_Works()
 		{
@@ -33,14 +36,7 @@ namespace ZoneLightingTests
 			}
 
 			InputStartingValues startingValues = new InputStartingValues {{"DelayTime", 30}, {"DotColor", Color.Red}};
-
 			var zoneProgram = new ScrollDot();
-
-
-			//Need to either create folders from which ZLM.ZoneProgramFactories will be populated using MEF or make a way 
-			//
-
-
 
 			//initialize zone
 			ZoneScaffolder.Instance.InitializeZone(zone, zoneProgram, startingValues);

@@ -11,7 +11,7 @@ namespace ZoneLightingTests
 {
 	public class ZoneProgramInputTests
 	{
-		private static void AddConsoleMethod()
+		private static void AddConsoleListener()
 		{
 			Debug.Listeners.Add(new DefaultTraceListener());
 		}
@@ -19,7 +19,7 @@ namespace ZoneLightingTests
 		[Fact]
 		public void ValueDeserializesWithUnderlyingType()
 		{
-			AddConsoleMethod();
+			AddConsoleListener();
 			var jsonSerializerSettings = new JsonSerializerSettings()
 			{
 				TypeNameHandling = TypeNameHandling.All,
@@ -49,7 +49,7 @@ namespace ZoneLightingTests
 		[Fact]
 		public void ValueDeserializesWithUnderlyingType2()
 		{
-			AddConsoleMethod();
+			AddConsoleListener();
 			var jsonSerializerSettings = new JsonSerializerSettings()
 			{
 				TypeNameHandling = TypeNameHandling.All,
@@ -78,7 +78,7 @@ namespace ZoneLightingTests
 		[Fact]
 		public void ValueDeserializesWithUnderlyingType3()
 		{
-			AddConsoleMethod();
+			AddConsoleListener();
 			var jsonSerializerSettings = new JsonSerializerSettings()
 			{
 				TypeNameHandling = TypeNameHandling.All,
@@ -110,7 +110,7 @@ namespace ZoneLightingTests
 			});
 
 			var serializedDotColor = JsonConvert.SerializeObject(dotColor, jsonSerializerSettings);
-
+			
 			var deserializedDotColor = JsonConvert.DeserializeObject<ZoneProgramInput>(serializedDotColor, jsonDeserializerSettings);
 
 			Console.WriteLine(deserializedDotColor.Value.GetType());

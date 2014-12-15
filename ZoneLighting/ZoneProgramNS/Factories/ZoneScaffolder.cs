@@ -134,7 +134,9 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 			try
 			{
 				//strategy is to load a temporary list of zones from the configuration which will then be 
-				//used to initialize 
+				//used to initialize zonesToLoadInto. Note that this temporary list of zones is scoped to this method
+				//It is used only to get the important values like the program and input starting values and initialize
+				//zonesToLoadInto from those values.
 				var zonesToLoadFrom = Config.LoadZones(configFile);
 				
 				zonesToLoadFrom.ToList().ForEach(zoneToLoadFrom =>

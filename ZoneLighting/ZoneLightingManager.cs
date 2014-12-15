@@ -33,15 +33,9 @@ namespace ZoneLighting
 		/// <summary>
 		/// All zones that can be managed by this class.
 		/// </summary>
-		[ImportMany(typeof(Zone), AllowRecomposition = true)] //TODO: Do composition at runtime rather than using attributes.
+		[ImportMany(typeof(Zone), AllowRecomposition = true)]
 		public IList<Zone> Zones { get; set; } = new List<Zone>();
 
-		///// <summary>
-		/////	This factory member will provide the various implementations of zone programs that are to be loaded from external modules.
-		///// </summary>
-		//[ImportMany(typeof(ZoneProgram), AllowRecomposition = true)]
-		//private IEnumerable<ExportFactory<ZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; }
-		
 		/// <summary>
 		/// Directory Catalog that stores catalog for the external zones.
 		/// </summary>
@@ -145,6 +139,13 @@ namespace ZoneLighting
 		/// </summary>
 		private void InitializeAllZones()
 		{
+			if (ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"]?.ToLower() == "true")
+			{
+				
+			}
+
+
+
 			//var scrollDotDictionary = new Dictionary<string, object>();
 			//scrollDotDictionary.Add("DelayTime", 30);
 			//scrollDotDictionary.Add("Color", (Color?)Color.Chartreuse);
