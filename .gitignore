@@ -29,9 +29,7 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 ZoneLighting.jmconfig
 ZoneLighting.jtconfig
-Console/App.config
 ProgramDLLs
+ZoneDLLs
 ZoneLighting.sln.ide/*
 *.config
-*.DotSettings
-*.json
