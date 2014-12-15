@@ -31,7 +31,7 @@ ZoneLighting.jmconfig
 ZoneLighting.jtconfig
 Console/App.config
 ProgramDLLs
-ZoneLighting.sln.ide/tmp.edb
+ZoneLighting.sln.ide/*
 *.config
 *.DotSettings
 *.json
