@@ -80,7 +80,6 @@
     <Compile Include="ZoneNS\FadeCandyZone.cs" />
     <Compile Include="ZoneNS\ZonesJsonConverter.cs" />
     <Compile Include="LED.cs" />
-    <Compile Include="LightingFrame.cs" />
     <Compile Include="LightingPattern.cs" />
     <Compile Include="ZoneProgramNS\Factories\ZoneScaffolder.cs" />
     <Compile Include="ZoneProgramNS\InputStartingValues.cs" />

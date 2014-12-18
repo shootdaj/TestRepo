@@ -4,7 +4,8 @@ using ZoneLighting.Communication;
 namespace ZoneLighting
 {
 	/// <summary>
-	/// http://www.codeproject.com/Articles/10072/Simulated-Multiple-Inheritance-Pattern-for-C
+	/// Represents an LED. This class must implement the ILightingControllerPixel for each type of lighting controller
+	/// that it needs to be output on.
 	/// </summary>
 	public class LED : ILogicalRGBLight, IFadeCandyPixel
 	{
