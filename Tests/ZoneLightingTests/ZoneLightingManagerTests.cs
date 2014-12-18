@@ -17,9 +17,6 @@ namespace ZoneLightingTests
 {
 	public class ZoneScaffolderTests
 	{
-		/// <summary>
-		/// Makes sure that Initi
-		/// </summary>
 		[Fact]
 		public void InitializeFromZoneConfiguration_Works()
 		{
@@ -37,15 +34,10 @@ namespace ZoneLightingTests
 
 			InputStartingValues startingValues = new InputStartingValues {{"DelayTime", 30}, {"DotColor", Color.Red}};
 			var zoneProgram = new ScrollDot();
-
-			//initialize zone
-			ZoneScaffolder.Instance.InitializeZone(zone, zoneProgram, startingValues);
-
-			//save zone
-			Config.SaveZones(zones, ConfigurationManager.AppSettings["TestZoneConfigurationSaveFile"]);
-
-			//uninitialize
-			zones.ToList().ForEach(z => z.Uninitialize(true));
+			
+			ZoneScaffolder.Instance.InitializeZone(zone, zoneProgram, startingValues);						//initialize zone
+			Config.SaveZones(zones, ConfigurationManager.AppSettings["TestZoneConfigurationSaveFile"]);		//save zone
+			zones.ToList().ForEach(z => z.Uninitialize(true));												//uninitialize
 
 			//act
 			ZoneScaffolder.Instance.InitializeFromZoneConfiguration(zones, ConfigurationManager.AppSettings["TestZoneConfigurationSaveFile"]);

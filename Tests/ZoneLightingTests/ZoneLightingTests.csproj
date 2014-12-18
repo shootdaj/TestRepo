@@ -53,6 +53,7 @@
     <Compile Include="Programs\Rainbow.cs" />
     <Compile Include="Programs\ScrollDot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnderlyingTypeConverterTests.cs" />
     <Compile Include="ZoneLightingManagerTests.cs" />
     <Compile Include="ZoneProgramInputTests.cs" />
   </ItemGroup>
