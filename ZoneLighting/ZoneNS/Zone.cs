@@ -25,14 +25,9 @@ namespace ZoneLighting.ZoneNS
 		public string Name;
 
 		/// <summary>
-		/// Zones can contain other zones in a recursive fashion.
-		/// </summary>
-		public IList<Zone> Zones { get; private set; }
-
-		/// <summary>
 		/// All lights in the zone.
 		/// </summary>
-		public IList<ILogicalRGBLight> Lights { get; set; }
+		public IList<ILogicalRGBLight> Lights { get; private set; }
 
 		/// <summary>
 		/// The Lights list as a dictionary with the logical index as the key and the light as the value.
@@ -59,7 +54,6 @@ namespace ZoneLighting.ZoneNS
 
 		public Zone(LightingController lightingController, string name = "", ZoneProgram program = null, InputStartingValues inputStartingValues = null)
 		{
-			Zones = new List<Zone>();
 			Lights = new List<ILogicalRGBLight>();
 			LightingController = lightingController;
 			Name = name;
@@ -80,12 +74,6 @@ namespace ZoneLighting.ZoneNS
 			{
 				if (ZoneProgram != null)
 					StartProgram(inputStartingValues);
-
-				//TODO: this needs to be figured out - if passing the same dictionary to the subzone will work or not
-				//foreach (var zone in Zones)
-				//{
-				//	zone.Initialize(inputStartingValues);
-				//}
 				Initialized = true;
 			}
 		}
@@ -106,12 +94,6 @@ namespace ZoneLighting.ZoneNS
 			if (Initialized)
 			{
 				StopProgram(force);
-
-				foreach (var zone in Zones)
-				{
-					zone.Uninitialize();
-				}
-
 				Initialized = false;
 			}
 		}
@@ -119,8 +101,6 @@ namespace ZoneLighting.ZoneNS
 		public void Dispose(bool force)
 		{
 			Uninitialize(force);
-			Zones.Clear();
-			Zones = null;
 			Lights.Clear();
 			Lights = null;
 			ZoneProgram = null;
@@ -162,11 +142,6 @@ namespace ZoneLighting.ZoneNS
 		public void StartProgram(InputStartingValues inputStartingValues = null)
 		{
 			ZoneProgram.Start(inputStartingValues);
-
-			//if (ZoneProgram is LoopingZoneProgram)
-			//	((LoopingZoneProgram)ZoneProgram).StartBase(inputStartingValues);
-			//else
-			//	ZoneProgram.StartBase();
 		}
 
 		/// <summary>
@@ -193,15 +168,6 @@ namespace ZoneLighting.ZoneNS
 		public void AddLight(ILogicalRGBLight light)
 		{
 			Lights.Add(light);
-		}
-
-		/// <summary>
-		/// Adds a new zone to this zone recursively.
-		/// </summary>
-		/// <param name="zone"></param>
-		public void AddZone(Zone zone)
-		{
-			Zones.Add(zone);
 		}
 
 		#endregion

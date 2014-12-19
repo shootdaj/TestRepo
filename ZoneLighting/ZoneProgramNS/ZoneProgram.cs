@@ -74,9 +74,11 @@ namespace ZoneLighting.ZoneProgramNS
 		protected ZoneProgram()
 		{
 			Type thisType = this.GetType();
-			Name =
-				(string)thisType.GetCustomAttributes(typeof(ExportMetadataAttribute), false)
-					.Cast<ExportMetadataAttribute>().First(attr => attr.Name == "Name").Value;
+			//set the name of the program based on attribute
+			if (thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false).Any())
+				Name =
+					(string) thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false)
+						.Cast<ExportMetadataAttribute>().First(attr => attr.Name == "Name").Value;
 			Construct();
 		}
 
