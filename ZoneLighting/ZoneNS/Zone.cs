@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Net.Configuration;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.ZoneNS
 {
 	/// <summary>
-	/// Represents a zone (room or whatever) that contains the lights to be controlled.
+	/// Represents a zone that contains the lights to be controlled. A zone is the unit of control 
+	/// from the ZoneLightingManager's point of view.
 	/// </summary>
 	[DataContract]
     public class Zone : IDisposable
