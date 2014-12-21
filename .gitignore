@@ -245,3 +245,4 @@ ZoneLighting.sln.ide/*
 *.config
 packages*/
 !NuGet.exe
+!Tests/ZoneLightingTests/Resources/*

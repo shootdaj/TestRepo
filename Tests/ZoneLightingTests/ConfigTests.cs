@@ -15,6 +15,10 @@ namespace ZoneLightingTests
 {
     public class ConfigTests
     {
+		/// <summary>
+		/// Sets up a zone configuration, saves it, and makes sure that it deserializes with the same
+		/// properties (only some properties are checked).
+		/// </summary>
 		[Fact]
 	    public void SaveZone_SavesZoneInCorrectFormat()
 	    {

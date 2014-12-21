@@ -81,7 +81,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 
 		#region API
 
-		private ZoneProgram CreateZoneProgram(string programName, IList<ExportFactory<ZoneProgram, IZoneProgramMetadata>> zoneProgramFactoriesList)
+		internal ZoneProgram CreateZoneProgram(string programName, IList<ExportFactory<ZoneProgram, IZoneProgramMetadata>> zoneProgramFactoriesList)
 		{
 			return zoneProgramFactoriesList.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value;
 		}
