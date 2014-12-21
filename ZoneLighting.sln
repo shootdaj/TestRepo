@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9F3FC0
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebController", "WebController\WebController.csproj", "{5047D4BC-2D01-4F12-A1C1-9C96FDC3FB74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{C4A346A2-F4A2-49E6-81B8-B56C2632DF72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4A346A2-F4A2-49E6-81B8-B56C2632DF72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4A346A2-F4A2-49E6-81B8-B56C2632DF72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5047D4BC-2D01-4F12-A1C1-9C96FDC3FB74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5047D4BC-2D01-4F12-A1C1-9C96FDC3FB74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5047D4BC-2D01-4F12-A1C1-9C96FDC3FB74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5047D4BC-2D01-4F12-A1C1-9C96FDC3FB74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
