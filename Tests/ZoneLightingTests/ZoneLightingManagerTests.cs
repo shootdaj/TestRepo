@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FakeItEasy;
+using FakeItEasy.ExtensionSyntax.Full;
 using Xunit;
 using ZoneLighting;
 using ZoneLighting.ConfigNS;
@@ -25,22 +27,13 @@ namespace ZoneLightingTests
 			var zone = new FadeCandyZone("TestZone");
 
 			zones.Add(zone);
-			var numLights = 6;
-			byte fcChannel = 1;
-			for (int i = 0; i < numLights; i++)
-			{
-				zone.AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i));
-			}
+			zone.AddFadeCandyLights(6, 1);
 
-			InputStartingValues startingValues = new InputStartingValues {{"DelayTime", 30}, {"DotColor", Color.Red}};
-			var zoneProgram = new ScrollDot();
-			
-			ZoneScaffolder.Instance.InitializeZone(zone, zoneProgram, startingValues);						//initialize zone
-			Config.SaveZones(zones, ConfigurationManager.AppSettings["TestZoneConfigurationSaveFile"]);		//save zone
-			zones.ToList().ForEach(z => z.Uninitialize(true));												//uninitialize
+			var zoneScaffolder = new ZoneScaffolder();
+			zoneScaffolder.Initialize(ConfigurationManager.AppSettings["TestProgramModuleDirectory"]);
 
 			//act
-			ZoneScaffolder.Instance.InitializeFromZoneConfiguration(zones, ConfigurationManager.AppSettings["TestZoneConfigurationSaveFile"]);
+			zoneScaffolder.InitializeFromZoneConfiguration(zones, ConfigurationManager.AppSettings["TestZoneConfigurationSaveFile"]);
 
 			//assert
 			Assert.Equal(zone.Name, "TestZone");
@@ -60,5 +53,7 @@ namespace ZoneLightingTests
 				}
 			}
 		}
-    }
+
+		
+	}
 }

@@ -67,7 +67,7 @@ namespace ZoneLighting
 		
 		#region API
 
-		public void MapToFadeCandyPixel(byte channel, int index)
+		public void MapFadeCandyPixel(byte channel, int index)
 		{
 			FadeCandyPixel.Channel = channel;
 			FadeCandyPixel.PhysicalIndex = index;
