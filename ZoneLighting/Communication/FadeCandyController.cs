@@ -43,7 +43,6 @@ namespace ZoneLighting.Communication
 		public FadeCandyController(string serverURL)
 		{
 			ServerURL = serverURL;
-			WebSocket = new WebSocket(ServerURL);
 		}
 
 		public bool Initialized { get; private set; }
@@ -52,6 +51,7 @@ namespace ZoneLighting.Communication
 		{
 			if (!Initialized)
 			{
+				WebSocket = new WebSocket(ServerURL);
 				Connect();
 				Initialized = true;
 			}
@@ -65,11 +65,18 @@ namespace ZoneLighting.Communication
 			WebSocket.Connect();
 		}
 
+		public override void Dispose()
+		{
+			Uninitialize();
+			ServerURL = null;
+		}
+
 		public void Uninitialize()
 		{
 			if (Initialized)
 			{
 				Disconnect();
+				WebSocket = null;
 				Initialized = false;
 			}
 		}
@@ -83,11 +90,6 @@ namespace ZoneLighting.Communication
 			WebSocket.Close();
 		}
 		
-		public override void Dispose()
-		{
-			WebSocket = null;
-		}
-
 		public void AssertInit()
 		{
 			if (!Initialized)
