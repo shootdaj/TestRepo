@@ -42,6 +42,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
@@ -62,10 +66,14 @@
     <Reference Include="xunit">
       <HintPath>..\..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
     </Reference>
+    <Reference Include="xunit.extensions">
+      <HintPath>..\..\packages\xunit.extensions.1.9.2\lib\net20\xunit.extensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigTests.cs" />
     <Compile Include="FadeCandyControllerTests.cs" />
+    <Compile Include="InterruptingInputTests.cs" />
     <Compile Include="LEDTests.cs" />
     <Compile Include="Resources\Programs\StaticColor.cs" />
     <Compile Include="Resources\Programs\Rainbow.cs" />
@@ -85,7 +93,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="Resources\ZoneConfigurationTest.config" />
+    <None Include="Resources\InitializeFromZoneConfiguration_Works_TestFile.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ZoneLighting\ZoneLighting.csproj">

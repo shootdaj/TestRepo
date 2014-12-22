@@ -15,7 +15,7 @@ namespace ZoneLightingTests.Resources.Programs
 	{
 		protected override void StartCore()
 		{
-			AddInput<Color>("Color", color =>
+			AddInterruptingInput<Color>("Color", color =>
 			{
 				Lights.SetColor((Color)color);
 				LightingController.SendLights(Lights.Cast<ILightingControllerPixel>().ToList());	//send frame

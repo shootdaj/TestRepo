@@ -48,10 +48,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <summary>
 		/// Easy accessor for Lights in Zone.
 		/// </summary>
-		public IList<ILogicalRGBLight> Lights
-		{
-			get { return Zone.Lights; }
-		}
+		public IList<ILogicalRGBLight> Lights => Zone.Lights;
 
 		//[DataMember]
 		//private UntypedZoneProgramInputCollection UntypedInputs { get; set; } = new UntypedZoneProgramInputCollection();
@@ -93,7 +90,7 @@ namespace ZoneLighting.ZoneProgramNS
 			//TODO: Implement pause logic
 		}
 		
-		public void Resume()
+		public virtual void Resume()
 		{
 			//TODO: Implement resume logic
 		}
@@ -202,7 +199,12 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public ZoneProgramInput GetInput(string name)
 		{
-			return Inputs[name];
+			if (Inputs.Contains(name))
+				return Inputs[name];
+			else
+			{
+				throw new Exception("No input with the name '" + name + "' found in this program.");
+			}
 		}
 
 		public void SetInput(string name, object data)

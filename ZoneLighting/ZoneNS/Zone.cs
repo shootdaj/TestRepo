@@ -52,7 +52,7 @@ namespace ZoneLighting.ZoneNS
 		/// Programs that can interrupt the main program for things such as notification.
 		/// </summary>
 		[DataMember]
-		public IList<ReactiveZoneProgram> InterruptingPrograms { get; private set; }
+		public IList<ReactiveZoneProgram> InterruptingPrograms { get; private set; } = new List<ReactiveZoneProgram>();
 
 		private ActionBlock<InterruptInfo> InterruptQueue { get; set; }
 
@@ -206,17 +206,19 @@ namespace ZoneLighting.ZoneNS
 		/// <param name="interruptingProgram"></param>
 		public void AddInterruptingProgram(ReactiveZoneProgram interruptingProgram, bool startProgram = true, InputStartingValues inputStartingValues = null)
 		{
-			interruptingProgram.SetInterruptQueue(InterruptQueue);
 			InterruptingPrograms.Add(interruptingProgram);
+			interruptingProgram.Zone = this;
 			if (startProgram)
 				StartInterruptingProgram(interruptingProgram, inputStartingValues);
+			//interruptingProgram.SetInterruptQueue(InterruptQueue); - this is already done in ZoneProgram.Start()
 		}
 
 		public void RemoveInterruptingProgram(string name)
 		{
 			var interruptingProgram = InterruptingPrograms.First(program => program.Name == name);
 			StopInterruptingProgram(interruptingProgram);
-			interruptingProgram.RemoveInterruptQueue();
+			interruptingProgram.Zone = null;
+            interruptingProgram.RemoveInterruptQueue();
 			InterruptingPrograms.Remove(interruptingProgram);
 		}
 
