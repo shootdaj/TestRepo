@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
-using ZoneLighting;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgramNS;
 
-namespace ZoneLightingTests.Programs
+namespace ZoneLightingTests.Resources.Programs
 {
 	/// <summary>
 	/// Scrolls a dot across the entire length of Lights

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading.Tasks.Dataflow;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgramNS;
 
@@ -47,6 +48,18 @@ namespace ZoneLighting.ZoneNS
 		[DataMember]
 		public ZoneProgram ZoneProgram { get; private set; }
 
+		/// <summary>
+		/// Programs that can interrupt the main program for things such as notification.
+		/// </summary>
+		[DataMember]
+		public IList<ReactiveZoneProgram> InterruptingPrograms { get; private set; }
+
+		private ActionBlock<InterruptInfo> InterruptQueue { get; set; }
+
+		//private Action<InterruptInfo> ProcessInterruption(InterruptInfo interruptInfo)
+		//	{
+
+
 		#endregion
 
 		#region C+I
@@ -56,6 +69,24 @@ namespace ZoneLighting.ZoneNS
 			Lights = new List<ILogicalRGBLight>();
 			LightingController = lightingController;
 			Name = name;
+
+			//set interrupt processing
+			InterruptQueue = new ActionBlock<InterruptInfo>(
+			interruptInfo =>
+			{
+				//when a new request to interrupt the background program is detected, check if the request is coming from the BG program. 
+				//if it is, then no need to pause the bg program. simply
+				if (!ZoneProgram.Inputs.Any(input => input.HasInputSubject(interruptInfo.InputSubject)))
+				{
+					ZoneProgram.Pause(); //pause the bg program
+					interruptInfo.StopSubject.Subscribe(data => ZoneProgram.Resume());			//hook up the stop call of the interrupting input's program to resume the BG program
+				}
+				interruptInfo.InputSubject.OnNext(interruptInfo.Data);		//start the routine that was requested
+				
+				//TODO: Add capability to have a timeout in case the interrupting program never calls the StopSubject
+			});
+
+			//start program, if one is passed in
 			if (program == null) return;
 			if (inputStartingValues == null)
 			{
@@ -140,7 +171,25 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public void StartProgram(InputStartingValues inputStartingValues = null)
 		{
-			ZoneProgram.Start(inputStartingValues);
+			ZoneProgram.Start(inputStartingValues, InterruptQueue);
+		}
+
+		/// <summary>
+		/// Starts the given interrupting program.
+		/// </summary>
+		/// <param name="interruptingProgram">Interrupting program to start</param>
+		/// <param name="inputStartingValues">Input values to start program with</param>
+		public void StartInterruptingProgram(ReactiveZoneProgram interruptingProgram, InputStartingValues inputStartingValues = null)
+		{
+			interruptingProgram.Start(inputStartingValues, InterruptQueue);
+		}
+
+		/// <summary>
+		/// Stops the given interrupting program.
+		/// </summary>
+		public void StopInterruptingProgram(ReactiveZoneProgram interruptingProgram, bool force = false)
+		{
+			interruptingProgram.Stop(force);
 		}
 
 		/// <summary>
@@ -149,6 +198,26 @@ namespace ZoneLighting.ZoneNS
 		public void StopProgram(bool force = false)
 		{
 			ZoneProgram.Stop(force);
+		}
+
+		/// <summary>
+		/// Adds an interrupting program to the zone.
+		/// </summary>
+		/// <param name="interruptingProgram"></param>
+		public void AddInterruptingProgram(ReactiveZoneProgram interruptingProgram, bool startProgram = true, InputStartingValues inputStartingValues = null)
+		{
+			interruptingProgram.SetInterruptQueue(InterruptQueue);
+			InterruptingPrograms.Add(interruptingProgram);
+			if (startProgram)
+				StartInterruptingProgram(interruptingProgram, inputStartingValues);
+		}
+
+		public void RemoveInterruptingProgram(string name)
+		{
+			var interruptingProgram = InterruptingPrograms.First(program => program.Name == name);
+			StopInterruptingProgram(interruptingProgram);
+			interruptingProgram.RemoveInterruptQueue();
+			InterruptingPrograms.Remove(interruptingProgram);
 		}
 
 		/// <summary>

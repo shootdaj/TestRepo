@@ -4,7 +4,7 @@ using System.Linq;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgramNS;
 
-namespace ExternalPrograms
+namespace ZoneLightingTests.Resources.Programs
 {
 	/// <summary>
 	/// Outputs a static color to the zone.
@@ -13,26 +13,9 @@ namespace ExternalPrograms
 	[ExportMetadata("Name", "StaticColor")]
 	public class StaticColor : ReactiveZoneProgram
 	{
-		//protected override void StartCore()
-		//{
-		//	//AddInput<Color>("Color", color =>
-		//	//{
-		//	//	Lights.SetColor((Color)color);
-		//	//	LightingController.SendLights(Lights.Cast<ILightingControllerPixel>().ToList());	//send frame
-		//	//});
-
-		//	AddInterruptingInput<Color>("Color", color =>
-		//	{
-		//		Lights.SetColor((Color)color);
-		//		LightingController.SendLights(Lights.Cast<ILightingControllerPixel>().ToList());	//send frame
-		//	});
-
-
-		//}
-
 		protected override void StartCore()
 		{
-			AddInterruptingInput<Color>("Color", color =>
+			AddInput<Color>("Color", color =>
 			{
 				Lights.SetColor((Color)color);
 				LightingController.SendLights(Lights.Cast<ILightingControllerPixel>().ToList());	//send frame

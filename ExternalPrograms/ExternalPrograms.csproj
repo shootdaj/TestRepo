@@ -56,13 +56,13 @@
     <Compile Include="StaticColor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ZoneLighting\ZoneLighting.csproj">
-      <Project>{fe00db62-6c3c-4d04-9f03-23da814298b6}</Project>
-      <Name>ZoneLighting</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\ZoneLighting\ZoneLighting.csproj">
+      <Project>{FE00DB62-6C3C-4D04-9F03-23DA814298B6}</Project>
+      <Name>ZoneLighting</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

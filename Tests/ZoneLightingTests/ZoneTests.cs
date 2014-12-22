@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks.Dataflow;
 using FakeItEasy;
 using FakeItEasy.ExtensionSyntax.Full;
 using Xunit;
@@ -37,7 +38,7 @@ namespace ZoneLightingTests
 		{
 			var zone = A.Fake<Zone>();
 			zone.StartProgram();
-			A.CallTo(() => zone.ZoneProgram.Start(null)).MustHaveHappened(Repeated.Exactly.Once);
+			A.CallTo(() => zone.ZoneProgram.Start(null, A.Dummy<ActionBlock<InterruptInfo>>())).MustHaveHappened(Repeated.Exactly.Once);
 		}
 	}
 }

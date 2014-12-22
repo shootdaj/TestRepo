@@ -13,7 +13,6 @@ using ZoneLighting.ConfigNS;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Factories;
-using ZoneLightingTests.Programs;
 
 namespace ZoneLightingTests
 {

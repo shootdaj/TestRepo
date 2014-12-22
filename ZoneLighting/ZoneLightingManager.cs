@@ -61,7 +61,7 @@ namespace ZoneLighting
 			if (!Initialized)
 			{
 				InitLightingControllers();
-				ComposeWithExternalModules();
+				//ComposeWithExternalModules(); TODO: Uncomment
 				InitZoneScaffolder();
 				InitializeAllZones();
 				Initialized = true;
@@ -139,37 +139,51 @@ namespace ZoneLighting
 		/// </summary>
 		private void InitializeAllZones()
 		{
-			if (ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"]?.ToLower() == "true")
-			{
-				
-			}
+			var leftWing = new FadeCandyZone("LeftWing");
+			leftWing.AddFadeCandyLights(6, 1);
+
+			var rightWing = new FadeCandyZone("RightWing");
+			rightWing.AddFadeCandyLights(12, 2);
+
+			Zones.Add(leftWing);
+			Zones.Add(rightWing);
+
+		//TODO: Uncomment {
+		//var configFilePath = ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"];
+
+		//if (!string.IsNullOrEmpty(configFilePath))
+		//{
+		//	ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones, configFilePath);
+		//}
+
+
+		//}
 
 
 
-			//var scrollDotDictionary = new Dictionary<string, object>();
-			//scrollDotDictionary.Add("DelayTime", 30);
-			//scrollDotDictionary.Add("Color", (Color?)Color.Chartreuse);
+		//var scrollDotDictionary = new Dictionary<string, object>();
+		//scrollDotDictionary.Add("DelayTime", 30);
+		//scrollDotDictionary.Add("Color", (Color?)Color.Chartreuse);
 
-			//ZoneScaffolder.InitializeZone(Zones[0], "ScrollDot", scrollDotDictionary);
+		//ZoneScaffolder.InitializeZone(Zones[0], "ScrollDot", scrollDotDictionary);
 
-			//var rainbowDictionary = new Dictionary<string, object>();
-			//rainbowDictionary.Add("DelayTime", 1);
-			//rainbowDictionary.Add("Speed", 1);
+		//var rainbowDictionary = new Dictionary<string, object>();
+		//rainbowDictionary.Add("DelayTime", 1);
+		//rainbowDictionary.Add("Speed", 1);
 
-			//ZoneScaffolder.InitializeZone(Zones[1], "Rainbow", rainbowDictionary);
+		//ZoneScaffolder.InitializeZone(Zones[1], "Rainbow", rainbowDictionary);
 
-			InputStartingValues startingValues = //null;
+		InputStartingValues startingValues = //null;
 				new InputStartingValues();
-			startingValues.Add("DelayTime", 30);
-			startingValues.Add("DotColor", Color.Chartreuse);
+			startingValues.Add("Color", Color.Red);
 
-			ZoneScaffolder.Instance.InitializeZone(Zones[0], "ScrollDot", startingValues);
+			ZoneScaffolder.Instance.InitializeZone(Zones[0], "StaticColor", startingValues);
 
-			Config.SaveZones(Zones, ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"]);
+			//Config.SaveZones(Zones, ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"]);
 
-			Zones.ToList().ForEach(z => z.Uninitialize(true));
+			//Zones.ToList().ForEach(z => z.Uninitialize(true));
 
-			ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones);
+			//ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones);
 		}
 
 		public void Uninitialize()

@@ -9,13 +9,7 @@ namespace ExternalZones
 	{
 		public LeftWing() : base("LeftWing")
 		{
-			var numLights = 6;
-			byte fcChannel = 1;
-
-			for (int i = 0; i < numLights; i++)
-			{
-				AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i));
-			}
+			AddFadeCandyLights(6, 1);
 		}
 	}
 }
