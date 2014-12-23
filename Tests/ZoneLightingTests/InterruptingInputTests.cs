@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using FakeItEasy;
-using NUnit.Framework;
 using Xunit;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
@@ -27,7 +20,8 @@ namespace ZoneLightingTests
 			var zoneScaffolder = new ZoneScaffolder();
 			zoneScaffolder.Initialize(ConfigurationManager.AppSettings["TestProgramModuleDirectory"]);
 			
-			var leftWing = A.Fake<FadeCandyZone>();
+			var leftWing =   //new FadeCandyZone("LeftWing");
+				A.Fake<FadeCandyZone>();
 			leftWing.AddFadeCandyLights(6, 1);
 
 			var scrollDotDictionary = new InputStartingValues();
@@ -46,6 +40,7 @@ namespace ZoneLightingTests
 			//assert - figure out how to inject these into non-fake zone or figure out how to convert leftWing into
 			A.CallTo(() => leftWing.ZoneProgram.Pause()).MustHaveHappened(Repeated.Exactly.Once);
 			A.CallTo(() => leftWing.ZoneProgram.Resume()).MustHaveHappened(Repeated.Exactly.Once);
+			A.CallTo(() => leftWing.InterruptingPrograms[0].Start(null, A.Dummy<ActionBlock<InterruptInfo>>())).MustHaveHappened(Repeated.Exactly.Once);
 		}
 	}
 }

@@ -61,7 +61,7 @@ namespace ZoneLighting
 			if (!Initialized)
 			{
 				InitLightingControllers();
-				//ComposeWithExternalModules(); TODO: Uncomment
+				ComposeWithExternalModules(); //TODO: Uncomment
 				InitZoneScaffolder();
 				InitializeAllZones();
 				Initialized = true;
@@ -148,32 +148,32 @@ namespace ZoneLighting
 			Zones.Add(leftWing);
 			Zones.Add(rightWing);
 
-		//TODO: Uncomment {
-		//var configFilePath = ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"];
+			//TODO: Uncomment {
+			//var configFilePath = ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"];
 
-		//if (!string.IsNullOrEmpty(configFilePath))
-		//{
-		//	ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones, configFilePath);
-		//}
-
-
-		//}
+			//if (!string.IsNullOrEmpty(configFilePath))
+			//{
+			//	ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones, configFilePath);
+			//}
 
 
+			//}
 
-		//var scrollDotDictionary = new Dictionary<string, object>();
-		//scrollDotDictionary.Add("DelayTime", 30);
-		//scrollDotDictionary.Add("Color", (Color?)Color.Chartreuse);
 
-		//ZoneScaffolder.InitializeZone(Zones[0], "ScrollDot", scrollDotDictionary);
 
-		//var rainbowDictionary = new Dictionary<string, object>();
-		//rainbowDictionary.Add("DelayTime", 1);
-		//rainbowDictionary.Add("Speed", 1);
+			//var scrollDotDictionary = new Dictionary<string, object>();
+			//scrollDotDictionary.Add("DelayTime", 30);
+			//scrollDotDictionary.Add("Color", (Color?)Color.Chartreuse);
 
-		//ZoneScaffolder.InitializeZone(Zones[1], "Rainbow", rainbowDictionary);
+			//ZoneScaffolder.InitializeZone(Zones[0], "ScrollDot", scrollDotDictionary);
 
-		InputStartingValues startingValues = //null;
+			//var rainbowDictionary = new Dictionary<string, object>();
+			//rainbowDictionary.Add("DelayTime", 1);
+			//rainbowDictionary.Add("Speed", 1);
+
+			//ZoneScaffolder.InitializeZone(Zones[1], "Rainbow", rainbowDictionary);
+
+			InputStartingValues startingValues = //null;
 				new InputStartingValues();
 			startingValues.Add("Color", Color.Red);
 
