@@ -14,14 +14,13 @@ namespace ZoneLightingTests
 	public class InterruptingInputTests
 	{
 		[Fact]
-		public void InterruptingInput_InterruptsBackgroundProgram()
+		public void InterruptingInput_InterruptsBackgroundProgramAndStartsReactiveProgram()
 		{
 			//arrange
 			var zoneScaffolder = new ZoneScaffolder();
 			zoneScaffolder.Initialize(ConfigurationManager.AppSettings["TestProgramModuleDirectory"]);
 			
-			var leftWing =   //new FadeCandyZone("LeftWing");
-				A.Fake<FadeCandyZone>();
+			var leftWing = new FadeCandyZone("LeftWing");
 			leftWing.AddFadeCandyLights(6, 1);
 
 			var scrollDotDictionary = new InputStartingValues();
@@ -37,10 +36,12 @@ namespace ZoneLightingTests
 			//act
 			leftWing.InterruptingPrograms[0].Inputs[0].SetValue(Color.Blue);
 
-			//assert - figure out how to inject these into non-fake zone or figure out how to convert leftWing into
-			A.CallTo(() => leftWing.ZoneProgram.Pause()).MustHaveHappened(Repeated.Exactly.Once);
-			A.CallTo(() => leftWing.ZoneProgram.Resume()).MustHaveHappened(Repeated.Exactly.Once);
-			A.CallTo(() => leftWing.InterruptingPrograms[0].Start(null, A.Dummy<ActionBlock<InterruptInfo>>())).MustHaveHappened(Repeated.Exactly.Once);
+			//assert
+			Assert.True(leftWing.ZoneProgram.PauseTrigger.WaitForFire(1000));
+			Assert.True(((InterruptingInput) leftWing.InterruptingPrograms[0].Inputs[0]).StartTrigger.WaitForFire(1000));
+			Assert.True(((StaticColor)leftWing.InterruptingPrograms[0]).ChangeLightColorTrigger.WaitForFire(1000));
+			Assert.True(((InterruptingInput) leftWing.InterruptingPrograms[0].Inputs[0]).StopTrigger.WaitForFire(1000));
+			Assert.True(leftWing.ZoneProgram.ResumeTrigger.WaitForFire(1000));
 		}
-	}
+	}	
 }

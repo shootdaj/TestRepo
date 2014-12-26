@@ -30,7 +30,7 @@ namespace ZoneLighting.ZoneProgramNS
 					if (LoopCTS.IsCancellationRequested)
 						break;
 				}
-				StopTrigger.Fire(null, null);
+				StopTrigger.Fire(this, null);
 			}, LoopCTS.Token);
 
 			RunProgram.Start();
@@ -40,6 +40,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public abstract void Setup();
 		public abstract void Loop();
+
 
 		#endregion
 
@@ -69,6 +70,18 @@ namespace ZoneLighting.ZoneProgramNS
 				LoopCTS.Cancel();
 				StopTrigger.WaitForFire();
 			}
+
+			StopTestingTrigger.Fire(this, null);
+		}
+
+		public override void Resume()
+		{
+			//TODO: Implement resume logic
+		}
+
+		protected override void Pause()
+		{
+			//TODO: Implement pause logic
 		}
 
 		#endregion

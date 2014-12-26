@@ -55,11 +55,7 @@ namespace ZoneLighting.ZoneNS
 		public IList<ReactiveZoneProgram> InterruptingPrograms { get; private set; } = new List<ReactiveZoneProgram>();
 
 		private ActionBlock<InterruptInfo> InterruptQueue { get; set; }
-
-		//private Action<InterruptInfo> ProcessInterruption(InterruptInfo interruptInfo)
-		//	{
-
-
+		
 		#endregion
 
 		#region C+I
@@ -78,8 +74,8 @@ namespace ZoneLighting.ZoneNS
 				//if it is, then no need to pause the bg program. simply
 				if (!ZoneProgram.Inputs.Any(input => input.HasInputSubject(interruptInfo.InputSubject)))
 				{
-					ZoneProgram.Pause(); //pause the bg program
-					interruptInfo.StopSubject.Subscribe(data => ZoneProgram.Resume());			//hook up the stop call of the interrupting input's program to resume the BG program
+					ZoneProgram.PauseCore(); //pause the bg program
+					interruptInfo.StopSubject.Subscribe(data => ZoneProgram.ResumeCore());			//hook up the stop call of the interrupting input's program to resume the BG program
 				}
 				interruptInfo.InputSubject.OnNext(interruptInfo.Data);		//start the routine that was requested
 				
@@ -134,6 +130,9 @@ namespace ZoneLighting.ZoneNS
 			Lights.Clear();
 			Lights = null;
 			ZoneProgram = null;
+			InterruptingPrograms.ToList().ForEach(p => p.Dispose());
+			InterruptingPrograms.Clear();
+			InterruptingPrograms = null;
 			LightingController = null;
 			Name = null;
 		}
@@ -210,7 +209,6 @@ namespace ZoneLighting.ZoneNS
 			interruptingProgram.Zone = this;
 			if (startProgram)
 				StartInterruptingProgram(interruptingProgram, inputStartingValues);
-			//interruptingProgram.SetInterruptQueue(InterruptQueue); - this is already done in ZoneProgram.Start()
 		}
 
 		public void RemoveInterruptingProgram(string name)

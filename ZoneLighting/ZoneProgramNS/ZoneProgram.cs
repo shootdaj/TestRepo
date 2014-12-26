@@ -59,6 +59,8 @@ namespace ZoneLighting.ZoneProgramNS
 		[DataMember]
 		public ZoneProgramInputCollection Inputs { get; private set; } = new ZoneProgramInputCollection();
 
+		public Trigger StopTestingTrigger { get; } = new Trigger("ZoneProgram.StopTestingTrigger");
+
 		#endregion CORE
 
 		#region C+I+D
@@ -72,7 +74,7 @@ namespace ZoneLighting.ZoneProgramNS
 		protected ZoneProgram()
 		{
 			Type thisType = this.GetType();
-			//set the name of the program based on attribute
+			//set the name of the program based on attribute, if any
 			if (thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false).Any())
 				Name =
 					(string) thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false)
@@ -85,21 +87,31 @@ namespace ZoneLighting.ZoneProgramNS
 			StopTrigger = new Trigger();
 		}
 
-		public virtual void Pause()
+		public void PauseCore()
 		{
-			//TODO: Implement pause logic
+			PauseTrigger.Fire(this, null);
+			Pause();
 		}
-		
-		public virtual void Resume()
+
+		protected abstract void Pause();
+
+		public void ResumeCore()
 		{
-			//TODO: Implement resume logic
+
+			ResumeTrigger.Fire(this, null);
+			Resume();
 		}
+
+		public abstract void Resume();
 
 		public void Dispose()
 		{
 			Name = null;
 			Zone = null;
 			StopTrigger.Dispose(true);
+			StartTrigger.Dispose();
+			PauseTrigger.Dispose();
+			ResumeTrigger.Dispose();
 		}
 
 		#endregion
@@ -108,6 +120,8 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public virtual void Start(InputStartingValues inputStartingValues = null, ActionBlock<InterruptInfo> interruptQueue = null)
 		{
+			StartTrigger.Fire(this, null);
+
 			StartCore();
 
 			if (Inputs.Any(input => input is InterruptingInput))
@@ -126,6 +140,14 @@ namespace ZoneLighting.ZoneProgramNS
 
 		protected abstract void StartCore();
 		public abstract void Stop(bool force);
+
+		#endregion
+
+		#region Triggers
+
+		public Trigger StartTrigger { get; } = new Trigger("StartTrigger");
+		public Trigger PauseTrigger { get; } = new Trigger("PauseTrigger");
+		public Trigger ResumeTrigger { get; } = new Trigger("ResumeTrigger");
 
 		#endregion
 

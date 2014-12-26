@@ -17,6 +17,16 @@ namespace ZoneLighting.ZoneProgramNS
 			
 		}
 
+		public override void Resume()
+		{
+			//TODO: Implement resume logic
+		}
+
+		protected override void Pause()
+		{
+			//TODO: Implement pause logic
+		}
+
 		/// <summary>
 		/// Adds a live input to the zone program. A live input is an input that can be controlled while
 		/// the program is running and the program will respond to it in the way it's designed to.
@@ -31,8 +41,10 @@ namespace ZoneLighting.ZoneProgramNS
 			Inputs.Add(input);
 			input.Subscribe(data =>				//when the input's OnNext is called, do whatever it was programmed to do and then fire the StopSubject
 			{
+				input.StartTrigger.Fire(this, null);
 				action(data);
 				input.StopSubject.OnNext(null);
+				input.StopTrigger.Fire(this, null);
 			});
 			return input;
 		}
