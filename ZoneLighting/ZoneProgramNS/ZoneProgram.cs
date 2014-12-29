@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Threading.Tasks.Dataflow;
 using ZoneLighting.Communication;
 using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneNS;
@@ -47,10 +48,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <summary>
 		/// Easy accessor for Lights in Zone.
 		/// </summary>
-		public IList<ILogicalRGBLight> Lights
-		{
-			get { return Zone.Lights; }
-		}
+		public IList<ILogicalRGBLight> Lights => Zone.Lights;
 
 		//[DataMember]
 		//private UntypedZoneProgramInputCollection UntypedInputs { get; set; } = new UntypedZoneProgramInputCollection();
@@ -59,7 +57,9 @@ namespace ZoneLighting.ZoneProgramNS
 		/// Inputs for this program.
 		/// </summary>
 		[DataMember]
-		private ZoneProgramInputCollection Inputs { get; set; } = new ZoneProgramInputCollection();
+		public ZoneProgramInputCollection Inputs { get; private set; } = new ZoneProgramInputCollection();
+
+		public Trigger StopTestingTrigger { get; } = new Trigger("ZoneProgram.StopTestingTrigger");
 
 		#endregion CORE
 
@@ -74,7 +74,7 @@ namespace ZoneLighting.ZoneProgramNS
 		protected ZoneProgram()
 		{
 			Type thisType = this.GetType();
-			//set the name of the program based on attribute
+			//set the name of the program based on attribute, if any
 			if (thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false).Any())
 				Name =
 					(string) thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false)
@@ -84,23 +84,52 @@ namespace ZoneLighting.ZoneProgramNS
 
 		private void Construct()
 		{
-			StopTrigger = new Trigger();
+			StopTrigger = new Trigger("StopTrigger");
 		}
+
+		public void PauseCore()
+		{
+			PauseTrigger.Fire(this, null);
+			Pause();
+		}
+
+		protected abstract void Pause();
+
+		public void ResumeCore()
+		{
+
+			ResumeTrigger.Fire(this, null);
+			Resume();
+		}
+
+		public abstract void Resume();
 
 		public void Dispose()
 		{
 			Name = null;
 			Zone = null;
 			StopTrigger.Dispose(true);
+			StartTrigger.Dispose();
+			PauseTrigger.Dispose();
+			ResumeTrigger.Dispose();
 		}
 
 		#endregion
 
 		#region Base Methods
 
-		public virtual void Start(InputStartingValues inputStartingValues = null)
+		public virtual void Start(InputStartingValues inputStartingValues = null, ActionBlock<InterruptInfo> interruptQueue = null)
 		{
+			StartTrigger.Fire(this, null);
+
 			StartCore();
+
+			if (Inputs.Any(input => input is InterruptingInput))
+			{
+				Inputs.Where(input => input is InterruptingInput).ToList().ForEach(input =>
+				((InterruptingInput)input).SetInterruptQueue(interruptQueue));
+			}
+
 			if (inputStartingValues != null)
 				SetInputs(inputStartingValues);
 		}
@@ -111,6 +140,14 @@ namespace ZoneLighting.ZoneProgramNS
 
 		protected abstract void StartCore();
 		public abstract void Stop(bool force);
+
+		#endregion
+
+		#region Triggers
+
+		public Trigger StartTrigger { get; } = new Trigger("StartTrigger");
+		public Trigger PauseTrigger { get; } = new Trigger("PauseTrigger");
+		public Trigger ResumeTrigger { get; } = new Trigger("ResumeTrigger");
 
 		#endregion
 
@@ -146,8 +183,7 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			return Inputs.Where(i => i.Type == typeof(T)).Select(input => input.Name).ToList();
 		}
-
-
+		
 		/// <summary>
 		/// Adds a live input to the zone program. A live input is an input that can be controlled while
 		/// the program is running and the program will respond to it in the way it's designed to.
@@ -178,14 +214,24 @@ namespace ZoneLighting.ZoneProgramNS
 			GetInput(name).Unsubscribe();
 		}
 
-		protected ZoneProgramInput GetInput(string name)
+		//public void AddInputSubscription(string name, Action<object> action)
+		//{
+		//	GetInput(name).Subscribe(action);
+		//}
+
+		public ZoneProgramInput GetInput(string name)
 		{
-			return Inputs[name];
+			if (Inputs.Contains(name))
+				return Inputs[name];
+			else
+			{
+				throw new Exception("No input with the name '" + name + "' found in this program.");
+			}
 		}
 
 		public void SetInput(string name, object data)
 		{
-			GetInput(name).Set(data);
+			GetInput(name).SetValue(data);
 		}
 
 		public void SetInputs(InputStartingValues inputStartingValues)

@@ -89,7 +89,7 @@ namespace ZoneLighting.Communication
 			AssertInit();
 			WebSocket.Close();
 		}
-		
+
 		public void AssertInit()
 		{
 			if (!Initialized)
@@ -97,7 +97,7 @@ namespace ZoneLighting.Communication
 		}
 
 		#endregion
-		
+
 		#region API
 
 		/// <summary>

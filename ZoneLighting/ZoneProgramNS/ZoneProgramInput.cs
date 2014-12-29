@@ -12,15 +12,15 @@ namespace ZoneLighting.ZoneProgramNS
 		[DataMember]
 		public string Name { get; set; }
 
-		public Subject<object> InputSubject { get; }
+		protected Subject<object> InputSubject { get; } = new Subject<object>();
 
-		private IDisposable InputDisposable { get; set; }
-
+		protected IDisposable InputDisposable { get; set; }
+		
 		[DataMember]
 		public Type Type { get; private set; }
 
 		[DataMember]
-		public object Value { get; private set; }
+		public object Value { get; protected set; }
 
 		public ZoneProgramInput(string name, Type type) : this()
 		{
@@ -31,20 +31,19 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public ZoneProgramInput()
 		{
-			InputSubject = new Subject<object>();
 		}
 
-		public void Subscribe(IObserver<object> toCall)
+		//public void Subscribe(IObserver<object> toCall)
+		//{
+		//	InputDisposable = InputSubject.Subscribe(toCall);
+		//}
+
+		public virtual void Subscribe(Action<object> toCall)
 		{
 			InputDisposable = InputSubject.Subscribe(toCall);
 		}
 
-		public void Subscribe(Action<object> toCall)
-		{
-			InputDisposable = InputSubject.Subscribe(toCall);
-		}
-
-		public void Unsubscribe()
+		public virtual void Unsubscribe()
 		{
 			InputDisposable?.Dispose();
 		}
@@ -53,10 +52,15 @@ namespace ZoneLighting.ZoneProgramNS
 		/// Sends data through the input to the program it's attached to.
 		/// </summary>
 		/// <param name="data">The data will be deconstructed/cast to the underlying type in the program.</param>
-		public void Set(object data)
+		public virtual void SetValue(object data)
 		{
 			InputSubject.OnNext(data);
 			Value = data;
+		}
+
+		public bool HasInputSubject(Subject<object> inputSubject)
+		{
+			return inputSubject == InputSubject;
 		}
 	}
 }
