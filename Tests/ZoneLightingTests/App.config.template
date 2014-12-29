@@ -8,7 +8,7 @@
 		<add key="ProgramDLLFolder" value ="[Path of folder where all program modules are to be loaded from]"/>
 		<add key="ZoneDLLFolder" value ="[Path of folder where all zone modules are to be loaded from]"/>
 		<add key="ZoneConfigurationSaveFile" value ="[Path of file in which the zone configuration is to be saved]"/>
-		<add key="TestZoneConfigurationSaveFile" value ="[Path of file in which the zone configuration is to be saved for testing]"/>
+		<add key="InitializeFromZoneConfiguration_Works_TestFile" value ="[Path of file in which the zone configuration is to be saved for the test InitializeFromZoneConfiguration_Works]"/>
 		<add key="TestProgramModuleDirectory" value ="[Path of folder in which the program modules for testing are stored]"/>
 	</appSettings>
 </configuration>

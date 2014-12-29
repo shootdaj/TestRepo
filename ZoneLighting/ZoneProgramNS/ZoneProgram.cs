@@ -84,7 +84,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		private void Construct()
 		{
-			StopTrigger = new Trigger();
+			StopTrigger = new Trigger("StopTrigger");
 		}
 
 		public void PauseCore()

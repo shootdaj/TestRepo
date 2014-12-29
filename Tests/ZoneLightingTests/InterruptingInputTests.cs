@@ -1,7 +1,5 @@
 ﻿using System.Configuration;
 using System.Drawing;
-using System.Threading.Tasks.Dataflow;
-using FakeItEasy;
 using Xunit;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;

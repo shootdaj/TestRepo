@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
-using Xunit.Extensions;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
@@ -18,6 +11,7 @@ namespace ZoneLightingTests
 	public class ZoneProgramTests
 	{
 		[Fact]
+		//[Test]
 		public void ForceStop_Works()
 		{
 			//arrange
@@ -43,9 +37,12 @@ namespace ZoneLightingTests
 
 			//cleanup
 			leftWing.Dispose();
+
+			
 		}
 
 		[Fact]
+		//[Test]
 		public void CooperativeStop_Works()
 		{
 			//arrange

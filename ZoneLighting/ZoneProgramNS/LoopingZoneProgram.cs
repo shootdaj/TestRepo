@@ -15,6 +15,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Looping Stuff
 
+		public bool Running { get; private set; } = false;
 		public CancellationTokenSource LoopCTS;
 		protected Task RunProgram { get; set; }
 		protected Thread RunProgramThread { get; set; }
@@ -23,16 +24,26 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			RunProgram = new Task(() =>
 			{
-				RunProgramThread = Thread.CurrentThread;
-				while (true)
+				try
 				{
-					Loop();
-					if (LoopCTS.IsCancellationRequested)
-						break;
-				}
-				StopTrigger.Fire(this, null);
-			}, LoopCTS.Token);
+					RunProgramThread = Thread.CurrentThread;
+					Running = true;
+					while (true)
+					{
+						Loop();
+						if (LoopCTS.IsCancellationRequested)
+							break;
 
+					}
+					StopTrigger.Fire(this, null);
+					Running = false;
+
+				}
+				catch
+				{
+					Running = false;
+				}
+			}, LoopCTS.Token);
 			RunProgram.Start();
 		}
 
@@ -61,14 +72,17 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public override void Stop(bool force)
 		{
-			if (force)
+			if (Running)
 			{
-				RunProgramThread.Abort();
-			}
-			else
-			{
-				LoopCTS.Cancel();
-				StopTrigger.WaitForFire();
+				if (force)
+				{
+					RunProgramThread.Abort();
+				}
+				else
+				{
+					LoopCTS.Cancel();
+					StopTrigger.WaitForFire();
+				}
 			}
 
 			StopTestingTrigger.Fire(this, null);
