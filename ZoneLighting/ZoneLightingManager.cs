@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Primitives;
 using System.Configuration;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json.Serialization;
@@ -37,11 +39,6 @@ namespace ZoneLighting
 		public IList<Zone> Zones { get; set; } = new List<Zone>();
 
 		/// <summary>
-		/// Directory Catalog that stores catalog for the external zones.
-		/// </summary>
-		private DirectoryCatalog ExternalZoneCatalog { get; set; }
-
-		/// <summary>
 		/// Container for the external modules.
 		/// </summary>
 		private CompositionContainer ExternalZoneContainer { get; set; }
@@ -61,7 +58,7 @@ namespace ZoneLighting
 			if (!Initialized)
 			{
 				InitLightingControllers();
-				ComposeWithExternalModules(); //TODO: Uncomment
+				ComposeWithExternalModules();
 				InitZoneScaffolder();
 				InitializeAllZones();
 				Initialized = true;
@@ -108,20 +105,24 @@ namespace ZoneLighting
 		/// </summary>
 		private void ComposeWithExternalModules()
 		{
-			CatalogExternalZones();
-			var aggregateCatalog = new AggregateCatalog(ExternalZoneCatalog);	
+			List<ComposablePartCatalog> fileCatalogs = new List<ComposablePartCatalog>();
+			foreach (var file in Directory.GetFiles(ConfigurationManager.AppSettings["ZoneDLLFolder"], "*.dll").ToList())
+			{
+				var assembly = Assembly.LoadFrom(file);
+
+				if (assembly.GetCustomAttributesData()
+					.Any(ass => ass.AttributeType == typeof(ZoneAssemblyAttribute)))
+				{
+					fileCatalogs.Add(new AssemblyCatalog(assembly));
+					//this may be required to be uncommented in the future
+					File.Copy(file, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(file)), true);
+				}
+			}
+
+			var aggregateCatalog = new AggregateCatalog(fileCatalogs);	
 			ExternalZoneContainer = new CompositionContainer(aggregateCatalog);
 			ExternalZoneContainer.ComposeParts(this);
 		}
-
-		/// <summary>
-		/// Creates catalog for external zones.
-		/// </summary>
-		private void CatalogExternalZones()
-		{
-			ExternalZoneCatalog = new DirectoryCatalog(ConfigurationManager.AppSettings["ZoneDLLFolder"]);
-		}
-		
 
 		//TODO: This is not working because MEF has to be "hacked" to have the 
 		//TODO: assemblies load in a different appdomain with ShadowCopyFiles set to true as in the following example:
@@ -139,16 +140,6 @@ namespace ZoneLighting
 		/// </summary>
 		private void InitializeAllZones()
 		{
-			var leftWing = new FadeCandyZone("LeftWing");
-			leftWing.AddFadeCandyLights(6, 1);
-
-			var rightWing = new FadeCandyZone("RightWing");
-			rightWing.AddFadeCandyLights(12, 2);
-
-			Zones.Add(leftWing);
-			Zones.Add(rightWing);
-
-			//TODO: Uncomment {
 			//var configFilePath = ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"];
 
 			//if (!string.IsNullOrEmpty(configFilePath))
@@ -156,34 +147,55 @@ namespace ZoneLighting
 			//	ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones, configFilePath);
 			//}
 
-
-			//}
-
+			AddWingZonesAndPrograms();
 
 
-			//var scrollDotDictionary = new Dictionary<string, object>();
-			//scrollDotDictionary.Add("DelayTime", 30);
-			//scrollDotDictionary.Add("Color", (Color?)Color.Chartreuse);
 
-			//ZoneScaffolder.InitializeZone(Zones[0], "ScrollDot", scrollDotDictionary);
 
-			//var rainbowDictionary = new Dictionary<string, object>();
-			//rainbowDictionary.Add("DelayTime", 1);
-			//rainbowDictionary.Add("Speed", 1);
 
-			//ZoneScaffolder.InitializeZone(Zones[1], "Rainbow", rainbowDictionary);
 
-			InputStartingValues startingValues = //null;
-				new InputStartingValues();
-			startingValues.Add("Color", Color.Red);
 
-			ZoneScaffolder.Instance.InitializeZone(Zones[0], "StaticColor", startingValues);
+			//Config.SaveZones(Zones, ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"]);
+
+
+			//InputStartingValues startingValues = //null;
+			//	new InputStartingValues();
+			//startingValues.Add("Color", Color.Red);
+
+			//ZoneScaffolder.Instance.InitializeZone(Zones[0], "StaticColor", startingValues);
+
+
 
 			//Config.SaveZones(Zones, ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"]);
 
 			//Zones.ToList().ForEach(z => z.Uninitialize(true));
 
 			//ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones);
+		}
+
+		private void AddWingZonesAndPrograms()
+		{
+			var leftWing = new FadeCandyZone("LeftWing");
+			leftWing.AddFadeCandyLights(6, 1);
+
+			var rightWing = new FadeCandyZone("RightWing");
+			rightWing.AddFadeCandyLights(12, 2);
+			Zones.Add(leftWing);
+			Zones.Add(rightWing);
+
+			var scrollDotStartingValues = new InputStartingValues();
+			scrollDotStartingValues.Add("DelayTime", 30);
+			scrollDotStartingValues.Add("DotColor", (Color?)Color.Red);
+			ZoneScaffolder.Instance.InitializeZone(leftWing, "ScrollDot", scrollDotStartingValues);
+
+			var rainbowStartingValues = new InputStartingValues();
+			rainbowStartingValues.Add("DelayTime", 1);
+			rainbowStartingValues.Add("Speed", 1);
+			ZoneScaffolder.Instance.InitializeZone(rightWing, "Rainbow", rainbowStartingValues);
+
+			ZoneScaffolder.Instance.StartInterruptingProgram(leftWing, "StaticColor");
+
+			//TODO: Add an interrupting program that will notify for something.
 		}
 
 		public void Uninitialize()
@@ -194,7 +206,6 @@ namespace ZoneLighting
 				UninitZoneScaffolder();
 				UninitLightingControllers();
 				Initialized = false;
-				ExternalZoneCatalog = null;
 				ExternalZoneContainer = null;
 			}
 		}

@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Primitives;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using ZoneLighting.ConfigNS;
 using ZoneLighting.ZoneNS;
 
@@ -28,11 +30,6 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		/// Container for the external programs.
 		/// </summary>
 		private CompositionContainer ExternalProgramContainer { get; set; }
-
-		/// <summary>
-		/// Directory Catalog that stores catalog for the external programs
-		/// </summary>
-		private DirectoryCatalog ExternalProgramCatalog { get; set; }
 
 		#endregion
 
@@ -59,24 +56,24 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		}
 
 		/// <summary>
-		/// Creates catalog for external programs.
-		/// </summary>
-		private void CatalogExternalPrograms(string programModuleDirectory)
-		{
-			ExternalProgramCatalog = new DirectoryCatalog(programModuleDirectory);
-
-			//copy dll to base directory in order to be able to deserialize using json.net
-			ExternalProgramCatalog.LoadedFiles.ToList()
-				.ForEach(file => File.Copy(file, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(file)), true));
-		}
-
-		/// <summary>
 		/// Composes this class with external programs. 
 		/// </summary>
 		private void ComposeWithExternalModules(string programModuleDirectory)
 		{
-			CatalogExternalPrograms(programModuleDirectory);
-			var aggregateCatalog = new AggregateCatalog(ExternalProgramCatalog);
+			List<ComposablePartCatalog> fileCatalogs = new List<ComposablePartCatalog>();
+			foreach (var file in Directory.GetFiles(programModuleDirectory, "*.dll").ToList())
+			{
+				var assembly = Assembly.LoadFrom(file);
+
+				if (assembly.GetCustomAttributesData()
+					.Any(ass => ass.AttributeType == typeof (ZoneProgramAssemblyAttribute)))
+				{
+					fileCatalogs.Add(new AssemblyCatalog(assembly));
+					File.Copy(file, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(file)), true);
+				}
+			}
+
+			var aggregateCatalog = new AggregateCatalog(fileCatalogs);
 			ExternalProgramContainer = new CompositionContainer(aggregateCatalog);
 			ExternalProgramContainer.ComposeParts(this);
 			
@@ -106,6 +103,20 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		public void InitializeZone(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null)
 		{
 			zone.Initialize(zoneProgram, inputStartingValues);
+		}
+
+		public void StartInterruptingProgram(Zone zone, string programName, InputStartingValues inputStartingValues = null)
+		{
+			var zoneProgramFactoriesList = ZoneProgramFactories.ToList();
+			var zoneProgram = CreateZoneProgram(programName, zoneProgramFactoriesList);
+	
+			if (zoneProgram is ReactiveZoneProgram)
+				zone.AddInterruptingProgram((ReactiveZoneProgram)zoneProgram, true, inputStartingValues);
+			else
+			{
+				throw new Exception(
+					"Given program name is not a Reactive Zone Program and therefore cannot be added as an Interrupting Program.");
+			}
 		}
 
 		/// <summary>
@@ -152,7 +163,14 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 						var zoneProgramName = zoneToLoadFrom.ZoneProgram.Name;
 						InputStartingValues startingValues = zoneToLoadFrom.ZoneProgram.GetInputValues();
 
+						//start the main program
 						InitializeZone(zoneToLoadInto, zoneProgramName, startingValues);
+
+						//start the interrupting programs
+						zoneToLoadFrom.InterruptingPrograms.ToList().ForEach(program =>
+						{
+							zoneToLoadInto.AddInterruptingProgram(program, true, program.GetInputValues());
+						});
 					}
 				});
 			}

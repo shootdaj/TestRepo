@@ -75,6 +75,7 @@ namespace ZoneLighting.ZoneNS
 				if (!ZoneProgram.Inputs.Any(input => input.HasInputSubject(interruptInfo.InputSubject)))
 				{
 					ZoneProgram.PauseCore(); //pause the bg program
+					if (!interruptInfo.StopSubject.HasObservers)		//only subscribe if the stopsubject isn't already subscribed
 					interruptInfo.StopSubject.Subscribe(data => ZoneProgram.ResumeCore());			//hook up the stop call of the interrupting input's program to resume the BG program
 				}
 				interruptInfo.InputSubject.OnNext(interruptInfo.Data);		//start the routine that was requested
@@ -104,7 +105,7 @@ namespace ZoneLighting.ZoneNS
 			}
 		}
 
-		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null)
+		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool interruptingProgram = false)
 		{
 			if (!Initialized)
 			{
@@ -120,6 +121,8 @@ namespace ZoneLighting.ZoneNS
 			if (Initialized)
 			{
 				StopProgram(force);
+				RemoveAllInterruptingPrograms();
+				UnsetProgram();
 				Initialized = false;
 			}
 		}
@@ -163,6 +166,15 @@ namespace ZoneLighting.ZoneNS
 		{
 			ZoneProgram = program;
 			ZoneProgram.Zone = this;
+		}
+
+		/// <summary>
+		/// Unhooks the zone program from this zone.
+		/// </summary>
+		public void UnsetProgram()
+		{
+			ZoneProgram.Zone = null;
+			ZoneProgram = null;
 		}
 	
 		/// <summary>
@@ -218,6 +230,11 @@ namespace ZoneLighting.ZoneNS
 			interruptingProgram.Zone = null;
             interruptingProgram.RemoveInterruptQueue();
 			InterruptingPrograms.Remove(interruptingProgram);
+		}
+
+		public void RemoveAllInterruptingPrograms()
+		{
+			InterruptingPrograms.ToList().ForEach(program => RemoveInterruptingProgram(program.Name));
 		}
 
 		/// <summary>

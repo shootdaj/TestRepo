@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgramNS;
 
@@ -36,6 +37,7 @@ namespace ExternalPrograms
 			{
 				Lights.SetColor((Color)color);
 				LightingController.SendLights(Lights.Cast<ILightingControllerPixel>().ToList());	//send frame
+				Thread.Sleep(4000);
 			});
 		}
 

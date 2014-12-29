@@ -83,6 +83,13 @@ namespace ZoneLighting.ZoneProgramNS
 					LoopCTS.Cancel();
 					StopTrigger.WaitForFire();
 				}
+
+				//clear inputs because they will be re-added by the setup
+				foreach (var zoneProgramInput in Inputs)
+				{
+					zoneProgramInput.Dispose();
+				}
+				Inputs.Clear();
 			}
 
 			StopTestingTrigger.Fire(this, null);
@@ -90,12 +97,15 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public override void Resume()
 		{
-			//TODO: Implement resume logic
+			//TODO: Implement resume logic - for now, it's just gonna call start
+			Start();
+
 		}
 
 		protected override void Pause()
 		{
-			//TODO: Implement pause logic
+			//TODO: Implement pause logic - for now, it's just gonna call stop forcibly
+			Stop(true);
 		}
 
 		#endregion

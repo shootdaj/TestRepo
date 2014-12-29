@@ -33,13 +33,12 @@ namespace ZoneLightingTests
 			zone.Lights.ToList().ForEach(light => Assert.Equal(light.GetColor(), color));
 		}
 
-		//TODO: Fix
-		//[Fact]
-		//public void StartProgram_CallsZoneProgramStart()
-		//{
-		//	var zone = A.Fake<Zone>();
-		//	zone.StartProgram();
-		//	A.CallTo(() => zone.ZoneProgram.Start(null, A.Dummy<ActionBlock<InterruptInfo>>())).MustHaveHappened(Repeated.Exactly.Once);
-		//}
+		[Fact]
+		public void StartProgram_CallsZoneProgramStart()
+		{
+			var zone = A.Fake<Zone>();
+			zone.StartProgram();
+			A.CallTo(() => zone.ZoneProgram.Start(null, A<ActionBlock<InterruptInfo>>.Ignored)).MustHaveHappened(Repeated.Exactly.Once);
+		}
 	}
 }
