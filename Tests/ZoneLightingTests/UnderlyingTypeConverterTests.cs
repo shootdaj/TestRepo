@@ -36,7 +36,7 @@ namespace ZoneLightingTests
 			};
 
 			var dotColor = new ZoneProgramInput("DotColor", typeof(System.Drawing.Color));
-			dotColor.Set(System.Drawing.Color.Red);
+			dotColor.SetValue(System.Drawing.Color.Red);
 
 			var serializedDotColor = JsonConvert.SerializeObject(dotColor, jsonSerializerSettings);
 			var deserializedDotColor = JsonConvert.DeserializeObject<ZoneProgramInput>(serializedDotColor, jsonDeserializerSettings);
@@ -63,7 +63,7 @@ namespace ZoneLightingTests
 			};
 
 			var dotColor = new ZoneProgramInput("DelayTime", typeof(int));
-			dotColor.Set(1);
+			dotColor.SetValue(1);
 
 			var serializedDotColor = JsonConvert.SerializeObject(dotColor, jsonSerializerSettings);
 			var deserializedDotColor = JsonConvert.DeserializeObject<ZoneProgramInput>(serializedDotColor, jsonDeserializerSettings);
@@ -89,7 +89,7 @@ namespace ZoneLightingTests
 			};
 
 			var dotColor = new ZoneProgramInput("DelayTime", typeof(ComplexClass));
-			dotColor.Set(new ComplexClass()
+			dotColor.SetValue(new ComplexClass()
 			{
 				Name = "ComplexClass",
 				SimpleClass = new SimpleClass()

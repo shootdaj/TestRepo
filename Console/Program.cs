@@ -16,7 +16,7 @@ namespace Console
 
 			//ZoneLightingManager.Instance.Zones[0].ZoneProgram.SetInput("Color", Color.Red);
 
-			//Thread.Sleep(Timeout.Infinite);
+			Thread.Sleep(Timeout.Infinite);
 		}
 	}
 }

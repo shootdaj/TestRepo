@@ -30,7 +30,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 			// Overwrite the "Value" property with the correct value based on the 
 			// "Type" property.
-			result.Set(obj.GetValue("value", StringComparison.OrdinalIgnoreCase)
+			result.SetValue(obj.GetValue("value", StringComparison.OrdinalIgnoreCase)
 					.ToObject(result.Type, serializer));
 
 			return result;

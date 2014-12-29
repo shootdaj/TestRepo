@@ -9,7 +9,7 @@ using ZoneLighting.Communication;
 using ZoneLighting.ConfigNS;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
-using ZoneLightingTests.Programs;
+using ZoneLightingTests.Resources.Programs;
 
 namespace ZoneLightingTests
 {

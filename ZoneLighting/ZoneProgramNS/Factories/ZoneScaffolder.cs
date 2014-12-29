@@ -64,6 +64,10 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		private void CatalogExternalPrograms(string programModuleDirectory)
 		{
 			ExternalProgramCatalog = new DirectoryCatalog(programModuleDirectory);
+
+			//copy dll to base directory in order to be able to deserialize using json.net
+			ExternalProgramCatalog.LoadedFiles.ToList()
+				.ForEach(file => File.Copy(file, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(file)), true));
 		}
 
 		/// <summary>
@@ -75,6 +79,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 			var aggregateCatalog = new AggregateCatalog(ExternalProgramCatalog);
 			ExternalProgramContainer = new CompositionContainer(aggregateCatalog);
 			ExternalProgramContainer.ComposeParts(this);
+			
 		}
 
 		#endregion

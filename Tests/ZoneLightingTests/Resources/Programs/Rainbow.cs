@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
 using ZoneLighting.ZoneProgramNS;
 
-namespace ZoneLightingTests.Programs
+namespace ZoneLightingTests.Resources.Programs
 {
 	/// <summary>
 	/// Outputs a looping rainbow to the zone using the LightingController's built-in interpolation (currently only works with FadeCandy).
