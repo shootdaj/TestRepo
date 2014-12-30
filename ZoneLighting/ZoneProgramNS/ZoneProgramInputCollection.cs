@@ -19,7 +19,14 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			if (item == null)
 				throw new Exception("Cannot insert null values into this collection.");
-			base.InsertItem(index, item);
+			try
+			{
+				base.InsertItem(index, item);
+			}
+			catch
+			{
+				DebugTools.Print();
+			}
 		}
 	}
 }

@@ -3,7 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
-using Xunit;
+using NUnit.Framework;
 using ZoneLighting;
 using ZoneLighting.Communication;
 using ZoneLighting.ConfigNS;
@@ -19,7 +19,8 @@ namespace ZoneLightingTests
 		/// Sets up a zone configuration, saves it, and makes sure that it deserializes with the same
 		/// properties (only some properties are checked).
 		/// </summary>
-		[Fact]
+		//[Fact]
+		[Test]
 	    public void SaveZone_SavesZoneInCorrectFormat()
 	    {
 			//arrange
@@ -62,11 +63,11 @@ namespace ZoneLightingTests
 				//Converters = new List<JsonConverter>() { new ZonesJsonConverter() }
 			}).ToList();
 
-			Assert.Equal(zones.Count, deserializedZones.Count());
+			Assert.AreEqual(zones.Count, deserializedZones.Count());
 			for (var i = 0; i < zones.Count; i++)
 			{
-				Assert.Equal(zones[i].Name, deserializedZones[i].Name);
-				Assert.Equal(zones[i].ZoneProgram.Name, deserializedZones[i].ZoneProgram.Name);
+				Assert.AreEqual(zones[i].Name, deserializedZones[i].Name);
+				Assert.AreEqual(zones[i].ZoneProgram.Name, deserializedZones[i].ZoneProgram.Name);
 				//Assert.Equal(zones[i].ZoneProgram.ProgramParameter, deserializedZones[i].ZoneProgram.ProgramParameter);
 				//TODO: Assert equality of starting input values
 			}

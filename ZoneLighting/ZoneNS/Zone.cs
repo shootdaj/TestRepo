@@ -66,34 +66,44 @@ namespace ZoneLighting.ZoneNS
 			LightingController = lightingController;
 			Name = name;
 
-			//set interrupt processing
+			//configure interrupt processing
 			InterruptQueue = new ActionBlock<InterruptInfo>(
 			interruptInfo =>
 			{
+				//DebugTools.AddEvent("InterruptQueue.Method", "START IRQ processing");
+
 				//when a new request to interrupt the background program is detected, check if the request is coming from the BG program. 
-				//if it is, then no need to pause the bg program. simply
-				if (!ZoneProgram.Inputs.Any(input => input.HasInputSubject(interruptInfo.InputSubject)))
+				//if it is, then no need to pause the bg program -- really?? check the TODO on the next line
+				if (!ZoneProgram.Inputs.Any(input => input.IsInputSubjectSameAs(interruptInfo.InputSubject))) //TODO: Is this check needed? If the BG program's interrupting input is set, what to do? What problem is this if statement solving?
 				{
-					if (!interruptInfo.StopSubject.HasObservers)		//only subscribe if the stopsubject isn't already subscribed
+					//DebugTools.AddEvent("InterruptQueue.Method", "IRQ is from a foreground program");
+
+					if (!interruptInfo.StopSubject.HasObservers) //only subscribe if the stopsubject isn't already subscribed
 						interruptInfo.StopSubject.Subscribe(data =>
 						{
-							//Console.WriteLine("START Resuming BG Program");
-							ZoneProgram.ResumeCore();
-							//Console.WriteLine("FINISHED Resuming BG Program");
-						});			//hook up the stop call of the interrupting input's program to resume the BG program
+							if (InterruptQueue.InputCount < 1)
+							{
+								DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "START Resume BG Program");
+								ZoneProgram.ResumeCore();
+								DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "END Resume BG Program");
+							}
+						});	//hook up the stop call of the interrupting input's program to resume the BG program
 
-					//Console.WriteLine("START Pausing BG Program");
 
-					ZoneProgram.PauseCore();	//pause the bg program
-
-					//Console.WriteLine("FINISHED Pausing BG Program");
+					DebugTools.AddEvent("InterruptQueue.Method", "START Pause BG Program");
+					ZoneProgram.PauseCore(); //pause the bg program
+					DebugTools.AddEvent("InterruptQueue.Method", "END Pause BG Program");
+				}
+				else
+				{
+					DebugTools.AddEvent("InterruptQueue.Method", "IRQ is from the background program. No ");
 				}
 
-				//Console.WriteLine("START OnNext to activate Interrupting Input's action");
-
+				DebugTools.AddEvent("InterruptQueue.Method", "START Interrupting Action");
 				interruptInfo.InputSubject.OnNext(interruptInfo.Data);		//start the routine that was requested
+				DebugTools.AddEvent("InterruptQueue.Method", "END Interrupting Action");
 
-				//Console.WriteLine("FINISHED OnNext to activate Interrupting Input's action");
+				//DebugTools.AddEvent("InterruptQueue.Method", "END Interrupt request processing");
 
 				//TODO: Add capability to have a timeout in case the interrupting program never calls the StopSubject
 			}, new ExecutionDataflowBlockOptions()

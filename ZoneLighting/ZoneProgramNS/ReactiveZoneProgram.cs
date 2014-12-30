@@ -42,19 +42,8 @@ namespace ZoneLighting.ZoneProgramNS
 			input.Subscribe(data =>				//when the input's OnNext is called, do whatever it was programmed to do and then fire the StopSubject
 			{
 				input.StartTrigger.Fire(this, null);
-
-				//Console.WriteLine("START Executing Interrupting Input's action");
-
 				action(data);
-
-				//Console.WriteLine("FINISHED Executing Interrupting Input's action");
-
-				//Console.WriteLine("START OnNext to resume BG Program");
-
 				input.StopSubject.OnNext(null);
-
-				//Console.WriteLine("FINISHED OnNext to resume BG Program");
-
 				input.StopTrigger.Fire(this, null);
 			});
 			return input;

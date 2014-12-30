@@ -6,7 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Xunit;
+using NUnit.Framework;
+//using Xunit;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLightingTests
@@ -18,7 +19,8 @@ namespace ZoneLightingTests
 			Debug.Listeners.Add(new DefaultTraceListener());
 		}
 
-		[Fact]
+		//[Fact]
+		[Test]
 		public void ValueDeserializesWithUnderlyingType()
 		{
 			AddConsoleListener();
@@ -45,7 +47,8 @@ namespace ZoneLightingTests
 		}
 
 
-		[Fact]
+		//[Fact]
+		[Test]
 		public void ValueDeserializesWithUnderlyingType2()
 		{
 			AddConsoleListener();
@@ -71,7 +74,8 @@ namespace ZoneLightingTests
 			Assert.True(deserializedDotColor.Value is int);
 		}
 
-		[Fact]
+		//[Fact]
+		[Test]
 		public void ValueDeserializesWithUnderlyingType3()
 		{
 			AddConsoleListener();

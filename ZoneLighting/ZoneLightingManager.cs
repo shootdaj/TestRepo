@@ -194,7 +194,7 @@ namespace ZoneLighting
 			rainbowStartingValues.Add("Speed", 1);
 			ZoneScaffolder.Instance.InitializeZone(rightWing, "Rainbow", rainbowStartingValues);
 
-			ZoneScaffolder.Instance.StartInterruptingProgram(leftWing, "StaticColor");
+			ZoneScaffolder.Instance.StartInterruptingProgram(leftWing, "BlinkColor");
 
 			//TODO: Add an interrupting program that will notify for something.
 		}

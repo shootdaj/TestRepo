@@ -16,37 +16,38 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Looping Stuff
 
-		private bool _running;
-
-		public bool Running
-		{
-			get { return _running; }
-			private set
-			{
-				//Console.WriteLine("Running = " + value);
-				_running = value;
-			}
-		}
+		public bool Running { get; private set; }
 
 		public CancellationTokenSource LoopCTS;
-		protected Task RunProgram { get; set; }
+		protected Task LoopingTask { get; set; }
 		protected Thread RunProgramThread { get; set; }
 
 		protected void StartLoop()
 		{
 			SetupRunProgramTask();
 			if (!Running)
-				RunProgram.Start();
+			{
+				DebugTools.AddEvent("LoopingZoneProgram.StartLoop", "Running = FALSE");
+				DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method", "Setting Running = TRUE");
+				Running = true;
+
+				DebugTools.AddEvent("LoopingZoneProgram.StartLoop", "START StartLoop()");
+				LoopingTask.Start();
+				DebugTools.AddEvent("LoopingZoneProgram.StartLoop", "END StartLoop()");
+			}
+			else
+			{
+				DebugTools.AddEvent("LoopingZoneProgram.StartLoop", "Running = TRUE");
+			}
 		}
 
 		private void SetupRunProgramTask()
 		{
-			RunProgram = new Task(() =>
+			LoopingTask = new Task(() =>
 			{
 				try
 				{
 					RunProgramThread = Thread.CurrentThread;
-					Running = true;
 					while (true)
 					{
 						Loop();
@@ -58,9 +59,16 @@ namespace ZoneLighting.ZoneProgramNS
 					}
 					StopTrigger.Fire(this, null);
 				}
+				catch (ThreadAbortException ex)
+				{
+					DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method", "LoopingTask thread aborted");
+					DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Setting Running = false");
+					Running = false;
+					DebugTools.AddEvent("LoopingZoneProgram.Stop", "END Setting Running = false");
+				}
 				catch
 				{
-					// ignored
+					DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method", "Unexpected exception in LoopingTask");
 				}
 			}, LoopCTS.Token);
 		}
@@ -90,20 +98,17 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public override void Stop(bool force)
 		{
-			//Console.WriteLine("START Stopping BG Program " + Name);
-
-			//Console.WriteLine("Check if BG Program is running");
+			DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Stopping BG Program");
 
 			if (Running)
 			{
-				//Console.WriteLine("Running = true");
-				
+				DebugTools.AddEvent("LoopingZoneProgram.Stop", "Running = TRUE");
+
 				if (force)
 				{
-					Running = false;
-					//Console.WriteLine("START Aborting BG Program");
+					DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Force aborting BG Program thread");
 					RunProgramThread.Abort();
-					//Console.WriteLine("FINISHED Aborting BG Program");
+					DebugTools.AddEvent("LoopingZoneProgram.Stop", "END Force aborting BG Program thread");
 				}
 				else
 				{
@@ -111,7 +116,7 @@ namespace ZoneLighting.ZoneProgramNS
 					StopTrigger.WaitForFire();
 				}
 
-				//Console.WriteLine("START Clearing inputs");
+				DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Clearing Inputs");
 
 				//clear inputs because they will be re-added by the setup
 				foreach (var zoneProgramInput in Inputs)
@@ -120,14 +125,14 @@ namespace ZoneLighting.ZoneProgramNS
 				}
 				Inputs.Clear();
 
-				//Console.WriteLine("FINISHED Clearing inputs");
+				DebugTools.AddEvent("LoopingZoneProgram.Stop", "END Clearing Inputs");
 			}
 			else
 			{
-				//Console.WriteLine("Running = false");
+				DebugTools.AddEvent("LoopingZoneProgram.Stop", "Running = FALSE");
 			}
 
-			//Console.WriteLine("FINISHED Stopping BG Program");
+			DebugTools.AddEvent("LoopingZoneProgram.Stop", "END Stopping BG Program");
 
 			StopTestingTrigger.Fire(this, null);
 		}

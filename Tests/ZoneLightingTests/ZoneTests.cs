@@ -2,8 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks.Dataflow;
 using FakeItEasy;
-using FakeItEasy.ExtensionSyntax.Full;
-using Xunit;
+using NUnit.Framework;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
@@ -11,7 +10,7 @@ namespace ZoneLightingTests
 {
 	public class ZoneTests
 	{
-		[Fact]
+		[Test]
 		public void SetProgram_SetsZoneProgramOfZoneAndSetsZoneOfZoneProgram()
 		{
 			var zone = A.Fake<Zone>();
@@ -19,21 +18,21 @@ namespace ZoneLightingTests
 
 			zone.SetProgram(zoneProgram);
 
-			Assert.Equal(zone.ZoneProgram, zoneProgram);
-			Assert.Equal(zoneProgram.Zone, zone);
+			Assert.AreEqual(zone.ZoneProgram, zoneProgram);
+			Assert.AreEqual(zoneProgram.Zone, zone);
 		}
 
-		[Fact]
+		[Test]
 		public void SetAllLightsColor_Works()
 		{
 			var zone = A.Fake<Zone>();
 			var color = A.Dummy<Color>();
 			zone.SetAllLightsColor(color);
 
-			zone.Lights.ToList().ForEach(light => Assert.Equal(light.GetColor(), color));
+			zone.Lights.ToList().ForEach(light => Assert.AreEqual(light.GetColor(), color));
 		}
 
-		[Fact]
+		[Test]
 		public void StartProgram_CallsZoneProgramStart()
 		{
 			var zone = A.Fake<Zone>();

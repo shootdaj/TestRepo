@@ -12,7 +12,7 @@ namespace Console
 		{
 			ZoneLightingManager.Instance.Initialize(false);
 
-			Task.Run(() =>
+			var task = new Task(() =>
 			{
 				while (true)
 				{
@@ -20,12 +20,21 @@ namespace Console
 					var color = Color.FromName(input);
 					if (color.IsKnownColor)
 					{
-						ZoneLightingManager.Instance.Zones[0].InterruptingPrograms[0].SetInput("Color", color);
+						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
+						ZoneLightingManager.Instance.Zones[0].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500));
+						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
+						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
+						ZoneLightingManager.Instance.Zones[0].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500));
+						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
 					}
 				}
 			});
 
+			task.Start();
+			
 			Thread.Sleep(Timeout.Infinite);
+
+			//DebugTools.Print();
 		}
 	}
 }

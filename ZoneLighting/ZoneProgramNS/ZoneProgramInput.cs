@@ -67,7 +67,7 @@ namespace ZoneLighting.ZoneProgramNS
 			Value = data;
 		}
 
-		public bool HasInputSubject(Subject<object> inputSubject)
+		public bool IsInputSubjectSameAs(Subject<object> inputSubject)
 		{
 			return inputSubject == InputSubject;
 		}
