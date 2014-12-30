@@ -66,20 +66,49 @@ namespace ZoneLighting.ZoneNS
 			LightingController = lightingController;
 			Name = name;
 
-			//set interrupt processing
+			//configure interrupt processing
 			InterruptQueue = new ActionBlock<InterruptInfo>(
 			interruptInfo =>
 			{
+				//DebugTools.AddEvent("InterruptQueue.Method", "START IRQ processing");
+
 				//when a new request to interrupt the background program is detected, check if the request is coming from the BG program. 
-				//if it is, then no need to pause the bg program. simply
-				if (!ZoneProgram.Inputs.Any(input => input.HasInputSubject(interruptInfo.InputSubject)))
+				//if it is, then no need to pause the bg program -- really?? check the TODO on the next line
+				if (!ZoneProgram.Inputs.Any(input => input.IsInputSubjectSameAs(interruptInfo.InputSubject))) //TODO: Is this check needed? If the BG program's interrupting input is set, what to do? What problem is this if statement solving?
 				{
+					//DebugTools.AddEvent("InterruptQueue.Method", "IRQ is from a foreground program");
+
+					if (!interruptInfo.StopSubject.HasObservers) //only subscribe if the stopsubject isn't already subscribed
+						interruptInfo.StopSubject.Subscribe(data =>
+						{
+							if (InterruptQueue.InputCount < 1)
+							{
+								DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "START Resume BG Program");
+								ZoneProgram.ResumeCore();
+								DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "END Resume BG Program");
+							}
+						});	//hook up the stop call of the interrupting input's program to resume the BG program
+
+
+					DebugTools.AddEvent("InterruptQueue.Method", "START Pause BG Program");
 					ZoneProgram.PauseCore(); //pause the bg program
-					interruptInfo.StopSubject.Subscribe(data => ZoneProgram.ResumeCore());			//hook up the stop call of the interrupting input's program to resume the BG program
+					DebugTools.AddEvent("InterruptQueue.Method", "END Pause BG Program");
 				}
+				else
+				{
+					DebugTools.AddEvent("InterruptQueue.Method", "IRQ is from the background program. No ");
+				}
+
+				DebugTools.AddEvent("InterruptQueue.Method", "START Interrupting Action");
 				interruptInfo.InputSubject.OnNext(interruptInfo.Data);		//start the routine that was requested
-				
+				DebugTools.AddEvent("InterruptQueue.Method", "END Interrupting Action");
+
+				//DebugTools.AddEvent("InterruptQueue.Method", "END Interrupt request processing");
+
 				//TODO: Add capability to have a timeout in case the interrupting program never calls the StopSubject
+			}, new ExecutionDataflowBlockOptions()
+			{
+				MaxDegreeOfParallelism = 1
 			});
 
 			//start program, if one is passed in
@@ -104,7 +133,7 @@ namespace ZoneLighting.ZoneNS
 			}
 		}
 
-		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null)
+		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool interruptingProgram = false)
 		{
 			if (!Initialized)
 			{
@@ -120,6 +149,8 @@ namespace ZoneLighting.ZoneNS
 			if (Initialized)
 			{
 				StopProgram(force);
+				RemoveAllInterruptingPrograms();
+				UnsetProgram();
 				Initialized = false;
 			}
 		}
@@ -163,6 +194,15 @@ namespace ZoneLighting.ZoneNS
 		{
 			ZoneProgram = program;
 			ZoneProgram.Zone = this;
+		}
+
+		/// <summary>
+		/// Unhooks the zone program from this zone.
+		/// </summary>
+		public void UnsetProgram()
+		{
+			ZoneProgram.Zone = null;
+			ZoneProgram = null;
 		}
 	
 		/// <summary>
@@ -218,6 +258,11 @@ namespace ZoneLighting.ZoneNS
 			interruptingProgram.Zone = null;
             interruptingProgram.RemoveInterruptQueue();
 			InterruptingPrograms.Remove(interruptingProgram);
+		}
+
+		public void RemoveAllInterruptingPrograms()
+		{
+			InterruptingPrograms.ToList().ForEach(program => RemoveInterruptingProgram(program.Name));
 		}
 
 		/// <summary>

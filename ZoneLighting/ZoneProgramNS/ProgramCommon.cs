@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -9,25 +9,18 @@ namespace ZoneLighting.ZoneProgramNS
 {
 	public class ProgramCommon
 	{
+		/// <summary>
+		/// Delays the execution for the specified amount of milliseconds.
+		/// </summary>
+		/// <param name="milliseconds"></param>
 		public static void Delay(int milliseconds)
 		{
 			if (milliseconds > 0)
 				Task.WaitAll(Task.Delay(milliseconds));
 		}
 
-
-
-
-
-
-
-
-
-
-
-
 		/// <summary>
-		/// Fades the entire strip from one set of colors to another set of colors
+		/// Fades from one color to another color.
 		/// </summary>
 		/// <param name="color1">First set of colors (array of LEDs with length 32)</param>
 		/// <param name="color2"></param>
@@ -81,6 +74,20 @@ namespace ZoneLighting.ZoneProgramNS
 
 			endingColor = currentColor;
 		}
+
+		/// <summary>
+		/// Blinks a set of colors holding the color for the given amount of milliseconds.
+		/// </summary>
+		/// <param name="colorsAndHoldTimes">List of tuples of colors and their hold times</param>
+		/// <param name="outputMethod">Method to use to output the blinks</param>
+		public static void Blink(List<Tuple<Color, int>> colorsAndHoldTimes, Action<Color> outputMethod)
+		{
+			colorsAndHoldTimes.ForEach(tuple =>
+			{
+				outputMethod(tuple.Item1);
+				Delay(tuple.Item2);
+			});
+		}
 	}
 
 	public static class ProgramExtensions
@@ -93,6 +100,21 @@ namespace ZoneLighting.ZoneProgramNS
 		public static void Send(this IList<ILogicalRGBLight> lights, LightingController lc)
 		{
 			lc.SendLights(lights.Cast<ILightingControllerPixel>().ToList());
+		}
+	}
+
+	public static class TupleListExtensions
+	{
+		public static void Add<T1, T2>(
+				this IList<Tuple<T1, T2>> list, T1 item1, T2 item2)
+		{
+			list.Add(Tuple.Create(item1, item2));
+		}
+
+		public static void Add<T1, T2, T3>(
+				this IList<Tuple<T1, T2, T3>> list, T1 item1, T2 item2, T3 item3)
+		{
+			list.Add(Tuple.Create(item1, item2, item3));
 		}
 	}
 }

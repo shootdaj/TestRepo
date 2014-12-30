@@ -2,18 +2,18 @@
 using System.Configuration;
 using System.Drawing;
 using NUnit.Framework;
-using Xunit;
+//using Xunit;
 using ZoneLighting.ConfigNS;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Factories;
-using Assert = Xunit.Assert;
 
 namespace ZoneLightingTests
 {
 	public class ZoneScaffolderTests
 	{
-		[Fact]
+		//[Fact]
+		[Test]
 		public void InitializeFromZoneConfiguration_Works()
 		{
 			//arrange
@@ -30,8 +30,8 @@ namespace ZoneLightingTests
 			zoneScaffolder.InitializeFromZoneConfiguration(zones, ConfigurationManager.AppSettings["InitializeFromZoneConfiguration_Works_TestFile"]);
 
 			//assert
-			Assert.Equal(zone.Name, "TestZone");
-			Assert.Equal(zone.ZoneProgram.Name, "ScrollDot");
+			Assert.AreEqual(zone.Name, "TestZone");
+			Assert.AreEqual(zone.ZoneProgram.Name, "ScrollDot");
 
 			var inputNames = zone.ZoneProgram.GetInputNames();
 
@@ -39,11 +39,11 @@ namespace ZoneLightingTests
 			{
 				if (inputName == "DelayTime")
 				{
-					Assert.Equal(zone.ZoneProgram.GetInputValue(inputName), 30);
+					Assert.AreEqual(zone.ZoneProgram.GetInputValue(inputName), 30);
 				}
 				else if (inputName == "DotColor")
 				{
-					Assert.Equal(zone.ZoneProgram.GetInputValue(inputName), Color.Red);
+					Assert.AreEqual(zone.ZoneProgram.GetInputValue(inputName), Color.Red);
 				}
 			}
 		}

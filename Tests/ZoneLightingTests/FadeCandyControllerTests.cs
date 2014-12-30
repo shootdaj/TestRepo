@@ -1,16 +1,17 @@
 ﻿using FakeItEasy;
-using Xunit;
+using NUnit.Framework;
 using ZoneLighting.Communication;
 
 namespace ZoneLightingTests
 {
 	public class FadeCandyControllerTests
 	{
-		[Fact]
+		//[Fact]
+		[Test]
 		public void PixelType_ReturnsIFadeCandyPixel()
 		{
 			var fadeCandyController = new FadeCandyController(A.Dummy<string>());
-			Assert.Equal(fadeCandyController.PixelType, typeof(IFadeCandyPixel));
+			Assert.AreEqual(fadeCandyController.PixelType, typeof(IFadeCandyPixel));
 		}
 	}
 }

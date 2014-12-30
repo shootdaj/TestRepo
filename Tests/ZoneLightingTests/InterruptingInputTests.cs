@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 using System.Drawing;
-using Xunit;
+using NUnit.Framework;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
@@ -11,7 +11,8 @@ namespace ZoneLightingTests
 {
 	public class InterruptingInputTests
 	{
-		[Fact]
+		//[Fact]
+		[Test]
 		public void InterruptingInput_InterruptsBackgroundProgramAndStartsReactiveProgram()
 		{
 			//arrange

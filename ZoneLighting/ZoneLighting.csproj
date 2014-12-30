@@ -77,11 +77,13 @@
     <Compile Include="Communication\WebSocketOPCPacket.cs" />
     <Compile Include="ConfigNS\Config.cs" />
     <Compile Include="Communication\IFadeCandyPixel.cs" />
+    <Compile Include="DebugTools.cs" />
     <Compile Include="IInitializable.cs" />
     <Compile Include="TriggerDependencyNS\Dependency.cs" />
     <Compile Include="TriggerDependencyNS\Interfaces.cs" />
     <Compile Include="TriggerDependencyNS\Trigger.cs" />
     <Compile Include="ZoneNS\FadeCandyZone.cs" />
+    <Compile Include="ZoneNS\ZoneAssemblyAttribute.cs" />
     <Compile Include="ZoneNS\ZonesJsonConverter.cs" />
     <Compile Include="LED.cs" />
     <Compile Include="LightingPattern.cs" />
@@ -93,6 +95,7 @@
     <Compile Include="ZoneProgramNS\IZoneProgramMetadata.cs" />
     <Compile Include="ZoneProgramNS\ReactiveZoneProgram.cs" />
     <Compile Include="ZoneProgramNS\UnderlyingTypeConverter.cs" />
+    <Compile Include="ZoneProgramNS\ZoneLightingProgramAssemblyAttribute.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgramInput.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgramInputCollection.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgramJsonConverter.cs" />

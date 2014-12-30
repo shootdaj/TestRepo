@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 using System.Drawing;
-using Xunit;
+using NUnit.Framework;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
@@ -10,8 +10,7 @@ namespace ZoneLightingTests
 {
 	public class ZoneProgramTests
 	{
-		[Fact]
-		//[Test]
+		[Test]
 		public void ForceStop_Works()
 		{
 			//arrange
@@ -41,8 +40,7 @@ namespace ZoneLightingTests
 			
 		}
 
-		[Fact]
-		//[Test]
+		[Test]
 		public void CooperativeStop_Works()
 		{
 			//arrange

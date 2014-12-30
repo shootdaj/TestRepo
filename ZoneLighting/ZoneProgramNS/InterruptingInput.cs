@@ -49,12 +49,16 @@ namespace ZoneLighting.ZoneProgramNS
 			if (InterruptQueue == null)
 				throw new Exception("Interrupt Queue has not been set or has been set to null.");
 
+			DebugTools.AddEvent("InterruptingInput.SetValue", "START Posting to InterruptQueue");
+			
 			InterruptQueue.Post(new InterruptInfo()
 			{
 				Data = data,
 				InputSubject = InputSubject,
 				StopSubject = StopSubject
 			});
+
+			DebugTools.AddEvent("InterruptingInput.SetValue", "END Posting to InterruptQueue");
 
 			Value = data;
 		}

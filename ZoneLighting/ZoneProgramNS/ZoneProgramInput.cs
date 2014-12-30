@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 namespace ZoneLighting.ZoneProgramNS
 {
 	[DataContract]
-	public class ZoneProgramInput
+	public class ZoneProgramInput : IDisposable
 	{
 		[DataMember]
 		public string Name { get; set; }
@@ -47,6 +47,15 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			InputDisposable?.Dispose();
 		}
+		
+		public void Dispose()
+		{
+			Unsubscribe();
+			InputSubject.Dispose();
+			Name = null;
+			Type = null;
+			Value = null;
+		}
 
 		/// <summary>
 		/// Sends data through the input to the program it's attached to.
@@ -58,9 +67,10 @@ namespace ZoneLighting.ZoneProgramNS
 			Value = data;
 		}
 
-		public bool HasInputSubject(Subject<object> inputSubject)
+		public bool IsInputSubjectSameAs(Subject<object> inputSubject)
 		{
 			return inputSubject == InputSubject;
 		}
+
 	}
 }

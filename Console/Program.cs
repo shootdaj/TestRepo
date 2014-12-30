@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Threading;
+using System.Threading.Tasks;
 using ZoneLighting;
 
 namespace Console
@@ -9,14 +10,31 @@ namespace Console
 	{
 		static void Main(string[] args)
 		{
-			ZoneLightingManager.Instance.Initialize();
-			System.Console.WriteLine(ZoneLightingManager.Instance.GetZoneSummary());
+			ZoneLightingManager.Instance.Initialize(false);
 
-			//Thread.Sleep(5000);
+			var task = new Task(() =>
+			{
+				while (true)
+				{
+					var input = System.Console.ReadLine();
+					var color = Color.FromName(input);
+					if (color.IsKnownColor)
+					{
+						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
+						ZoneLightingManager.Instance.Zones[0].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500));
+						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
+						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
+						ZoneLightingManager.Instance.Zones[0].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500));
+						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
+					}
+				}
+			});
 
-			//ZoneLightingManager.Instance.Zones[0].ZoneProgram.SetInput("Color", Color.Red);
-
+			task.Start();
+			
 			Thread.Sleep(Timeout.Infinite);
+
+			//DebugTools.Print();
 		}
 	}
 }
