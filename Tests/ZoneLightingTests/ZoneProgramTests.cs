@@ -11,7 +11,6 @@ namespace ZoneLightingTests
 	public class ZoneProgramTests
 	{
 		[Fact]
-		//[Test]
 		public void ForceStop_Works()
 		{
 			//arrange
@@ -42,7 +41,6 @@ namespace ZoneLightingTests
 		}
 
 		[Fact]
-		//[Test]
 		public void CooperativeStop_Works()
 		{
 			//arrange

@@ -20,7 +20,7 @@ namespace ZoneLighting
 	/// <summary>
 	/// This class will be responsible for managing the higher level tasks for the zones.
 	/// </summary>
-	public class ZoneLightingManager : IInitializable, IDisposable
+	public class ZoneLightingManager : IDisposable
 	{
 		#region Singleton
 
@@ -53,12 +53,13 @@ namespace ZoneLighting
 
 		public bool Initialized { get; private set; }
 
-		public void Initialize()
+		public void Initialize(bool loadExternalZones = true)
 		{
 			if (!Initialized)
 			{
 				InitLightingControllers();
-				ComposeWithExternalModules();
+				if (loadExternalZones)
+					ComposeWithExternalModules();
 				InitZoneScaffolder();
 				InitializeAllZones();
 				Initialized = true;

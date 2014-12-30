@@ -97,7 +97,6 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public void ResumeCore()
 		{
-
 			ResumeTrigger.Fire(this, null);
 			Resume();
 		}
@@ -122,7 +121,11 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			StartTrigger.Fire(this, null);
 
+			//Console.WriteLine("START Starting BG Program");
+
 			StartCore();
+
+			//Console.WriteLine("FINISHED Starting BG Program");
 
 			if (Inputs.Any(input => input is InterruptingInput))
 			{

@@ -11,16 +11,35 @@ namespace ZoneLighting.ZoneProgramNS
 		protected LoopingZoneProgram()
 		{
 			LoopCTS = new CancellationTokenSource();
+			Running = false;
 		}
 
 		#region Looping Stuff
 
-		public bool Running { get; private set; } = false;
+		private bool _running;
+
+		public bool Running
+		{
+			get { return _running; }
+			private set
+			{
+				//Console.WriteLine("Running = " + value);
+				_running = value;
+			}
+		}
+
 		public CancellationTokenSource LoopCTS;
 		protected Task RunProgram { get; set; }
 		protected Thread RunProgramThread { get; set; }
 
 		protected void StartLoop()
+		{
+			SetupRunProgramTask();
+			if (!Running)
+				RunProgram.Start();
+		}
+
+		private void SetupRunProgramTask()
 		{
 			RunProgram = new Task(() =>
 			{
@@ -32,19 +51,18 @@ namespace ZoneLighting.ZoneProgramNS
 					{
 						Loop();
 						if (LoopCTS.IsCancellationRequested)
+						{
+							Running = false;
 							break;
-
+						}
 					}
 					StopTrigger.Fire(this, null);
-					Running = false;
-
 				}
 				catch
 				{
-					Running = false;
+					// ignored
 				}
 			}, LoopCTS.Token);
-			RunProgram.Start();
 		}
 
 		#region Overrideables
@@ -72,11 +90,20 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public override void Stop(bool force)
 		{
+			//Console.WriteLine("START Stopping BG Program " + Name);
+
+			//Console.WriteLine("Check if BG Program is running");
+
 			if (Running)
 			{
+				//Console.WriteLine("Running = true");
+				
 				if (force)
 				{
+					Running = false;
+					//Console.WriteLine("START Aborting BG Program");
 					RunProgramThread.Abort();
+					//Console.WriteLine("FINISHED Aborting BG Program");
 				}
 				else
 				{
@@ -84,13 +111,23 @@ namespace ZoneLighting.ZoneProgramNS
 					StopTrigger.WaitForFire();
 				}
 
+				//Console.WriteLine("START Clearing inputs");
+
 				//clear inputs because they will be re-added by the setup
 				foreach (var zoneProgramInput in Inputs)
 				{
 					zoneProgramInput.Dispose();
 				}
 				Inputs.Clear();
+
+				//Console.WriteLine("FINISHED Clearing inputs");
 			}
+			else
+			{
+				//Console.WriteLine("Running = false");
+			}
+
+			//Console.WriteLine("FINISHED Stopping BG Program");
 
 			StopTestingTrigger.Fire(this, null);
 		}

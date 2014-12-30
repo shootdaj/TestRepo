@@ -10,7 +10,7 @@ namespace Console
 	{
 		static void Main(string[] args)
 		{
-			ZoneLightingManager.Instance.Initialize();
+			ZoneLightingManager.Instance.Initialize(false);
 
 			Task.Run(() =>
 			{

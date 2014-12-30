@@ -74,13 +74,31 @@ namespace ZoneLighting.ZoneNS
 				//if it is, then no need to pause the bg program. simply
 				if (!ZoneProgram.Inputs.Any(input => input.HasInputSubject(interruptInfo.InputSubject)))
 				{
-					ZoneProgram.PauseCore(); //pause the bg program
 					if (!interruptInfo.StopSubject.HasObservers)		//only subscribe if the stopsubject isn't already subscribed
-					interruptInfo.StopSubject.Subscribe(data => ZoneProgram.ResumeCore());			//hook up the stop call of the interrupting input's program to resume the BG program
+						interruptInfo.StopSubject.Subscribe(data =>
+						{
+							//Console.WriteLine("START Resuming BG Program");
+							ZoneProgram.ResumeCore();
+							//Console.WriteLine("FINISHED Resuming BG Program");
+						});			//hook up the stop call of the interrupting input's program to resume the BG program
+
+					//Console.WriteLine("START Pausing BG Program");
+
+					ZoneProgram.PauseCore();	//pause the bg program
+
+					//Console.WriteLine("FINISHED Pausing BG Program");
 				}
+
+				//Console.WriteLine("START OnNext to activate Interrupting Input's action");
+
 				interruptInfo.InputSubject.OnNext(interruptInfo.Data);		//start the routine that was requested
-				
+
+				//Console.WriteLine("FINISHED OnNext to activate Interrupting Input's action");
+
 				//TODO: Add capability to have a timeout in case the interrupting program never calls the StopSubject
+			}, new ExecutionDataflowBlockOptions()
+			{
+				MaxDegreeOfParallelism = 1
 			});
 
 			//start program, if one is passed in
