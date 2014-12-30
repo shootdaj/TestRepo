@@ -93,6 +93,7 @@
     <Compile Include="ZoneProgramNS\InterruptingInput.cs" />
     <Compile Include="ZoneProgramNS\IZoneProgramInput.cs" />
     <Compile Include="ZoneProgramNS\IZoneProgramMetadata.cs" />
+    <Compile Include="ZoneProgramNS\PauseToken.cs" />
     <Compile Include="ZoneProgramNS\ReactiveZoneProgram.cs" />
     <Compile Include="ZoneProgramNS\UnderlyingTypeConverter.cs" />
     <Compile Include="ZoneProgramNS\ZoneLightingProgramAssemblyAttribute.cs" />

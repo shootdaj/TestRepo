@@ -7,14 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using FakeItEasy;
 using NUnit.Framework;
-//using Xunit;
 using ZoneLighting;
 
 namespace ZoneLightingTests
 {
 	public class LEDTests
 	{
-		//[Fact]
 		[Test]
 		public void SetColor_Works()
 		{
@@ -24,7 +22,6 @@ namespace ZoneLightingTests
 			Assert.AreEqual(led.Color, color);
 		}
 
-		//[Fact]
 		[Test]
 		public void GetColor_Works()
 		{

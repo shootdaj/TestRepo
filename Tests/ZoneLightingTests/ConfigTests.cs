@@ -71,6 +71,11 @@ namespace ZoneLightingTests
 				//Assert.Equal(zones[i].ZoneProgram.ProgramParameter, deserializedZones[i].ZoneProgram.ProgramParameter);
 				//TODO: Assert equality of starting input values
 			}
+
+			foreach (var zone in zones)
+			{
+				zone.Dispose(true);
+			}
 	    }
     }
 }
