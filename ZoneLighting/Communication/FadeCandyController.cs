@@ -107,10 +107,10 @@ namespace ZoneLighting.Communication
 		public override void SendPixelFrame(IPixelFrame opcPixelFrame)
 		{
 			var byteArray = ((OPCPixelFrame)opcPixelFrame).ToByteArray();
-			//string byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
-			//byteArray.ToList().ForEach(x => byteArrayString += x + ",");
-			//byteArrayString += "}";
-			//Debug.Print(byteArrayString);
+			string byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
+			byteArray.ToList().ForEach(x => byteArrayString += x + ",");
+			byteArrayString += "}";
+			Debug.Print(byteArrayString);
 			AssertInit();
 			WebSocket.Send(byteArray); //TODO: Change this to async?
 		}

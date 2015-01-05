@@ -148,7 +148,7 @@ namespace ZoneLighting
 			//	ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones, configFilePath);
 			//}
 
-			AddWingZonesAndPrograms();
+			AddBasementZonesAndPrograms();
 
 
 
@@ -174,27 +174,36 @@ namespace ZoneLighting
 			//ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones);
 		}
 
-		private void AddWingZonesAndPrograms()
+		private void AddBasementZonesAndPrograms()
 		{
 			var leftWing = new FadeCandyZone("LeftWing");
-			leftWing.AddFadeCandyLights(6, 1);
+			leftWing.AddFadeCandyLights(12, 1);
+			Zones.Add(leftWing);
 
 			var rightWing = new FadeCandyZone("RightWing");
 			rightWing.AddFadeCandyLights(12, 2);
-			Zones.Add(leftWing);
 			Zones.Add(rightWing);
 
-			var scrollDotStartingValues = new InputStartingValues();
-			scrollDotStartingValues.Add("DelayTime", 30);
-			scrollDotStartingValues.Add("DotColor", (Color?)Color.Red);
-			ZoneScaffolder.Instance.InitializeZone(leftWing, "ScrollDot", scrollDotStartingValues);
+			var center = new FadeCandyZone("Center");
+			center.AddFadeCandyLights(21, 3);
+			Zones.Add(center);
 
-			var rainbowStartingValues = new InputStartingValues();
-			rainbowStartingValues.Add("DelayTime", 1);
-			rainbowStartingValues.Add("Speed", 1);
-			ZoneScaffolder.Instance.InitializeZone(rightWing, "Rainbow", rainbowStartingValues);
+			var leftWingStartingValues = new InputStartingValues();
+			leftWingStartingValues.Add("DelayTime", 30);
+			leftWingStartingValues.Add("DotColor", (Color?)Color.Red);
+			ZoneScaffolder.Instance.InitializeZone(leftWing, "ScrollDot", leftWingStartingValues);
 
-			ZoneScaffolder.Instance.StartInterruptingProgram(leftWing, "BlinkColor");
+			var rightWingStartingValues = new InputStartingValues();
+			rightWingStartingValues.Add("DelayTime", 1);
+			rightWingStartingValues.Add("Speed", 1);
+			ZoneScaffolder.Instance.InitializeZone(rightWing, "Rainbow", rightWingStartingValues);
+
+			var centerStartingValues = new InputStartingValues();
+			centerStartingValues.Add("DelayTime", 1);
+			centerStartingValues.Add("Speed", 1);
+			ZoneScaffolder.Instance.InitializeZone(center, "Rainbow", centerStartingValues);
+
+			ZoneScaffolder.Instance.StartInterruptingProgram(center, "BlinkColor");
 
 			//TODO: Add an interrupting program that will notify for something.
 		}
