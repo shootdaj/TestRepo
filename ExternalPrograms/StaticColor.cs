@@ -37,7 +37,7 @@ namespace ExternalPrograms
 			{
 				Lights.SetColor((Color)color);
 				LightingController.SendLights(Lights.Cast<ILightingControllerPixel>().ToList());	//send frame
-				Thread.Sleep(4000);
+				Thread.Sleep(Timeout.Infinite);
 			});
 		}
 
