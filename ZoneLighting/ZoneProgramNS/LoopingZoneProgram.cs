@@ -54,16 +54,17 @@ namespace ZoneLighting.ZoneProgramNS
 						if (LoopCTS.IsCancellationRequested)
 						{
 							Running = false;
+							StopTrigger.Fire(this, null);
 							break;
 						}
 					}
-					StopTrigger.Fire(this, null);
 				}
 				catch (ThreadAbortException ex)
 				{
 					DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method", "LoopingTask thread aborted");
 					DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Setting Running = false");
 					Running = false;
+					StopTrigger.Fire(this, null);
 					DebugTools.AddEvent("LoopingZoneProgram.Stop", "END Setting Running = false");
 				}
 				catch
@@ -106,14 +107,27 @@ namespace ZoneLighting.ZoneProgramNS
 
 				if (force)
 				{
-					DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Force aborting BG Program thread");
-					RunProgramThread.Abort();
-					DebugTools.AddEvent("LoopingZoneProgram.Stop", "END Force aborting BG Program thread");
+					if (RunProgramThread != null)
+					{
+						DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Force aborting BG Program thread");
+						RunProgramThread.Abort();
+						StopTrigger.WaitForFire();
+						DebugTools.AddEvent("LoopingZoneProgram.Stop", "END Force aborting BG Program thread");
+					}
+					else
+					{
+						DebugTools.AddEvent("LoopingZoneProgram.Stop", "RunProgramThread was null");
+						DebugTools.Print();
+					}
 				}
 				else
 				{
 					LoopCTS.Cancel();
-					StopTrigger.WaitForFire();
+					if (!StopTrigger.WaitForFire())
+					{
+						DebugTools.AddEvent("LoopingZoneProgram.Stop", "Loop did not cancel cooperatively.");
+						DebugTools.Print();
+					}
 				}
 
 				DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Clearing Inputs");

@@ -27,6 +27,8 @@ namespace ExternalPrograms
 
 		public override void Loop()
 		{
+			DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
+
 			var colors = new List<Color>();
 			colors.Add(Color.Red);
 			colors.Add(Color.Blue);
@@ -45,6 +47,8 @@ namespace ExternalPrograms
 				LightingController.SendLEDs(Lights.Cast<ILightingControllerPixel>().ToList());		//send frame
 				ProgramCommon.Delay(DelayTime);											//pause before next iteration
 			}
+
+			DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
 		}
 	}
 }
