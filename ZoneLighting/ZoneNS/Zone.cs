@@ -167,6 +167,7 @@ namespace ZoneLighting.ZoneNS
 			InterruptingPrograms.ToList().ForEach(p => p.Dispose());
 			InterruptingPrograms.Clear();
 			InterruptingPrograms = null;
+			InterruptQueue = null;
 			LightingController = null;
 			Name = null;
 		}

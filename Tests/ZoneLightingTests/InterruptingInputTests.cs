@@ -11,7 +11,6 @@ namespace ZoneLightingTests
 {
 	public class InterruptingInputTests
 	{
-		//[Fact]
 		[Test]
 		public void InterruptingInput_InterruptsBackgroundProgramAndStartsReactiveProgram()
 		{
@@ -41,6 +40,9 @@ namespace ZoneLightingTests
 			Assert.True(((StaticColor)leftWing.InterruptingPrograms[0]).ChangeLightColorTrigger.WaitForFire(1000));
 			Assert.True(((InterruptingInput) leftWing.InterruptingPrograms[0].Inputs[0]).StopTrigger.WaitForFire(1000));
 			Assert.True(leftWing.ZoneProgram.ResumeTrigger.WaitForFire(1000));
+
+			//cleaup
+			leftWing.Dispose(true);
 		}
 	}	
 }

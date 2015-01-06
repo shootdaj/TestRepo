@@ -1,10 +1,13 @@
 ﻿using System.Configuration;
+using System.Diagnostics;
 using System.Drawing;
 using NUnit.Framework;
+using ZoneLighting;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Factories;
+using ZoneLightingTests.Resources.Programs;
 
 namespace ZoneLightingTests
 {
@@ -26,7 +29,7 @@ namespace ZoneLightingTests
 
 			FadeCandyController.Instance.Initialize();	//needs to be faked somehow
 
-			zoneScaffolder.InitializeZone(leftWing, "ScrollDot", scrollDotDictionary);
+			zoneScaffolder.InitializeZone(leftWing, new ScrollDot(), scrollDotDictionary);
 
 			//act
 			leftWing.ZoneProgram.Stop(true);
@@ -43,6 +46,8 @@ namespace ZoneLightingTests
 		[Test]
 		public void CooperativeStop_Works()
 		{
+			DebugTools.AddEvent("Test.CooperativeStop_Works", "START CooperativeStop_Works Test");
+
 			//arrange
 			var zoneScaffolder = new ZoneScaffolder();
 			zoneScaffolder.Initialize(ConfigurationManager.AppSettings["TestProgramModuleDirectory"]);
@@ -56,7 +61,7 @@ namespace ZoneLightingTests
 
 			FadeCandyController.Instance.Initialize();	//needs to be faked somehow
 
-			zoneScaffolder.InitializeZone(leftWing, "ScrollDot", scrollDotDictionary);
+			zoneScaffolder.InitializeZone(leftWing, new ScrollDot(), scrollDotDictionary);
 
 			//act
 			leftWing.ZoneProgram.Stop(false);
@@ -66,6 +71,10 @@ namespace ZoneLightingTests
 
 			//cleanup
 			leftWing.Dispose();
+
+			DebugTools.AddEvent("Test.CooperativeStop_Works", "END CooperativeStop_Works Test");
+
+			DebugTools.Print();
 		}
 	}
 }

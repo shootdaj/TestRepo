@@ -28,6 +28,8 @@ namespace ExternalPrograms
 
 		public override void Loop(Barrier barrier)
 		{
+			DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
+
 			var colors = new List<Color>();
 			colors.Add(Color.Red);
 			colors.Add(Color.Blue);
@@ -48,6 +50,8 @@ namespace ExternalPrograms
 
 				barrier?.SignalAndWait();
 			}
+
+			DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
 		}
 	}
 }
