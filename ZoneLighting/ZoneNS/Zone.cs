@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgramNS;
@@ -60,7 +61,7 @@ namespace ZoneLighting.ZoneNS
 
 		#region C+I
 
-		public Zone(LightingController lightingController, string name = "", ZoneProgram program = null, InputStartingValues inputStartingValues = null)
+		public Zone(LightingController lightingController, string name = "", ZoneProgram program = null, InputStartingValues inputStartingValues = null, Barrier barrier = null)
 		{
 			Lights = new List<ILogicalRGBLight>();
 			LightingController = lightingController;
@@ -84,7 +85,7 @@ namespace ZoneLighting.ZoneNS
 							if (InterruptQueue.InputCount < 1)
 							{
 								DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "START Resume BG Program");
-								ZoneProgram.ResumeCore();
+								ZoneProgram.ResumeCore(barrier);
 								DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "END Resume BG Program");
 							}
 						});	//hook up the stop call of the interrupting input's program to resume the BG program
@@ -119,26 +120,28 @@ namespace ZoneLighting.ZoneNS
 			}
 			else
 			{
-				Initialize(program, inputStartingValues);
+				Initialize(program, inputStartingValues, barrier);
 			}
 		}
 
-		private void Initialize(InputStartingValues inputStartingValues = null)
+		private void Initialize(InputStartingValues inputStartingValues = null, Barrier barrier = null)
 		{
 			if (!Initialized)
 			{
 				if (ZoneProgram != null)
-					StartProgram(inputStartingValues);
+				{
+					StartProgram(inputStartingValues, barrier);
+				}
 				Initialized = true;
 			}
 		}
 
-		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool interruptingProgram = false)
+		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, Barrier barrier = null)
 		{
 			if (!Initialized)
 			{
 				SetProgram(zoneProgram);
-				Initialize(inputStartingValues);
+				Initialize(inputStartingValues, barrier);
 			}
 		}
 
@@ -208,9 +211,9 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// Starts this zone's program with the given starting values for the inputs.
 		/// </summary>
-		public void StartProgram(InputStartingValues inputStartingValues = null)
+		public void StartProgram(InputStartingValues inputStartingValues = null, Barrier barrier = null)
 		{
-			ZoneProgram.Start(inputStartingValues, InterruptQueue);
+			ZoneProgram.Start(inputStartingValues, InterruptQueue, barrier);
 		}
 
 		/// <summary>

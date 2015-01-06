@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
-using ZoneLighting.TriggerDependencyNS;
+using System.Threading;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ExternalPrograms
@@ -14,16 +13,16 @@ namespace ExternalPrograms
 	[ExportMetadata("Name", "Rainbow")]
 	public class Rainbow : LoopingZoneProgram
 	{
-		public int DelayTime { get; set; }
-		public int Speed { get; set; }
+		public int DelayTime { get; set; } = 1;
+		public int Speed { get; set; } = 1;
 
 		public override void Setup()
 		{
-			AddInput<int>("Speed", speed => Speed = (int) speed);
-			AddInput<int>("DelayTime", delayTime => DelayTime = (int) delayTime);
+			AddInput<int>("Speed", speed => Speed = (int)speed);
+			AddInput<int>("DelayTime", delayTime => DelayTime = (int)delayTime);
 		}
 
-		public override void Loop()
+		public override void Loop(Barrier barrier)
 		{
 			var colors = new List<Color>();
 			colors.Add(Color.Violet);
@@ -42,7 +41,9 @@ namespace ExternalPrograms
 				{
 					Lights.SetColor(color);
 					Lights.Send(LightingController);
-				}, out endingColor);
+				}, out endingColor, barrier);
+
+				//barrier?.SignalAndWait();  //synchronize at the fade single color level
 			}
 		}
 	}

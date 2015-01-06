@@ -10,11 +10,11 @@ namespace ZoneLighting.ZoneNS
 		{
 		}
 
-		public void AddFadeCandyLights(int numLights, byte fcChannel)
+		public void AddFadeCandyLights(PixelType pixelType, int numLights, byte fcChannel)
 		{
 			for (int i = 0; i < numLights; i++)
 			{
-				AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i));
+				AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i, pixelType: pixelType));
 			}
 		}
 	}

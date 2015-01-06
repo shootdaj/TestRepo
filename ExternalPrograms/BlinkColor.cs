@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
-using System.Linq;
 using System.Threading;
-using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ExternalPrograms
@@ -16,7 +14,7 @@ namespace ExternalPrograms
 	[ExportMetadata("Name", "BlinkColor")]
 	public class BlinkColor : ReactiveZoneProgram
 	{
-		protected override void StartCore()
+		protected override void StartCore(Barrier barrier)
 		{
 			AddInterruptingInput<Color>("Blink", colorTimeTuple =>
 			{
@@ -35,7 +33,7 @@ namespace ExternalPrograms
 			});
 		}
 
-		public override void Stop(bool force)
+		protected override void StopCore(bool force)
 		{
 			RemoveInput("Color");
 		}

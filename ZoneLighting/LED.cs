@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Runtime.InteropServices;
 using ZoneLighting.Communication;
 
 namespace ZoneLighting
@@ -7,7 +8,7 @@ namespace ZoneLighting
 	/// Represents an LED. This class must implement the ILightingControllerPixel for each type of lighting controller
 	/// that it needs to be output on.
 	/// </summary>
-	public class LED : ILogicalRGBLight, IFadeCandyPixel
+	public class LED : ILogicalRGBLight, IFadeCandyPixelContainer
 	{
 		#region CORE
 
@@ -44,9 +45,10 @@ namespace ZoneLighting
 
 		#region C+I
 
-		public LED(Color? color = null, int? logicalIndex = null, byte? fadeCandyChannel = null, int? fadeCandyIndex = null)
+		public LED(Color? color = null, int? logicalIndex = null, byte? fadeCandyChannel = null, int? fadeCandyIndex = null, PixelType pixelType = PixelType.None)
 		{
-			FadeCandyPixel = new FadeCandyPixel();
+			FadeCandyPixel = GetFadeCandyPixelInstance(pixelType);
+
 			if (color != null)
 				SetColor((Color) color);
 			if (logicalIndex != null)
@@ -64,8 +66,21 @@ namespace ZoneLighting
 		public int LogicalIndex { get; set; }
 
 		#endregion
-		
+
 		#region API
+
+		public static FadeCandyPixel GetFadeCandyPixelInstance(PixelType pixelType)
+		{
+			switch (pixelType)
+			{
+				case PixelType.FadeCandyWS2811Pixel:
+					return new FadeCandyWS2811Pixel();
+				case PixelType.FadeCandyWS2812Pixel:
+					return new FadeCandyWS2812Pixel();
+			}
+
+			return null;
+		}
 
 		public void MapFadeCandyPixel(byte channel, int index)
 		{

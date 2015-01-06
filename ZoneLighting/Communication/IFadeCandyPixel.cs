@@ -2,7 +2,7 @@
 
 namespace ZoneLighting.Communication
 {
-	public interface IFadeCandyPixel : ILightingControllerPixel
+	public interface IFadeCandyPixelContainer : ILightingControllerPixel
 	{
 		FadeCandyPixel FadeCandyPixel { get; set; }
 	}

@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using ZoneLighting.Communication;
 using ZoneLighting.TriggerDependencyNS;
@@ -61,6 +62,8 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public Trigger StopTestingTrigger { get; } = new Trigger("ZoneProgram.StopTestingTrigger");
 
+		public Barrier Barrier { get; private set; }
+
 		#endregion CORE
 
 		#region C+I+D
@@ -95,13 +98,13 @@ namespace ZoneLighting.ZoneProgramNS
 
 		protected abstract void Pause();
 
-		public void ResumeCore()
+		public void ResumeCore(Barrier barrier)
 		{
 			ResumeTrigger.Fire(this, null);
-			Resume();
+			Resume(barrier);
 		}
 
-		public abstract void Resume();
+		public abstract void Resume(Barrier barrier);
 
 		public void Dispose()
 		{
@@ -117,32 +120,45 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Base Methods
 
-		public virtual void Start(InputStartingValues inputStartingValues = null, ActionBlock<InterruptInfo> interruptQueue = null)
+		public virtual void Start(InputStartingValues inputStartingValues = null, ActionBlock<InterruptInfo> interruptQueue = null, Barrier barrier = null)
 		{
 			StartTrigger.Fire(this, null);
 
-			//Console.WriteLine("START Starting BG Program");
+			Barrier = barrier;
+			Barrier?.AddParticipant();
+			StartCore(barrier);
 
-			StartCore();
+			AssignInterruptQueue(interruptQueue);
+			SetStartingValues(inputStartingValues);
+		}
 
-			//Console.WriteLine("FINISHED Starting BG Program");
+		private void SetStartingValues(InputStartingValues inputStartingValues)
+		{
+			if (inputStartingValues != null)
+				SetInputs(inputStartingValues);
+		}
 
+		private void AssignInterruptQueue(ActionBlock<InterruptInfo> interruptQueue)
+		{
 			if (Inputs.Any(input => input is InterruptingInput))
 			{
 				Inputs.Where(input => input is InterruptingInput).ToList().ForEach(input =>
-				((InterruptingInput)input).SetInterruptQueue(interruptQueue));
+					((InterruptingInput) input).SetInterruptQueue(interruptQueue));
 			}
+		}
 
-			if (inputStartingValues != null)
-				SetInputs(inputStartingValues);
+		public virtual void Stop(bool force)
+		{
+			Barrier?.RemoveParticipant();
+			StopCore(force);
 		}
 
 		#endregion
 
 		#region Overridables
 
-		protected abstract void StartCore();
-		public abstract void Stop(bool force);
+		protected abstract void StartCore(Barrier barrier);
+		protected abstract void StopCore(bool force);
 
 		#endregion
 

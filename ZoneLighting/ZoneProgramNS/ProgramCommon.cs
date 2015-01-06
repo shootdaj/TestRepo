@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ZoneLighting.Communication;
 
@@ -27,7 +28,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <param name="speed">The higher the speed, the more abruptly the colors will change. Max is 127.</param>
 		/// <param name="sleepTime">How long each color set is displayed</param>
 		/// <param name="loop">Whether or not to loop forever</param>
-		public static void Fade(Color color1, Color color2, int speed, int sleepTime, bool loop, Action<Color> outputMethod, out Color? endingColor)
+		public static void Fade(Color color1, Color color2, int speed, int sleepTime, bool loop, Action<Color> outputMethod, out Color? endingColor, Barrier barrier = null)
 		{
 			if (speed > 127)
 				throw new Exception("Speed cannot exceed 127.");
@@ -63,6 +64,8 @@ namespace ZoneLighting.ZoneProgramNS
 					currentColor = colorToOutput;
 
 					Delay(sleepTime);
+
+					barrier?.SignalAndWait();
 				}
 
 				//if looping, loop back from 2nd color to 1st color before looping back

@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Drawing;
 using NUnit.Framework;
+using ZoneLighting.Communication;
 //using Xunit;
 using ZoneLighting.ConfigNS;
 using ZoneLighting.ZoneNS;
@@ -21,7 +22,7 @@ namespace ZoneLightingTests
 			var zone = new FadeCandyZone("TestZone");
 
 			zones.Add(zone);
-			zone.AddFadeCandyLights(6, 1);
+			zone.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 
 			var zoneScaffolder = new ZoneScaffolder();
 			zoneScaffolder.Initialize(ConfigurationManager.AppSettings["TestProgramModuleDirectory"]);
@@ -61,7 +62,7 @@ namespace ZoneLightingTests
 			zoneScaffolder.Initialize(ConfigurationManager.AppSettings["TestProgramModuleDirectory"]);
 
 			var leftWing = new FadeCandyZone("TestZone");
-			leftWing.AddFadeCandyLights(6, 1);
+			leftWing.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 
 			var scrollDotDictionary = new InputStartingValues();
 			scrollDotDictionary.Add("DelayTime", 30);

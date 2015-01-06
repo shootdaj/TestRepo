@@ -10,14 +10,14 @@ namespace ZoneLighting.ZoneProgramNS
 {
 	public abstract class ReactiveZoneProgram : ZoneProgram
 	{
-		protected abstract override void StartCore();
+		protected abstract override void StartCore(Barrier barrier);
 
-		public override void Stop(bool force)
+		protected override void StopCore(bool force)
 		{
 			
 		}
 
-		public override void Resume()
+		public override void Resume(Barrier barrier)
 		{
 			//TODO: Implement resume logic
 		}

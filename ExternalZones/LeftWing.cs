@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.Composition;
 using ZoneLighting;
+using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
 
 namespace ExternalZones
@@ -9,7 +10,7 @@ namespace ExternalZones
 	{
 		public LeftWing() : base("LeftWing")
 		{
-			AddFadeCandyLights(6, 1);
+			AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 		}
 	}
 }

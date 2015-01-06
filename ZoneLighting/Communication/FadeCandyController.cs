@@ -34,7 +34,7 @@ namespace ZoneLighting.Communication
 		/// </summary>
 		private WebSocket WebSocket { get; set; }
 
-		public override Type PixelType => typeof(IFadeCandyPixel);
+		public override Type PixelType => typeof(IFadeCandyPixelContainer);
 
 		#endregion
 
@@ -120,7 +120,7 @@ namespace ZoneLighting.Communication
 		/// </summary>
 		public override void SendLEDs(IList<ILightingControllerPixel> leds)
 		{
-			OPCPixelFrame.CreateChannelBurstFromLEDs(leds.Cast<IFadeCandyPixel>().ToList()).ToList().ForEach(SendPixelFrame);
+			OPCPixelFrame.CreateChannelBurstFromLEDs(leds.Cast<IFadeCandyPixelContainer>().ToList()).ToList().ForEach(SendPixelFrame);
 		}
 
 		#endregion

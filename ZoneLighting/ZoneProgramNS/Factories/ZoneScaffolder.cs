@@ -7,6 +7,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using ZoneLighting.ConfigNS;
 using ZoneLighting.ZoneNS;
 
@@ -91,18 +92,18 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		/// <summary>
 		/// Initializes a zone with the given program name and starting values of the inputs as a name-value dictionary.
 		/// </summary>
-		public void InitializeZone(Zone zone, string programName, InputStartingValues inputStartingValues = null)
+		public void InitializeZone(Zone zone, string programName, InputStartingValues inputStartingValues = null, Barrier barrier = null)
 		{
 			var zoneProgramFactoriesList = ZoneProgramFactories.ToList();
-			zone.Initialize(CreateZoneProgram(programName, zoneProgramFactoriesList), inputStartingValues);
+			zone.Initialize(CreateZoneProgram(programName, zoneProgramFactoriesList), inputStartingValues, barrier);
 		}
 
 		/// <summary>
 		/// Initializes a zone with the given program instance and starting values of the inputs as a name-value dictionary.
 		/// </summary>
-		public void InitializeZone(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null)
+		public void InitializeZone(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, Barrier barrier = null)
 		{
-			zone.Initialize(zoneProgram, inputStartingValues);
+			zone.Initialize(zoneProgram, inputStartingValues, barrier);
 		}
 
 		public void StartInterruptingProgram(Zone zone, string programName, InputStartingValues inputStartingValues = null)

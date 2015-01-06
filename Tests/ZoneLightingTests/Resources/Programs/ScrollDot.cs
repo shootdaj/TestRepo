@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgramNS;
 
@@ -24,7 +25,7 @@ namespace ZoneLightingTests.Resources.Programs
 			AddMappedInput<Color?>(this, "DotColor");
 		}
 
-		public override void Loop()
+		public override void Loop(Barrier barrier)
 		{
 			var colors = new List<Color>();
 			colors.Add(Color.Red);
@@ -43,6 +44,8 @@ namespace ZoneLightingTests.Resources.Programs
 					: colors[new Random().Next(0, colors.Count - 1)]);					//set one to white
 				LightingController.SendLEDs(Lights.Cast<ILightingControllerPixel>().ToList());				//send frame
 				ProgramCommon.Delay(DelayTime);											//pause before next iteration
+
+				barrier.SignalAndWait();
 			}
 		}
 	}

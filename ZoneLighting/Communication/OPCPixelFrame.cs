@@ -30,15 +30,15 @@ namespace ZoneLighting.Communication
 		/// </summary>
 		/// <param name="channel">Channel this frame will be sent to.</param>
 		/// <param name="leds">List of LEDs to map.</param>
-		public static OPCPixelFrame CreateFromLEDs(byte channel, IList<IFadeCandyPixel> leds)
+		public static OPCPixelFrame CreateFromLEDs(byte channel, IList<IFadeCandyPixelContainer> leds)
 		{
-			var data = new List<byte>(leds.Count);
+			var data = new byte[leds.Count * 3];
 
-			foreach (IFadeCandyPixel led in leds)
+			foreach (IFadeCandyPixelContainer led in leds)
 			{
-				data.Insert(led.FadeCandyPixel.RedIndex, led.Color.R);
-				data.Insert(led.FadeCandyPixel.GreenIndex, led.Color.G);
-				data.Insert(led.FadeCandyPixel.BlueIndex, led.Color.B);
+				data[led.FadeCandyPixel.RedIndex] = led.Color.R;
+				data[led.FadeCandyPixel.GreenIndex] = led.Color.G;
+				data[led.FadeCandyPixel.BlueIndex] = led.Color.B;
 			}
 
 			var returnValue = new OPCPixelFrame(channel, data);
@@ -51,7 +51,7 @@ namespace ZoneLighting.Communication
 		/// </summary>
 		/// <param name="leds"></param>
 		/// <returns></returns>
-		public static IList<OPCPixelFrame> CreateChannelBurstFromLEDs(IList<IFadeCandyPixel> leds)
+		public static IList<OPCPixelFrame> CreateChannelBurstFromLEDs(IList<IFadeCandyPixelContainer> leds)
 		{
 			var returnValue = new List<OPCPixelFrame>();
 

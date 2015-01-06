@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Newtonsoft.Json.Serialization;
 using ZoneLighting.Communication;
 using ZoneLighting.ConfigNS;
@@ -42,6 +43,12 @@ namespace ZoneLighting
 		/// Container for the external modules.
 		/// </summary>
 		private CompositionContainer ExternalZoneContainer { get; set; }
+
+		//TODO
+		/// <summary>
+		/// Barriers for synchronizing the programs running in different zones.
+		/// </summary>
+		private IList<Barrier> Barriers { get; set; } = new List<Barrier>();
 
 		#endregion
 
@@ -177,33 +184,37 @@ namespace ZoneLighting
 		private void AddBasementZonesAndPrograms()
 		{
 			var leftWing = new FadeCandyZone("LeftWing");
-			leftWing.AddFadeCandyLights(12, 1);
+			leftWing.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 			Zones.Add(leftWing);
 
-			var rightWing = new FadeCandyZone("RightWing");
-			rightWing.AddFadeCandyLights(12, 2);
-			Zones.Add(rightWing);
-
 			var center = new FadeCandyZone("Center");
-			center.AddFadeCandyLights(21, 3);
+			center.AddFadeCandyLights(PixelType.FadeCandyWS2811Pixel, 21, 2);
 			Zones.Add(center);
 
-			var leftWingStartingValues = new InputStartingValues();
-			leftWingStartingValues.Add("DelayTime", 30);
-			leftWingStartingValues.Add("DotColor", (Color?)Color.Red);
-			ZoneScaffolder.Instance.InitializeZone(leftWing, "ScrollDot", leftWingStartingValues);
+			var rightWing = new FadeCandyZone("RightWing");
+			rightWing.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 12, 3);
+			Zones.Add(rightWing);
 
-			var rightWingStartingValues = new InputStartingValues();
-			rightWingStartingValues.Add("DelayTime", 1);
-			rightWingStartingValues.Add("Speed", 1);
-			ZoneScaffolder.Instance.InitializeZone(rightWing, "Rainbow", rightWingStartingValues);
+			var rainbowBarrier = new Barrier(0);
+
+			//var leftWingStartingValues = new InputStartingValues();
+			//leftWingStartingValues.Add("DelayTime", 1);
+			//leftWingStartingValues.Add("Speed", 1);
+			ZoneScaffolder.Instance.InitializeZone(leftWing, "Rainbow", barrier: rainbowBarrier);//, leftWingStartingValues);
 
 			var centerStartingValues = new InputStartingValues();
 			centerStartingValues.Add("DelayTime", 1);
 			centerStartingValues.Add("Speed", 1);
-			ZoneScaffolder.Instance.InitializeZone(center, "Rainbow", centerStartingValues);
+			ZoneScaffolder.Instance.InitializeZone(center, "Rainbow", centerStartingValues, rainbowBarrier);
 
+			var rightWingStartingValues = new InputStartingValues();
+			rightWingStartingValues.Add("DelayTime", 30);
+			rightWingStartingValues.Add("Speed", 1);
+			ZoneScaffolder.Instance.InitializeZone(rightWing, "Rainbow", rightWingStartingValues, rainbowBarrier);
+
+			ZoneScaffolder.Instance.StartInterruptingProgram(leftWing, "BlinkColor");
 			ZoneScaffolder.Instance.StartInterruptingProgram(center, "BlinkColor");
+			ZoneScaffolder.Instance.StartInterruptingProgram(rightWing, "BlinkColor");
 
 			//TODO: Add an interrupting program that will notify for something.
 		}

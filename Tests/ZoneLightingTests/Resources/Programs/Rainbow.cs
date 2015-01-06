@@ -1,19 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
+using System.Threading;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLightingTests.Resources.Programs
 {
 	/// <summary>
-	/// Outputs a looping rainbow to the zone using the LightingController's built-in interpolation (currently only works with FadeCandy).
+	/// Outputs a looping rainbow to the zone (currently only works with FadeCandy).
 	/// </summary>
 	[Export(typeof(ZoneProgram))]
 	[ExportMetadata("Name", "Rainbow")]
 	public class Rainbow : LoopingZoneProgram
 	{
-		public int DelayTime { get; set; }
-		public int Speed { get; set; }
+		public int DelayTime { get; set; } = 1;
+		public int Speed { get; set; } = 1;
 
 		public override void Setup()
 		{
@@ -21,7 +22,7 @@ namespace ZoneLightingTests.Resources.Programs
 			AddInput<int>("DelayTime", delayTime => DelayTime = (int)delayTime);
 		}
 
-		public override void Loop()
+		public override void Loop(Barrier barrier)
 		{
 			var colors = new List<Color>();
 			colors.Add(Color.Violet);
@@ -40,7 +41,9 @@ namespace ZoneLightingTests.Resources.Programs
 				{
 					Lights.SetColor(color);
 					Lights.Send(LightingController);
-				}, out endingColor);
+				}, out endingColor, barrier);
+
+				//barrier?.SignalAndWait();   //synchronize at the fade single color level
 			}
 		}
 	}

@@ -31,7 +31,7 @@ namespace ExternalPrograms
 
 		//}
 
-		protected override void StartCore()
+		protected override void StartCore(Barrier barrier)
 		{
 			AddInterruptingInput<Color>("Color", color =>
 			{
@@ -41,7 +41,7 @@ namespace ExternalPrograms
 			});
 		}
 
-		public override void Stop(bool force)
+		protected override void StopCore(bool force)
 		{
 			RemoveInput("Color");
 		}

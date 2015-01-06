@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 
 namespace ZoneLighting.ZoneProgramNS
 {
@@ -22,9 +23,9 @@ namespace ZoneLighting.ZoneProgramNS
 		protected Task LoopingTask { get; set; }
 		protected Thread RunProgramThread { get; set; }
 
-		protected void StartLoop()
+		protected void StartLoop(Barrier barrier)
 		{
-			SetupRunProgramTask();
+			SetupRunProgramTask(barrier);
 			if (!Running)
 			{
 				DebugTools.AddEvent("LoopingZoneProgram.StartLoop", "Running = FALSE");
@@ -41,7 +42,7 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
-		private void SetupRunProgramTask()
+		private void SetupRunProgramTask(Barrier barrier)
 		{
 			LoopingTask = new Task(() =>
 			{
@@ -50,7 +51,7 @@ namespace ZoneLighting.ZoneProgramNS
 					RunProgramThread = Thread.CurrentThread;
 					while (true)
 					{
-						Loop();
+						Loop(barrier);
 						if (LoopCTS.IsCancellationRequested)
 						{
 							Running = false;
@@ -76,7 +77,7 @@ namespace ZoneLighting.ZoneProgramNS
 		#region Overrideables
 
 		public abstract void Setup();
-		public abstract void Loop();
+		public abstract void Loop(Barrier barrier);
 
 
 		#endregion
@@ -84,19 +85,19 @@ namespace ZoneLighting.ZoneProgramNS
 		#endregion
 
 		#region Overridden
-		
+
 		//public override void StartBase(InputStartingValues inputStartingValues = null)
 		//{
 		//	Start();
 		//}
-		
-		protected override void StartCore()
+
+		protected override void StartCore(Barrier barrier)
 		{
 			Setup();
-			StartLoop();
+			StartLoop(barrier);
 		}
 
-		public override void Stop(bool force)
+		protected override void StopCore(bool force)
 		{
 			DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Stopping BG Program");
 
@@ -137,10 +138,10 @@ namespace ZoneLighting.ZoneProgramNS
 			StopTestingTrigger.Fire(this, null);
 		}
 
-		public override void Resume()
+		public override void Resume(Barrier barrier)
 		{
 			//TODO: Implement resume logic - for now, it's just gonna call start
-			Start();
+			Start(barrier: barrier);
 
 		}
 
