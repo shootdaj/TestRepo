@@ -66,6 +66,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ZoneNS\SyncContext.cs" />
     <Compile Include="Communication\FadeCandyController.cs" />
     <Compile Include="Communication\FadeCandyPixel.cs" />
     <Compile Include="Communication\ILightingController.cs" />
@@ -82,11 +83,13 @@
     <Compile Include="TriggerDependencyNS\Dependency.cs" />
     <Compile Include="TriggerDependencyNS\Interfaces.cs" />
     <Compile Include="TriggerDependencyNS\Trigger.cs" />
+    <Compile Include="ZoneNS\SyncLevel.cs" />
+    <Compile Include="ZoneNS\ZoneExtensions.cs" />
     <Compile Include="ZoneNS\FadeCandyZone.cs" />
     <Compile Include="ZoneNS\ZoneAssemblyAttribute.cs" />
     <Compile Include="ZoneNS\ZonesJsonConverter.cs" />
     <Compile Include="LED.cs" />
-    <Compile Include="LightingPattern.cs" />
+    <Compile Include="ZoneProgramNS\LightingPattern.cs" />
     <Compile Include="ZoneProgramNS\Factories\ZoneScaffolder.cs" />
     <Compile Include="ZoneProgramNS\InputStartingValues.cs" />
     <Compile Include="ZoneProgramNS\InterruptInfo.cs" />

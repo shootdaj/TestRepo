@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Dynamic;
 using System.Reactive.Subjects;
+using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using ZoneLighting.TriggerDependencyNS;
 
@@ -27,6 +28,11 @@ namespace ZoneLighting.ZoneProgramNS
 		public void SetInterruptQueue(ActionBlock<InterruptInfo> interruptQueue)
 		{
 			InterruptQueue = interruptQueue;
+		}
+
+		public void ClearInterruptQueue()
+		{
+			InterruptQueue = null;
 		}
 
 		public void RemoveInterruptQueue()

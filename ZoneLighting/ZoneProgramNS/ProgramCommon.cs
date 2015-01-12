@@ -83,22 +83,23 @@ namespace ZoneLighting.ZoneProgramNS
 		/// </summary>
 		/// <param name="colorsAndHoldTimes">List of tuples of colors and their hold times</param>
 		/// <param name="outputMethod">Method to use to output the blinks</param>
-		public static void Blink(List<Tuple<Color, int>> colorsAndHoldTimes, Action<Color> outputMethod)
+		public static void Blink(List<Tuple<Color, int>> colorsAndHoldTimes, Action<Color> outputMethod, Barrier barrier = null)
 		{
 			colorsAndHoldTimes.ForEach(tuple =>
 			{
+				if (barrier?.ParticipantCount > 0)
+					barrier?.SignalAndWait();
 				outputMethod(tuple.Item1);
 				Delay(tuple.Item2);
+				if (barrier?.ParticipantCount > 0)
+					barrier?.SignalAndWait();
 			});
 		}
 	}
 
 	public static class ProgramExtensions
 	{
-		public static void SetColor(this IList<ILogicalRGBLight> lights, Color color)
-		{
-			lights.ToList().ForEach(x => x.SetColor(color));
-		}
+		
 
 		public static void Send(this IList<ILogicalRGBLight> lights, LightingController lc)
 		{

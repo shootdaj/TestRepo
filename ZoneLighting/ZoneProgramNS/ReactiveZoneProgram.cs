@@ -35,14 +35,16 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <param name="action">The action that should occur when the input is set to a certain value. This will be defined by the 
 		/// subclasses of this class to perform certain actions when the this input is set to a value.</param>
 		/// <returns>The input that was just added.</returns>
-		protected ZoneProgramInput AddInterruptingInput<T>(string name, Action<object> action)
+		protected ZoneProgramInput AddInterruptingInput<T>(string name, Action<object> action, Barrier barrier = null)
 		{
 			var input = new InterruptingInput(name, typeof(T));
 			Inputs.Add(input);
+			
 			input.Subscribe(data =>				//when the input's OnNext is called, do whatever it was programmed to do and then fire the StopSubject
 			{
 				input.StartTrigger.Fire(this, null);
 				action(data);
+				DetachBarrier();
 				input.StopSubject.OnNext(null);
 				input.StopTrigger.Fire(this, null);
 			});

@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using ZoneLighting.Communication;
+using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ExternalPrograms
@@ -14,29 +15,14 @@ namespace ExternalPrograms
 	[ExportMetadata("Name", "StaticColor")]
 	public class StaticColor : ReactiveZoneProgram
 	{
-		//protected override void StartCore()
-		//{
-		//	//AddInput<Color>("Color", color =>
-		//	//{
-		//	//	Lights.SetColor((Color)color);
-		//	//	LightingController.SendLights(Lights.Cast<ILightingControllerPixel>().ToList());	//send frame
-		//	//});
-
-		//	AddInterruptingInput<Color>("Color", color =>
-		//	{
-		//		Lights.SetColor((Color)color);
-		//		LightingController.SendLights(Lights.Cast<ILightingControllerPixel>().ToList());	//send frame
-		//	});
-
-
-		//}
+		public Trigger ChangeLightColorTrigger { get; } = new Trigger("ChangeLightColorTrigger");
 
 		protected override void StartCore(Barrier barrier)
 		{
 			AddInterruptingInput<Color>("Color", color =>
 			{
-				Lights.SetColor((Color)color);
-				LightingController.SendLights(Lights.Cast<ILightingControllerPixel>().ToList());	//send frame
+				SetColor((Color)color);
+				SendLights();	//send frame
 				Thread.Sleep(Timeout.Infinite);
 			});
 		}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reactive;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
@@ -15,7 +16,7 @@ namespace ZoneLighting.ZoneNS
 	/// from the ZoneLightingManager's point of view.
 	/// </summary>
 	[DataContract]
-    public class Zone : IDisposable
+	public class Zone : IDisposable
 	{
 		#region CORE
 
@@ -28,7 +29,12 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// All lights in the zone.
 		/// </summary>
-		public IList<ILogicalRGBLight> Lights { get; private set; }
+		private IList<ILogicalRGBLight> Lights { get; set; }
+
+		public void SetLights()
+		{
+			
+		}
 
 		/// <summary>
 		/// The Lights list as a dictionary with the logical index as the key and the light as the value.
@@ -55,62 +61,37 @@ namespace ZoneLighting.ZoneNS
 		[DataMember]
 		public IList<ReactiveZoneProgram> InterruptingPrograms { get; private set; } = new List<ReactiveZoneProgram>();
 
+		/// <summary>
+		/// This queue is used to 
+		/// </summary>
 		private ActionBlock<InterruptInfo> InterruptQueue { get; set; }
-		
+
+		/// <summary>
+		/// Brightness of this zone.
+		/// </summary>
+		public double Brightness { get; set; }
+
+		private Barrier BackgroundBarrier { get; set; }
+
 		#endregion
 
 		#region C+I
 
-		public Zone(LightingController lightingController, string name = "", ZoneProgram program = null, InputStartingValues inputStartingValues = null, Barrier barrier = null)
+		/// <summary>
+		/// If inputStartingValues is provided, the zone is initialized automatically.
+		/// </summary>
+		/// <param name="lightingController"></param>
+		/// <param name="name"></param>
+		/// <param name="program"></param>
+		/// <param name="inputStartingValues"></param>
+		/// <param name="barrier"></param>
+		/// <param name="brightness">Brightness for this zone.</param>
+		public Zone(LightingController lightingController, string name = "", ZoneProgram program = null, InputStartingValues inputStartingValues = null, Barrier barrier = null, double? brightness = 1.0)
 		{
 			Lights = new List<ILogicalRGBLight>();
 			LightingController = lightingController;
 			Name = name;
-
-			//configure interrupt processing
-			InterruptQueue = new ActionBlock<InterruptInfo>(
-			interruptInfo =>
-			{
-				//DebugTools.AddEvent("InterruptQueue.Method", "START IRQ processing");
-
-				//when a new request to interrupt the background program is detected, check if the request is coming from the BG program. 
-				//if it is, then no need to pause the bg program -- really?? check the TODO on the next line
-				if (!ZoneProgram.Inputs.Any(input => input.IsInputSubjectSameAs(interruptInfo.InputSubject))) //TODO: Is this check needed? If the BG program's interrupting input is set, what to do? What problem is this if statement solving?
-				{
-					//DebugTools.AddEvent("InterruptQueue.Method", "IRQ is from a foreground program");
-
-					if (!interruptInfo.StopSubject.HasObservers) //only subscribe if the stopsubject isn't already subscribed
-						interruptInfo.StopSubject.Subscribe(data =>
-						{
-							if (InterruptQueue.InputCount < 1)
-							{
-								DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "START Resume BG Program");
-								ZoneProgram.ResumeCore(barrier);
-								DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "END Resume BG Program");
-							}
-						});	//hook up the stop call of the interrupting input's program to resume the BG program
-
-
-					DebugTools.AddEvent("InterruptQueue.Method", "START Pause BG Program");
-					ZoneProgram.PauseCore(); //pause the bg program
-					DebugTools.AddEvent("InterruptQueue.Method", "END Pause BG Program");
-				}
-				else
-				{
-					DebugTools.AddEvent("InterruptQueue.Method", "IRQ is from the background program. No ");
-				}
-
-				DebugTools.AddEvent("InterruptQueue.Method", "START Interrupting Action");
-				interruptInfo.InputSubject.OnNext(interruptInfo.Data);		//start the routine that was requested
-				DebugTools.AddEvent("InterruptQueue.Method", "END Interrupting Action");
-
-				//DebugTools.AddEvent("InterruptQueue.Method", "END Interrupt request processing");
-
-				//TODO: Add capability to have a timeout in case the interrupting program never calls the StopSubject
-			}, new ExecutionDataflowBlockOptions()
-			{
-				MaxDegreeOfParallelism = 1
-			});
+			Brightness = brightness ?? 1.0;
 
 			//start program, if one is passed in
 			if (program == null) return;
@@ -122,6 +103,59 @@ namespace ZoneLighting.ZoneNS
 			{
 				Initialize(program, inputStartingValues, barrier);
 			}
+		}
+
+		public void SetupInterruptProcessing(Barrier barrier)
+		{
+			SetBackgroundBarrier(barrier);
+
+			//configure interrupt processing
+			InterruptQueue = new ActionBlock<InterruptInfo>((interruptInfo) => ProcessInterrupt(interruptInfo, BackgroundBarrier), new ExecutionDataflowBlockOptions()
+				{
+					MaxDegreeOfParallelism = 1,
+				});
+		}
+		
+		private void ProcessInterrupt(InterruptInfo interruptInfo, Barrier barrier)
+		{
+			//DebugTools.AddEvent("InterruptQueue.Method", "START IRQ processing");
+
+			//when a new request to interrupt the background program is detected, check if the request is coming from the BG program. 
+			//if it is, then no need to pause the bg program -- really?? check the TODO on the next line
+			if (!ZoneProgram.Inputs.Any(input => input.IsInputSubjectSameAs(interruptInfo.InputSubject)))
+			//TODO: Is this check needed? If the BG program's interrupting input is set, what to do? What problem is this if statement solving?
+			{
+				DebugTools.AddEvent("InterruptQueue.Method", "IRQ is from a foreground program");
+
+				if (!interruptInfo.StopSubject.HasObservers) //only subscribe if the stopsubject isn't already subscribed
+				{
+					interruptInfo.StopSubject.Subscribe(data =>
+					{
+						if (InterruptQueue.InputCount < 1)
+						{
+							DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "START Resume BG Program");
+							ZoneProgram.ResumeCore(barrier);
+							DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "END Resume BG Program");
+						}
+					});	//hook up the stop call of the interrupting input's program to resume the BG program
+				}
+
+				DebugTools.AddEvent("InterruptQueue.Method", "START Pause BG Program");
+				ZoneProgram.PauseCore(); //pause the bg program
+				DebugTools.AddEvent("InterruptQueue.Method", "END Pause BG Program");
+			}
+			else
+			{
+				DebugTools.AddEvent("InterruptQueue.Method", "IRQ is from the background program. No ");
+			}
+
+			DebugTools.AddEvent("InterruptQueue.Method", "START Interrupting Action");
+			interruptInfo.InputSubject.OnNext(interruptInfo.Data);	 //start the routine that was requested
+			DebugTools.AddEvent("InterruptQueue.Method", "END Interrupting Action");
+
+			//DebugTools.AddEvent("InterruptQueue.Method", "END Interrupt request processing");
+
+			//TODO: Add capability to have a timeout in case the interrupting program never calls the StopSubject
 		}
 
 		private void Initialize(InputStartingValues inputStartingValues = null, Barrier barrier = null)
@@ -190,6 +224,45 @@ namespace ZoneLighting.ZoneNS
 
 		#region API
 
+		public void SetBackgroundBarrier(Barrier barrier)
+		{
+			BackgroundBarrier = barrier;
+		}
+
+		/// <summary>
+		/// Gets the number of lights in this zone.
+		/// </summary>
+		public int LightCount => Lights.Count;
+
+		/// <summary>
+		/// Gets the color of the light at the given index.
+		/// </summary>
+		public Color GetColor(int index)
+		{
+			return Lights[index].GetColor();
+		}
+
+		public void SetColor(Color color, int? index)
+		{
+			//TODO: This equation is not correct. Check the following links
+			//1. http://www.nbdtech.com/Blog/archive/2008/04/27/Calculating-the-Perceived-Brightness-of-a-Color.aspx
+			//2. http://stackoverflow.com/questions/596216/formula-to-determine-brightness-of-rgb-color
+			var brightnessAdjustedColor = color; //TODO: Change //Color.FromArgb((int) (255*Brightness), color.R, color.G, color.B);
+
+			if (index == null)
+				Lights.SetColor(brightnessAdjustedColor);
+			else
+			{
+				Lights[(int)index].SetColor(brightnessAdjustedColor);
+			}
+
+		}
+
+		public void SendLights()
+		{
+			Lights.Send(LightingController);
+		}
+
 		/// <summary>
 		/// Sets this zone's program to the given program.
 		/// </summary>
@@ -208,12 +281,13 @@ namespace ZoneLighting.ZoneNS
 			ZoneProgram.Zone = null;
 			ZoneProgram = null;
 		}
-	
+
 		/// <summary>
 		/// Starts this zone's program with the given starting values for the inputs.
 		/// </summary>
 		public void StartProgram(InputStartingValues inputStartingValues = null, Barrier barrier = null)
 		{
+			SetupInterruptProcessing(barrier);
 			ZoneProgram.Start(inputStartingValues, InterruptQueue, barrier);
 		}
 
@@ -222,9 +296,9 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		/// <param name="interruptingProgram">Interrupting program to start</param>
 		/// <param name="inputStartingValues">Input values to start program with</param>
-		public void StartInterruptingProgram(ReactiveZoneProgram interruptingProgram, InputStartingValues inputStartingValues = null)
+		public void StartInterruptingProgram(ReactiveZoneProgram interruptingProgram, InputStartingValues inputStartingValues = null, Barrier barrier = null)
 		{
-			interruptingProgram.Start(inputStartingValues, InterruptQueue);
+			interruptingProgram.Start(inputStartingValues, InterruptQueue, barrier);
 		}
 
 		/// <summary>
@@ -247,12 +321,12 @@ namespace ZoneLighting.ZoneNS
 		/// Adds an interrupting program to the zone.
 		/// </summary>
 		/// <param name="interruptingProgram"></param>
-		public void AddInterruptingProgram(ReactiveZoneProgram interruptingProgram, bool startProgram = true, InputStartingValues inputStartingValues = null)
+		public void AddInterruptingProgram(ReactiveZoneProgram interruptingProgram, bool startProgram = true, InputStartingValues inputStartingValues = null, Barrier barrier = null)
 		{
 			InterruptingPrograms.Add(interruptingProgram);
 			interruptingProgram.Zone = this;
 			if (startProgram)
-				StartInterruptingProgram(interruptingProgram, inputStartingValues);
+				StartInterruptingProgram(interruptingProgram, inputStartingValues, barrier);
 		}
 
 		public void RemoveInterruptingProgram(string name)
@@ -260,7 +334,7 @@ namespace ZoneLighting.ZoneNS
 			var interruptingProgram = InterruptingPrograms.First(program => program.Name == name);
 			StopInterruptingProgram(interruptingProgram);
 			interruptingProgram.Zone = null;
-            interruptingProgram.RemoveInterruptQueue();
+			interruptingProgram.RemoveInterruptQueue();
 			InterruptingPrograms.Remove(interruptingProgram);
 		}
 

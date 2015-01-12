@@ -96,6 +96,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		{
 			var zoneProgramFactoriesList = ZoneProgramFactories.ToList();
 			zone.Initialize(CreateZoneProgram(programName, zoneProgramFactoriesList), inputStartingValues, barrier);
+
 		}
 
 		/// <summary>
@@ -106,13 +107,13 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 			zone.Initialize(zoneProgram, inputStartingValues, barrier);
 		}
 
-		public void StartInterruptingProgram(Zone zone, string programName, InputStartingValues inputStartingValues = null)
+		public void StartInterruptingProgram(Zone zone, string programName, InputStartingValues inputStartingValues = null, Barrier barrier = null)
 		{
 			var zoneProgramFactoriesList = ZoneProgramFactories.ToList();
 			var zoneProgram = CreateZoneProgram(programName, zoneProgramFactoriesList);
 	
 			if (zoneProgram is ReactiveZoneProgram)
-				zone.AddInterruptingProgram((ReactiveZoneProgram)zoneProgram, true, inputStartingValues);
+				zone.AddInterruptingProgram((ReactiveZoneProgram)zoneProgram, true, inputStartingValues, barrier);
 			else
 			{
 				throw new Exception(

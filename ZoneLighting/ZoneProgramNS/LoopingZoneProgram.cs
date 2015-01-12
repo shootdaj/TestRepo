@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using ZoneLighting.ZoneNS;
 
 namespace ZoneLighting.ZoneProgramNS
 {
@@ -25,7 +26,8 @@ namespace ZoneLighting.ZoneProgramNS
 
 		protected void StartLoop(Barrier barrier)
 		{
-			SetupRunProgramTask(barrier);
+			Barrier = barrier;
+			SetupRunProgramTask();
 			if (!Running)
 			{
 				DebugTools.AddEvent("LoopingZoneProgram.StartLoop", "Running = FALSE");
@@ -42,7 +44,7 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
-		private void SetupRunProgramTask(Barrier barrier)
+		private void SetupRunProgramTask()
 		{
 			LoopingTask = new Task(() =>
 			{
@@ -51,7 +53,7 @@ namespace ZoneLighting.ZoneProgramNS
 					RunProgramThread = Thread.CurrentThread;
 					while (true)
 					{
-						Loop(barrier);
+						Loop();
 						if (LoopCTS.IsCancellationRequested)
 						{
 							Running = false;
@@ -75,10 +77,12 @@ namespace ZoneLighting.ZoneProgramNS
 			}, LoopCTS.Token);
 		}
 
+		public abstract SyncLevel SyncLevel { get; set; }
+
 		#region Overrideables
 
 		public abstract void Setup();
-		public abstract void Loop(Barrier barrier);
+		public abstract void Loop();
 
 
 		#endregion
@@ -94,6 +98,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		protected override void StartCore(Barrier barrier)
 		{
+			AttachBarrier(barrier);
 			Setup();
 			StartLoop(barrier);
 		}
@@ -156,15 +161,18 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			//TODO: Implement resume logic - for now, it's just gonna call start
 			Start(barrier: barrier);
-
 		}
 
 		protected override void Pause()
 		{
-			//TODO: Implement pause logic - for now, it's just gonna call stop forcibly
-			Stop(true);
+			if (Running)
+			{
+				//TODO: Implement pause logic using PauseToken or something - for now, it's just gonna call stop forcibly
+				StopCore(true);
+				DetachBarrier();
+			}
 		}
-
+		
 		#endregion
 	}
 }

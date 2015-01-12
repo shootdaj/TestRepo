@@ -44,11 +44,10 @@ namespace ZoneLighting
 		/// </summary>
 		private CompositionContainer ExternalZoneContainer { get; set; }
 
-		//TODO
 		/// <summary>
-		/// Barriers for synchronizing the programs running in different zones.
+		/// Synchronization contexts (clocks) for synchronizing the programs running in different zones.
 		/// </summary>
-		private IList<Barrier> Barriers { get; set; } = new List<Barrier>();
+		private IList<SyncContext> SyncContexts { get; set; } = new List<SyncContext>();
 
 		#endregion
 
@@ -156,8 +155,8 @@ namespace ZoneLighting
 			//}
 
 			AddBasementZonesAndPrograms();
-
-
+			
+			
 
 
 
@@ -180,45 +179,7 @@ namespace ZoneLighting
 
 			//ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones);
 		}
-
-		private void AddBasementZonesAndPrograms()
-		{
-			var leftWing = new FadeCandyZone("LeftWing");
-			leftWing.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
-			Zones.Add(leftWing);
-
-			var center = new FadeCandyZone("Center");
-			center.AddFadeCandyLights(PixelType.FadeCandyWS2811Pixel, 21, 2);
-			Zones.Add(center);
-
-			var rightWing = new FadeCandyZone("RightWing");
-			rightWing.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 12, 3);
-			Zones.Add(rightWing);
-
-			var rainbowBarrier = new Barrier(0);
-
-			//var leftWingStartingValues = new InputStartingValues();
-			//leftWingStartingValues.Add("DelayTime", 1);
-			//leftWingStartingValues.Add("Speed", 1);
-			ZoneScaffolder.Instance.InitializeZone(leftWing, "Rainbow", barrier: rainbowBarrier);//, leftWingStartingValues);
-
-			var centerStartingValues = new InputStartingValues();
-			centerStartingValues.Add("DelayTime", 1);
-			centerStartingValues.Add("Speed", 1);
-			ZoneScaffolder.Instance.InitializeZone(center, "Rainbow", centerStartingValues, rainbowBarrier);
-
-			var rightWingStartingValues = new InputStartingValues();
-			rightWingStartingValues.Add("DelayTime", 30);
-			rightWingStartingValues.Add("Speed", 1);
-			ZoneScaffolder.Instance.InitializeZone(rightWing, "Rainbow", rightWingStartingValues, rainbowBarrier);
-
-			ZoneScaffolder.Instance.StartInterruptingProgram(leftWing, "BlinkColor");
-			ZoneScaffolder.Instance.StartInterruptingProgram(center, "BlinkColor");
-			ZoneScaffolder.Instance.StartInterruptingProgram(rightWing, "BlinkColor");
-
-			//TODO: Add an interrupting program that will notify for something.
-		}
-
+		
 		public void Uninitialize()
 		{     
 			if (Initialized)
@@ -286,9 +247,142 @@ namespace ZoneLighting
 			return summary;
 		}
 
+		/// <summary>
+		/// This method synchronizes the program running on one zone to the program running in another zone
+		/// </summary>
+		/// <param name="syncSource"></param>
+		/// <param name="syncTarget"></param>
+		public void Synchronize(Zone syncSource, Zone syncTarget)
+		{
+			if (!(syncTarget.ZoneProgram is LoopingZoneProgram) || !(syncSource.ZoneProgram is LoopingZoneProgram))
+				throw new Exception("Both zones passed in must have a looping zone program running on them.");
+
+			//remove target from all sync contexts
+			if (IsInAnySyncContext(syncTarget))
+			{
+				RemoveFromAllSyncContexts(syncTarget);
+			}
+
+			//if there are any contexts in which the source is, use it.
+			if (SyncContexts.Any(c => c.Zones.Contains(syncSource)))
+			{
+				SyncContexts.First(c => c.Zones.Contains(syncSource))
+					.AddZone(syncTarget);
+			}
+			//else create a new context and use that.
+			else
+			{
+				var syncContext = new SyncContext(syncSource, syncSource.Name + "SyncContext");
+				syncContext.AddZone(syncTarget);
+				SyncContexts.Add(syncContext);
+			}
+
+		}
+
+		public void Unsynchronize(Zone unSyncTarget)
+		{
+			//remove target from all sync contexts
+			if (IsInAnySyncContext(unSyncTarget))
+			{
+				RemoveFromAllSyncContexts(unSyncTarget);
+			}
+		}
+
 		#endregion
 
+
+
+		private void AddBasementZonesAndPrograms()
+		{
+
+			//var syncContext = new SyncContext();
+			var notificationSyncContext = new SyncContext();
+
+
+			var leftWing = AddFadeCandyZone("LeftWing", "Rainbow", PixelType.FadeCandyWS2812Pixel, 6, 1);//, syncContext);
+			AddInterruptingProgramToZone(leftWing, "BlinkColor");//, notificationSyncContext.Barrier);
+			var center = AddFadeCandyZone("Center", "Rainbow", PixelType.FadeCandyWS2811Pixel, 21, 2);//, syncContext);
+			AddInterruptingProgramToZone(center, "BlinkColor");//, notificationSyncContext.Barrier);
+			var rightWing = AddFadeCandyZone("RightWing", "Rainbow", PixelType.FadeCandyWS2812Pixel, 12, 3);//, syncContext);
+			AddInterruptingProgramToZone(rightWing, "BlinkColor");//, notificationSyncContext.Barrier);
+			var baiClock = AddFadeCandyZone("BaiClock", "Rainbow", PixelType.FadeCandyWS2812Pixel,24, 4);//, syncContext);
+			AddInterruptingProgramToZone(baiClock, "BlinkColor");//, notificationSyncContext.Barrier);
+
+
+			leftWing.Synchronize(center).Synchronize(rightWing).Synchronize(baiClock);
+
+			//var rainbowContext = new SyncContext((LoopingZoneProgram)leftWing.ZoneProgram, "RainbowContext");
+			//rainbowContext.AddZoneProgram((LoopingZoneProgram)rightWing.ZoneProgram);
+			//rainbowContext.AddZoneProgram((LoopingZoneProgram)center.ZoneProgram);
+			//rainbowContext.AddZoneProgram((LoopingZoneProgram)baiClock.ZoneProgram);
+
+
+
+
+
+			//1. Create Zones and Barriers
+
+
+			//var baiClock = new FadeCandyZone("BaiClock", brightness: 0.5);
+			//baiClock.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 24, 4);
+			//Zones.Add(baiClock);
+
+			////2. 
+
+			//var rainbowBarrier = new Barrier(0);
+
+			////2. Start Programs
+
+			//var centerStartingValues = new InputStartingValues { { "DelayTime", 1 }, { "Speed", 1 } };
+			//ZoneScaffolder.Instance.InitializeZone(center, "Rainbow", centerStartingValues, rainbowBarrier);
+			//ZoneScaffolder.Instance.InitializeZone(rightWing, "Rainbow", barrier: rainbowBarrier);
+			//ZoneScaffolder.Instance.InitializeZone(baiClock, "Rainbow", barrier: rainbowBarrier);
+
+
+			////3. Add Interrupting Programs
+			//ZoneScaffolder.Instance.StartInterruptingProgram(leftWing, "BlinkColor");
+			//ZoneScaffolder.Instance.StartInterruptingProgram(center, "BlinkColor");
+			//ZoneScaffolder.Instance.StartInterruptingProgram(rightWing, "BlinkColor");
+			//ZoneScaffolder.Instance.StartInterruptingProgram(baiClock, "BlinkColor");
+
+			//TODO: Add an interrupting program that will notify for something.
+		}
+
+
+
+		public FadeCandyZone AddFadeCandyZone(string name, string programName, PixelType pixelType, int numLights, byte channel, SyncContext syncContext = null)
+		{
+			var zone = new FadeCandyZone(name);
+			zone.AddFadeCandyLights(pixelType, numLights, channel);
+			Zones.Add(zone);
+			ZoneScaffolder.Instance.InitializeZone(zone, programName, barrier: syncContext?.Barrier);
+
+			return zone;
+		}
+		
+		public void AddInterruptingProgramToZone(Zone zone, string interruptingProgramName, Barrier barrier = null)
+		{
+			ZoneScaffolder.Instance.StartInterruptingProgram(zone, interruptingProgramName, barrier: barrier);
+		}
+
+
 		#region Helpers
+
+		
+
+		private void RemoveFromAllSyncContexts(Zone zone)
+		{
+			SyncContexts.ToList().ForEach(c =>
+			{
+				if (c.Zones.Contains(zone))
+					c.RemoveZone(zone);
+			});
+		}
+
+		private bool IsInAnySyncContext(Zone zone)
+		{
+			return SyncContexts.Any(context => context.Zones.Contains(zone));
+		}
 
 		///// <summary>
 		///// Creates a zone program with the given name
@@ -296,7 +390,7 @@ namespace ZoneLighting
 		///// <returns></returns>
 		//private IZoneProgram CreateZoneProgram(string name)
 		//{
-			
+
 		//}
 
 		#endregion

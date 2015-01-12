@@ -22,8 +22,8 @@ namespace ZoneLightingTests.Resources.Programs
 			AddInterruptingInput<Color>("Color", color =>
 			{
 				ChangeLightColorTrigger.Fire(this, null);
-                Lights.SetColor((Color)color);
-				LightingController.SendLights(Lights.Cast<ILightingControllerPixel>().ToList());	//send frame
+                SetColor((Color)color);
+				SendLights();	//send frame
 			});
 		}
 

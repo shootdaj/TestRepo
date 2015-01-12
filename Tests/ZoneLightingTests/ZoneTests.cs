@@ -30,7 +30,10 @@ namespace ZoneLightingTests
 			var color = A.Dummy<Color>();
 			zone.SetAllLightsColor(color);
 
-			zone.Lights.ToList().ForEach(light => Assert.AreEqual(light.GetColor(), color));
+			for (int i = 0; i < zone.LightCount; i++)
+			{
+				Assert.AreEqual(zone.GetColor(i), color);
+            }
 		}
 
 		[Test]

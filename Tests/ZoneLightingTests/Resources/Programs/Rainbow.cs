@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Threading;
+using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLightingTests.Resources.Programs
@@ -15,14 +16,16 @@ namespace ZoneLightingTests.Resources.Programs
 	{
 		public int DelayTime { get; set; } = 1;
 		public int Speed { get; set; } = 1;
+		public override SyncLevel SyncLevel { get; set; } = RainbowSyncLevel.Fade;
 
 		public override void Setup()
 		{
 			AddInput<int>("Speed", speed => Speed = (int)speed);
 			AddInput<int>("DelayTime", delayTime => DelayTime = (int)delayTime);
+			AddMappedInput<int>(this, "SyncLevel");
 		}
 
-		public override void Loop(Barrier barrier)
+		public override void Loop()
 		{
 			var colors = new List<Color>();
 			colors.Add(Color.Violet);
@@ -37,14 +40,21 @@ namespace ZoneLightingTests.Resources.Programs
 			{
 				Color? endingColor;
 
-				ProgramCommon.Fade(Lights[0].GetColor(), colors[i], Speed, DelayTime, false, (color) =>
+				ProgramCommon.Fade(GetColor(0), colors[i], Speed, DelayTime, false, (color) =>
 				{
-					Lights.SetColor(color);
-					Lights.Send(LightingController);
-				}, out endingColor, barrier);
+					SetColor(color);
+					SendLights();
+				}, out endingColor, SyncLevel == RainbowSyncLevel.Fade ? Barrier : null);
 
-				//barrier?.SignalAndWait();   //synchronize at the fade single color level
+				if (SyncLevel == RainbowSyncLevel.Color)
+					Barrier?.SignalAndWait();   //synchronize at the color level
 			}
+		}
+
+		public static class RainbowSyncLevel
+		{
+			public static SyncLevel Fade => new SyncLevel("Fade");
+			public static SyncLevel Color => new SyncLevel("Color");
 		}
 	}
 }

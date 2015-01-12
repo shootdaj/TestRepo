@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using ZoneLighting;
+using ZoneLighting.ZoneNS;
 
 namespace Console
 {
@@ -22,25 +23,39 @@ namespace Console
 					{
 						//ZoneLightingManager.Instance.Zones[0].InterruptingPrograms[0].SetInput("Color", Color.Red);
 
-						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
-						ZoneLightingManager.Instance.Zones[0].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500));
-						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
-						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
-						ZoneLightingManager.Instance.Zones[1].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500));
-						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
-						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
-						ZoneLightingManager.Instance.Zones[2].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500));
-						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
+						var blinkSyncContext = new SyncContext();
+
+						//ZoneLightingManager.Instance.Zones[0].InterruptingPrograms[0].AttachBarrier(blinkSyncContext.Barrier);
+      //                  ZoneLightingManager.Instance.Zones[1].InterruptingPrograms[0].AttachBarrier(blinkSyncContext.Barrier);
+      //                  ZoneLightingManager.Instance.Zones[2].InterruptingPrograms[0].AttachBarrier(blinkSyncContext.Barrier);
+      //                  ZoneLightingManager.Instance.Zones[3].InterruptingPrograms[0].AttachBarrier(blinkSyncContext.Barrier);
+
 
 						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
-						ZoneLightingManager.Instance.Zones[0].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500));
+						ZoneLightingManager.Instance.Zones[0].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500), blinkSyncContext.Barrier);
 						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
 						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
-						ZoneLightingManager.Instance.Zones[1].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500));
+						ZoneLightingManager.Instance.Zones[1].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500), blinkSyncContext.Barrier);
 						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
 						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
-						ZoneLightingManager.Instance.Zones[2].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500));
+						ZoneLightingManager.Instance.Zones[2].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500), blinkSyncContext.Barrier);
 						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
+						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
+						ZoneLightingManager.Instance.Zones[3].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500), blinkSyncContext.Barrier);
+						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
+
+						//DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
+						//ZoneLightingManager.Instance.Zones[0].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500), blinkSyncContext.Barrier);
+						//DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
+						//DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
+						//ZoneLightingManager.Instance.Zones[1].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500), blinkSyncContext.Barrier);
+						//DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
+						//DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
+						//ZoneLightingManager.Instance.Zones[2].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500), blinkSyncContext.Barrier);
+						//DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
+						//DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
+						//ZoneLightingManager.Instance.Zones[3].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500), blinkSyncContext.Barrier);
+						//DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
 					}
 				}
 			});

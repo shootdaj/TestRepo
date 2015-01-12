@@ -27,10 +27,10 @@ namespace ExternalPrograms
 					{ Color.Empty, time}
 				}, (colorToSet) =>
 				{
-					Lights.SetColor(colorToSet);
-					Lights.Send(LightingController);
-				});
-			});
+					SetColor(colorToSet);
+					SendLights();
+				}, Barrier);
+			}, barrier);
 		}
 
 		protected override void StopCore(bool force)

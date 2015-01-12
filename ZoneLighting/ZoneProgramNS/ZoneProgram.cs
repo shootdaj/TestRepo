@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -41,15 +42,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <summary>
 		/// Lighting controller to be used by the program.
 		/// </summary>
-		public LightingController LightingController
-		{
-			get { return Zone.LightingController; }
-		}
-
-		/// <summary>
-		/// Easy accessor for Lights in Zone.
-		/// </summary>
-		public IList<ILogicalRGBLight> Lights => Zone.Lights;
+		public LightingController LightingController => Zone.LightingController;
 
 		//[DataMember]
 		//private UntypedZoneProgramInputCollection UntypedInputs { get; set; } = new UntypedZoneProgramInputCollection();
@@ -62,7 +55,15 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public Trigger StopTestingTrigger { get; } = new Trigger("ZoneProgram.StopTestingTrigger");
 
-		public Barrier Barrier { get; private set; }
+		public Barrier Barrier { get; protected set; }
+
+		#region Triggers
+
+		public Trigger StartTrigger { get; } = new Trigger("StartTrigger");
+		public Trigger PauseTrigger { get; } = new Trigger("PauseTrigger");
+		public Trigger ResumeTrigger { get; } = new Trigger("ResumeTrigger");
+
+		#endregion
 
 		#endregion CORE
 
@@ -118,19 +119,29 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#endregion
 
-		#region Base Methods
+		#region Overridables
 
-		public virtual void Start(InputStartingValues inputStartingValues = null, ActionBlock<InterruptInfo> interruptQueue = null, Barrier barrier = null)
-		{
-			StartTrigger.Fire(this, null);
+		/// <summary>
+		/// This is a core method, meaning this method is wrapped within another method that's required for 
+		/// any pre/postprocessing that is required by this class to maintain the functions provided by this class. 
+		/// This is the core method for the Start public API call, which is a public member of this class. 
+		/// So the inheritor of this class must provide the core functionality, but the user of an instance
+		/// of this class can only call the method that wraps this method - Start. 
+		/// </summary>
+		/// <param name="barrier"></param>
+		protected abstract void StartCore(Barrier barrier);
 
-			Barrier = barrier;
-			Barrier?.AddParticipant();
-			StartCore(barrier);
+		/// This is a core method, meaning this method is wrapped within another method that's required for 
+		/// any pre/postprocessing that is required by this class to maintain the functions provided by this class. 
+		/// This is the core method for the Stop public API call, which is a public member of this class. 
+		/// So the inheritor of this class must provide the core functionality, but the user of an instance
+		/// of this class can only call the method that wraps this method - Stop.
+		/// <param name="force"></param>
+		protected abstract void StopCore(bool force);
 
-			AssignInterruptQueue(interruptQueue);
-			SetStartingValues(inputStartingValues);
-		}
+		#endregion
+
+		#region Helpers
 
 		private void SetStartingValues(InputStartingValues inputStartingValues)
 		{
@@ -138,39 +149,83 @@ namespace ZoneLighting.ZoneProgramNS
 				SetInputs(inputStartingValues);
 		}
 
+		/// <summary>
+		/// Assigns the interrupt queue to be posted to when an interrupting input is set.
+		/// </summary>
+		/// <param name="interruptQueue"></param>
 		private void AssignInterruptQueue(ActionBlock<InterruptInfo> interruptQueue)
 		{
 			if (Inputs.Any(input => input is InterruptingInput))
 			{
 				Inputs.Where(input => input is InterruptingInput).ToList().ForEach(input =>
-					((InterruptingInput) input).SetInterruptQueue(interruptQueue));
+					((InterruptingInput)input).SetInterruptQueue(interruptQueue));
 			}
 		}
 
+		private void ClearInterruptQueue()
+		{
+			if (Inputs.Any(input => input is InterruptingInput))
+			{
+				Inputs.Where(input => input is InterruptingInput).ToList().ForEach(input =>
+					((InterruptingInput)input).ClearInterruptQueue());
+			}
+		}
+
+		#endregion
+
+		#region API
+
+		#region Transport Controls
+
+		/// <summary>
+		/// Starts the zone program.
+		/// </summary>
+		/// <param name="inputStartingValues">Starting values for the program.</param>
+		/// <param name="interruptQueue">InterruptQueue to be used for interrupting inputs.</param>
+		/// <param name="barrier">Barrier to use to synchronize this </param>
+		public virtual void Start(InputStartingValues inputStartingValues = null, ActionBlock<InterruptInfo> interruptQueue = null, Barrier barrier = null)
+		{
+			//preprocessing
+			StartTrigger.Fire(this, null);
+			
+			//processing
+			StartCore(barrier);
+
+			//postprocessing
+			AssignInterruptQueue(interruptQueue);
+			SetStartingValues(inputStartingValues);
+		}
+
+		/// <summary>
+		/// Used to attach a Barrier to this 
+		/// </summary>
+		/// <param name="barrier"></param>
+		public void AttachBarrier(Barrier barrier)
+		{
+			Barrier = barrier;
+			Barrier?.AddParticipant();
+		}
+
+		public void DetachBarrier()
+		{
+			Barrier?.RemoveParticipant();
+			Barrier = null;
+		}
+
+		/// <summary>
+		/// Stops the zone program.
+		/// </summary>
+		/// <param name="force"></param>
 		public virtual void Stop(bool force)
 		{
 			Barrier?.RemoveParticipant();
+			ClearInterruptQueue();
 			StopCore(force);
 		}
 
 		#endregion
 
-		#region Overridables
-
-		protected abstract void StartCore(Barrier barrier);
-		protected abstract void StopCore(bool force);
-
-		#endregion
-
-		#region Triggers
-
-		public Trigger StartTrigger { get; } = new Trigger("StartTrigger");
-		public Trigger PauseTrigger { get; } = new Trigger("PauseTrigger");
-		public Trigger ResumeTrigger { get; } = new Trigger("ResumeTrigger");
-
-		#endregion
-
-		#region API
+		#region Inputs
 
 		/// <summary>
 		/// Returns the names of all inputs.
@@ -181,6 +236,10 @@ namespace ZoneLighting.ZoneProgramNS
 			return Inputs.Select(input => input.Name).ToList();
 		}
 
+		/// <summary>
+		/// Returns a key-value pair of the current values of this program's inputs.
+		/// </summary>
+		/// <returns></returns>
 		public InputStartingValues GetInputValues()
 		{
 			var inputStartingValues = new InputStartingValues();
@@ -188,28 +247,32 @@ namespace ZoneLighting.ZoneProgramNS
 			return inputStartingValues;
 		}
 
+		/// <summary>
+		/// Get a specific input value by name.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public object GetInputValue(string name)
 		{
 			return GetInputValues()[name];
 		}
 
 		/// <summary>
-		/// Returns the name of all inputs of all types T.
+		/// Returns the names of all inputs of all types T.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
 		public List<string> GetInputNames<T>()
 		{
 			return Inputs.Where(i => i.Type == typeof(T)).Select(input => input.Name).ToList();
 		}
-		
+
 		/// <summary>
 		/// Adds a live input to the zone program. A live input is an input that can be controlled while
 		/// the program is running and the program will respond to it in the way it's designed to.
 		/// </summary>
 		/// <param name="name">Name of the input.</param>
 		/// <param name="action">The action that should occur when the input is set to a certain value. This will be defined by the 
-		/// subclasses of this class to perform certain actions when the this input is set to a value.</param>
+		/// subclasses of this class to perform certain actions when the this input is set to a certain value.</param>
 		/// <returns>The input that was just added.</returns>
 		protected ZoneProgramInput AddInput<T>(string name, Action<object> action)
 		{
@@ -219,6 +282,14 @@ namespace ZoneLighting.ZoneProgramNS
 			return input;
 		}
 
+		/// <summary>
+		/// Adds an input as a direct map to a member of the subclass. This essentially extends a property in 
+		/// the subclass as an input, which can be set to any value by the user.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="instance"></param>
+		/// <param name="propertyName"></param>
+		/// <returns></returns>
 		protected ZoneProgramInput AddMappedInput<T>(object instance, string propertyName)
 		{
 			var propertyInfo = instance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
@@ -228,16 +299,20 @@ namespace ZoneLighting.ZoneProgramNS
 			return input;
 		}
 
+		/// <summary>
+		/// Removes an input from the program.
+		/// </summary>
+		/// <param name="name"></param>
 		protected void RemoveInput(string name)
 		{
 			GetInput(name).Unsubscribe();
 		}
 
-		//public void AddInputSubscription(string name, Action<object> action)
-		//{
-		//	GetInput(name).Subscribe(action);
-		//}
-
+		/// <summary>
+		/// Gets an input by its name.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public ZoneProgramInput GetInput(string name)
 		{
 			if (Inputs.Contains(name))
@@ -248,15 +323,49 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
-		public void SetInput(string name, object data)
+		/// <summary>
+		/// Sets the input with the given name to the given data.
+		/// </summary>
+		public void SetInput(string name, object data, Barrier barrier = null)
 		{
 			GetInput(name).SetValue(data);
+			AttachBarrier(barrier);
 		}
 
+		/// <summary>
+		/// Batch set inputs.
+		/// </summary>
+		/// <param name="inputStartingValues"></param>
 		public void SetInputs(InputStartingValues inputStartingValues)
 		{
 			inputStartingValues.Keys.ToList().ForEach(key => SetInput(key, inputStartingValues[key]));
 		}
+
+		#endregion
+
+		#region Lights
+
+		public int LightCount => Zone.LightCount;
+
+		/// <summary>
+		/// Gets the color of the light at the given index.
+		/// </summary>
+		public Color GetColor(int index)
+		{
+			return Zone.GetColor(index);
+		}
+
+		public void SetColor(Color color, int? index = null)
+		{
+			Zone.SetColor(color, index);
+		}
+
+		public void SendLights()
+		{
+			Zone.SendLights();
+		}
+
+		#endregion
 
 		#endregion
 	}
