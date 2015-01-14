@@ -44,9 +44,6 @@ namespace ZoneLighting.ZoneProgramNS
 		/// </summary>
 		public LightingController LightingController => Zone.LightingController;
 
-		//[DataMember]
-		//private UntypedZoneProgramInputCollection UntypedInputs { get; set; } = new UntypedZoneProgramInputCollection();
-
 		/// <summary>
 		/// Inputs for this program.
 		/// </summary>
@@ -55,7 +52,11 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public Trigger StopTestingTrigger { get; } = new Trigger("ZoneProgram.StopTestingTrigger");
 
-		public Barrier Barrier { get; protected set; }
+		protected SyncContext SyncContext => Zone.SyncContext;
+		protected bool IsSyncStateRequested { get; set; }
+		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
+		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
+
 
 		#region Triggers
 
@@ -99,13 +100,13 @@ namespace ZoneLighting.ZoneProgramNS
 
 		protected abstract void Pause();
 
-		public void ResumeCore(Barrier barrier)
+		public void ResumeCore()
 		{
 			ResumeTrigger.Fire(this, null);
-			Resume(barrier);
+			Resume();
 		}
 
-		public abstract void Resume(Barrier barrier);
+		public abstract void Resume();
 
 		public void Dispose()
 		{
@@ -128,8 +129,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// So the inheritor of this class must provide the core functionality, but the user of an instance
 		/// of this class can only call the method that wraps this method - Start. 
 		/// </summary>
-		/// <param name="barrier"></param>
-		protected abstract void StartCore(Barrier barrier);
+		protected abstract void StartCore();
 
 		/// This is a core method, meaning this method is wrapped within another method that's required for 
 		/// any pre/postprocessing that is required by this class to maintain the functions provided by this class. 
@@ -178,18 +178,33 @@ namespace ZoneLighting.ZoneProgramNS
 		#region Transport Controls
 
 		/// <summary>
+		/// Requests the program to pause when it's at its synchronizable state.
+		/// </summary>
+		/// <returns></returns>
+		public void RequestSyncState()
+		{
+			IsSyncStateRequested = true;
+		}
+
+		public void CancelSyncStateRequest()
+		{
+			IsSyncStateRequested = false;
+		}
+
+		/// <summary>
 		/// Starts the zone program.
 		/// </summary>
 		/// <param name="inputStartingValues">Starting values for the program.</param>
 		/// <param name="interruptQueue">InterruptQueue to be used for interrupting inputs.</param>
-		/// <param name="barrier">Barrier to use to synchronize this </param>
-		public virtual void Start(InputStartingValues inputStartingValues = null, ActionBlock<InterruptInfo> interruptQueue = null, Barrier barrier = null)
+		public virtual void Start(InputStartingValues inputStartingValues = null, ActionBlock<InterruptInfo> interruptQueue = null, bool isSyncRequested = false)
 		{
 			//preprocessing
 			StartTrigger.Fire(this, null);
-			
+			if (isSyncRequested)
+				RequestSyncState();
+
 			//processing
-			StartCore(barrier);
+			StartCore();
 
 			//postprocessing
 			AssignInterruptQueue(interruptQueue);
@@ -197,28 +212,11 @@ namespace ZoneLighting.ZoneProgramNS
 		}
 
 		/// <summary>
-		/// Used to attach a Barrier to this 
-		/// </summary>
-		/// <param name="barrier"></param>
-		public void AttachBarrier(Barrier barrier)
-		{
-			Barrier = barrier;
-			Barrier?.AddParticipant();
-		}
-
-		public void DetachBarrier()
-		{
-			Barrier?.RemoveParticipant();
-			Barrier = null;
-		}
-
-		/// <summary>
 		/// Stops the zone program.
 		/// </summary>
 		/// <param name="force"></param>
 		public virtual void Stop(bool force)
-		{
-			Barrier?.RemoveParticipant();
+		{			
 			ClearInterruptQueue();
 			StopCore(force);
 		}
@@ -326,10 +324,9 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <summary>
 		/// Sets the input with the given name to the given data.
 		/// </summary>
-		public void SetInput(string name, object data, Barrier barrier = null)
+		public void SetInput(string name, object data)
 		{
 			GetInput(name).SetValue(data);
-			AttachBarrier(barrier);
 		}
 
 		/// <summary>

@@ -6,19 +6,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using ZoneLighting.TriggerDependencyNS;
+using ZoneLighting.ZoneNS;
 
 namespace ZoneLighting.ZoneProgramNS
 {
 	public abstract class ReactiveZoneProgram : ZoneProgram
 	{
-		protected abstract override void StartCore(Barrier barrier);
+		protected abstract override void StartCore();
 
 		protected override void StopCore(bool force)
 		{
 			
 		}
 
-		public override void Resume(Barrier barrier)
+		public override void Resume()
 		{
 			//TODO: Implement resume logic
 		}
@@ -40,25 +41,25 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <param name="action">The action that should occur when the input is set to a certain value. This will be defined by the 
 		/// subclasses of this class to perform certain actions when the this input is set to a value.</param>
 		/// <returns>The input that was just added.</returns>
-		protected ZoneProgramInput AddInterruptingInput<T>(string name, Action<object> action, Barrier barrier = null)
+		protected ZoneProgramInput AddInterruptingInput<T>(string name, Action<object> action, SyncContext syncContext = null)
 		{
 			var input = new InterruptingInput(name, typeof(T));
 			Inputs.Add(input);
 
 			//if sync is requested, go into synchronizable state
-			if (barrier != null)
+			if (syncContext != null)
 			{
 				IsSynchronizable.Fire(this, null);
 				WaitForSync.WaitForFire();
 				IsSyncStateRequested = false;
 			}
 
-			input.AttachBarrier(barrier);
+			//input.AttachBarrier(syncContext?.Barrier);
 			input.Subscribe(data =>				//when the input's OnNext is called, do whatever it was programmed to do and then fire the StopSubject
 			{
 				input.StartTrigger.Fire(this, null);
 				action(data);
-				input.DetachBarrier();
+				//input.DetachBarrier();
 				input.StopSubject.OnNext(null);
 				input.StopTrigger.Fire(this, null);
 			});

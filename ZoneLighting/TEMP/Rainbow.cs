@@ -43,10 +43,10 @@ namespace ZoneLighting.TEMP
 				{
 					SetColor(color);
 					SendLights();
-				}, out endingColor, SyncLevel == RainbowSyncLevel.Fade  ? Barrier : null);
+				}, out endingColor, SyncLevel == RainbowSyncLevel.Fade ? SyncContext : null);
 
 				if (SyncLevel == RainbowSyncLevel.Color)
-				Barrier?.SignalAndWait();  //synchronize at the color level
+					SyncContext?.SignalAndWait();  //synchronize at the color level
 			}
 		}
 

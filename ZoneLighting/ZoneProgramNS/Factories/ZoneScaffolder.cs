@@ -92,28 +92,33 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		/// <summary>
 		/// Initializes a zone with the given program name and starting values of the inputs as a name-value dictionary.
 		/// </summary>
-		public void InitializeZone(Zone zone, string programName, InputStartingValues inputStartingValues = null, Barrier barrier = null)
+		public void InitializeZone(Zone zone, string programName, InputStartingValues inputStartingValues = null, bool isSyncRequested = false)
 		{
 			var zoneProgramFactoriesList = ZoneProgramFactories.ToList();
-			zone.Initialize(CreateZoneProgram(programName, zoneProgramFactoriesList), inputStartingValues, barrier);
+			zone.Initialize(CreateZoneProgram(programName, zoneProgramFactoriesList), inputStartingValues, isSyncRequested);
 
 		}
 
 		/// <summary>
 		/// Initializes a zone with the given program instance and starting values of the inputs as a name-value dictionary.
 		/// </summary>
-		public void InitializeZone(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, Barrier barrier = null)
+		public void InitializeZone(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool isSyncRequested = false)
 		{
-			zone.Initialize(zoneProgram, inputStartingValues, barrier);
+			zone.Initialize(zoneProgram, inputStartingValues, isSyncRequested);
 		}
 
-		public void StartInterruptingProgram(Zone zone, string programName, InputStartingValues inputStartingValues = null, Barrier barrier = null)
+		public void StartInterruptingProgram(Zone zone, string programName, InputStartingValues inputStartingValues = null, SyncContext syncContext = null, bool isSyncRequested = false)
 		{
 			var zoneProgramFactoriesList = ZoneProgramFactories.ToList();
 			var zoneProgram = CreateZoneProgram(programName, zoneProgramFactoriesList);
 	
+			StartInterruptingProgram(zone, zoneProgram, inputStartingValues, syncContext, isSyncRequested);
+		}
+
+		public void StartInterruptingProgram(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, SyncContext syncContext = null, bool isSyncRequested = false)
+		{
 			if (zoneProgram is ReactiveZoneProgram)
-				zone.AddInterruptingProgram((ReactiveZoneProgram)zoneProgram, true, inputStartingValues, barrier);
+				zone.AddInterruptingProgram((ReactiveZoneProgram) zoneProgram, true, inputStartingValues, syncContext);
 			else
 			{
 				throw new Exception(

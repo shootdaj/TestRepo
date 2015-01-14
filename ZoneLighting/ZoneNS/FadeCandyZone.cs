@@ -7,7 +7,8 @@ namespace ZoneLighting.ZoneNS
 {
 	public class FadeCandyZone : Zone
 	{
-		public FadeCandyZone(string name = "", ZoneProgram program = null, InputStartingValues inputStartingValues = null, Barrier barrier = null, double? brightness = null) : base(FadeCandyController.Instance, name, program, inputStartingValues, barrier, brightness)
+		public FadeCandyZone(string name = "", ZoneProgram program = null, InputStartingValues inputStartingValues = null, double? brightness = null)
+			: base(FadeCandyController.Instance, name, program, inputStartingValues, brightness)
 		{
 		}
 

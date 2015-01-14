@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
-using System.Threading;
-using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
-namespace ExternalPrograms
+namespace ZoneLighting.TEMP
 {
 	/// <summary>
 	/// Outputs a static color to the zone.
@@ -21,6 +19,14 @@ namespace ExternalPrograms
 			{
 				var color = ((Tuple<Color, int>)colorTimeTuple).Item1;
 				var time = ((Tuple<Color, int>)colorTimeTuple).Item2;
+
+				//if sync is requested, go into synchronizable state
+				if (IsSyncStateRequested)
+				{
+					IsSynchronizable.Fire(this, null);
+					WaitForSync.WaitForFire();
+					IsSyncStateRequested = false;
+				}
 
 				ProgramCommon.Blink(new List<Tuple<Color, int>>
 				{

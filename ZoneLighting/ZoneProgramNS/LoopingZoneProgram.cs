@@ -25,10 +25,7 @@ namespace ZoneLighting.ZoneProgramNS
 		protected Task LoopingTask { get; set; }
 		protected Thread RunProgramThread { get; set; }
 
-		private bool IsSyncStateRequested { get; set; }
-		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
-		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
-
+		
 		protected void StartLoop()
 		{
 			SetupRunProgramTask();
@@ -55,7 +52,7 @@ namespace ZoneLighting.ZoneProgramNS
 				try
 				{
 					RunProgramThread = Thread.CurrentThread;
-					Barrier?.SignalAndWait();
+					SyncContext?.SignalAndWait();
 					while (true)
 					{
 						//if sync is requested, go into synchronizable state
@@ -95,8 +92,6 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public abstract SyncLevel SyncLevel { get; set; }
 
-		public Barrier InitialSyncBarrier { get; set; }
-
 		#region Overrideables
 
 		public abstract void Setup();
@@ -109,12 +104,6 @@ namespace ZoneLighting.ZoneProgramNS
 
 
 		#region Transport Controls
-
-		//public override void StartBase(InputStartingValues inputStartingValues = null)
-		//{
-		//	Start();
-		//}
-
 
 		/// <summary>
 		/// Requests the program to pause when it's at its synchronizable state.
@@ -130,9 +119,8 @@ namespace ZoneLighting.ZoneProgramNS
 			IsSyncStateRequested = false;
 		}
 
-		protected override void StartCore(Barrier barrier)
+		protected override void StartCore()
 		{
-			AttachBarrier(barrier);
 			Setup();
 			StartLoop();
 		}
@@ -191,10 +179,11 @@ namespace ZoneLighting.ZoneProgramNS
 			StopTestingTrigger.Fire(this, null);
 		}
 
-		public override void Resume(Barrier barrier)
+		public override void Resume()
 		{
 			//TODO: Implement resume logic - for now, it's just gonna call start
-			Start(barrier: barrier);
+			SyncContext.Reset();
+            Start();
 		}
 
 		protected override void Pause()
@@ -203,7 +192,6 @@ namespace ZoneLighting.ZoneProgramNS
 			{
 				//TODO: Implement pause logic using PauseToken or something - for now, it's just gonna call stop forcibly
 				StopCore(true);
-				DetachBarrier();
 			}
 		}
 		

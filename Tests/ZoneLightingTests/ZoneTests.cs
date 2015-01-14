@@ -41,7 +41,7 @@ namespace ZoneLightingTests
 		{
 			var zone = A.Fake<Zone>();
 			zone.StartProgram();
-			A.CallTo(() => zone.ZoneProgram.Start(null, A<ActionBlock<InterruptInfo>>.Ignored, A<Barrier>.Ignored)).MustHaveHappened(Repeated.Exactly.Once);
+			A.CallTo(() => zone.ZoneProgram.Start(null, A<ActionBlock<InterruptInfo>>.Ignored, A<bool>.Ignored)).MustHaveHappened(Repeated.Exactly.Once);
 		}
 	}
 }

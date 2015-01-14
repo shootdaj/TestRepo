@@ -16,22 +16,20 @@ namespace ZoneLighting.ZoneNS
 	{
 		public string Name { get; private set; }
 
-		public Barrier Barrier { get; } = new Barrier(0);
+		private Barrier Barrier { get; set; } = new Barrier(0);
 
 		public Zone LeadingZone { get; set; }
 
-		public IList<Zone> Zones { get; } = new List<Zone>();
+		private IList<Zone> Zones { get; } = new List<Zone>();
 
-		//public LoopingZoneProgram LeadingZoneProgram { get; private set; }
-
-		//public IList<LoopingZoneProgram> ZonePrograms { get; } = new List<LoopingZoneProgram>();
+		//public Dictionary<Zone, bool> ZoneIsParticipant { get; private set; } = new Dictionary<Zone, bool>();
 
 		public SyncLevel SyncLevel { get; private set; }
 
 		/// <summary>
 		/// At least one zone program is needed to lead the synchronization.
 		/// </summary>
-		/// <param name="zoneProgram">A zone program to create a sync context over.</param>
+		/// <param name="zone">A zone to create a sync context over.</param>
 		/// <param name="name">Name of synchronization context for handy referencing.</param>
 		public SyncContext(Zone zone = null, string name = null)
 		{
@@ -47,14 +45,14 @@ namespace ZoneLighting.ZoneNS
 			if (LeadingZone == null)
 			{
 				LeadingZone = zone;
-				SyncLevel = ((LoopingZoneProgram)zone.ZoneProgram).SyncLevel;
+				SyncLevel = LeadingZone.SyncLevel;
 			}
 
 			//if sync level is given, then override the existing one
 			if (syncLevel != null)
 			{
 				if (syncLevel.GetType() == SyncLevel.GetType())
-					SyncLevel = syncLevel;
+					zone.SyncLevel = syncLevel;
 				else
 				{
 					throw new Exception("Type mismatch in provided SyncLevel subtype. Keeping existing SyncLevel.");
@@ -63,14 +61,12 @@ namespace ZoneLighting.ZoneNS
 
 			//add itself to the barrier's participant list
 			//zone.SetBackgroundBarrier(Barrier); TODO: This enables the barrier for interrupts.. or something
-			zone.ZoneProgram.AttachBarrier(Barrier);
+			zone.SetupSyncContext(this);
 		}
 
 		public void RemoveZone(Zone zone)
 		{
-			if (zone.ZoneProgram.Barrier == Barrier)
-				zone.ZoneProgram.DetachBarrier();
-
+			zone.UnsetupSyncContext();
 			if (zone == LeadingZone)
 			{
 				Dispose();
@@ -87,6 +83,36 @@ namespace ZoneLighting.ZoneNS
 			LeadingZone = null;
 			Barrier.Dispose();
 			Name = null;
+		}
+
+		/// <summary>
+		/// Makes the given zone a participant of this sync context. 
+		/// </summary>
+		/// <param name="zone"></param>
+		public void MakeZoneParticipant(Zone zone)
+		{
+			Barrier.AddParticipant();
+		}
+
+		public void RemoveZoneParticipant(Zone zone)
+		{
+			Barrier.RemoveParticipant();
+		}
+
+		public bool ContainsZone(Zone zone)
+		{
+			return Zones.Contains(zone);
+		}
+
+		public void SignalAndWait()
+		{
+			Barrier.SignalAndWait();
+		}
+
+		public void Reset()
+		{
+			Barrier.Dispose();
+			Barrier = new Barrier(Zones.Count);
 		}
 	}
 }

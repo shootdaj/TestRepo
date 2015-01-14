@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using ZoneLighting.Communication;
+using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.ZoneNS
@@ -72,8 +73,12 @@ namespace ZoneLighting.ZoneNS
 		public double Brightness { get; set; }
 
 		/// <summary>
-		/// This sync context will be the source of the Barrier that is passed to the interrupting program routines.
-		/// The Barriers are required by the interrupting programs to synchronize the program across zones.
+		/// This sync context will be responsible for synchronizing the background program for this zone.
+		/// </summary>
+		public SyncContext SyncContext { get; set; }
+
+		/// <summary>
+		/// This sync context will be the source of synchronizations that is passed to the interrupting program routines.
 		/// </summary>
 		public SyncContext InterruptingProgramSyncContext { get; set; }
 
@@ -89,8 +94,9 @@ namespace ZoneLighting.ZoneNS
 		/// <param name="program"></param>
 		/// <param name="inputStartingValues"></param>
 		/// <param name="barrier"></param>
+		/// <param name="syncContext"></param>
 		/// <param name="brightness">Brightness for this zone.</param>
-		public Zone(LightingController lightingController, string name = "", ZoneProgram program = null, InputStartingValues inputStartingValues = null, Barrier barrier = null, double? brightness = 1.0)
+		public Zone(LightingController lightingController, string name = "", ZoneProgram program = null, InputStartingValues inputStartingValues = null, double? brightness = 1.0)
 		{
 			Lights = new List<ILogicalRGBLight>();
 			LightingController = lightingController;
@@ -105,22 +111,20 @@ namespace ZoneLighting.ZoneNS
 			}
 			else
 			{
-				Initialize(program, inputStartingValues, barrier);
+				Initialize(program, inputStartingValues);
 			}
 		}
 
-		public void SetupInterruptProcessing(Barrier barrier)
+		public void SetupInterruptProcessing(SyncContext syncContext)
 		{
-			//SetBackgroundBarrier(barrier);
-
-			////configure interrupt processing
-			//InterruptQueue = new ActionBlock<InterruptInfo>((interruptInfo) => ProcessInterrupt(interruptInfo, BackgroundBarrier), new ExecutionDataflowBlockOptions()
-			//	{
-			//		MaxDegreeOfParallelism = 1,
-			//	});
+			//configure interrupt processing
+			InterruptQueue = new ActionBlock<InterruptInfo>((interruptInfo) => ProcessInterrupt(interruptInfo), new ExecutionDataflowBlockOptions()
+			{
+				MaxDegreeOfParallelism = 1,
+			});
 		}
 		
-		private void ProcessInterrupt(InterruptInfo interruptInfo, Barrier barrier)
+		private void ProcessInterrupt(InterruptInfo interruptInfo)
 		{
 			//DebugTools.AddEvent("InterruptQueue.Method", "START IRQ processing");
 
@@ -138,7 +142,7 @@ namespace ZoneLighting.ZoneNS
 						if (InterruptQueue.InputCount < 1)
 						{
 							DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "START Resume BG Program");
-							ZoneProgram.ResumeCore(barrier);
+							ZoneProgram.ResumeCore();
 							DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "END Resume BG Program");
 						}
 					});	//hook up the stop call of the interrupting input's program to resume the BG program
@@ -155,6 +159,7 @@ namespace ZoneLighting.ZoneNS
 
 			DebugTools.AddEvent("InterruptQueue.Method", "START Interrupting Action");
 			interruptInfo.InputSubject.OnNext(interruptInfo.Data);	 //start the routine that was requested
+
 			DebugTools.AddEvent("InterruptQueue.Method", "END Interrupting Action");
 
 			//DebugTools.AddEvent("InterruptQueue.Method", "END Interrupt request processing");
@@ -162,24 +167,24 @@ namespace ZoneLighting.ZoneNS
 			//TODO: Add capability to have a timeout in case the interrupting program never calls the StopSubject
 		}
 
-		private void Initialize(InputStartingValues inputStartingValues = null, Barrier barrier = null)
+		private void Initialize(InputStartingValues inputStartingValues = null, bool isSyncRequested = false)
 		{
 			if (!Initialized)
 			{
 				if (ZoneProgram != null)
 				{
-					StartProgram(inputStartingValues, barrier);
+					StartProgram(inputStartingValues, isSyncRequested);
 				}
 				Initialized = true;
 			}
 		}
 
-		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, Barrier barrier = null)
+		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool isSyncRequested = false)
 		{
 			if (!Initialized)
 			{
 				SetProgram(zoneProgram);
-				Initialize(inputStartingValues, barrier);
+				Initialize(inputStartingValues, isSyncRequested);
 			}
 		}
 
@@ -192,6 +197,7 @@ namespace ZoneLighting.ZoneNS
 				StopProgram(force);
 				RemoveAllInterruptingPrograms();
 				UnsetProgram();
+				UnsetupSyncContext();
 				Initialized = false;
 			}
 		}
@@ -228,10 +234,103 @@ namespace ZoneLighting.ZoneNS
 
 		#region API
 
-		public void SetBackgroundBarrier(Barrier barrier)
+		#region ZoneProgram
+
+		public bool IsProgramLooping => ZoneProgram is LoopingZoneProgram;
+		public Trigger WaitForSync => ((LoopingZoneProgram)ZoneProgram).WaitForSync;
+		public Trigger IsSynchronizable => ((LoopingZoneProgram) ZoneProgram).IsSynchronizable;
+		public void RequestSyncState()
 		{
-			//BackgroundBarrier = barrier;
-			//barrier?.AddParticipant();
+			((LoopingZoneProgram) ZoneProgram).RequestSyncState();
+		}
+		
+		public SyncLevel SyncLevel
+		{
+			get { return ((LoopingZoneProgram) ZoneProgram).SyncLevel; }
+			set { ((LoopingZoneProgram) ZoneProgram).SyncLevel = value; }
+		}
+
+		#endregion
+
+		#region Transport Controls
+
+		/// <summary>
+		/// Sets this zone's program to the given program.
+		/// </summary>
+		/// <param name="program"></param>
+		public void SetProgram(ZoneProgram program)
+		{
+			ZoneProgram = program;
+			ZoneProgram.Zone = this;
+		}
+
+		/// <summary>
+		/// Unhooks the zone program from this zone.
+		/// </summary>
+		public void UnsetProgram()
+		{
+			ZoneProgram.Zone = null;
+			ZoneProgram = null;
+		}
+
+		public void SetupSyncContext(SyncContext syncContext)
+		{
+			//sync context setup
+			AttachSyncContext(syncContext);
+			syncContext?.MakeZoneParticipant(this);
+		}
+
+		public void UnsetupSyncContext()
+		{
+			SyncContext.RemoveZoneParticipant(this);
+			DetachSyncContext();
+		}
+
+		/// <summary>
+		/// Starts this zone's program.
+		/// </summary>
+		public void StartProgram(InputStartingValues inputStartingValues = null, bool isSyncRequested = false)
+		{
+			//setup interrupt processing
+			//SetupInterruptProcessing(syncContext);
+
+			//start program
+			ZoneProgram.Start(inputStartingValues, InterruptQueue, isSyncRequested);
+		}
+	
+		/// <summary>
+		/// Stops this zone's program.
+		/// </summary>
+		public void StopProgram(bool force = false)
+		{
+			//sync context removal
+			SyncContext?.RemoveZoneParticipant(this);
+			//DetachSyncContext();
+
+			//stop program
+			ZoneProgram.Stop(force);
+		}
+
+		#endregion
+
+		#region Colors/Light Controls
+
+		/// <summary>
+		/// Sets all lights in zone to a given color.
+		/// </summary>
+		/// <param name="color"></param>
+		public void SetAllLightsColor(Color color)
+		{
+			Lights.ToList().ForEach(x => x.SetColor(color));
+		}
+
+		/// <summary>
+		/// Adds a new light to this zone.
+		/// </summary>
+		/// <param name="light"></param>
+		public void AddLight(ILogicalRGBLight light)
+		{
+			Lights.Add(light);
 		}
 
 		/// <summary>
@@ -268,53 +367,21 @@ namespace ZoneLighting.ZoneNS
 			Lights.Send(LightingController);
 		}
 
-		/// <summary>
-		/// Sets this zone's program to the given program.
-		/// </summary>
-		/// <param name="program"></param>
-		public void SetProgram(ZoneProgram program)
-		{
-			ZoneProgram = program;
-			ZoneProgram.Zone = this;
-		}
+		#endregion
 
-		/// <summary>
-		/// Unhooks the zone program from this zone.
-		/// </summary>
-		public void UnsetProgram()
-		{
-			ZoneProgram.Zone = null;
-			ZoneProgram = null;
-		}
-
-		/// <summary>
-		/// Starts this zone's program with the given starting values for the inputs.
-		/// </summary>
-		public void StartProgram(InputStartingValues inputStartingValues = null, Barrier barrier = null)
-		{
-			SetupInterruptProcessing(barrier);
-			ZoneProgram.Start(inputStartingValues, InterruptQueue, barrier);
-		}
-	
-		/// <summary>
-		/// Stops this zone's program.
-		/// </summary>
-		public void StopProgram(bool force = false)
-		{
-			ZoneProgram.Stop(force);
-		}
-
+		#region Interrupting Program
+		
 		/// <summary>
 		/// Starts the given interrupting program.
 		/// </summary>
 		/// <param name="interruptingProgram">Interrupting program to start</param>
 		/// <param name="inputStartingValues">Input values to start program with</param>
-		public void StartInterruptingProgram(ReactiveZoneProgram interruptingProgram, InputStartingValues inputStartingValues = null, Barrier barrier = null)
+		public void StartInterruptingProgram(ReactiveZoneProgram interruptingProgram, InputStartingValues inputStartingValues = null, bool isSyncRequested = false)
 		{
 			//tell the interrupting to start, saying "use these input starting values to start the program, report back to this queue when 
 			//you need to output something (interrupt), and I'll take care of the rest. Also use this barrier to synchronize yourself
 			//with everyone else on this barrier's participant list.
-			interruptingProgram.Start(inputStartingValues, InterruptQueue, barrier);
+			interruptingProgram.Start(inputStartingValues, InterruptQueue, isSyncRequested: isSyncRequested);
 		}
 
 		/// <summary>
@@ -330,12 +397,12 @@ namespace ZoneLighting.ZoneNS
 		/// Adds an interrupting program to the zone.
 		/// </summary>
 		/// <param name="interruptingProgram"></param>
-		public void AddInterruptingProgram(ReactiveZoneProgram interruptingProgram, bool startProgram = true, InputStartingValues inputStartingValues = null, Barrier barrier = null)
+		public void AddInterruptingProgram(ReactiveZoneProgram interruptingProgram, bool startProgram = true, InputStartingValues inputStartingValues = null, SyncContext syncContext = null, bool isSyncRequested = false)
 		{
 			InterruptingPrograms.Add(interruptingProgram);
 			interruptingProgram.Zone = this;
 			if (startProgram)
-				StartInterruptingProgram(interruptingProgram, inputStartingValues, barrier);
+				StartInterruptingProgram(interruptingProgram, inputStartingValues, isSyncRequested);
 		}
 
 		public void RemoveInterruptingProgram(string name)
@@ -352,23 +419,40 @@ namespace ZoneLighting.ZoneNS
 			InterruptingPrograms.ToList().ForEach(program => RemoveInterruptingProgram(program.Name));
 		}
 
-		/// <summary>
-		/// Sets all lights in zone to a given color.
-		/// </summary>
-		/// <param name="color"></param>
-		public void SetAllLightsColor(Color color)
-		{
-			Lights.ToList().ForEach(x => x.SetColor(color));
-		}
+		#endregion
+
+		#region SyncContext
 
 		/// <summary>
-		/// Adds a new light to this zone.
+		/// Attaches the given sync context to this program.
 		/// </summary>
-		/// <param name="light"></param>
-		public void AddLight(ILogicalRGBLight light)
+		/// <param name="syncContext"></param>
+		public void AttachSyncContext(SyncContext syncContext)
 		{
-			Lights.Add(light);
+			SyncContext = syncContext;
 		}
+
+		//public void IncrementSyncContextIfNeeded()
+		//{
+		//	if (SyncContext == null)
+		//		throw new Exception("No SyncContext has been attached.");
+		//	SyncContext.MakeZoneParticipant(this);
+		//}
+
+		public void DetachSyncContext()
+		{
+			SyncContext = null;
+		}
+
+		//public void DecrementSyncContextIfNeeded()
+		//{
+		//	if (SyncContext == null)
+		//		throw new Exception("No SyncContext has been attached.");
+		//	SyncContext.RemoveZoneParticipant(this);
+		//}
+
+
+		#endregion
 
 		#endregion
 	}

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using ZoneLighting.Communication;
 using ZoneLighting.TriggerDependencyNS;
+using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ExternalPrograms
@@ -17,7 +18,7 @@ namespace ExternalPrograms
 	{
 		public Trigger ChangeLightColorTrigger { get; } = new Trigger("ChangeLightColorTrigger");
 
-		protected override void StartCore(Barrier barrier)
+		protected override void StartCore()
 		{
 			AddInterruptingInput<Color>("Color", color =>
 			{

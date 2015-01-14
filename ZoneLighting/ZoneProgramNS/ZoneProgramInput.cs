@@ -4,6 +4,7 @@ using System.Reactive.Subjects;
 using System.Runtime.Serialization;
 using System.Threading;
 using Newtonsoft.Json;
+using ZoneLighting.ZoneNS;
 
 namespace ZoneLighting.ZoneProgramNS
 {
@@ -23,7 +24,7 @@ namespace ZoneLighting.ZoneProgramNS
 		[DataMember]
 		public object Value { get; protected set; }
 
-		public Barrier Barrier { get; set; }
+		public SyncContext SyncContext { get; set; }
 
 		public ZoneProgramInput(string name, Type type) : this()
 		{
@@ -49,25 +50,26 @@ namespace ZoneLighting.ZoneProgramNS
 		public virtual void Unsubscribe()
 		{
 			InputDisposable?.Dispose();
-			DetachBarrier();
+			//DetachBarrier();
 		}
 
-		/// <summary>
-		/// Used to attach a Barrier to this 
-		/// </summary>
-		/// <param name="barrier"></param>
-		public void AttachBarrier(Barrier barrier)
-		{
-			Barrier = barrier;
-			Barrier?.AddParticipant();
-		}
+		///// <summary>
+		///// Used to attach a Barrier to this 
+		///// </summary>
+		///// <param name="barrier"></param>
+		//public void AttachBarrier(Barrier barrier)
+		//{
+			
+		//	Barrier = barrier;
+		//	Barrier?.AddParticipant();
+		//}
 
 
-		public void DetachBarrier()
-		{
-			Barrier?.RemoveParticipant();
-			Barrier = null;
-		}
+		//public void DetachBarrier()
+		//{
+		//	Barrier?.RemoveParticipant();
+		//	Barrier = null;
+		//}
 
 		public void Dispose()
 		{

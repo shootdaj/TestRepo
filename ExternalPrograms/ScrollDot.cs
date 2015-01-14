@@ -50,7 +50,7 @@ namespace ExternalPrograms
 				SendLights();		//send frame
 				ProgramCommon.Delay(DelayTime);											//pause before next iteration
 
-				Barrier?.SignalAndWait();
+				SyncContext?.SignalAndWait();
 			}
 
 			DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
