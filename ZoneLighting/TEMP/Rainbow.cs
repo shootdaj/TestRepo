@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
-using System.Threading;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
-namespace ZoneLightingTests.Resources.Programs
+namespace ZoneLighting.TEMP
 {
 	/// <summary>
 	/// Outputs a looping rainbow to the zone (currently only works with FadeCandy).
@@ -15,7 +14,7 @@ namespace ZoneLightingTests.Resources.Programs
 	public class Rainbow : LoopingZoneProgram
 	{
 		public int DelayTime { get; set; } = 1;
-		public int Speed { get; set; } = 100;
+		public int Speed { get; set; } = 120;
 		public override SyncLevel SyncLevel { get; set; } = RainbowSyncLevel.Fade;
 
 		public override void Setup()
@@ -44,10 +43,10 @@ namespace ZoneLightingTests.Resources.Programs
 				{
 					SetColor(color);
 					SendLights();
-				}, out endingColor, SyncLevel == RainbowSyncLevel.Fade ? Barrier : null);
+				}, out endingColor, SyncLevel == RainbowSyncLevel.Fade  ? Barrier : null);
 
 				if (SyncLevel == RainbowSyncLevel.Color)
-					Barrier?.SignalAndWait();   //synchronize at the color level
+				Barrier?.SignalAndWait();  //synchronize at the color level
 			}
 		}
 

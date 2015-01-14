@@ -227,6 +227,7 @@ namespace ZoneLighting.ZoneNS
 		public void SetBackgroundBarrier(Barrier barrier)
 		{
 			BackgroundBarrier = barrier;
+			barrier?.AddParticipant();
 		}
 
 		/// <summary>

@@ -66,6 +66,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TEMP\Rainbow.cs" />
     <Compile Include="ZoneNS\SyncContext.cs" />
     <Compile Include="Communication\FadeCandyController.cs" />
     <Compile Include="Communication\FadeCandyPixel.cs" />
@@ -121,6 +122,7 @@
     <Content Include="Doc\zoneconfigurationexample.txt" />
     <Content Include="Doc\ZoneLightingClasses.jpg" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

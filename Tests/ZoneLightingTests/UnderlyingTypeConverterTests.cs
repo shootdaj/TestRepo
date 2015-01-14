@@ -42,7 +42,7 @@ namespace ZoneLightingTests
 
 			var serializedDotColor = JsonConvert.SerializeObject(dotColor, jsonSerializerSettings);
 			var deserializedDotColor = JsonConvert.DeserializeObject<ZoneProgramInput>(serializedDotColor, jsonDeserializerSettings);
-			Console.WriteLine(deserializedDotColor.Value.GetType());
+			System.Console.WriteLine(deserializedDotColor.Value.GetType());
 			Assert.True(deserializedDotColor.Value is Color);
 		}
 
@@ -70,7 +70,7 @@ namespace ZoneLightingTests
 
 			var serializedDotColor = JsonConvert.SerializeObject(dotColor, jsonSerializerSettings);
 			var deserializedDotColor = JsonConvert.DeserializeObject<ZoneProgramInput>(serializedDotColor, jsonDeserializerSettings);
-			Console.WriteLine(deserializedDotColor.Value.GetType());
+			System.Console.WriteLine(deserializedDotColor.Value.GetType());
 			Assert.True(deserializedDotColor.Value is int);
 		}
 
@@ -111,7 +111,7 @@ namespace ZoneLightingTests
 
 			var serializedDotColor = JsonConvert.SerializeObject(dotColor, jsonSerializerSettings);
 			var deserializedDotColor = JsonConvert.DeserializeObject<ZoneProgramInput>(serializedDotColor, jsonDeserializerSettings);
-			Console.WriteLine(deserializedDotColor.Value.GetType());
+			System.Console.WriteLine(deserializedDotColor.Value.GetType());
 			Assert.True(deserializedDotColor.Value is ComplexClass);
 		}
 

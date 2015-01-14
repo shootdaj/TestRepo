@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneNS;
 
 namespace ZoneLighting.ZoneProgramNS
@@ -23,6 +24,10 @@ namespace ZoneLighting.ZoneProgramNS
 		public CancellationTokenSource LoopCTS;
 		protected Task LoopingTask { get; set; }
 		protected Thread RunProgramThread { get; set; }
+
+		private bool IsSyncStateRequested { get; set; }
+		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
+		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
 
 		protected void StartLoop(Barrier barrier)
 		{
@@ -53,7 +58,15 @@ namespace ZoneLighting.ZoneProgramNS
 					RunProgramThread = Thread.CurrentThread;
 					while (true)
 					{
+						if (IsSyncStateRequested)
+						{
+							IsSynchronizable.Fire(this, null);
+							WaitForSync.WaitForFire();
+							IsSyncStateRequested = false;
+						}
+
 						Loop();
+
 						if (LoopCTS.IsCancellationRequested)
 						{
 							Running = false;
@@ -89,12 +102,28 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#endregion
 
-		#region Overridden
+
+		#region Transport Controls
 
 		//public override void StartBase(InputStartingValues inputStartingValues = null)
 		//{
 		//	Start();
 		//}
+
+
+		/// <summary>
+		/// Requests the program to pause when it's at its synchronizable state.
+		/// </summary>
+		/// <returns></returns>
+		public void RequestSyncState()
+		{
+			IsSyncStateRequested = true;
+		}
+
+		public void CancelSyncStateRequest()
+		{
+			IsSyncStateRequested = false;
+		}
 
 		protected override void StartCore(Barrier barrier)
 		{

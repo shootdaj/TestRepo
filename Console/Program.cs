@@ -7,9 +7,9 @@ using ZoneLighting.ZoneNS;
 
 namespace Console
 {
-	class Program
+	public class Program
 	{
-		static void Main(string[] args)
+		public static void Main(string[] args)
 		{
 			ZoneLightingManager.Instance.Initialize(false);
 
@@ -60,7 +60,7 @@ namespace Console
 				}
 			});
 
-			task.Start();
+			//task.Start();
 			
 			Thread.Sleep(Timeout.Infinite);
 

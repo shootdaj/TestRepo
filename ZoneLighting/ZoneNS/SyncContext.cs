@@ -62,7 +62,7 @@ namespace ZoneLighting.ZoneNS
 			}
 
 			//add itself to the barrier's participant list
-			zone.SetBackgroundBarrier(Barrier);
+			//zone.SetBackgroundBarrier(Barrier); TODO: This enables the barrier for interrupts.. or something
 			zone.ZoneProgram.AttachBarrier(Barrier);
 		}
 
