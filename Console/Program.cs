@@ -11,7 +11,7 @@ namespace Console
 	{
 		public static void Main(string[] args)
 		{
-			ZoneLightingManager.Instance.Initialize(false);
+			ZoneLightingManager.Instance.Initialize(false, false);
 
 			var task = new Task(() =>
 			{

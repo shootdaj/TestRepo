@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using ZoneLighting.TriggerDependencyNS;
 
 namespace ZoneLighting.ZoneProgramNS
 {
@@ -27,6 +28,10 @@ namespace ZoneLighting.ZoneProgramNS
 			//TODO: Implement pause logic
 		}
 
+		private bool IsSyncStateRequested { get; set; }
+		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
+		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
+
 		/// <summary>
 		/// Adds a live input to the zone program. A live input is an input that can be controlled while
 		/// the program is running and the program will respond to it in the way it's designed to.
@@ -39,12 +44,21 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			var input = new InterruptingInput(name, typeof(T));
 			Inputs.Add(input);
-			
+
+			//if sync is requested, go into synchronizable state
+			if (barrier != null)
+			{
+				IsSynchronizable.Fire(this, null);
+				WaitForSync.WaitForFire();
+				IsSyncStateRequested = false;
+			}
+
+			input.AttachBarrier(barrier);
 			input.Subscribe(data =>				//when the input's OnNext is called, do whatever it was programmed to do and then fire the StopSubject
 			{
 				input.StartTrigger.Fire(this, null);
 				action(data);
-				DetachBarrier();
+				input.DetachBarrier();
 				input.StopSubject.OnNext(null);
 				input.StopTrigger.Fire(this, null);
 			});

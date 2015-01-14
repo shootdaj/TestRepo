@@ -60,14 +60,15 @@ namespace ZoneLighting
 
 		public bool Initialized { get; private set; }
 
-		public void Initialize(bool loadExternalZones = true)
+		public void Initialize(bool loadExternalZones = true, bool initZoneScaffolder = true)
 		{
 			if (!Initialized)
 			{
 				InitLightingControllers();
 				if (loadExternalZones)
 					ComposeWithExternalModules();
-				InitZoneScaffolder();
+				if (initZoneScaffolder)
+					InitZoneScaffolder();
 				InitializeAllZones();
 				Initialized = true;
 			}
@@ -296,6 +297,74 @@ namespace ZoneLighting
 			targetProgram.WaitForSync.Fire(this, null);
 		}
 
+		/// <summary>
+		/// Synchronizes multiple zones with a given zone.
+		/// </summary>
+		/// <param name="syncSource"></param>
+		/// <param name="syncTargets"></param>
+		public void Synchronize(Zone syncSource, List<Zone> syncTargets)
+		{
+			if ((syncTargets.Any(zone => !(zone.ZoneProgram is LoopingZoneProgram) ||
+			                             !(syncSource.ZoneProgram is LoopingZoneProgram))))
+				throw new Exception("Both zones passed in must have a looping zone program running on them.");
+
+			var sourceProgram = (LoopingZoneProgram)syncSource.ZoneProgram;
+			var targetPrograms = syncTargets.Select(z => z.ZoneProgram).Cast<LoopingZoneProgram>().ToList();
+
+			//request and wait for synchronizable state of source and target programs
+			sourceProgram.RequestSyncState();
+			sourceProgram.IsSynchronizable.WaitForFire();
+			targetPrograms.ForEach(targetProgram =>
+			{
+				targetProgram.RequestSyncState();
+				targetProgram.IsSynchronizable.WaitForFire();
+			});
+			
+
+			//start synchronization
+
+			//remove targets from all sync contexts
+			syncTargets.ForEach(syncTarget =>
+			{
+				if (IsInAnySyncContext(syncTarget))
+				{
+					RemoveFromAllSyncContexts(syncTarget);
+				}
+			});
+
+			//if there are any contexts in which the source is, use it.
+			if (SyncContexts.Any(c => c.Zones.Contains(syncSource)))
+			{
+				syncTargets.ForEach(syncTarget =>
+				{
+					SyncContexts.First(c => c.Zones.Contains(syncSource))
+						.AddZone(syncTarget);
+				});
+			}
+   
+			//else create a new context and use that.
+			else
+			{
+				var syncContext = new SyncContext(syncSource, syncSource.Name + "SyncContext");
+
+				syncTargets.ForEach(syncTarget =>
+				{
+					syncContext.AddZone(syncTarget);
+				});
+
+				SyncContexts.Add(syncContext);
+			}
+
+			//end synchronization
+
+			//resume the programs that were waiting after they are synced
+			sourceProgram.WaitForSync.Fire(this, null);
+			targetPrograms.ForEach(targetProgram =>
+			{
+				targetProgram.WaitForSync.Fire(this, null);
+			});
+		}
+
 		public void Unsynchronize(Zone unSyncTarget)
 		{
 			//remove target from all sync contexts
@@ -312,20 +381,24 @@ namespace ZoneLighting
 		private void AddBasementZonesAndPrograms()
 		{
 
-			//var syncContext = new SyncContext();
+			var syncContext = new SyncContext();
 			var notificationSyncContext = new SyncContext();
 
-			var leftWing = AddFadeCandyZone("LeftWing", new Rainbow(), PixelType.FadeCandyWS2812Pixel, 6, 1);//, syncContext);
+			var leftWing = AddFadeCandyZone("LeftWing", new Rainbow(), PixelType.FadeCandyWS2812Pixel, 6, 1, syncContext);
 			//AddInterruptingProgramToZone(leftWing, "BlinkColor");//, notificationSyncContext.Barrier);
-			var center = AddFadeCandyZone("Center", new Rainbow(), PixelType.FadeCandyWS2811Pixel, 21, 2);//, syncContext);
-																									  //AddInterruptingProgramToZone(center, "BlinkColor");//, notificationSyncContext.Barrier);
-			var rightWing = AddFadeCandyZone("RightWing", new Rainbow(), PixelType.FadeCandyWS2812Pixel, 12, 3);//, syncContext);
-																											//AddInterruptingProgramToZone(rightWing, "BlinkColor");//, notificationSyncContext.Barrier);
-			//var baiClock = AddFadeCandyZone("BaiClock", "Rainbow", PixelType.FadeCandyWS2812Pixel, 24, 4);//, syncContext);
-																										  //AddInterruptingProgramToZone(baiClock, "BlinkColor");//, notificationSyncContext.Barrier);
+			var center = AddFadeCandyZone("Cente" +
+			                              "r", new Rainbow(), PixelType.FadeCandyWS2811Pixel, 21, 2, syncContext);
+																										  //AddInterruptingProgramToZone(center, "BlinkColor");//, notificationSyncContext.Barrier);
+			var rightWing = AddFadeCandyZone("RightWing", new Rainbow(), PixelType.FadeCandyWS2812Pixel, 12, 3, syncContext);
+																												//AddInterruptingProgramToZone(rightWing, "BlinkColor");//, notificationSyncContext.Barrier);
+			var baiClock = AddFadeCandyZone("BaiClock", new Rainbow(), PixelType.FadeCandyWS2812Pixel, 24, 4, syncContext);
+																											  //AddInterruptingProgramToZone(baiClock, "BlinkColor");//, notificationSyncContext.Barrier);
+
+			//Synchronize(leftWing, new List<Zone> { center, rightWing, baiClock });
 
 
-			leftWing.Synchronize(center).Synchronize(rightWing);//.Synchronize(baiClock);
+			//NOTE: Here's another way of synchronizing:
+			//leftWing.Synchronize(center).Synchronize(rightWing);//.Synchronize(baiClock);
 
 			//var rainbowContext = new SyncContext((LoopingZoneProgram)leftWing.ZoneProgram, "RainbowContext");
 			//rainbowContext.AddZoneProgram((LoopingZoneProgram)rightWing.ZoneProgram);

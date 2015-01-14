@@ -71,7 +71,11 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public double Brightness { get; set; }
 
-		private Barrier BackgroundBarrier { get; set; }
+		/// <summary>
+		/// This sync context will be the source of the Barrier that is passed to the interrupting program routines.
+		/// The Barriers are required by the interrupting programs to synchronize the program across zones.
+		/// </summary>
+		public SyncContext InterruptingProgramSyncContext { get; set; }
 
 		#endregion
 
@@ -107,13 +111,13 @@ namespace ZoneLighting.ZoneNS
 
 		public void SetupInterruptProcessing(Barrier barrier)
 		{
-			SetBackgroundBarrier(barrier);
+			//SetBackgroundBarrier(barrier);
 
-			//configure interrupt processing
-			InterruptQueue = new ActionBlock<InterruptInfo>((interruptInfo) => ProcessInterrupt(interruptInfo, BackgroundBarrier), new ExecutionDataflowBlockOptions()
-				{
-					MaxDegreeOfParallelism = 1,
-				});
+			////configure interrupt processing
+			//InterruptQueue = new ActionBlock<InterruptInfo>((interruptInfo) => ProcessInterrupt(interruptInfo, BackgroundBarrier), new ExecutionDataflowBlockOptions()
+			//	{
+			//		MaxDegreeOfParallelism = 1,
+			//	});
 		}
 		
 		private void ProcessInterrupt(InterruptInfo interruptInfo, Barrier barrier)
@@ -226,8 +230,8 @@ namespace ZoneLighting.ZoneNS
 
 		public void SetBackgroundBarrier(Barrier barrier)
 		{
-			BackgroundBarrier = barrier;
-			barrier?.AddParticipant();
+			//BackgroundBarrier = barrier;
+			//barrier?.AddParticipant();
 		}
 
 		/// <summary>
@@ -291,6 +295,14 @@ namespace ZoneLighting.ZoneNS
 			SetupInterruptProcessing(barrier);
 			ZoneProgram.Start(inputStartingValues, InterruptQueue, barrier);
 		}
+	
+		/// <summary>
+		/// Stops this zone's program.
+		/// </summary>
+		public void StopProgram(bool force = false)
+		{
+			ZoneProgram.Stop(force);
+		}
 
 		/// <summary>
 		/// Starts the given interrupting program.
@@ -299,6 +311,9 @@ namespace ZoneLighting.ZoneNS
 		/// <param name="inputStartingValues">Input values to start program with</param>
 		public void StartInterruptingProgram(ReactiveZoneProgram interruptingProgram, InputStartingValues inputStartingValues = null, Barrier barrier = null)
 		{
+			//tell the interrupting to start, saying "use these input starting values to start the program, report back to this queue when 
+			//you need to output something (interrupt), and I'll take care of the rest. Also use this barrier to synchronize yourself
+			//with everyone else on this barrier's participant list.
 			interruptingProgram.Start(inputStartingValues, InterruptQueue, barrier);
 		}
 
@@ -310,13 +325,6 @@ namespace ZoneLighting.ZoneNS
 			interruptingProgram.Stop(force);
 		}
 
-		/// <summary>
-		/// Stops this zone's program.
-		/// </summary>
-		public void StopProgram(bool force = false)
-		{
-			ZoneProgram.Stop(force);
-		}
 
 		/// <summary>
 		/// Adds an interrupting program to the zone.

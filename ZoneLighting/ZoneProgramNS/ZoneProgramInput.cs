@@ -23,6 +23,8 @@ namespace ZoneLighting.ZoneProgramNS
 		[DataMember]
 		public object Value { get; protected set; }
 
+		public Barrier Barrier { get; set; }
+
 		public ZoneProgramInput(string name, Type type) : this()
 		{
 			Name = name;
@@ -47,8 +49,26 @@ namespace ZoneLighting.ZoneProgramNS
 		public virtual void Unsubscribe()
 		{
 			InputDisposable?.Dispose();
+			DetachBarrier();
 		}
-		
+
+		/// <summary>
+		/// Used to attach a Barrier to this 
+		/// </summary>
+		/// <param name="barrier"></param>
+		public void AttachBarrier(Barrier barrier)
+		{
+			Barrier = barrier;
+			Barrier?.AddParticipant();
+		}
+
+
+		public void DetachBarrier()
+		{
+			Barrier?.RemoveParticipant();
+			Barrier = null;
+		}
+
 		public void Dispose()
 		{
 			Unsubscribe();

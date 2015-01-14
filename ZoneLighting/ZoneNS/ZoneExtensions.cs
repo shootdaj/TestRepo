@@ -25,5 +25,7 @@ namespace ZoneLighting.ZoneNS
 			ZoneLightingManager.Instance.Synchronize(syncSource, syncTarget);
 			return syncSource;
 		}
+
+		
 	}
 }

@@ -29,9 +29,8 @@ namespace ZoneLighting.ZoneProgramNS
 		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
 		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
 
-		protected void StartLoop(Barrier barrier)
+		protected void StartLoop()
 		{
-			Barrier = barrier;
 			SetupRunProgramTask();
 			if (!Running)
 			{
@@ -56,8 +55,10 @@ namespace ZoneLighting.ZoneProgramNS
 				try
 				{
 					RunProgramThread = Thread.CurrentThread;
+					Barrier?.SignalAndWait();
 					while (true)
 					{
+						//if sync is requested, go into synchronizable state
 						if (IsSyncStateRequested)
 						{
 							IsSynchronizable.Fire(this, null);
@@ -65,8 +66,10 @@ namespace ZoneLighting.ZoneProgramNS
 							IsSyncStateRequested = false;
 						}
 
+						//start loop
 						Loop();
 
+						//if cancellation is requested, break out of loop after setting notification parameters for the consumer
 						if (LoopCTS.IsCancellationRequested)
 						{
 							Running = false;
@@ -91,6 +94,8 @@ namespace ZoneLighting.ZoneProgramNS
 		}
 
 		public abstract SyncLevel SyncLevel { get; set; }
+
+		public Barrier InitialSyncBarrier { get; set; }
 
 		#region Overrideables
 
@@ -129,7 +134,7 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			AttachBarrier(barrier);
 			Setup();
-			StartLoop(barrier);
+			StartLoop();
 		}
 
 		protected override void StopCore(bool force)
