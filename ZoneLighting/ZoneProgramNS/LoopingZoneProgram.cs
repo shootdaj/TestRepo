@@ -105,19 +105,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Transport Controls
 
-		/// <summary>
-		/// Requests the program to pause when it's at its synchronizable state.
-		/// </summary>
-		/// <returns></returns>
-		public void RequestSyncState()
-		{
-			IsSyncStateRequested = true;
-		}
-
-		public void CancelSyncStateRequest()
-		{
-			IsSyncStateRequested = false;
-		}
+		
 
 		protected override void StartCore()
 		{

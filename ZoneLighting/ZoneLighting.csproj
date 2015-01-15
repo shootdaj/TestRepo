@@ -66,6 +66,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TEMP\BlinkColor.cs" />
     <Compile Include="TEMP\Rainbow.cs" />
     <Compile Include="ZoneNS\SyncContext.cs" />
     <Compile Include="Communication\FadeCandyController.cs" />
