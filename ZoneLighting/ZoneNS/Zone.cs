@@ -115,10 +115,14 @@ namespace ZoneLighting.ZoneNS
 			}
 		}
 
-		public void SetupInterruptProcessing(SyncContext syncContext)
+		public void SetupInterruptProcessing()
 		{
 			//configure interrupt processing
-			InterruptQueue = new ActionBlock<InterruptInfo>((interruptInfo) => ProcessInterrupt(interruptInfo), new ExecutionDataflowBlockOptions()
+			InterruptQueue = new ActionBlock<InterruptInfo>((interruptInfo) =>
+			{
+				InterruptingProgramSyncContext?.SignalAndWait();
+				ProcessInterrupt(interruptInfo);
+			}, new ExecutionDataflowBlockOptions()
 			{
 				MaxDegreeOfParallelism = 1,
 			});
@@ -142,6 +146,7 @@ namespace ZoneLighting.ZoneNS
 						if (InterruptQueue.InputCount < 1)
 						{
 							DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "START Resume BG Program");
+							SyncContext?.SignalAndWait();
 							ZoneProgram.ResumeCore();
 							DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "END Resume BG Program");
 						}
@@ -150,6 +155,7 @@ namespace ZoneLighting.ZoneNS
 
 				DebugTools.AddEvent("InterruptQueue.Method", "START Pause BG Program");
 				ZoneProgram.PauseCore(); //pause the bg program
+				SyncContext?.SignalAndWait();
 				DebugTools.AddEvent("InterruptQueue.Method", "END Pause BG Program");
 			}
 			else
@@ -167,24 +173,24 @@ namespace ZoneLighting.ZoneNS
 			//TODO: Add capability to have a timeout in case the interrupting program never calls the StopSubject
 		}
 
-		private void Initialize(InputStartingValues inputStartingValues = null, bool isSyncRequested = false)
+		private void Initialize(InputStartingValues inputStartingValues = null, bool dontStart = false)
 		{
 			if (!Initialized)
 			{
-				if (ZoneProgram != null)
+				if (ZoneProgram != null && !dontStart)
 				{
-					StartProgram(inputStartingValues, isSyncRequested);
+					StartProgram(inputStartingValues);
 				}
 				Initialized = true;
 			}
 		}
 
-		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool isSyncRequested = false)
+		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool dontStart = false)
 		{
 			if (!Initialized)
 			{
 				SetProgram(zoneProgram);
-				Initialize(inputStartingValues, isSyncRequested);
+				Initialize(inputStartingValues, dontStart);
 			}
 		}
 
@@ -292,7 +298,7 @@ namespace ZoneLighting.ZoneNS
 		public void StartProgram(InputStartingValues inputStartingValues = null, bool isSyncRequested = false)
 		{
 			//setup interrupt processing
-			//SetupInterruptProcessing(syncContext);
+			SetupInterruptProcessing();
 
 			//start program
 			ZoneProgram.Start(inputStartingValues, InterruptQueue, isSyncRequested);
@@ -402,6 +408,9 @@ namespace ZoneLighting.ZoneNS
 			InterruptingPrograms.Add(interruptingProgram);
 			interruptingProgram.Zone = this;
 			if (startProgram)
+
+				//TODO: Should the InterruptingProgramSyncContext be set here? 
+
 				StartInterruptingProgram(interruptingProgram, inputStartingValues, isSyncRequested);
 		}
 

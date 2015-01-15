@@ -92,19 +92,19 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		/// <summary>
 		/// Initializes a zone with the given program name and starting values of the inputs as a name-value dictionary.
 		/// </summary>
-		public void InitializeZone(Zone zone, string programName, InputStartingValues inputStartingValues = null, bool isSyncRequested = false)
+		public void InitializeZone(Zone zone, string programName, InputStartingValues inputStartingValues = null, bool dontStart = false)
 		{
 			var zoneProgramFactoriesList = ZoneProgramFactories.ToList();
-			zone.Initialize(CreateZoneProgram(programName, zoneProgramFactoriesList), inputStartingValues, isSyncRequested);
+			zone.Initialize(CreateZoneProgram(programName, zoneProgramFactoriesList), inputStartingValues);
 
 		}
 
 		/// <summary>
 		/// Initializes a zone with the given program instance and starting values of the inputs as a name-value dictionary.
 		/// </summary>
-		public void InitializeZone(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool isSyncRequested = false)
+		public void InitializeZone(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool dontStart = false)
 		{
-			zone.Initialize(zoneProgram, inputStartingValues, isSyncRequested);
+			zone.Initialize(zoneProgram, inputStartingValues, dontStart);
 		}
 
 		public void StartInterruptingProgram(Zone zone, string programName, InputStartingValues inputStartingValues = null, SyncContext syncContext = null, bool isSyncRequested = false)
@@ -118,7 +118,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		public void StartInterruptingProgram(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, SyncContext syncContext = null, bool isSyncRequested = false)
 		{
 			if (zoneProgram is ReactiveZoneProgram)
-				zone.AddInterruptingProgram((ReactiveZoneProgram) zoneProgram, true, inputStartingValues, syncContext);
+				zone.AddInterruptingProgram((ReactiveZoneProgram) zoneProgram, true, inputStartingValues, syncContext, isSyncRequested);
 			else
 			{
 				throw new Exception(

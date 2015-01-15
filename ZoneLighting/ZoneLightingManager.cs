@@ -370,8 +370,6 @@ namespace ZoneLighting
 
 		#endregion
 
-
-
 		private void AddBasementZonesAndPrograms()
 		{
 
@@ -379,19 +377,20 @@ namespace ZoneLighting
 			var notificationSyncContext = new SyncContext();
 
 			var leftWing = AddFadeCandyZone("LeftWing", new Rainbow(), PixelType.FadeCandyWS2812Pixel, 6, 1, syncContext, true);
-			StartInterruptingProgramOnZone(leftWing, new BlinkColor(), notificationSyncContext, true);
 			var center = AddFadeCandyZone("Center", new Rainbow(), PixelType.FadeCandyWS2811Pixel, 21, 2, syncContext, true);
-			StartInterruptingProgramOnZone(center, new BlinkColor(), notificationSyncContext, true);
 			var rightWing = AddFadeCandyZone("RightWing", new Rainbow(), PixelType.FadeCandyWS2812Pixel, 12, 3, syncContext, true);
-			StartInterruptingProgramOnZone(rightWing, new BlinkColor(), notificationSyncContext, true);
 			var baiClock = AddFadeCandyZone("BaiClock", new Rainbow(), PixelType.FadeCandyWS2812Pixel, 24, 4, syncContext, true);
+			
+
+			leftWing.ZoneProgram.WaitForSync.Fire(this, null);
+			center.ZoneProgram.WaitForSync.Fire(this, null);
+			rightWing.ZoneProgram.WaitForSync.Fire(this, null);
+			baiClock.ZoneProgram.WaitForSync.Fire(this, null);
+
+			StartInterruptingProgramOnZone(leftWing, new BlinkColor(), notificationSyncContext, true);
+			StartInterruptingProgramOnZone(center, new BlinkColor(), notificationSyncContext, true);
+			StartInterruptingProgramOnZone(rightWing, new BlinkColor(), notificationSyncContext, true);
 			StartInterruptingProgramOnZone(baiClock, new BlinkColor(), notificationSyncContext, true);
-
-			((LoopingZoneProgram)leftWing.ZoneProgram).WaitForSync.Fire(this, null);
-			((LoopingZoneProgram)center.ZoneProgram).WaitForSync.Fire(this, null);
-			((LoopingZoneProgram)rightWing.ZoneProgram).WaitForSync.Fire(this, null);
-			((LoopingZoneProgram)baiClock.ZoneProgram).WaitForSync.Fire(this, null);
-
 
 			//leftWing.StartProgram();
 			//rightWing.StartProgram();
@@ -457,12 +456,28 @@ namespace ZoneLighting
 		public FadeCandyZone AddFadeCandyZone(string name, ZoneProgram program, PixelType pixelType, int numLights,
 			byte channel, SyncContext syncContext, bool isSyncRequested)
 		{
+			//create new zone
 			var zone = new FadeCandyZone(name);
+			//add lights
 			zone.AddFadeCandyLights(pixelType, numLights, channel);
+			//add to main collection
 			Zones.Add(zone);
-			ZoneScaffolder.Instance.InitializeZone(zone, program, isSyncRequested: isSyncRequested);
-			((LoopingZoneProgram) zone.ZoneProgram).IsSynchronizable.WaitForFire();
-			syncContext?.AddZone(zone);
+			//initialize zone without starting
+			ZoneScaffolder.Instance.InitializeZone(zone, program, dontStart: true);
+
+			if (isSyncRequested)
+			{
+				//start and request sync
+				zone.StartProgram(isSyncRequested: true);
+				//wait for sync to be attained
+				zone.ZoneProgram.IsSynchronizable.WaitForFire();
+				//add zone
+				syncContext?.AddZone(zone);
+			}
+			else
+			{
+				zone.StartProgram();
+			}
 
 			return zone;
 		}

@@ -80,6 +80,7 @@ namespace ZoneLighting.ZoneProgramNS
 					DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method", "LoopingTask thread aborted");
 					DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Setting Running = false");
 					Running = false;
+					SyncContext?.SignalAndWait();
 					StopTrigger.Fire(this, null);
 					DebugTools.AddEvent("LoopingZoneProgram.Stop", "END Setting Running = false");
 				}
@@ -126,6 +127,7 @@ namespace ZoneLighting.ZoneProgramNS
 					if (RunProgramThread != null)
 					{
 						DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Force aborting BG Program thread");
+						SyncContext?.SignalAndWait();
 						RunProgramThread.Abort();
 						StopTrigger.WaitForFire();
 						DebugTools.AddEvent("LoopingZoneProgram.Stop", "END Force aborting BG Program thread");
@@ -170,7 +172,7 @@ namespace ZoneLighting.ZoneProgramNS
 		public override void Resume()
 		{
 			//TODO: Implement resume logic - for now, it's just gonna call start
-			SyncContext.Reset();
+			//SyncContext.Reset();
             Start();
 		}
 

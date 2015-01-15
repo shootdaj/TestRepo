@@ -111,7 +111,7 @@ namespace ZoneLighting.ZoneNS
 
 		public void Reset()
 		{
-			Barrier.Dispose();
+			//Barrier.Dispose();
 			Barrier = new Barrier(Zones.Count);
 		}
 	}
