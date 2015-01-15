@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using FakeItEasy;
 using NUnit.Framework;
 using ZoneLighting;
+using ZoneLighting.Communication;
 
 namespace ZoneLightingTests
 {
@@ -34,9 +35,9 @@ namespace ZoneLightingTests
 		[Test]
 		public void MapFadeCandyPixel_Works()
 		{
-			var channel = A.Dummy<byte>();
-			var physicalIndex = A.Dummy<int>();
-			var led = new LED();
+			byte channel = 1;//A.Dummy<byte>();
+			int physicalIndex = 1;//A.Dummy<int>();
+			var led = new LED(pixelType: PixelType.FadeCandyWS2812Pixel);
 			led.MapFadeCandyPixel(channel, physicalIndex);
 
 			Assert.AreEqual(led.FadeCandyPixel.Channel, channel);

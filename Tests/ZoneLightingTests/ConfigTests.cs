@@ -32,7 +32,7 @@ namespace ZoneLightingTests
 			zones.Add(new FadeCandyZone("TestZone1"));
 			for (int i = 0; i < 6; i++)
 			{
-				zones[0].AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i));
+				zones[0].AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i, pixelType: PixelType.FadeCandyWS2812Pixel));
 			}
 			InputStartingValues startingValuesTZ1 = new InputStartingValues();
 			startingValuesTZ1.Add("DelayTime", 1);
@@ -43,7 +43,7 @@ namespace ZoneLightingTests
 			zones.Add(new FadeCandyZone("TestZone2"));
 			for (int i = 0; i < 12; i++)
 			{
-				zones[1].AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i));
+				zones[1].AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i, pixelType: PixelType.FadeCandyWS2812Pixel));
 			}
 			InputStartingValues startingValuesTZ2 = new InputStartingValues();
 			startingValuesTZ2.Add("DelayTime", 1);

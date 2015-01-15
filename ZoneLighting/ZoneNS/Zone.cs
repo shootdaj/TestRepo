@@ -288,7 +288,7 @@ namespace ZoneLighting.ZoneNS
 
 		public void UnsetupSyncContext()
 		{
-			SyncContext.RemoveZoneParticipant(this);
+			SyncContext?.RemoveZoneParticipant(this);
 			DetachSyncContext();
 		}
 
@@ -311,7 +311,6 @@ namespace ZoneLighting.ZoneNS
 		{
 			//sync context removal
 			SyncContext?.RemoveZoneParticipant(this);
-			//DetachSyncContext();
 
 			//stop program
 			ZoneProgram.Stop(force);

@@ -11,7 +11,7 @@ namespace ZoneLightingTests
 	public class MainProgramRunner
 	{
 		[Ignore]
-		[Test]
+		//[Test]
 		public void RunProgram_Main()
 		{
 			Program.Main(null);
