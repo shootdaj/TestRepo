@@ -5,6 +5,7 @@ using System.Reactive.Subjects;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ZoneLighting.Communication;
 using ZoneLighting.TriggerDependencyNS;
 
 namespace ZoneLighting.ZoneProgramNS
@@ -15,5 +16,6 @@ namespace ZoneLighting.ZoneProgramNS
 		public object Data { get; set; }
 		public Subject<object> InputSubject { get; set; }
 		public Subject<object> StopSubject { get; set; }
+		public ZoneProgram ZoneProgram { get;set }
 	}
 }

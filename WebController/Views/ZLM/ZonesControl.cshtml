@@ -1,0 +1,24 @@
+﻿@using WebController.Extensions
+@model ZoneLighting.ZoneLightingManager
+@using (Ajax.BeginForm("ZoneCommand", "ZLM", new AjaxOptions { UpdateTargetId = "ZonesControl" }))
+{
+	<table class="table table-striped table-hover">
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Start</th>
+			<th>Stop</th>
+		</tr>
+		</thead>
+		<tbody>
+		@foreach (var zone in Model.Zones)
+		{
+			<tr>
+				<td>@zone.Name</td>
+				<td><input type="submit" value="Start @(zone.Name)" id="btnStart" name="Command" class="btn btn-primary"/></td>
+				<td><input type="submit" value="Stop @(zone.Name)" id="btnStop" name="Command" class="btn btn-primary"/></td>
+			</tr>
+		}
+		</tbody>
+	</table>
+}

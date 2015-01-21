@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Grange Insurance")]
 [assembly: AssemblyProduct("WebController")]
-[assembly: AssemblyCopyright("Copyright © Grange Insurance 2015")]
+[assembly: AssemblyCopyright("Copyright © Grange Insurance 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("23a7be83-a452-43ae-bfef-07dadf4b6707")]
+[assembly: Guid("2a0c0188-eda7-4b9a-9ea4-8f9f819bba3c")]
 
 // Version information for an assembly consists of the following four values:
 //

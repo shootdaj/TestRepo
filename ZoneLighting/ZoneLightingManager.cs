@@ -276,14 +276,14 @@ namespace ZoneLighting
 			//if there are any contexts in which the source is, use it.
 			if (SyncContexts.Any(c => c.ContainsZone(syncSource)))
 			{
-				SyncContexts.First(c => c.ContainsZone(syncSource))
-					.AddZone(syncTarget);
+				syncTarget.SetupSyncContext(SyncContexts.First(c => c.ContainsZone(syncSource)));
 			}
 			//else create a new context and use that.
 			else
 			{
-				var syncContext = new SyncContext(syncSource, syncSource.Name + "SyncContext");
-				syncContext.AddZone(syncTarget);
+				var syncContext = new SyncContext(syncSource.Name + "SyncContext");
+				syncSource.SetupSyncContext(syncContext);
+				syncTarget.SetupSyncContext(syncContext);
 				SyncContexts.Add(syncContext);
 			}
 
@@ -331,19 +331,18 @@ namespace ZoneLighting
 			{
 				syncTargets.ForEach(syncTarget =>
 				{
-					SyncContexts.First(c => c.ContainsZone(syncSource))
-						.AddZone(syncTarget);
+					syncTarget.SetupSyncContext(SyncContexts.First(c => c.ContainsZone(syncSource)));
 				});
 			}
    
 			//else create a new context and use that.
 			else
 			{
-				var syncContext = new SyncContext(syncSource, syncSource.Name + "SyncContext");
+				var syncContext = new SyncContext(syncSource.Name + "SyncContext");
 
 				syncTargets.ForEach(syncTarget =>
 				{
-					syncContext.AddZone(syncTarget);
+					syncTarget.SetupSyncContext(syncContext);
 				});
 
 				SyncContexts.Add(syncContext);
@@ -381,7 +380,6 @@ namespace ZoneLighting
 			var rightWing = AddFadeCandyZone("RightWing", new Rainbow(), PixelType.FadeCandyWS2812Pixel, 12, 3, syncContext, true);
 			var baiClock = AddFadeCandyZone("BaiClock", new Rainbow(), PixelType.FadeCandyWS2812Pixel, 24, 4, syncContext, true);
 			
-
 			leftWing.ZoneProgram.WaitForSync.Fire(this, null);
 			center.ZoneProgram.WaitForSync.Fire(this, null);
 			rightWing.ZoneProgram.WaitForSync.Fire(this, null);
@@ -463,20 +461,14 @@ namespace ZoneLighting
 			//add to main collection
 			Zones.Add(zone);
 			//initialize zone without starting
-			ZoneScaffolder.Instance.InitializeZone(zone, program, dontStart: true);
+			ZoneScaffolder.Instance.InitializeZone(zone, program, isSyncRequested: isSyncRequested);
 
 			if (isSyncRequested)
 			{
-				//start and request sync
-				zone.StartProgram(isSyncRequested: true);
 				//wait for sync to be attained
 				zone.ZoneProgram.IsSynchronizable.WaitForFire();
 				//add zone
 				syncContext?.AddZone(zone);
-			}
-			else
-			{
-				zone.StartProgram();
 			}
 
 			return zone;
@@ -487,7 +479,7 @@ namespace ZoneLighting
 			ZoneScaffolder.Instance.StartInterruptingProgram(zone, interruptingProgramName, syncContext: syncContext, isSyncRequested: isSyncRequested);
 		}
 
-		public void StartInterruptingProgramOnZone(Zone zone, ZoneProgram program, SyncContext syncContext = null, bool isSyncRequested = false)
+		public void StartInterruptingProgramOnZone(Zone zone, ReactiveZoneProgram program, SyncContext syncContext = null, bool isSyncRequested = false)
 		{
 			ZoneScaffolder.Instance.StartInterruptingProgram(zone, program, syncContext: syncContext, isSyncRequested: isSyncRequested);
 		}

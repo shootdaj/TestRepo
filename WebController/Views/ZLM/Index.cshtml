@@ -1,0 +1,70 @@
+﻿@model WebController.Controllers.ZLMViewModel
+@using WebController.Extensions
+@using ZoneLighting
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+	ViewBag.Title = "Zone Lighting Manager";
+}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+	@*$(document).ready(function () {
+        $("#btnInit").click(function () {
+            var url = "@Url.Action("InitializeZLM", "ZLM")";
+            $.get(url, null, function (data) {
+                $("#result").html(data);
+            });
+        });
+
+        $("#btnUninit").click(function () {
+            var url = "@Url.Action("UninitializeZLM", "ZLM")";
+            $.get(url, null, function (data) {
+                $("#result").html(data);
+            });
+        });
+    });*@
+</script>
+<script type="text/javascript">
+    @*function getCities(abbr) {
+        $.ajax({
+            url: "@Url.Action("Zones", "Zones")",
+            data: { abbreviation: abbr },
+            dataType: "json",
+            type: "POST",
+            error: function () {
+                alert("An error occurred.");
+            },
+            success: function (data) {
+                var items = "";
+                $.each(data, function (i, item) {
+                    items += "<option value=\"" + item.Value + "\">" + item.Text + "</option>";
+                });
+
+                $("#City").html(items);
+            }
+        });
+    }*@
+
+	$(document).ready(function () {
+		$("#Zone").change(function () {
+			var abbr = $("#Zone").val();
+			//getCities(abbr);
+		});
+	});
+</script>
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="zlmContainer">
+			<div class="form-group">
+				@Html.Partial("ZonesControl", Model.ZoneLightingManager)
+			</div>
+			<div class="form-group">
+				@Html.Label("Initialize")
+				@Html.Partial("ZLMInit", Model.ZoneLightingManager)
+			</div>
+		</div>
+	</div>
+</div>

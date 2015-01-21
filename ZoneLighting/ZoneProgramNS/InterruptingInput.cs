@@ -9,9 +9,9 @@ namespace ZoneLighting.ZoneProgramNS
 {
 	public class InterruptingInput : ZoneProgramInput
 	{
-		public InterruptingInput(string name, Type type) : base(name, type)
+		public InterruptingInput(string name, Type type, ZoneProgram zoneProgram) : base(name, type)
 		{
-
+			ZoneProgram = zoneProgram;
 		}
 
 		public Subject<object> StopSubject { get; set; } = new Subject<object>();
@@ -22,6 +22,8 @@ namespace ZoneLighting.ZoneProgramNS
 
 		private ActionBlock<InterruptInfo> InterruptQueue { get; set; }
 
+		private ZoneProgram ZoneProgram { get; set; }
+
 		/// <summary>
 		/// Sets the interrupt queue to be post interrupts to when the input is set.
 		/// </summary>
@@ -30,12 +32,7 @@ namespace ZoneLighting.ZoneProgramNS
 			InterruptQueue = interruptQueue;
 		}
 
-		public void ClearInterruptQueue()
-		{
-			InterruptQueue = null;
-		}
-
-		public void RemoveInterruptQueue()
+		public void UnsetInterruptQueue()
 		{
 			InterruptQueue = null;
 		}
@@ -61,7 +58,8 @@ namespace ZoneLighting.ZoneProgramNS
 			{
 				Data = data,
 				InputSubject = InputSubject,
-				StopSubject = StopSubject
+				StopSubject = StopSubject,
+				ZoneProgram = ZoneProgram
 			});
 
 			DebugTools.AddEvent("InterruptingInput.SetValue", "END Posting to InterruptQueue");

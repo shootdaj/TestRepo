@@ -92,7 +92,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		/// <summary>
 		/// Initializes a zone with the given program name and starting values of the inputs as a name-value dictionary.
 		/// </summary>
-		public void InitializeZone(Zone zone, string programName, InputStartingValues inputStartingValues = null, bool dontStart = false)
+		public void InitializeZone(Zone zone, string programName, InputStartingValues inputStartingValues = null)
 		{
 			var zoneProgramFactoriesList = ZoneProgramFactories.ToList();
 			zone.Initialize(CreateZoneProgram(programName, zoneProgramFactoriesList), inputStartingValues);
@@ -102,28 +102,25 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		/// <summary>
 		/// Initializes a zone with the given program instance and starting values of the inputs as a name-value dictionary.
 		/// </summary>
-		public void InitializeZone(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool dontStart = false)
+		public void InitializeZone(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool isSyncRequested = false)
 		{
-			zone.Initialize(zoneProgram, inputStartingValues, dontStart);
+			zone.Initialize(zoneProgram, inputStartingValues, isSyncRequested);
 		}
 
 		public void StartInterruptingProgram(Zone zone, string programName, InputStartingValues inputStartingValues = null, SyncContext syncContext = null, bool isSyncRequested = false)
 		{
 			var zoneProgramFactoriesList = ZoneProgramFactories.ToList();
 			var zoneProgram = CreateZoneProgram(programName, zoneProgramFactoriesList);
-	
-			StartInterruptingProgram(zone, zoneProgram, inputStartingValues, syncContext, isSyncRequested);
+
+			if (zoneProgram is ReactiveZoneProgram)
+				zone.StartInterruptingProgram((ReactiveZoneProgram)zoneProgram, inputStartingValues, syncContext, isSyncRequested);
+			else
+				throw new Exception("Given program is not a reactive program.");
 		}
 
-		public void StartInterruptingProgram(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, SyncContext syncContext = null, bool isSyncRequested = false)
+		public void StartInterruptingProgram(Zone zone, ReactiveZoneProgram program, InputStartingValues inputStartingValues = null, SyncContext syncContext = null, bool isSyncRequested = false)
 		{
-			if (zoneProgram is ReactiveZoneProgram)
-				zone.AddInterruptingProgram((ReactiveZoneProgram) zoneProgram, true, inputStartingValues, syncContext, isSyncRequested);
-			else
-			{
-				throw new Exception(
-					"Given program name is not a Reactive Zone Program and therefore cannot be added as an Interrupting Program.");
-			}
+			zone.StartInterruptingProgram(program, inputStartingValues, syncContext, isSyncRequested);
 		}
 
 		/// <summary>

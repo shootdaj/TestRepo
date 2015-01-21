@@ -42,7 +42,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <summary>
 		/// Lighting controller to be used by the program.
 		/// </summary>
-		public LightingController LightingController => Zone.LightingController;
+		public LightingController LightingController { get; set; }
 
 		/// <summary>
 		/// Inputs for this program.
@@ -52,7 +52,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public Trigger StopTestingTrigger { get; } = new Trigger("ZoneProgram.StopTestingTrigger");
 
-		protected SyncContext SyncContext => Zone.SyncContext;
+		public SyncContext SyncContext { get; set; }
 		protected bool IsSyncStateRequested { get; set; }
 		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
 		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
@@ -92,30 +92,69 @@ namespace ZoneLighting.ZoneProgramNS
 			StopTrigger = new Trigger("StopTrigger");
 		}
 
-		public void PauseCore()
+		//public void PauseCore()
+		//{
+		//	PauseTrigger.Fire(this, null);
+		//	Pause();
+		//}
+
+		//protected abstract void Pause();
+
+		//public void ResumeCore()
+		//{
+		//	ResumeTrigger.Fire(this, null);
+		//	Resume();
+		//}
+
+		//public abstract void Resume();
+
+
+		///// <summary>
+		///// Stops the zone program.
+		///// </summary>
+		///// <param name="force"></param>
+		//public void Stop(bool force)
+		//{
+
+		//}
+
+		/// <summary>
+		/// Starts the zone program.
+		/// </summary>
+		/// <param name="inputStartingValues">Starting values for the program.</param>
+		/// <param name="interruptQueue">InterruptQueue to be used for interrupting inputs.</param>
+		public void Start(InputStartingValues inputStartingValues = null, ActionBlock<InterruptInfo> interruptQueue = null, bool isSyncRequested = false)
 		{
-			PauseTrigger.Fire(this, null);
-			Pause();
+			//preprocessing
+			StartTrigger.Fire(this, null);
+			if (isSyncRequested)
+				RequestSyncState();
+
+			//processing
+			StartCore();
+
+			//postprocessing
+			SetInterruptQueue(interruptQueue);
+			SetStartingValues(inputStartingValues);
 		}
 
-		protected abstract void Pause();
-
-		public void ResumeCore()
+		public void Dispose(bool force)
 		{
-			ResumeTrigger.Fire(this, null);
-			Resume();
-		}
-
-		public abstract void Resume();
-
-		public void Dispose()
-		{
+			StopCore(true);
+			UnsetInterruptQueue();
+			IsSyncStateRequested = false;
 			Name = null;
 			Zone = null;
 			StopTrigger.Dispose(true);
 			StartTrigger.Dispose();
 			PauseTrigger.Dispose();
 			ResumeTrigger.Dispose();
+		}
+
+
+		public void Dispose()
+		{
+			Dispose(true);
 		}
 
 		#endregion
@@ -153,21 +192,23 @@ namespace ZoneLighting.ZoneProgramNS
 		/// Assigns the interrupt queue to be posted to when an interrupting input is set.
 		/// </summary>
 		/// <param name="interruptQueue"></param>
-		private void AssignInterruptQueue(ActionBlock<InterruptInfo> interruptQueue)
+		private void SetInterruptQueue(ActionBlock<InterruptInfo> interruptQueue)
 		{
 			if (Inputs.Any(input => input is InterruptingInput))
 			{
-				Inputs.Where(input => input is InterruptingInput).ToList().ForEach(input =>
-					((InterruptingInput)input).SetInterruptQueue(interruptQueue));
+				Inputs.Where(input => input is InterruptingInput)
+					.ToList()
+					.ForEach(input => ((InterruptingInput)input).SetInterruptQueue(interruptQueue));
 			}
 		}
 
-		private void ClearInterruptQueue()
+		public void UnsetInterruptQueue()
 		{
 			if (Inputs.Any(input => input is InterruptingInput))
 			{
-				Inputs.Where(input => input is InterruptingInput).ToList().ForEach(input =>
-					((InterruptingInput)input).ClearInterruptQueue());
+				Inputs.Where(input => input is InterruptingInput)
+					.ToList()
+					.ForEach(input => ((InterruptingInput) input).UnsetInterruptQueue());
 			}
 		}
 
@@ -186,40 +227,14 @@ namespace ZoneLighting.ZoneProgramNS
 			IsSyncStateRequested = true;
 		}
 
-		public void CancelSyncStateRequest()
-		{
-			IsSyncStateRequested = false;
-		}
+		//TODO: See in body
+		//public void CancelSyncStateRequest()
+		//{
+		//	IsSyncStateRequested = false;
+		//	WaitForSync.Fire(null, null); //TODO: This needs to only happen conditionally, because otherwise the next call to RequestSyncState will return immediately
+		//}
 
-		/// <summary>
-		/// Starts the zone program.
-		/// </summary>
-		/// <param name="inputStartingValues">Starting values for the program.</param>
-		/// <param name="interruptQueue">InterruptQueue to be used for interrupting inputs.</param>
-		public virtual void Start(InputStartingValues inputStartingValues = null, ActionBlock<InterruptInfo> interruptQueue = null, bool isSyncRequested = false)
-		{
-			//preprocessing
-			StartTrigger.Fire(this, null);
-			if (isSyncRequested)
-				RequestSyncState();
-
-			//processing
-			StartCore();
-
-			//postprocessing
-			AssignInterruptQueue(interruptQueue);
-			SetStartingValues(inputStartingValues);
-		}
-
-		/// <summary>
-		/// Stops the zone program.
-		/// </summary>
-		/// <param name="force"></param>
-		public virtual void Stop(bool force)
-		{			
-			ClearInterruptQueue();
-			StopCore(force);
-		}
+		
 
 		#endregion
 
@@ -359,11 +374,21 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public void SendLights()
 		{
-			Zone.SendLights();
+			if (LightingController != null)
+			{
+				Zone.SendLights(LightingController);
+			}
 		}
 
 		#endregion
 
 		#endregion
+	}
+
+	public enum ProgramState
+	{
+		None,
+		Started,
+		Paused
 	}
 }
