@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.ZoneNS
 {
@@ -12,6 +15,8 @@ namespace ZoneLighting.ZoneNS
 
 		private Barrier Barrier { get; set; } = new Barrier(0);
 
+		private List<ZoneProgram> ZonePrograms { get; set; }
+
 		/// <param name="name">Name of synchronization context for handy referencing.</param>
 		public SyncContext(string name = null)
 		{
@@ -23,6 +28,17 @@ namespace ZoneLighting.ZoneNS
 		{
 			Barrier.Dispose();
 			Name = null;
+		}
+
+		public void NonLiveSync(List<ZoneProgram> zonePrograms)
+		{
+			if (zonePrograms.All(p => p.State == ProgramState.Stopped))
+			{
+				foreach (var zoneProgram in zonePrograms)
+				{
+					zoneProgram.Start();
+				}
+			}
 		}
 
 		/// <summary>

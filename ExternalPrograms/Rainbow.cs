@@ -50,6 +50,9 @@ namespace ExternalPrograms
 			}
 		}
 
+		/// <summary>
+		/// This is like a fake enum.
+		/// </summary>
 		public static class RainbowSyncLevel
 		{
 			public static SyncLevel Fade = new SyncLevel("Fade");

@@ -249,123 +249,123 @@ namespace ZoneLighting
 			return summary;
 		}
 
-		/// <summary>
-		/// This method synchronizes the program running on one zone to the program running in another zone
-		/// </summary>
-		/// <param name="syncSource"></param>
-		/// <param name="syncTarget"></param>
-		public void Synchronize(Zone syncSource, Zone syncTarget)
-		{
-			if (!(syncTarget.IsProgramLooping) || !(syncSource.IsProgramLooping))
-				throw new Exception("Both zones passed in must have a looping zone program running on them.");
+		///// <summary>
+		///// This method synchronizes the program running on one zone to the program running in another zone
+		///// </summary>
+		///// <param name="syncSource"></param>
+		///// <param name="syncTarget"></param>
+		//public void Synchronize(Zone syncSource, Zone syncTarget)
+		//{
+		//	if (!(syncTarget.IsProgramLooping) || !(syncSource.IsProgramLooping))
+		//		throw new Exception("Both zones passed in must have a looping zone program running on them.");
 
-			//request and wait for synchronizable state of source and target programs
-			syncSource.RequestSyncState();
-			syncSource.IsSynchronizable.WaitForFire();
-			syncTarget.RequestSyncState();
-			syncTarget.IsSynchronizable.WaitForFire();
+		//	//request and wait for synchronizable state of source and target programs
+		//	syncSource.RequestSyncState();
+		//	syncSource.IsSynchronizable.WaitForFire();
+		//	syncTarget.RequestSyncState();
+		//	syncTarget.IsSynchronizable.WaitForFire();
 
-			//start synchronization
+		//	//start synchronization
 
-			//remove target from all sync contexts
-			if (IsInAnySyncContext(syncTarget))
-			{
-				RemoveFromAllSyncContexts(syncTarget);
-			}
+		//	//remove target from all sync contexts
+		//	if (IsInAnySyncContext(syncTarget))
+		//	{
+		//		RemoveFromAllSyncContexts(syncTarget);
+		//	}
 
-			//if there are any contexts in which the source is, use it.
-			if (SyncContexts.Any(c => c.ContainsZone(syncSource)))
-			{
-				syncTarget.SetupSyncContext(SyncContexts.First(c => c.ContainsZone(syncSource)));
-			}
-			//else create a new context and use that.
-			else
-			{
-				var syncContext = new SyncContext(syncSource.Name + "SyncContext");
-				syncSource.SetupSyncContext(syncContext);
-				syncTarget.SetupSyncContext(syncContext);
-				SyncContexts.Add(syncContext);
-			}
+		//	//if there are any contexts in which the source is, use it.
+		//	if (SyncContexts.Any(c => c.ContainsZone(syncSource)))
+		//	{
+		//		syncTarget.SetupSyncContext(SyncContexts.First(c => c.ContainsZone(syncSource)));
+		//	}
+		//	//else create a new context and use that.
+		//	else
+		//	{
+		//		var syncContext = new SyncContext(syncSource.Name + "SyncContext");
+		//		syncSource.SetupSyncContext(syncContext);
+		//		syncTarget.SetupSyncContext(syncContext);
+		//		SyncContexts.Add(syncContext);
+		//	}
 
-			//end synchronization
+		//	//end synchronization
 
-			//resume the programs that were waiting after they are synced
-			syncSource.WaitForSync.Fire(this, null);
-			syncTarget.WaitForSync.Fire(this, null);
-		}
+		//	//resume the programs that were waiting after they are synced
+		//	syncSource.WaitForSync.Fire(this, null);
+		//	syncTarget.WaitForSync.Fire(this, null);
+		//}
 
-		/// <summary>
-		/// Synchronizes multiple zones with a given zone.
-		/// </summary>
-		/// <param name="syncSource"></param>
-		/// <param name="syncTargets"></param>
-		public void Synchronize(Zone syncSource, List<Zone> syncTargets)
-		{
-			if ((syncTargets.Any(zone => !(zone.IsProgramLooping) ||
-			                             !(syncSource.IsProgramLooping))))
-				throw new Exception("Both zones passed in must have a looping zone program running on them.");
+		///// <summary>
+		///// Synchronizes multiple zones with a given zone.
+		///// </summary>
+		///// <param name="syncSource"></param>
+		///// <param name="syncTargets"></param>
+		//public void Synchronize(Zone syncSource, List<Zone> syncTargets)
+		//{
+		//	if ((syncTargets.Any(zone => !(zone.IsProgramLooping) ||
+		//	                             !(syncSource.IsProgramLooping))))
+		//		throw new Exception("Both zones passed in must have a looping zone program running on them.");
 
-			//request and wait for synchronizable state of source and target programs
-			syncSource.RequestSyncState();
-			syncSource.IsSynchronizable.WaitForFire();
-			syncTargets.ForEach(syncTarget =>
-			{
-				syncTarget.RequestSyncState();
-				syncTarget.IsSynchronizable.WaitForFire();
-			});
+		//	//request and wait for synchronizable state of source and target programs
+		//	syncSource.RequestSyncState();
+		//	syncSource.IsSynchronizable.WaitForFire();
+		//	syncTargets.ForEach(syncTarget =>
+		//	{
+		//		syncTarget.RequestSyncState();
+		//		syncTarget.IsSynchronizable.WaitForFire();
+		//	});
 			
 
-			//start synchronization
+		//	//start synchronization
 
-			//remove targets from all sync contexts
-			syncTargets.ForEach(syncTarget =>
-			{
-				if (IsInAnySyncContext(syncTarget))
-				{
-					RemoveFromAllSyncContexts(syncTarget);
-				}
-			});
+		//	//remove targets from all sync contexts
+		//	syncTargets.ForEach(syncTarget =>
+		//	{
+		//		if (IsInAnySyncContext(syncTarget))
+		//		{
+		//			RemoveFromAllSyncContexts(syncTarget);
+		//		}
+		//	});
 
-			//if there are any contexts in which the source is, use it.
-			if (SyncContexts.Any(c => c.ContainsZone(syncSource)))
-			{
-				syncTargets.ForEach(syncTarget =>
-				{
-					syncTarget.SetupSyncContext(SyncContexts.First(c => c.ContainsZone(syncSource)));
-				});
-			}
+		//	//if there are any contexts in which the source is, use it.
+		//	if (SyncContexts.Any(c => c.ContainsZone(syncSource)))
+		//	{
+		//		syncTargets.ForEach(syncTarget =>
+		//		{
+		//			syncTarget.SetupSyncContext(SyncContexts.First(c => c.ContainsZone(syncSource)));
+		//		});
+		//	}
    
-			//else create a new context and use that.
-			else
-			{
-				var syncContext = new SyncContext(syncSource.Name + "SyncContext");
+		//	//else create a new context and use that.
+		//	else
+		//	{
+		//		var syncContext = new SyncContext(syncSource.Name + "SyncContext");
 
-				syncTargets.ForEach(syncTarget =>
-				{
-					syncTarget.SetupSyncContext(syncContext);
-				});
+		//		syncTargets.ForEach(syncTarget =>
+		//		{
+		//			syncTarget.SetupSyncContext(syncContext);
+		//		});
 
-				SyncContexts.Add(syncContext);
-			}
+		//		SyncContexts.Add(syncContext);
+		//	}
 
-			//end synchronization
+		//	//end synchronization
 
-			//resume the programs that were waiting after they are synced
-			syncSource.WaitForSync.Fire(this, null);
-			syncTargets.ForEach(syncTarget =>
-			{
-				syncTarget.WaitForSync.Fire(this, null);
-			});
-		}
+		//	//resume the programs that were waiting after they are synced
+		//	syncSource.WaitForSync.Fire(this, null);
+		//	syncTargets.ForEach(syncTarget =>
+		//	{
+		//		syncTarget.WaitForSync.Fire(this, null);
+		//	});
+		//}
 
-		public void Unsynchronize(Zone unSyncTarget)
-		{
-			//remove target from all sync contexts
-			if (IsInAnySyncContext(unSyncTarget))
-			{
-				RemoveFromAllSyncContexts(unSyncTarget);
-			}
-		}
+		//public void Unsynchronize(Zone unSyncTarget)
+		//{
+		//	//remove target from all sync contexts
+		//	if (IsInAnySyncContext(unSyncTarget))
+		//	{
+		//		RemoveFromAllSyncContexts(unSyncTarget);
+		//	}
+		//}
 
 		#endregion
 

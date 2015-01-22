@@ -111,8 +111,6 @@ namespace ZoneLighting.ZoneNS
 
 		private void ProcessInterrupt(InterruptInfo interruptInfo)
 		{
-			//DebugTools.AddEvent("InterruptQueue.Method", "START IRQ processing");
-
 			//when a new request to interrupt the background program is detected, check if the request is coming from the BG program. 
 			//if it is, then no need to pause the bg program -- really?? check the TODO on the next line
 			if (!ZoneProgram.Inputs.Any(input => input.IsInputSubjectSameAs(interruptInfo.InputSubject)))
@@ -127,13 +125,7 @@ namespace ZoneLighting.ZoneNS
 						if (InterruptQueue.InputCount < 1)
 						{
 							DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "START Resume BG Program");
-							//SyncContext?.SignalAndWait();
-							//ZoneProgram = 
-							//SetProgram(ZoneProgramBackup);
-							//SetupInterruptProcessing();
-
-							//ZoneProgram.Start(InputStartingValues, InterruptQueue, IsSyncRequested);
-
+							
 							interruptInfo.ZoneProgram.LightingController = null;
 							ZoneProgram.LightingController = LightingController;
 
@@ -143,11 +135,10 @@ namespace ZoneLighting.ZoneNS
 				}
 
 				DebugTools.AddEvent("InterruptQueue.Method", "START Pause BG Program");
-				//ZoneProgram.Dispose(); //pause the bg program
-				//SetupInterruptingProgramSyncContext(InterruptingProgramSyncContext, interruptInfo.ZoneProgram);
-				ZoneProgram.LightingController = null;
 				
-				//SyncContext?.SignalAndWait();
+				ZoneProgram.LightingController = null;
+				interruptInfo.ZoneProgram.LightingController = LightingController;
+
 				DebugTools.AddEvent("InterruptQueue.Method", "END Pause BG Program");
 			}
 			else
@@ -156,7 +147,7 @@ namespace ZoneLighting.ZoneNS
 			}
 
 			DebugTools.AddEvent("InterruptQueue.Method", "START Interrupting Action");
-			interruptInfo.ZoneProgram.LightingController = LightingController;
+			//interruptInfo.ZoneProgram.LightingController = LightingController;
 			interruptInfo.InputSubject.OnNext(interruptInfo.Data);	 //start the routine that was requested
 
 			DebugTools.AddEvent("InterruptQueue.Method", "END Interrupting Action");
@@ -173,13 +164,14 @@ namespace ZoneLighting.ZoneNS
 
 		#endregion
 
-		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool isSyncRequested = false)
+		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool isSyncRequested = false, SyncContext syncContext = null)
 		{
 			if (!Initialized)
 			{
 				SetProgram(zoneProgram);
 				SetupInterruptProcessing();
 				ZoneProgram.LightingController = LightingController;
+				ZoneProgram.SetSyncContext(syncContext);
 				ZoneProgram.Start(inputStartingValues, InterruptQueue, isSyncRequested);
 				Initialized = true;
 			}
@@ -191,7 +183,7 @@ namespace ZoneLighting.ZoneNS
 		{
 			if (Initialized)
 			{
-				ZoneProgram.Dispose(force);
+				ZoneProgram.Dispose();
 				UnsetProgram();
 				UnsetupInterruptProcessing();
 				DisposeAllInterruptingPrograms();
@@ -370,7 +362,7 @@ namespace ZoneLighting.ZoneNS
 		public void DisposeInterruptingProgram(string name, bool force = false)
 		{
 			var interruptingProgram = InterruptingPrograms.First(program => program.Name == name);
-			interruptingProgram.Dispose(force);
+			interruptingProgram.Dispose();
 			interruptingProgram.Zone = null;
 			InterruptingPrograms.Remove(interruptingProgram);
 		}

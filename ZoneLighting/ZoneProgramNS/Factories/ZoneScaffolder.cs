@@ -92,19 +92,19 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		/// <summary>
 		/// Initializes a zone with the given program name and starting values of the inputs as a name-value dictionary.
 		/// </summary>
-		public void InitializeZone(Zone zone, string programName, InputStartingValues inputStartingValues = null)
+		public void InitializeZone(Zone zone, string programName, InputStartingValues inputStartingValues = null, SyncContext syncContext = null)
 		{
 			var zoneProgramFactoriesList = ZoneProgramFactories.ToList();
-			zone.Initialize(CreateZoneProgram(programName, zoneProgramFactoriesList), inputStartingValues);
+			zone.Initialize(CreateZoneProgram(programName, zoneProgramFactoriesList), inputStartingValues, syncContext`);
 
 		}
 
 		/// <summary>
 		/// Initializes a zone with the given program instance and starting values of the inputs as a name-value dictionary.
 		/// </summary>
-		public void InitializeZone(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool isSyncRequested = false)
+		public void InitializeZone(Zone zone, ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool isSyncRequested = false, SyncContext syncContext = null)
 		{
-			zone.Initialize(zoneProgram, inputStartingValues, isSyncRequested);
+			zone.Initialize(zoneProgram, inputStartingValues, isSyncRequested, syncContext);
 		}
 
 		public void StartInterruptingProgram(Zone zone, string programName, InputStartingValues inputStartingValues = null, SyncContext syncContext = null, bool isSyncRequested = false)

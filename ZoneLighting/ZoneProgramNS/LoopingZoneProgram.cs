@@ -13,22 +13,28 @@ namespace ZoneLighting.ZoneProgramNS
 	{
 		protected LoopingZoneProgram()
 		{
+			Setup();
+			SetupRunProgramTask();
 			LoopCTS = new CancellationTokenSource();
 			Running = false;
 		}
 
+		public override void Dispose()
+		{
+			Unsetup();
+			base.Dispose();
+		}
+
 		#region Looping Stuff
 
-		public bool Running { get; private set; }
+		private bool Running { get; set; }
 
 		public CancellationTokenSource LoopCTS;
 		protected Task LoopingTask { get; set; }
 		protected Thread RunProgramThread { get; set; }
 
-		
 		protected void StartLoop()
 		{
-			SetupRunProgramTask();
 			if (!Running)
 			{
 				DebugTools.AddEvent("LoopingZoneProgram.StartLoop", "Running = FALSE");
@@ -98,6 +104,10 @@ namespace ZoneLighting.ZoneProgramNS
 		public abstract void Setup();
 		public abstract void Loop();
 
+		/// <summary>
+		/// Subclass can have Unsetup, but doesn't need to.
+		/// </summary>
+		public virtual void Unsetup() { }
 
 		#endregion
 
@@ -106,11 +116,8 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Transport Controls
 
-		
-
 		protected override void StartCore()
 		{
-			Setup();
 			StartLoop();
 		}
 
@@ -147,17 +154,6 @@ namespace ZoneLighting.ZoneProgramNS
 						DebugTools.Print();
 					}
 				}
-
-				DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Clearing Inputs");
-
-				//clear inputs because they will be re-added by the setup
-				foreach (var zoneProgramInput in Inputs)
-				{
-					zoneProgramInput.Dispose();
-				}
-				Inputs.Clear();
-
-				DebugTools.AddEvent("LoopingZoneProgram.Stop", "END Clearing Inputs");
 			}
 			else
 			{
@@ -169,22 +165,6 @@ namespace ZoneLighting.ZoneProgramNS
 			StopTestingTrigger.Fire(this, null);
 		}
 
-		public override void Resume()
-		{
-			//TODO: Implement resume logic - for now, it's just gonna call start
-			//SyncContext.Reset();
-            Start();
-		}
-
-		protected override void Pause()
-		{
-			if (Running)
-			{
-				//TODO: Implement pause logic using PauseToken or something - for now, it's just gonna call stop forcibly
-				StopCore(true);
-			}
-		}
-		
 		#endregion
 	}
 }

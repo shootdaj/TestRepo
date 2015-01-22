@@ -11,17 +11,17 @@ namespace ZoneLightingTests
 {
 	public class ZoneTests
 	{
-		[Test]
-		public void SetProgram_SetsZoneProgramOfZoneAndSetsZoneOfZoneProgram()
-		{
-			var zone = A.Fake<Zone>();
-			var zoneProgram = A.Fake<ZoneProgram>();
+		//[Test]
+		//public void SetProgram_SetsZoneProgramOfZoneAndSetsZoneOfZoneProgram()
+		//{
+		//	var zone = A.Fake<Zone>();
+		//	var zoneProgram = A.Fake<ZoneProgram>();
 
-			zone.SetProgram(zoneProgram);
+		//	zone.SetProgram(zoneProgram);
 
-			Assert.AreEqual(zone.ZoneProgram, zoneProgram);
-			Assert.AreEqual(zoneProgram.Zone, zone);
-		}
+		//	Assert.AreEqual(zone.ZoneProgram, zoneProgram);
+		//	Assert.AreEqual(zoneProgram.Zone, zone);
+		//}
 
 		[Test]
 		public void SetAllLightsColor_Works()
@@ -34,14 +34,6 @@ namespace ZoneLightingTests
 			{
 				Assert.AreEqual(zone.GetColor(i), color);
             }
-		}
-
-		[Test]
-		public void StartProgram_CallsZoneProgramStart()
-		{
-			var zone = A.Fake<Zone>();
-			zone.StartProgram();
-			A.CallTo(() => zone.ZoneProgram.Start(null, A<ActionBlock<InterruptInfo>>.Ignored, A<bool>.Ignored)).MustHaveHappened(Repeated.Exactly.Once);
 		}
 	}
 }

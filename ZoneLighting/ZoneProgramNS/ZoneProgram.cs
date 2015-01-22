@@ -52,31 +52,32 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public Trigger StopTestingTrigger { get; } = new Trigger("ZoneProgram.StopTestingTrigger");
 
+		public ProgramState State { get; private set; } = ProgramState.Stopped;
+
 		public SyncContext SyncContext { get; set; }
 		protected bool IsSyncStateRequested { get; set; }
 		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
 		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
 
 
+
 		#region Triggers
 
 		public Trigger StartTrigger { get; } = new Trigger("StartTrigger");
-		public Trigger PauseTrigger { get; } = new Trigger("PauseTrigger");
-		public Trigger ResumeTrigger { get; } = new Trigger("ResumeTrigger");
-
+		
 		#endregion
 
 		#endregion CORE
 
 		#region C+I+D
 
-		protected ZoneProgram(string name)
+		protected ZoneProgram(string name, SyncContext syncContext = null)
 		{
 			Name = name;
-			Construct();
+			Construct(syncContext);
 		}
 
-		protected ZoneProgram()
+		protected ZoneProgram(SyncContext syncContext = null)
 		{
 			Type thisType = this.GetType();
 			//set the name of the program based on attribute, if any
@@ -84,77 +85,86 @@ namespace ZoneLighting.ZoneProgramNS
 				Name =
 					(string) thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false)
 						.Cast<ExportMetadataAttribute>().First(attr => attr.Name == "Name").Value;
-			Construct();
+			Construct(syncContext);
 		}
 
-		private void Construct()
+		private void Construct(SyncContext syncContext = null)
 		{
 			StopTrigger = new Trigger("StopTrigger");
+			SyncContext = syncContext;
 		}
-
-		//public void PauseCore()
-		//{
-		//	PauseTrigger.Fire(this, null);
-		//	Pause();
-		//}
-
-		//protected abstract void Pause();
-
-		//public void ResumeCore()
-		//{
-		//	ResumeTrigger.Fire(this, null);
-		//	Resume();
-		//}
-
-		//public abstract void Resume();
-
-
-		///// <summary>
-		///// Stops the zone program.
-		///// </summary>
-		///// <param name="force"></param>
-		//public void Stop(bool force)
-		//{
-
-		//}
 
 		/// <summary>
 		/// Starts the zone program.
 		/// </summary>
 		/// <param name="inputStartingValues">Starting values for the program.</param>
 		/// <param name="interruptQueue">InterruptQueue to be used for interrupting inputs.</param>
+		/// <param name="isSyncRequested"></param>
 		public void Start(InputStartingValues inputStartingValues = null, ActionBlock<InterruptInfo> interruptQueue = null, bool isSyncRequested = false)
 		{
-			//preprocessing
-			StartTrigger.Fire(this, null);
-			if (isSyncRequested)
-				RequestSyncState();
+			if (State == ProgramState.Stopped)
+			{
+				//handle sync state request
+				StartTrigger.Fire(this, null);
+				if (isSyncRequested)
+					RequestSyncState();
 
-			//processing
-			StartCore();
+				//set the interrupt queue
+				SetInterruptQueue(interruptQueue);
 
-			//postprocessing
-			SetInterruptQueue(interruptQueue);
-			SetStartingValues(inputStartingValues);
+				//subclass processing
+				StartCore();
+
+				//set starting values
+				SetStartingValues(inputStartingValues);
+
+				//set program state
+				State = ProgramState.Started;
+			}
+			else
+			{
+				throw new Exception("Program is already started.");
+			}
 		}
 
-		public void Dispose(bool force)
+		public void Stop()
 		{
-			StopCore(true);
-			UnsetInterruptQueue();
-			IsSyncStateRequested = false;
+			if (State == ProgramState.Started)
+			{
+				//unset the interrupt queue
+				UnsetInterruptQueue();
+
+				//subclass processing
+				StopCore(true);
+
+				//cancel sync state req and release from sync state
+				CancelSyncState();
+
+				//set program state
+				State = ProgramState.Stopped;
+			}
+			else
+			{
+				throw new Exception("Program is already stopped.");
+			}
+		}
+
+		public virtual void Dispose()
+		{
+			Stop();
+			SyncContext = null;
 			Name = null;
 			Zone = null;
-			StopTrigger.Dispose(true);
+			StopTrigger.Dispose();
 			StartTrigger.Dispose();
-			PauseTrigger.Dispose();
-			ResumeTrigger.Dispose();
 		}
 
-
-		public void Dispose()
+		public void SetSyncContext(SyncContext syncContext)
 		{
-			Dispose(true);
+			if (State == ProgramState.Stopped)
+				SyncContext = syncContext;	
+			else
+				throw new Exception("Can only set sync context while program is stopped.");
 		}
 
 		#endregion
@@ -202,7 +212,7 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
-		public void UnsetInterruptQueue()
+		private void UnsetInterruptQueue()
 		{
 			if (Inputs.Any(input => input is InterruptingInput))
 			{
@@ -227,14 +237,20 @@ namespace ZoneLighting.ZoneProgramNS
 			IsSyncStateRequested = true;
 		}
 
-		//TODO: See in body
-		//public void CancelSyncStateRequest()
-		//{
-		//	IsSyncStateRequested = false;
-		//	WaitForSync.Fire(null, null); //TODO: This needs to only happen conditionally, because otherwise the next call to RequestSyncState will return immediately
-		//}
+		/// <summary>
+		/// Cancels Sync State request and releases from the sync state, if in that state.
+		/// </summary>
+		public void CancelSyncState()
+		{
+			//if this program is in its sync state, release it
+            if (IsSyncStateRequested)
+			{
+				WaitForSync.Fire(null, null);
+			}
+			IsSyncStateRequested = false;
+		}
 
-		
+
 
 		#endregion
 
@@ -389,6 +405,6 @@ namespace ZoneLighting.ZoneProgramNS
 	{
 		None,
 		Started,
-		Paused
+		Stopped
 	}
 }
