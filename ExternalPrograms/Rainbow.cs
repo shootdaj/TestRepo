@@ -41,8 +41,7 @@ namespace ExternalPrograms
 
 				ProgramCommon.Fade(GetColor(0), colors[i], Speed, DelayTime, false, (color) =>
 				{
-					SetColor(color);
-					SendLights();
+					SendColor(color);
 				}, out endingColor, SyncLevel == RainbowSyncLevel.Fade ? SyncContext : null);
 
 				if (SyncLevel == RainbowSyncLevel.Color)

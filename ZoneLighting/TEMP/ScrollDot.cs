@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
+using System.Linq;
+using Newtonsoft.Json.Serialization;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
@@ -39,11 +41,12 @@ namespace ZoneLighting.TEMP
 
 			for (int i = 0; i < LightCount; i++)
 			{
-				SetColor(Color.FromArgb(0, 0, 0));											//set all lights to black
-				SetColor(DotColor != null
-					? (Color)DotColor
-					: colors[new Random().Next(0, colors.Count - 1)], i);								//set one to white
-				SendLights();		//send frame
+				//prepare frame
+				var sendColors = new Dictionary<int, Color>();
+				Zone.SortedLights.Keys.ToList().ForEach(lightIndex => sendColors.Add(lightIndex, Color.Black));
+				sendColors[i] = DotColor != null ? (Color) DotColor : colors[new Random().Next(0, colors.Count - 1)];
+
+				SendColors(sendColors);		//send frame
 				ProgramCommon.Delay(DelayTime);											//pause before next iteration
 
 				SyncContext?.SignalAndWait();

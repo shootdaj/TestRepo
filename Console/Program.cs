@@ -23,8 +23,8 @@ namespace Console
 					{
 						dynamic parameters = new ExpandoObject();
 						parameters.Color = color;
-						parameters.Time = 500;
-						parameters.Soft = false;
+						parameters.Time = 50;
+						parameters.Soft = true;
 
 						ZoneLightingManager.Instance.Zones.ToList().ForEach(z => z.InterruptingPrograms[0].SetInput("Blink", parameters));
 						ZoneLightingManager.Instance.Zones.ToList().ForEach(z => z.InterruptingPrograms[0].SetInput("Blink", parameters));

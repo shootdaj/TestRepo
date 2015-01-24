@@ -27,7 +27,6 @@ namespace ZoneLighting.TEMP
 					ProgramCommon.SoftBlink(this, new List<Tuple<Color, int>>
 					{
 						{color, time},
-						{Color.Black, time}
 					}, OutputColor, SyncContext);
 				}
 				else
@@ -43,8 +42,7 @@ namespace ZoneLighting.TEMP
 
 		private void OutputColor(Color colorToSet)
 		{
-			SetColor(colorToSet);
-			SendLights();
+			SendColor(colorToSet);
 		}
 
 

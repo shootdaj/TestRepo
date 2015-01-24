@@ -19,8 +19,7 @@ namespace ExternalPrograms
 		{
 			AddInterruptingInput<Color>("Color", color =>
 			{
-				SetColor((Color)color);
-				SendLights();	//send frame
+				SendColor((Color)color);	//send frame
 				Thread.Sleep(Timeout.Infinite);
 			});
 		}

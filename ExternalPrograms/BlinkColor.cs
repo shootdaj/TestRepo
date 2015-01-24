@@ -34,8 +34,7 @@ namespace ExternalPrograms
 					{ Color.Empty, time}
 				}, (colorToSet) =>
 				{
-					SetColor(colorToSet);
-					SendLights();
+					SendColor(colorToSet);
 				}, SyncContext);
 			});
 		}

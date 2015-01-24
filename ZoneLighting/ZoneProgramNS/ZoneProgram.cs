@@ -358,18 +358,37 @@ namespace ZoneLighting.ZoneProgramNS
 			return Zone.GetColor(index);
 		}
 
-		public void SetColor(Color color, int? index = null)
+		private void SetColor(Color color, int? index = null)
 		{
 			Zone.SetColor(color, index);
 		}
 
-		public void SendLights()
+		private void SendLights()
 		{
 			if (LightingController != null)
 			{
 				Zone.SendLights(LightingController);
 			}
 		}
+
+		public void SendColors(Dictionary<int, Color> colors)
+		{
+			if (LightingController != null)
+			{
+				colors.Keys.ToList().ForEach(index => SetColor(colors[index], index));
+				SendLights();
+			}
+		}
+
+		public void SendColor(Color color)
+		{
+			if (LightingController != null)
+			{
+				SetColor(color);
+				SendLights();
+			}
+		}
+
 
 		#endregion
 

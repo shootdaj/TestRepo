@@ -89,61 +89,67 @@ namespace ZoneLighting.ZoneNS
 			//configure interrupt processing
 			InterruptQueue = new ActionBlock<InterruptInfo>((interruptInfo) =>
 			{
-				ProcessInterrupt(interruptInfo);
+				ProcessBeginInterrupt(interruptInfo);
 			}, new ExecutionDataflowBlockOptions()
 			{
 				MaxDegreeOfParallelism = 1,
 			});
 		}
 
-		private void ProcessInterrupt(InterruptInfo interruptInfo)
+		private void ProcessBeginInterrupt(InterruptInfo interruptInfo)
 		{
 			//when a new request to interrupt the background program is detected, check if the request is coming from the BG program. 
 			//if it is, then no need to pause the bg program -- really?? check the TODO on the next line
 			if (!ZoneProgram.Inputs.Any(input => input.IsInputSubjectSameAs(interruptInfo.InputSubject)))
 			//TODO: Is this check needed? If the BG program's interrupting input is set, what to do? What problem is this if statement solving?
 			{
-				DebugTools.AddEvent("InterruptQueue.Method", "IRQ is from a foreground program");
+				//DebugTools.AddEvent("InterruptQueue.Method", "IRQ is from a foreground program");
 
 				if (!interruptInfo.StopSubject.HasObservers) //only subscribe if the stopsubject isn't already subscribed
 				{
-					interruptInfo.StopSubject.Subscribe(data =>
-					{
-						if (InterruptQueue.InputCount < 1)
-						{
-							DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "START Resume BG Program");
-							
-							interruptInfo.ZoneProgram.LightingController = null;
-							ZoneProgram.LightingController = LightingController;
-
-							DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "END Resume BG Program");
-						}
-					});	//hook up the stop call of the interrupting input's program to resume the BG program
+					SetupEndInterruptProcessing(interruptInfo);
 				}
 
-				DebugTools.AddEvent("InterruptQueue.Method", "START Pause BG Program");
+				//DebugTools.AddEvent("InterruptQueue.Method", "START Pause BG Program");
 				
 				ZoneProgram.LightingController = null;
 				interruptInfo.ZoneProgram.LightingController = LightingController;
 
-				DebugTools.AddEvent("InterruptQueue.Method", "END Pause BG Program");
+				//DebugTools.AddEvent("InterruptQueue.Method", "END Pause BG Program");
 			}
 			else
 			{
-				DebugTools.AddEvent("InterruptQueue.Method", "IRQ is from the background program. No ");
+				//DebugTools.AddEvent("InterruptQueue.Method", "IRQ is from the background program. No ");
 			}
 
-			DebugTools.AddEvent("InterruptQueue.Method", "START Interrupting Action");
+			//DebugTools.AddEvent("InterruptQueue.Method", "START Interrupting Action");
 			//interruptInfo.ZoneProgram.LightingController = LightingController;
 			interruptInfo.InputSubject.OnNext(interruptInfo.Data);	 //start the routine that was requested
 
-			DebugTools.AddEvent("InterruptQueue.Method", "END Interrupting Action");
+			//DebugTools.AddEvent("InterruptQueue.Method", "END Interrupting Action");
 
 			//DebugTools.AddEvent("InterruptQueue.Method", "END Interrupt request processing");
 
 			//TODO: Add capability to have a timeout in case the interrupting program never calls the StopSubject
 		}
+		
+		private void SetupEndInterruptProcessing(InterruptInfo interruptInfo)
+		{
+			//hook up the stop call of the interrupting input's program to resume the BG program
+			interruptInfo.StopSubject.Subscribe(data =>
+			{
+				if (InterruptQueue.InputCount < 1)
+				{
+					//DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "START Resume BG Program");
 
+					interruptInfo.ZoneProgram.LightingController = null;
+					interruptInfo.ZoneProgramToInterrupt.LightingController = LightingController;
+
+					//DebugTools.AddEvent("InterruptingInput.StopSubject.Method", "END Resume BG Program");
+				}
+			});	
+		}
+		
 		private void UnsetupInterruptProcessing()
 		{
 			InterruptQueue = null;
@@ -324,9 +330,12 @@ namespace ZoneLighting.ZoneNS
 
 		}
 
-		public void SendLights(LightingController lightingController)
+		public void SendLights(LightingController lightingController, IList<ILogicalRGBLight> lights = null)
 		{
-			Lights.Send(lightingController);
+			if (lights == null)
+				Lights.Send(lightingController);
+			else
+				lights.Send(lightingController);
 		}
 
 		#endregion

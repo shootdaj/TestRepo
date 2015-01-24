@@ -28,7 +28,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <param name="speed">The higher the speed, the more abruptly the colors will change. Max is 127.</param>
 		/// <param name="sleepTime">How long each color set is displayed</param>
 		/// <param name="loop">Whether or not to loop forever</param>
-		public static void Fade(Color color1, Color color2, int speed, int sleepTime, bool loop, Action<Color> outputMethod, out Color? endingColor, SyncContext syncContext = null)
+		public static void Fade(Color color1, Color color2, int speed, int sleepTime, bool loop, Action<Color> outputMethod, out Color? endingColor, SyncContext syncContext = null, bool reverse = false)
 		{
 			if (speed > 127)
 				throw new Exception("Speed cannot exceed 127.");
@@ -69,7 +69,7 @@ namespace ZoneLighting.ZoneProgramNS
 				}
 
 				//if looping, loop back from 2nd color to 1st color before looping back
-				if (loop)
+				if (loop || reverse)
 				{
 					Fade(color2, color1, speed, sleepTime, false, outputMethod, out endingColor);
 				}
@@ -99,8 +99,7 @@ namespace ZoneLighting.ZoneProgramNS
 			colorsAndHoldTimes.ForEach(tuple =>
 			{
 				Color? endingColor;
-				Fade(Color.Empty, tuple.Item1, 10000/tuple.Item2, 1, false, outputMethod, out endingColor);
-				Fade(tuple.Item1, Color.Black, 10000/tuple.Item2, 1, false, outputMethod, out endingColor);
+				Fade(Color.Black, tuple.Item1, 0, 1, false, outputMethod, out endingColor, syncContext, true);
 				syncContext?.SignalAndWait();
 			});
 		}
@@ -108,8 +107,6 @@ namespace ZoneLighting.ZoneProgramNS
 
 	public static class ProgramExtensions
 	{
-		
-
 		public static void Send(this IList<ILogicalRGBLight> lights, LightingController lc)
 		{
 			lc.SendLights(lights.Cast<ILightingControllerPixel>().ToList());

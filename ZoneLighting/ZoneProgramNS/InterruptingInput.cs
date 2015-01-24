@@ -57,7 +57,9 @@ namespace ZoneLighting.ZoneProgramNS
 				Data = data,
 				InputSubject = InputSubject,
 				StopSubject = StopSubject,
-				ZoneProgram = ZoneProgram
+				ZoneProgram = ZoneProgram,
+				ZoneProgramToInterrupt = ZoneProgram.Zone.ZoneProgram //this is confusing, but it basically gets the background program by going into 
+														//the zone and getting its ZoneProgram property, which is the background program that is to be interrupted.
 			});
 
 			DebugTools.AddEvent("InterruptingInput.SetValue", "END Posting to InterruptQueue");
