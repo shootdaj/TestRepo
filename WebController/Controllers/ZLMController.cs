@@ -42,9 +42,9 @@ namespace WebController.Controllers
 			var zone = split[1];
 
 			if (command == "Start")
-				ZoneLightingManager.Instance.Zones.First(z => z.Name == zone).Resume();
+				ZoneLightingManager.Instance.Zones.First(z => z.Name == zone).ZoneProgram.Start(liveSync: true);
 			if (command == "Stop")
-				ZoneLightingManager.Instance.Zones.First(z => z.Name == zone).Pause();
+				ZoneLightingManager.Instance.Zones.First(z => z.Name == zone).ZoneProgram.Stop(true);
 
 			return View("Index", new ZLMViewModel());
 		}

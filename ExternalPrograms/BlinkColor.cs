@@ -13,20 +13,20 @@ namespace ExternalPrograms
 	[ExportMetadata("Name", "BlinkColor")]
 	public class BlinkColor : ReactiveZoneProgram
 	{
-		protected override void StartCore()
+		protected override void SetupInterruptingInputs()
 		{
 			AddInterruptingInput<Color>("Blink", colorTimeTuple =>
 			{
 				var color = ((Tuple<Color, int>)colorTimeTuple).Item1;
 				var time = ((Tuple<Color, int>)colorTimeTuple).Item2;
 
-				//if sync is requested, go into synchronizable state
-				if (IsSyncStateRequested)
-				{
-					IsSynchronizable.Fire(this, null);
-					WaitForSync.WaitForFire();
-					IsSyncStateRequested = false;
-				}
+				////if sync is requested, go into synchronizable state
+				//if (IsSyncStateRequested)
+				//{
+				//	IsSynchronizable.Fire(this, null);
+				//	WaitForSync.WaitForFire();
+				//	IsSyncStateRequested = false;
+				//}
 
 				ProgramCommon.Blink(new List<Tuple<Color, int>>
 				{
@@ -36,8 +36,8 @@ namespace ExternalPrograms
 				{
 					SetColor(colorToSet);
 					SendLights();
-				}, SyncContext);
-			}, SyncContext);
+				}, SyncContext, this);
+			});
 		}
 
 		protected override void StopCore(bool force)

@@ -14,17 +14,17 @@ namespace ZoneLighting.ZoneNS
 			lights.ToList().ForEach(x => x.SetColor(color));
 		}
 
-		/// <summary>
-		/// Fluent method that synchronizes the given target with the source zone.
-		/// </summary>
-		/// <param name="syncSource"></param>
-		/// <param name="syncTarget"></param>
-		/// <returns></returns>
-		public static Zone Synchronize(this Zone syncSource, Zone syncTarget)
-		{
-			ZoneLightingManager.Instance.Synchronize(syncSource, syncTarget);
-			return syncSource;
-		}
+		///// <summary>
+		///// Fluent method that synchronizes the given target with the source zone.
+		///// </summary>
+		///// <param name="syncSource"></param>
+		///// <param name="syncTarget"></param>
+		///// <returns></returns>
+		//public static Zone Synchronize(this Zone syncSource, Zone syncTarget)
+		//{
+		//	ZoneLightingManager.Instance.Synchronize(syncSource, syncTarget);
+		//	return syncSource;
+		//}
 
 		
 	}

@@ -29,7 +29,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <param name="speed">The higher the speed, the more abruptly the colors will change. Max is 127.</param>
 		/// <param name="sleepTime">How long each color set is displayed</param>
 		/// <param name="loop">Whether or not to loop forever</param>
-		public static void Fade(Color color1, Color color2, int speed, int sleepTime, bool loop, Action<Color> outputMethod, out Color? endingColor, SyncContext syncContext = null)
+		public static void Fade(Color color1, Color color2, int speed, int sleepTime, bool loop, Action<Color> outputMethod, out Color? endingColor, SyncContext syncContext = null, ZoneProgram zoneProgram = null)
 		{
 			if (speed > 127)
 				throw new Exception("Speed cannot exceed 127.");
@@ -84,7 +84,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// </summary>
 		/// <param name="colorsAndHoldTimes">List of tuples of colors and their hold times</param>
 		/// <param name="outputMethod">Method to use to output the blinks</param>
-		public static void Blink(List<Tuple<Color, int>> colorsAndHoldTimes, Action<Color> outputMethod, SyncContext syncContext = null)
+		public static void Blink(List<Tuple<Color, int>> colorsAndHoldTimes, Action<Color> outputMethod, SyncContext syncContext = null, ZoneProgram zoneProgram = null)
 		{
 			colorsAndHoldTimes.ForEach(tuple =>
 			{

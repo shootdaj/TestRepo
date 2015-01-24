@@ -12,7 +12,17 @@ namespace ZoneLighting.ZoneProgramNS
 {
 	public abstract class ReactiveZoneProgram : ZoneProgram
 	{
-		protected abstract override void StartCore();
+		protected override void StartCore()//bool isSyncRequested)
+		{
+			
+		}
+
+		protected ReactiveZoneProgram()
+		{
+			SetupInterruptingInputs();
+		}
+
+		protected abstract void SetupInterruptingInputs();
 
 		protected override void StopCore(bool force)
 		{
@@ -37,7 +47,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <param name="action">The action that should occur when the input is set to a certain value. This will be defined by the 
 		/// subclasses of this class to perform certain actions when the this input is set to a value.</param>
 		/// <returns>The input that was just added.</returns>
-		protected ZoneProgramInput AddInterruptingInput<T>(string name, Action<object> action, SyncContext syncContext = null)
+		protected ZoneProgramInput AddInterruptingInput<T>(string name, Action<object> action)
 		{
 			var input = new InterruptingInput(name, typeof(T), this);
 			Inputs.Add(input);
@@ -57,7 +67,6 @@ namespace ZoneLighting.ZoneProgramNS
 				input.StartTrigger.Fire(this, null);
 				action(data);
 				SyncContext?.SignalAndWait();
-				//input.DetachBarrier();
 				input.StopSubject.OnNext(null);
 				input.StopTrigger.Fire(this, null);
 			});

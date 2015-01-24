@@ -313,7 +313,7 @@ namespace ZoneLighting
 		//		syncTarget.RequestSyncState();
 		//		syncTarget.IsSynchronizable.WaitForFire();
 		//	});
-			
+
 
 		//	//start synchronization
 
@@ -334,7 +334,7 @@ namespace ZoneLighting
 		//			syncTarget.SetupSyncContext(SyncContexts.First(c => c.ContainsZone(syncSource)));
 		//		});
 		//	}
-   
+
 		//	//else create a new context and use that.
 		//	else
 		//	{
@@ -371,72 +371,38 @@ namespace ZoneLighting
 
 		private void AddBasementZonesAndPrograms()
 		{
-
-			var syncContext = new SyncContext();//numberOfParticipants: 4);
+			var syncContext = new SyncContext();
 			var notificationSyncContext = new SyncContext();
 
-			var leftWing = AddFadeCandyZone("LeftWing", new Rainbow(), PixelType.FadeCandyWS2812Pixel, 6, 1, syncContext, true);
-			var center = AddFadeCandyZone("Center", new Rainbow(), PixelType.FadeCandyWS2811Pixel, 21, 2, syncContext, true);
-			var rightWing = AddFadeCandyZone("RightWing", new Rainbow(), PixelType.FadeCandyWS2812Pixel, 12, 3, syncContext, true);
-			var baiClock = AddFadeCandyZone("BaiClock", new Rainbow(), PixelType.FadeCandyWS2812Pixel, 24, 4, syncContext, true);
+			//add zones
+			var leftWing = AddFadeCandyZone("LeftWing", PixelType.FadeCandyWS2812Pixel, 6, 1);
+			var center = AddFadeCandyZone("Center", PixelType.FadeCandyWS2811Pixel, 21, 2);
+			var rightWing = AddFadeCandyZone("RightWing", PixelType.FadeCandyWS2812Pixel, 12, 3);
+			var baiClock = AddFadeCandyZone("BaiClock", PixelType.FadeCandyWS2812Pixel, 24, 4);
+
+			//initialize zones
+			leftWing.Initialize(new Rainbow(), null, true, syncContext, true);
+			center.Initialize(new Rainbow(), null, true, syncContext, true);
+			rightWing.Initialize(new Rainbow(), null, true, syncContext, true);
+			baiClock.Initialize(new Rainbow(), null, true, syncContext, true);
+
+			//synchronize and start zone programs
+			syncContext.SyncAndStart(leftWing.ZoneProgram, 
+									center.ZoneProgram, 
+									rightWing.ZoneProgram, 
+									baiClock.ZoneProgram);
 			
-			leftWing.ZoneProgram.WaitForSync.Fire(this, null);
-			center.ZoneProgram.WaitForSync.Fire(this, null);
-			rightWing.ZoneProgram.WaitForSync.Fire(this, null);
-			baiClock.ZoneProgram.WaitForSync.Fire(this, null);
+			//setup interrupting inputs
+			leftWing.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
+			rightWing.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
+			center.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
+			baiClock.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
 
-			StartInterruptingProgramOnZone(leftWing, new BlinkColor(), notificationSyncContext, true);
-			StartInterruptingProgramOnZone(center, new BlinkColor(), notificationSyncContext, true);
-			StartInterruptingProgramOnZone(rightWing, new BlinkColor(), notificationSyncContext, true);
-			StartInterruptingProgramOnZone(baiClock, new BlinkColor(), notificationSyncContext, true);
-
-			//leftWing.StartProgram();
-			//rightWing.StartProgram();
-			//center.StartProgram();
-			//baiClock.StartProgram();
-
-
-			//Synchronize(leftWing, new List<Zone> { center, rightWing, baiClock });
-
-
-			//NOTE: Here's another way of synchronizing:
-			//leftWing.Synchronize(center).Synchronize(rightWing);//.Synchronize(baiClock);
-
-			//var rainbowContext = new SyncContext((LoopingZoneProgram)leftWing.ZoneProgram, "RainbowContext");
-			//rainbowContext.AddZoneProgram((LoopingZoneProgram)rightWing.ZoneProgram);
-			//rainbowContext.AddZoneProgram((LoopingZoneProgram)center.ZoneProgram);
-			//rainbowContext.AddZoneProgram((LoopingZoneProgram)baiClock.ZoneProgram);
-
-
-
-
-
-			//1. Create Zones and Barriers
-
-
-			//var baiClock = new FadeCandyZone("BaiClock", brightness: 0.5);
-			//baiClock.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 24, 4);
-			//Zones.Add(baiClock);
-
-			////2. 
-
-			//var rainbowBarrier = new Barrier(0);
-
-			////2. Start Programs
-
-			//var centerStartingValues = new InputStartingValues { { "DelayTime", 1 }, { "Speed", 1 } };
-			//ZoneScaffolder.Instance.InitializeZone(center, "Rainbow", centerStartingValues, rainbowBarrier);
-			//ZoneScaffolder.Instance.InitializeZone(rightWing, "Rainbow", barrier: rainbowBarrier);
-			//ZoneScaffolder.Instance.InitializeZone(baiClock, "Rainbow", barrier: rainbowBarrier);
-
-
-			////3. Add Interrupting Programs
-			//ZoneScaffolder.Instance.StartInterruptingProgram(leftWing, "BlinkColor");
-			//ZoneScaffolder.Instance.StartInterruptingProgram(center, "BlinkColor");
-			//ZoneScaffolder.Instance.StartInterruptingProgram(rightWing, "BlinkColor");
-			//ZoneScaffolder.Instance.StartInterruptingProgram(baiClock, "BlinkColor");
-
-			//TODO: Add an interrupting program that will notify for something.
+			//synchronize and start interrupting programs
+			notificationSyncContext.SyncAndStart(leftWing.InterruptingPrograms[0],
+												rightWing.InterruptingPrograms[0],
+												center.InterruptingPrograms[0],
+												baiClock.InterruptingPrograms[0]);
 		}
 
 
@@ -451,8 +417,7 @@ namespace ZoneLighting
 		//	return zone;
 		//}
 
-		public FadeCandyZone AddFadeCandyZone(string name, ZoneProgram program, PixelType pixelType, int numLights,
-			byte channel, SyncContext syncContext, bool isSyncRequested)
+		public FadeCandyZone AddFadeCandyZone(string name, PixelType pixelType, int numLights, byte channel)
 		{
 			//create new zone
 			var zone = new FadeCandyZone(name);
@@ -460,58 +425,24 @@ namespace ZoneLighting
 			zone.AddFadeCandyLights(pixelType, numLights, channel);
 			//add to main collection
 			Zones.Add(zone);
-			//initialize zone without starting
-			ZoneScaffolder.Instance.InitializeZone(zone, program, isSyncRequested: isSyncRequested);
-
-			if (isSyncRequested)
-			{
-				//wait for sync to be attained
-				zone.ZoneProgram.IsSynchronizable.WaitForFire();
-				//add zone
-				syncContext?.AddZone(zone);
-			}
 
 			return zone;
 		}
 
-		public void StartInterruptingProgramOnZone(Zone zone, string interruptingProgramName, SyncContext syncContext = null, bool isSyncRequested = false)
-		{
-			ZoneScaffolder.Instance.StartInterruptingProgram(zone, interruptingProgramName, syncContext: syncContext, isSyncRequested: isSyncRequested);
-		}
+		//public void StartInterruptingProgramOnZone(Zone zone, string interruptingProgramName, SyncContext syncContext = null, bool isSyncRequested = false)
+		//{
+		//	ZoneScaffolder.Instance.StartInterruptingProgram(zone, interruptingProgramName, syncContext: syncContext, isSyncRequested: isSyncRequested);
+		//}
 
-		public void StartInterruptingProgramOnZone(Zone zone, ReactiveZoneProgram program, SyncContext syncContext = null, bool isSyncRequested = false)
-		{
-			ZoneScaffolder.Instance.StartInterruptingProgram(zone, program, syncContext: syncContext, isSyncRequested: isSyncRequested);
-		}
+		//public void StartInterruptingProgramOnZone(Zone zone, ReactiveZoneProgram program, SyncContext syncContext = null, bool isSyncRequested = false)
+		//{
+		//	ZoneScaffolder.Instance.StartInterruptingProgram(zone, program, syncContext: syncContext, isSyncRequested: isSyncRequested);
+		//}
 
 
 		#region Helpers
 
-
-
-		private void RemoveFromAllSyncContexts(Zone zone)
-		{
-			SyncContexts.ToList().ForEach(c =>
-			{
-				if (c.ContainsZone(zone))
-					c.RemoveZone(zone);
-			});
-		}
-
-		private bool IsInAnySyncContext(Zone zone)
-		{
-			return SyncContexts.Any(context => context.ContainsZone(zone));
-		}
-
-		///// <summary>
-		///// Creates a zone program with the given name
-		///// </summary>
-		///// <returns></returns>
-		//private IZoneProgram CreateZoneProgram(string name)
-		//{
-
-		//}
-
+		
 		#endregion
 	}
 }

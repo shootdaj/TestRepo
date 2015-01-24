@@ -55,12 +55,7 @@ namespace ZoneLighting.ZoneProgramNS
 		public ProgramState State { get; private set; } = ProgramState.Stopped;
 
 		public SyncContext SyncContext { get; set; }
-		protected bool IsSyncStateRequested { get; set; }
-		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
-		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
-
-
-
+		
 		#region Triggers
 
 		public Trigger StartTrigger { get; } = new Trigger("StartTrigger");
@@ -71,13 +66,13 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region C+I+D
 
-		protected ZoneProgram(string name, SyncContext syncContext = null)
+		protected ZoneProgram(string name, SyncContext syncContext = null, ActionBlock<InterruptInfo> interruptQueue = null)
 		{
 			Name = name;
-			Construct(syncContext);
+			Construct(syncContext, interruptQueue);
 		}
 
-		protected ZoneProgram(SyncContext syncContext = null)
+		protected ZoneProgram(SyncContext syncContext = null, ActionBlock<InterruptInfo> interruptQueue = null)
 		{
 			Type thisType = this.GetType();
 			//set the name of the program based on attribute, if any
@@ -85,13 +80,17 @@ namespace ZoneLighting.ZoneProgramNS
 				Name =
 					(string) thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false)
 						.Cast<ExportMetadataAttribute>().First(attr => attr.Name == "Name").Value;
-			Construct(syncContext);
+			Construct(syncContext, interruptQueue);
 		}
 
-		private void Construct(SyncContext syncContext = null)
+		private void Construct(SyncContext syncContext = null, ActionBlock<InterruptInfo> interruptQueue = null)
 		{
 			StopTrigger = new Trigger("StopTrigger");
 			SyncContext = syncContext;
+
+			//set the interrupt queue
+			if (interruptQueue != null)
+				SetInterruptQueue(interruptQueue);
 		}
 
 		/// <summary>
@@ -100,26 +99,23 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <param name="inputStartingValues">Starting values for the program.</param>
 		/// <param name="interruptQueue">InterruptQueue to be used for interrupting inputs.</param>
 		/// <param name="isSyncRequested"></param>
-		public void Start(InputStartingValues inputStartingValues = null, ActionBlock<InterruptInfo> interruptQueue = null, bool isSyncRequested = false)
+		public void Start(InputStartingValues inputStartingValues = null, bool liveSync = false)
 		{
 			if (State == ProgramState.Stopped)
 			{
-				//handle sync state request
-				StartTrigger.Fire(this, null);
-				if (isSyncRequested)
-					RequestSyncState();
+				if (liveSync)
+					SyncContext?.SyncAndStartLive(this);
+				else
+				{
+					//subclass processing
+					StartCore(); //isSyncRequested);
 
-				//set the interrupt queue
-				SetInterruptQueue(interruptQueue);
+					//set starting values
+					SetStartingValues(inputStartingValues);
 
-				//subclass processing
-				StartCore();
-
-				//set starting values
-				SetStartingValues(inputStartingValues);
-
-				//set program state
-				State = ProgramState.Started;
+					//set program state
+					State = ProgramState.Started;
+				}
 			}
 			else
 			{
@@ -127,18 +123,15 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
-		public void Stop()
+		public void Stop(bool force = true)
 		{
 			if (State == ProgramState.Started)
 			{
-				//unset the interrupt queue
-				UnsetInterruptQueue();
-
 				//subclass processing
-				StopCore(true);
+				StopCore(force);
 
-				//cancel sync state req and release from sync state
-				CancelSyncState();
+				//remove from synccontext
+				SyncContext.Unsync(this);
 
 				//set program state
 				State = ProgramState.Stopped;
@@ -152,6 +145,7 @@ namespace ZoneLighting.ZoneProgramNS
 		public virtual void Dispose()
 		{
 			Stop();
+			UnsetInterruptQueue();		//unset the interrupt queue
 			SyncContext = null;
 			Name = null;
 			Zone = null;
@@ -178,7 +172,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// So the inheritor of this class must provide the core functionality, but the user of an instance
 		/// of this class can only call the method that wraps this method - Start. 
 		/// </summary>
-		protected abstract void StartCore();
+		protected abstract void StartCore();//bool isSyncRequested);
 
 		/// This is a core method, meaning this method is wrapped within another method that's required for 
 		/// any pre/postprocessing that is required by this class to maintain the functions provided by this class. 
@@ -202,7 +196,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// Assigns the interrupt queue to be posted to when an interrupting input is set.
 		/// </summary>
 		/// <param name="interruptQueue"></param>
-		private void SetInterruptQueue(ActionBlock<InterruptInfo> interruptQueue)
+		public void SetInterruptQueue(ActionBlock<InterruptInfo> interruptQueue)
 		{
 			if (Inputs.Any(input => input is InterruptingInput))
 			{
@@ -228,27 +222,8 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Transport Controls
 
-		/// <summary>
-		/// Requests the program to pause when it's at its synchronizable state.
-		/// </summary>
-		/// <returns></returns>
-		public void RequestSyncState()
-		{
-			IsSyncStateRequested = true;
-		}
+		
 
-		/// <summary>
-		/// Cancels Sync State request and releases from the sync state, if in that state.
-		/// </summary>
-		public void CancelSyncState()
-		{
-			//if this program is in its sync state, release it
-            if (IsSyncStateRequested)
-			{
-				WaitForSync.Fire(null, null);
-			}
-			IsSyncStateRequested = false;
-		}
 
 
 

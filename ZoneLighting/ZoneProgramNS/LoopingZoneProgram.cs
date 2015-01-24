@@ -14,7 +14,6 @@ namespace ZoneLighting.ZoneProgramNS
 		protected LoopingZoneProgram()
 		{
 			Setup();
-			SetupRunProgramTask();
 			LoopCTS = new CancellationTokenSource();
 			Running = false;
 		}
@@ -27,20 +26,26 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Looping Stuff
 
+		protected bool IsSyncStateRequested { get; set; }
+		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
+		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
+
 		private bool Running { get; set; }
 
 		public CancellationTokenSource LoopCTS;
-		protected Task LoopingTask { get; set; }
-		protected Thread RunProgramThread { get; set; }
+		private Task LoopingTask { get; set; }
+		private Thread RunProgramThread { get; set; }
 
 		protected void StartLoop()
 		{
 			if (!Running)
 			{
+				SetupRunProgramTask();
+
 				DebugTools.AddEvent("LoopingZoneProgram.StartLoop", "Running = FALSE");
 				DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method", "Setting Running = TRUE");
 				Running = true;
-
+				
 				DebugTools.AddEvent("LoopingZoneProgram.StartLoop", "START StartLoop()");
 				LoopingTask.Start();
 				DebugTools.AddEvent("LoopingZoneProgram.StartLoop", "END StartLoop()");
@@ -53,12 +58,14 @@ namespace ZoneLighting.ZoneProgramNS
 
 		private void SetupRunProgramTask()
 		{
+			LoopCTS.Dispose();
+			LoopCTS = new CancellationTokenSource();
+			LoopingTask?.Dispose();
 			LoopingTask = new Task(() =>
 			{
 				try
 				{
 					RunProgramThread = Thread.CurrentThread;
-					SyncContext?.SignalAndWait();
 					while (true)
 					{
 						//if sync is requested, go into synchronizable state
@@ -86,7 +93,6 @@ namespace ZoneLighting.ZoneProgramNS
 					DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method", "LoopingTask thread aborted");
 					DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Setting Running = false");
 					Running = false;
-					SyncContext?.SignalAndWait();
 					StopTrigger.Fire(this, null);
 					DebugTools.AddEvent("LoopingZoneProgram.Stop", "END Setting Running = false");
 				}
@@ -116,13 +122,43 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Transport Controls
 
-		protected override void StartCore()
+		/// <summary>
+		/// Requests the program to pause when it's at its synchronizable state.
+		/// </summary>
+		/// <returns></returns>
+		public void RequestSyncState()
 		{
+			IsSyncStateRequested = true;
+		}
+
+		/// <summary>
+		/// Cancels Sync State request and releases from the sync state, if in that state.
+		/// </summary>
+		public void CancelSyncState()
+		{
+			//if this program is in its sync state, release it
+			if (IsSyncStateRequested)
+			{
+				WaitForSync.Fire(null, null);
+			}
+			IsSyncStateRequested = false;
+		}
+
+		protected override void StartCore()//bool isSyncRequested)
+		{
+			//handle sync state request
+			//StartTrigger.Fire(this, null);
+			//if (isSyncRequested)
+			//	RequestSyncState();
+
 			StartLoop();
 		}
 
 		protected override void StopCore(bool force)
 		{
+			//cancel sync state req and release from sync state
+			CancelSyncState();
+
 			DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Stopping BG Program");
 
 			if (Running)
@@ -134,7 +170,6 @@ namespace ZoneLighting.ZoneProgramNS
 					if (RunProgramThread != null)
 					{
 						DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Force aborting BG Program thread");
-						SyncContext?.SignalAndWait();
 						RunProgramThread.Abort();
 						StopTrigger.WaitForFire();
 						DebugTools.AddEvent("LoopingZoneProgram.Stop", "END Force aborting BG Program thread");

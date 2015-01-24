@@ -29,10 +29,10 @@ namespace ZoneLightingTests
 
 			FadeCandyController.Instance.Initialize();	//needs to be faked somehow
 
-			zoneScaffolder.InitializeZone(leftWing, new ScrollDot(), scrollDotDictionary);
+			leftWing.Initialize(new ScrollDot(), scrollDotDictionary);
 
 			//act
-			leftWing.ZoneProgram.Stop(true);
+			leftWing.ZoneProgram.Stop();
 
 			//assert
 			Assert.True(leftWing.ZoneProgram.StopTestingTrigger.WaitForFire(1000));
@@ -61,9 +61,9 @@ namespace ZoneLightingTests
 
 			FadeCandyController.Instance.Initialize();	//needs to be faked somehow
 
-			zoneScaffolder.InitializeZone(leftWing, new ScrollDot(), scrollDotDictionary);
+			leftWing.Initialize(new ScrollDot(), scrollDotDictionary);
 
-			//act
+			//act -- cooperative stop
 			leftWing.ZoneProgram.Stop(false);
 
 			//assert

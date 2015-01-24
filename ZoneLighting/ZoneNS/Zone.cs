@@ -67,16 +67,6 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public double Brightness { get; set; }
 
-		///// <summary>
-		///// This sync context will be responsible for synchronizing the background program for this zone.
-		///// </summary>
-		//public SyncContext SyncContext { get; set; }
-
-		///// <summary>
-		///// This sync context will be the source of synchronizations that is passed to the interrupting program routines.
-		///// </summary>
-		//public SyncContext InterruptingProgramSyncContext { get; set; }
-
 		#endregion
 
 		#region C+I
@@ -164,17 +154,25 @@ namespace ZoneLighting.ZoneNS
 
 		#endregion
 
-		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool isSyncRequested = false, SyncContext syncContext = null)
+		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool isSyncRequested = false, SyncContext syncContext = null, bool dontStart = false)
 		{
 			if (!Initialized)
 			{
-				SetProgram(zoneProgram);
 				SetupInterruptProcessing();
-				ZoneProgram.LightingController = LightingController;
-				ZoneProgram.SetSyncContext(syncContext);
-				ZoneProgram.Start(inputStartingValues, InterruptQueue, isSyncRequested);
+				SetupZoneProgram(zoneProgram, inputStartingValues, isSyncRequested, syncContext, dontStart);
 				Initialized = true;
 			}
+		}
+
+		private void SetupZoneProgram(ZoneProgram zoneProgram, InputStartingValues inputStartingValues, bool isSyncRequested,
+			SyncContext syncContext, bool dontStart)
+		{
+			SetProgram(zoneProgram);
+			ZoneProgram.LightingController = LightingController;
+			ZoneProgram.SetSyncContext(syncContext);
+			ZoneProgram.SetInterruptQueue(InterruptQueue);
+			if (!dontStart)
+				ZoneProgram.Start(inputStartingValues, isSyncRequested);
 		}
 
 		public bool Initialized { get; private set; }
@@ -192,15 +190,15 @@ namespace ZoneLighting.ZoneNS
 			}
 		}
 
-		public void Pause()
-		{
+		//public void Pause()
+		//{
 			
-		}
+		//}
 
-		public void Resume()
-		{
+		//public void Resume()
+		//{
 			
-		}
+		//}
 
 		public void Dispose(bool force)
 		{
@@ -235,12 +233,6 @@ namespace ZoneLighting.ZoneNS
 		#region ZoneProgram
 
 		public bool IsProgramLooping => ZoneProgram is LoopingZoneProgram;
-		public Trigger WaitForSync => ZoneProgram.WaitForSync;
-		public Trigger IsSynchronizable => ZoneProgram.IsSynchronizable;
-		public void RequestSyncState()
-		{
-			ZoneProgram.RequestSyncState();
-		}
 		
 		public SyncLevel SyncLevel
 		{
@@ -343,27 +335,27 @@ namespace ZoneLighting.ZoneNS
 		#endregion
 
 		#region Interrupting Program
-		
-		/// <summary>
-		/// Adds an interrupting program to the zone.
-		/// </summary>
-		/// <param name="interruptingProgram"></param>
-		public void StartInterruptingProgram(ReactiveZoneProgram interruptingProgram, InputStartingValues inputStartingValues = null, SyncContext syncContext = null, bool isSyncRequested = false)
+
+		private void SetInterruptingProgram(ReactiveZoneProgram interruptingProgram)
 		{
 			InterruptingPrograms.Add(interruptingProgram);
 			interruptingProgram.Zone = this;
-				
-			//tell the interrupting to start, saying "use these input starting values to start the program, report back to this queue when 
-			//you need to output something (interrupt), and I'll take care of the rest. Also use this barrier to synchronize yourself
-			//with everyone else on this barrier's participant list.
-			interruptingProgram.Start(inputStartingValues, InterruptQueue, isSyncRequested);
+		}
+
+		/// <summary>
+		/// Adds an interrupting program to the zone.
+		/// </summary>
+		public void SetupInterruptingProgram(ReactiveZoneProgram interruptingProgram, InputStartingValues inputStartingValues = null, SyncContext syncContext = null)
+		{
+			interruptingProgram.SetSyncContext(syncContext);
+			interruptingProgram.SetInterruptQueue(InterruptQueue);
+			SetInterruptingProgram(interruptingProgram);
 		}
 
 		public void DisposeInterruptingProgram(string name, bool force = false)
 		{
 			var interruptingProgram = InterruptingPrograms.First(program => program.Name == name);
 			interruptingProgram.Dispose();
-			interruptingProgram.Zone = null;
 			InterruptingPrograms.Remove(interruptingProgram);
 		}
 

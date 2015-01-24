@@ -16,6 +16,6 @@ namespace ZoneLighting.ZoneProgramNS
 		public object Data { get; set; }
 		public Subject<object> InputSubject { get; set; }
 		public Subject<object> StopSubject { get; set; }
-		public ZoneProgram ZoneProgram { get;set }
+		public ZoneProgram ZoneProgram { get; set; }
 	}
 }
