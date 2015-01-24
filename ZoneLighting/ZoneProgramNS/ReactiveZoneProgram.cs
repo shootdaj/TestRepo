@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
-using ZoneLighting.TriggerDependencyNS;
-using ZoneLighting.ZoneNS;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ZoneLighting.ZoneProgramNS
 {
@@ -17,6 +10,7 @@ namespace ZoneLighting.ZoneProgramNS
 			
 		}
 
+		[SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
 		protected ReactiveZoneProgram()
 		{
 			SetupInterruptingInputs();

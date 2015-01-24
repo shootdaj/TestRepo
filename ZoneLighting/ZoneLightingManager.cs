@@ -4,17 +4,12 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Configuration;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using Newtonsoft.Json.Serialization;
 using ZoneLighting.Communication;
-using ZoneLighting.ConfigNS;
 using ZoneLighting.TEMP;
 using ZoneLighting.ZoneNS;
-using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLighting
@@ -22,7 +17,7 @@ namespace ZoneLighting
 	/// <summary>
 	/// This class will be responsible for managing the higher level tasks for the zones.
 	/// </summary>
-	public class ZoneLightingManager : IDisposable
+	public sealed class ZoneLightingManager : IDisposable
 	{
 		#region Singleton
 
@@ -381,28 +376,39 @@ namespace ZoneLighting
 			var baiClock = AddFadeCandyZone("BaiClock", PixelType.FadeCandyWS2812Pixel, 24, 4);
 
 			//initialize zones
-			leftWing.Initialize(new Rainbow(), null, true, syncContext, true);
-			center.Initialize(new Rainbow(), null, true, syncContext, true);
-			rightWing.Initialize(new Rainbow(), null, true, syncContext, true);
-			baiClock.Initialize(new Rainbow(), null, true, syncContext, true);
+			leftWing.Initialize(new Rainbow(), null);//, true, syncContext, true);
+			center.Initialize(new Rainbow(), null);//, true, syncContext, true);
+			rightWing.Initialize(new Rainbow(), null);//, true, syncContext, true);
+			baiClock.Initialize(new Rainbow(), null);//, true, syncContext, true);
 
 			//synchronize and start zone programs
-			syncContext.SyncAndStart(leftWing.ZoneProgram, 
-									center.ZoneProgram, 
-									rightWing.ZoneProgram, 
-									baiClock.ZoneProgram);
-			
+			//syncContext.SyncAndStart(leftWing.ZoneProgram, 
+			//						center.ZoneProgram, 
+			//						rightWing.ZoneProgram, 
+			//						baiClock.ZoneProgram);
+
+			//leftWing.ZoneProgram.Start();
+			//rightWing.ZoneProgram.Start();
+			//center.ZoneProgram.Start();
+			//baiClock.ZoneProgram.Start();
+
 			//setup interrupting inputs
-			leftWing.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
-			rightWing.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
-			center.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
-			baiClock.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
+			leftWing.SetupInterruptingProgram(new BlinkColor(), null);//, notificationSyncContext);
+			rightWing.SetupInterruptingProgram(new BlinkColor(), null);//, notificationSyncContext);
+			center.SetupInterruptingProgram(new BlinkColor(), null);//, notificationSyncContext);
+			baiClock.SetupInterruptingProgram(new BlinkColor(), null);//, notificationSyncContext);
 
 			//synchronize and start interrupting programs
-			notificationSyncContext.SyncAndStart(leftWing.InterruptingPrograms[0],
-												rightWing.InterruptingPrograms[0],
-												center.InterruptingPrograms[0],
-												baiClock.InterruptingPrograms[0]);
+			//notificationSyncContext.SyncAndStart(leftWing.InterruptingPrograms[0],
+			//									rightWing.InterruptingPrograms[0],
+			//									center.InterruptingPrograms[0],
+			//									baiClock.InterruptingPrograms[0]);
+
+			leftWing.InterruptingPrograms[0].Start();
+			rightWing.InterruptingPrograms[0].Start();
+			center.InterruptingPrograms[0].Start();
+			baiClock.InterruptingPrograms[0].Start();
+
 		}
 
 

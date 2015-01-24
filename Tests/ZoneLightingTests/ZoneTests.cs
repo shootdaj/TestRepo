@@ -1,11 +1,7 @@
 ﻿using System.Drawing;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks.Dataflow;
 using FakeItEasy;
 using NUnit.Framework;
 using ZoneLighting.ZoneNS;
-using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLightingTests
 {

@@ -1,10 +1,6 @@
 ﻿using System.ComponentModel.Composition;
 using System.Drawing;
-using System.Linq;
-using System.Threading;
-using ZoneLighting.Communication;
 using ZoneLighting.TriggerDependencyNS;
-using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLightingTests.Resources.Programs

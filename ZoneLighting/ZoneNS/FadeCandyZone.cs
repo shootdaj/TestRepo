@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using ZoneLighting.Communication;
+﻿using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.ZoneNS

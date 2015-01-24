@@ -1,9 +1,9 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
+using System.Dynamic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ZoneLighting;
-using ZoneLighting.ZoneNS;
 
 namespace Console
 {
@@ -21,28 +21,13 @@ namespace Console
 					var color = Color.FromName(input);
 					if (color.IsKnownColor)
 					{
-						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
-						ZoneLightingManager.Instance.Zones[0].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500));
-						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
-						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
-						ZoneLightingManager.Instance.Zones[1].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500));
-						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
-						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
-						ZoneLightingManager.Instance.Zones[2].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500));
-						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
-						DebugTools.AddEvent("Program.Main", "START Setting Interrupting Input");
-						ZoneLightingManager.Instance.Zones[3].InterruptingPrograms[0].SetInput("Blink", new Tuple<Color, int>(color, 500));
-						DebugTools.AddEvent("Program.Main", "END Setting Interrupting Input");
+						dynamic parameters = new ExpandoObject();
+						parameters.Color = color;
+						parameters.Time = 500;
+						parameters.Soft = false;
 
-						//ZoneLightingManager.Instance.Zones[0].InterruptingPrograms[0].IsSynchronizable.WaitForFire();
-						//ZoneLightingManager.Instance.Zones[1].InterruptingPrograms[0].IsSynchronizable.WaitForFire();
-						//ZoneLightingManager.Instance.Zones[2].InterruptingPrograms[0].IsSynchronizable.WaitForFire();
-						//ZoneLightingManager.Instance.Zones[3].InterruptingPrograms[0].IsSynchronizable.WaitForFire();
-
-						//ZoneLightingManager.Instance.Zones[0].InterruptingPrograms[0].WaitForSync.Fire(null, null);
-						//ZoneLightingManager.Instance.Zones[1].InterruptingPrograms[0].WaitForSync.Fire(null, null);
-						//ZoneLightingManager.Instance.Zones[2].InterruptingPrograms[0].WaitForSync.Fire(null, null);
-						//ZoneLightingManager.Instance.Zones[3].InterruptingPrograms[0].WaitForSync.Fire(null, null);
+						ZoneLightingManager.Instance.Zones.ToList().ForEach(z => z.InterruptingPrograms[0].SetInput("Blink", parameters));
+						ZoneLightingManager.Instance.Zones.ToList().ForEach(z => z.InterruptingPrograms[0].SetInput("Blink", parameters));
 					}
 				}
 			});

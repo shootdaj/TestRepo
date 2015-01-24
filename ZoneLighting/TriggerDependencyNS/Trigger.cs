@@ -31,6 +31,7 @@ namespace ZoneLighting.TriggerDependencyNS
 		/// <summary>
 		/// Fires alongwith the Trigger. Allows for simpler notifications.
 		/// </summary>
+		[NonSerialized]
 		private EventWaitHandle _waitHandle;
 
 		#endregion

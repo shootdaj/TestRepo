@@ -112,6 +112,8 @@ namespace ZoneLighting.Communication
 			byteArrayString += "}";
 			Debug.Print(byteArrayString);
 			AssertInit();
+			if (WebSocket.ReadyState == WebSocketState.Closed)
+				Connect();
 			WebSocket.Send(byteArray); //TODO: Change this to async?
 		}
 

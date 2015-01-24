@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Runtime.InteropServices;
 using ZoneLighting.Communication;
 
 namespace ZoneLighting

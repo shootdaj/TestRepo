@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
-using ZoneLighting;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
-namespace ZoneLightingTests.Resources.Programs
+namespace ZoneLighting.TEMP
 {
 	/// <summary>
 	/// Scrolls a dot across the entire length of Lights
@@ -15,8 +14,8 @@ namespace ZoneLightingTests.Resources.Programs
 	[ExportMetadata("Name", "ScrollDot")]
 	public class ScrollDot : LoopingZoneProgram
 	{
-		public int DelayTime { get; set; } = 30;
-		public Color? DotColor { get; set; } = Color.Red;
+		public int DelayTime { get; set; } = 100;
+		public Color? DotColor { get; set; }
 		public override SyncLevel SyncLevel { get; set; } = ScrollDotSyncLevel.Dot;
 
 		public override void Setup()

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Drawing;
 using System.Reactive.Subjects;
 using System.Runtime.Serialization;
-using System.Threading;
-using Newtonsoft.Json;
 using ZoneLighting.ZoneNS;
 
 namespace ZoneLighting.ZoneProgramNS
@@ -37,11 +34,6 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 		}
 
-		//public void Subscribe(IObserver<object> toCall)
-		//{
-		//	InputDisposable = InputSubject.Subscribe(toCall);
-		//}
-
 		public virtual void Subscribe(Action<object> toCall)
 		{
 			InputDisposable = InputSubject.Subscribe(toCall);
@@ -50,28 +42,9 @@ namespace ZoneLighting.ZoneProgramNS
 		public virtual void Unsubscribe()
 		{
 			InputDisposable?.Dispose();
-			//DetachBarrier();
 		}
 
-		///// <summary>
-		///// Used to attach a Barrier to this 
-		///// </summary>
-		///// <param name="barrier"></param>
-		//public void AttachBarrier(Barrier barrier)
-		//{
-			
-		//	Barrier = barrier;
-		//	Barrier?.AddParticipant();
-		//}
-
-
-		//public void DetachBarrier()
-		//{
-		//	Barrier?.RemoveParticipant();
-		//	Barrier = null;
-		//}
-
-		public void Dispose()
+		public virtual void Dispose()
 		{
 			Unsubscribe();
 			InputSubject.Dispose();

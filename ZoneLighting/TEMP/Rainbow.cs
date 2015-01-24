@@ -13,8 +13,8 @@ namespace ZoneLighting.TEMP
 	[ExportMetadata("Name", "Rainbow")]
 	public class Rainbow : LoopingZoneProgram
 	{
-		public int DelayTime { get; set; } = 1;
-		public int Speed { get; set; } = 60;
+		public int DelayTime { get; set; } = 50;
+		public int Speed { get; set; } = 1;
 		public override SyncLevel SyncLevel { get; set; } = RainbowSyncLevel.Fade;
 
 		public override void Setup()

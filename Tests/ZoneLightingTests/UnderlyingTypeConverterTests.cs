@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NUnit.Framework;
-//using Xunit;
 using ZoneLighting.ZoneProgramNS;
+//using Xunit;
 
 namespace ZoneLightingTests
 {
@@ -37,8 +34,8 @@ namespace ZoneLightingTests
 				Converters = new List<JsonConverter>() { new UnderlyingTypeConverter() }
 			};
 
-			var dotColor = new ZoneProgramInput("DotColor", typeof(System.Drawing.Color));
-			dotColor.SetValue(System.Drawing.Color.Red);
+			var dotColor = new ZoneProgramInput("DotColor", typeof(Color));
+			dotColor.SetValue(Color.Red);
 
 			var serializedDotColor = JsonConvert.SerializeObject(dotColor, jsonSerializerSettings);
 			var deserializedDotColor = JsonConvert.DeserializeObject<ZoneProgramInput>(serializedDotColor, jsonDeserializerSettings);

@@ -1,13 +1,4 @@
-﻿using System.Configuration;
-using System.Drawing;
-using NUnit.Framework;
-using ZoneLighting.Communication;
-using ZoneLighting.ZoneNS;
-using ZoneLighting.ZoneProgramNS;
-using ZoneLighting.ZoneProgramNS.Factories;
-using ZoneLightingTests.Resources.Programs;
-
-namespace ZoneLightingTests
+﻿namespace ZoneLightingTests
 {
 	public class InterruptingInputTests
 	{

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ZoneLighting.ZoneProgramNS
+﻿namespace ZoneLighting.ZoneProgramNS
 {
 	//public interface IZoneProgramInput
 	//{

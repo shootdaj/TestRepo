@@ -1,5 +1,4 @@
 ﻿using System.Configuration;
-using System.Diagnostics;
 using System.Drawing;
 using NUnit.Framework;
 using ZoneLighting;

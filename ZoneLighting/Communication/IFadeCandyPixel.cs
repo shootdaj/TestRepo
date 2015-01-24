@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace ZoneLighting.Communication
+﻿namespace ZoneLighting.Communication
 {
 	public interface IFadeCandyPixelContainer : ILightingControllerPixel
 	{

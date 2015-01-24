@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using ZoneLighting.Communication;
 using ZoneLighting.TriggerDependencyNS;
@@ -131,7 +130,7 @@ namespace ZoneLighting.ZoneProgramNS
 				StopCore(force);
 
 				//remove from synccontext
-				SyncContext.Unsync(this);
+				SyncContext?.Unsync(this);
 
 				//set program state
 				State = ProgramState.Stopped;
@@ -150,6 +149,7 @@ namespace ZoneLighting.ZoneProgramNS
 			Name = null;
 			Zone = null;
 			StopTrigger.Dispose();
+			StopTestingTrigger.Dispose();
 			StartTrigger.Dispose();
 		}
 

@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Reactive;
 using System.Runtime.Serialization;
-using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using ZoneLighting.Communication;
-using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.ZoneNS

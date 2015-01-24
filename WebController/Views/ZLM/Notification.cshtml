@@ -1,0 +1,6 @@
+﻿@model ZoneLighting.ZoneLightingManager
+@using (Ajax.BeginForm("Notify", "ZLM", new AjaxOptions { UpdateTargetId = "ZonesControl" }))
+{
+	<input type="submit" id="btnNotify" value="Notify" class="btn btn-primary"/>
+	<input type="text" id="txtColor" name="colorString" class="form-control"/>
+}

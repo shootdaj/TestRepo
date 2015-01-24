@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -27,7 +28,8 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>1</WarningLevel>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -68,6 +70,7 @@
   <ItemGroup>
     <Compile Include="TEMP\BlinkColor.cs" />
     <Compile Include="TEMP\Rainbow.cs" />
+    <Compile Include="TEMP\ScrollDot.cs" />
     <Compile Include="ZoneNS\SyncContext.cs" />
     <Compile Include="Communication\FadeCandyController.cs" />
     <Compile Include="Communication\FadeCandyPixel.cs" />

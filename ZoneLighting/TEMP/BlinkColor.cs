@@ -15,30 +15,38 @@ namespace ZoneLighting.TEMP
 	{
 		protected override void SetupInterruptingInputs()
 		{
-			AddInterruptingInput<Color>("Blink", colorTimeTuple =>
+			AddInterruptingInput<Color>("Blink", parametersObject =>
 			{
-				var color = ((Tuple<Color, int>)colorTimeTuple).Item1;
-				var time = ((Tuple<Color, int>)colorTimeTuple).Item2;
+				dynamic parameters = parametersObject;
+				Color color = parameters.Color;
+				int time = parameters.Time;
+				bool soft = parameters.Soft;
 
-				////if sync is requested, go into synchronizable state
-				//if (IsSyncStateRequested)
-				//{
-				//	IsSynchronizable.Fire(this, null);
-				//	WaitForSync.WaitForFire();
-				//	IsSyncStateRequested = false;
-				//}
-
-				ProgramCommon.Blink(new List<Tuple<Color, int>>
+				if (soft)
 				{
-					{ color, time},
-					{ Color.Empty, time}
-				}, (colorToSet) =>
+					ProgramCommon.SoftBlink(this, new List<Tuple<Color, int>>
+					{
+						{color, time},
+						{Color.Black, time}
+					}, OutputColor, SyncContext);
+				}
+				else
 				{
-					SetColor(colorToSet);
-					SendLights();
-				}, SyncContext, this);
+					ProgramCommon.Blink(new List<Tuple<Color, int>>
+					{
+						{color, time},
+						{Color.Empty, time}
+					}, OutputColor, SyncContext);
+				}
 			});
 		}
+
+		private void OutputColor(Color colorToSet)
+		{
+			SetColor(colorToSet);
+			SendLights();
+		}
+
 
 		protected override void StopCore(bool force)
 		{

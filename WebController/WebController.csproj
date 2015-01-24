@@ -229,6 +229,7 @@
     <Content Include="Views\ZLM\ZLMInit.cshtml" />
     <Content Include="Views\ZLM\ZoneCommands.cshtml" />
     <Content Include="Views\ZLM\DisplayTemplates\Zones.cshtml" />
+    <Content Include="Views\ZLM\Notification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

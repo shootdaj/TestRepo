@@ -36,7 +36,7 @@ namespace ExternalPrograms
 				{
 					SetColor(colorToSet);
 					SendLights();
-				}, SyncContext, this);
+				}, SyncContext);
 			});
 		}
 

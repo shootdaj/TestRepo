@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneNS;
 
@@ -11,6 +8,7 @@ namespace ZoneLighting.ZoneProgramNS
 {
 	public abstract class LoopingZoneProgram : ZoneProgram
 	{
+		[SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
 		protected LoopingZoneProgram()
 		{
 			Setup();
@@ -21,6 +19,9 @@ namespace ZoneLighting.ZoneProgramNS
 		public override void Dispose()
 		{
 			Unsetup();
+			LoopCTS.Dispose();
+			IsSynchronizable.Dispose();
+			WaitForSync.Dispose();
 			base.Dispose();
 		}
 
@@ -71,8 +72,10 @@ namespace ZoneLighting.ZoneProgramNS
 						//if sync is requested, go into synchronizable state
 						if (IsSyncStateRequested)
 						{
+							//SyncContext?.Unsync(this);
 							IsSynchronizable.Fire(this, null);
 							WaitForSync.WaitForFire();
+							//SyncContext?.AddParticipant(this);
 							IsSyncStateRequested = false;
 						}
 

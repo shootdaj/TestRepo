@@ -1,8 +1,8 @@
-﻿using System.Linq;
+﻿using System.Drawing;
+using System.Dynamic;
+using System.Linq;
 using System.Web.Mvc;
-using WebController.Extensions;
 using ZoneLighting;
-using ZoneLighting.ZoneNS;
 
 namespace WebController.Controllers
 {
@@ -42,11 +42,28 @@ namespace WebController.Controllers
 			var zone = split[1];
 
 			if (command == "Start")
-				ZoneLightingManager.Instance.Zones.First(z => z.Name == zone).ZoneProgram.Start(liveSync: true);
+				ZoneLightingManager.Instance.Zones.First(z => z.Name == zone).ZoneProgram.Start();//(liveSync: true);
 			if (command == "Stop")
 				ZoneLightingManager.Instance.Zones.First(z => z.Name == zone).ZoneProgram.Stop(true);
 
 			return View("Index", new ZLMViewModel());
+		}
+
+	    public ActionResult Notify(string colorString)
+	    {
+			var color = Color.FromName(colorString);
+		    if (color.IsKnownColor)
+		    {
+			    dynamic parameters = new ExpandoObject();
+			    parameters.Color = color;
+			    parameters.Time = 500;
+			    parameters.Soft = true;
+
+			    ZoneLightingManager.Instance.Zones.ToList().ForEach(z => z.InterruptingPrograms[0].SetInput("Blink", parameters));
+			    ZoneLightingManager.Instance.Zones.ToList().ForEach(z => z.InterruptingPrograms[0].SetInput("Blink", parameters));
+		    }
+
+		    return View("Index", new ZLMViewModel());
 		}
     }
 }

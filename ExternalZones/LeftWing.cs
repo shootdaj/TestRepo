@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.Composition;
-using ZoneLighting;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
 

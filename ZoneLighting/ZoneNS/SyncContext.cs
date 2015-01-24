@@ -9,7 +9,7 @@ namespace ZoneLighting.ZoneNS
 	/// <summary>
 	/// A wrapper on top of Barrier to have easier manageability.
 	/// </summary>
-	public class SyncContext : IDisposable
+	public sealed class SyncContext : IDisposable
 	{
 		public string Name { get; private set; }
 
@@ -103,6 +103,12 @@ namespace ZoneLighting.ZoneNS
 		public void SyncAndStart(params ZoneProgram[] zonePrograms)
 		{
 			SyncAndStart(zonePrograms.ToList());
+		}
+
+		public void AddParticipant(ZoneProgram zoneProgram)
+		{
+			Barrier.AddParticipant();
+			ZonePrograms.Add(zoneProgram);
 		}
 
 		/// <summary>

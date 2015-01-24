@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
@@ -29,7 +28,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <param name="speed">The higher the speed, the more abruptly the colors will change. Max is 127.</param>
 		/// <param name="sleepTime">How long each color set is displayed</param>
 		/// <param name="loop">Whether or not to loop forever</param>
-		public static void Fade(Color color1, Color color2, int speed, int sleepTime, bool loop, Action<Color> outputMethod, out Color? endingColor, SyncContext syncContext = null, ZoneProgram zoneProgram = null)
+		public static void Fade(Color color1, Color color2, int speed, int sleepTime, bool loop, Action<Color> outputMethod, out Color? endingColor, SyncContext syncContext = null)
 		{
 			if (speed > 127)
 				throw new Exception("Speed cannot exceed 127.");
@@ -84,13 +83,25 @@ namespace ZoneLighting.ZoneProgramNS
 		/// </summary>
 		/// <param name="colorsAndHoldTimes">List of tuples of colors and their hold times</param>
 		/// <param name="outputMethod">Method to use to output the blinks</param>
-		public static void Blink(List<Tuple<Color, int>> colorsAndHoldTimes, Action<Color> outputMethod, SyncContext syncContext = null, ZoneProgram zoneProgram = null)
+		public static void Blink(List<Tuple<Color, int>> colorsAndHoldTimes, Action<Color> outputMethod, SyncContext syncContext = null)
 		{
 			colorsAndHoldTimes.ForEach(tuple =>
 			{
 				syncContext?.SignalAndWait();
 				outputMethod(tuple.Item1);
 				Delay(tuple.Item2);
+			});
+		}
+
+		public static void SoftBlink(ZoneProgram program, List<Tuple<Color, int>> colorsAndHoldTimes, Action<Color> outputMethod,
+			SyncContext syncContext = null)
+		{
+			colorsAndHoldTimes.ForEach(tuple =>
+			{
+				Color? endingColor;
+				Fade(Color.Empty, tuple.Item1, 10000/tuple.Item2, 1, false, outputMethod, out endingColor);
+				Fade(tuple.Item1, Color.Black, 10000/tuple.Item2, 1, false, outputMethod, out endingColor);
+				syncContext?.SignalAndWait();
 			});
 		}
 	}
