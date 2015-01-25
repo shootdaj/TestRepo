@@ -4,7 +4,7 @@ using System.ComponentModel.Composition;
 using System.Drawing;
 using ZoneLighting.ZoneProgramNS;
 
-namespace ZoneLighting.TEMP
+namespace ZoneLighting.StockPrograms
 {
 	/// <summary>
 	/// Outputs a static color to the zone.

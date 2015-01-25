@@ -14,11 +14,11 @@ namespace WebController.Controllers
         }
 
 		[HttpPost]
-	    public string UninitializeZLM()
+	    public ActionResult UninitializeZLM()
 	    {
 		    ZoneLightingManager.Instance.Uninitialize();
-			return "ZLM Uninitialized";
-	    }
+			return View("Index", new ZLMViewModel());
+		}
 
 		[HttpPost]
 		public ActionResult InitializeZLM()
@@ -42,25 +42,27 @@ namespace WebController.Controllers
 			var zone = split[1];
 
 			if (command == "Start")
-				ZoneLightingManager.Instance.Zones.First(z => z.Name == zone).ZoneProgram.Start();//(liveSync: true);
+				ZoneLightingManager.Instance.Zones.First(z => z.Name == zone).ZoneProgram.Start(liveSync: true);
 			if (command == "Stop")
 				ZoneLightingManager.Instance.Zones.First(z => z.Name == zone).ZoneProgram.Stop(true);
 
 			return View("Index", new ZLMViewModel());
 		}
 
-	    public ActionResult Notify(string colorString)
+	    public ActionResult Notify(string colorString, int? time = 60, int? cycles = 2)
 	    {
 			var color = Color.FromName(colorString);
 		    if (color.IsKnownColor)
 		    {
 			    dynamic parameters = new ExpandoObject();
 			    parameters.Color = color;
-			    parameters.Time = 500;
+			    parameters.Time = time;
 			    parameters.Soft = true;
 
-			    ZoneLightingManager.Instance.Zones.ToList().ForEach(z => z.InterruptingPrograms[0].SetInput("Blink", parameters));
-			    ZoneLightingManager.Instance.Zones.ToList().ForEach(z => z.InterruptingPrograms[0].SetInput("Blink", parameters));
+			    for (int i = 0; i < cycles; i++)
+			    {
+					ZoneLightingManager.Instance.Zones.ToList().ForEach(z => z.InterruptingPrograms[0].SetInput("Blink", parameters));
+				}
 		    }
 
 		    return View("Index", new ZLMViewModel());

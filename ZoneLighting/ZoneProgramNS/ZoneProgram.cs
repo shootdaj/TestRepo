@@ -102,7 +102,7 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			if (State == ProgramState.Stopped)
 			{
-				if (liveSync)
+				if (liveSync && SyncContext != null)
 					SyncContext?.SyncAndStartLive(this);
 				else
 				{
@@ -122,7 +122,7 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
-		public void Stop(bool force = true)
+		public void Stop(bool force = false)
 		{
 			if (State == ProgramState.Started)
 			{
@@ -141,10 +141,16 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
-		public virtual void Dispose()
+		public void Dispose()
 		{
-			Stop();
-			UnsetInterruptQueue();		//unset the interrupt queue
+			Dispose(false);
+		}
+
+		public virtual void Dispose(bool force)
+		{
+			Stop(force);
+			RemoveAllInputs();
+            UnsetInterruptQueue();		//unset the interrupt queue
 			SyncContext = null;
 			Name = null;
 			Zone = null;
@@ -284,6 +290,18 @@ namespace ZoneLighting.ZoneProgramNS
 			Inputs.Add(input);
 			input.Subscribe(action);
 			return input;
+		}
+
+		/// <summary>
+		/// Removes all inputs
+		/// </summary>
+		protected void RemoveAllInputs()
+		{
+			Inputs.ToList().ForEach(input =>
+			{
+				Inputs.Remove(input);
+				input.Dispose();
+			});
 		}
 
 		/// <summary>

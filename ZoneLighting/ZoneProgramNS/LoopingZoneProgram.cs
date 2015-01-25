@@ -16,13 +16,13 @@ namespace ZoneLighting.ZoneProgramNS
 			Running = false;
 		}
 
-		public override void Dispose()
+		public override void Dispose(bool force)
 		{
 			Unsetup();
 			LoopCTS.Dispose();
 			IsSynchronizable.Dispose();
 			WaitForSync.Dispose();
-			base.Dispose();
+			base.Dispose(force);
 		}
 
 		#region Looping Stuff
@@ -116,7 +116,10 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <summary>
 		/// Subclass can have Unsetup, but doesn't need to.
 		/// </summary>
-		public virtual void Unsetup() { }
+		public virtual void Unsetup()
+		{
+			
+		}
 
 		#endregion
 

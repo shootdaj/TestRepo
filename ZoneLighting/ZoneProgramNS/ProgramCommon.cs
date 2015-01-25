@@ -99,7 +99,7 @@ namespace ZoneLighting.ZoneProgramNS
 			colorsAndHoldTimes.ForEach(tuple =>
 			{
 				Color? endingColor;
-				Fade(Color.Black, tuple.Item1, 0, 1, false, outputMethod, out endingColor, syncContext, true);
+				Fade(Color.Black, tuple.Item1, tuple.Item2, 1, false, outputMethod, out endingColor, syncContext, true);
 				syncContext?.SignalAndWait();
 			});
 		}

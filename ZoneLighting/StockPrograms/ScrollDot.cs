@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
-using Newtonsoft.Json.Serialization;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
-namespace ZoneLighting.TEMP
+namespace ZoneLighting.StockPrograms
 {
 	/// <summary>
 	/// Scrolls a dot across the entire length of Lights

@@ -1,6 +1,18 @@
 ﻿@model ZoneLighting.ZoneLightingManager
 @using (Ajax.BeginForm("Notify", "ZLM", new AjaxOptions { UpdateTargetId = "ZonesControl" }))
 {
-	<input type="submit" id="btnNotify" value="Notify" class="btn btn-primary"/>
-	<input type="text" id="txtColor" name="colorString" class="form-control"/>
+	@Html.Label("Notify")
+	<div class="form-group">
+		<label for="txtColor">Color:</label>
+		<input type="text" id="txtColor" name="colorString" class="form-control"/>
+	</div>
+	<div class="form-group">
+		<label for="txtTime">Time/Speed:</label>
+		<input type="number" id="txtTime" name="time" class="form-control"/>
+	</div>
+	<div class="form-group">
+		<label for="txtTime">Cycles:</label>
+		<input type="number" id="txtCycles" name="cycles" class="form-control" />
+	</div>
+	<button type="submit" id="btnNotify" class="btn btn-primary">Notify</button>
 }

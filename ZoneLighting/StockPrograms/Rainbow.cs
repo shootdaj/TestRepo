@@ -4,7 +4,7 @@ using System.Drawing;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
-namespace ZoneLighting.TEMP
+namespace ZoneLighting.StockPrograms
 {
 	/// <summary>
 	/// Outputs a looping rainbow to the zone (currently only works with FadeCandy).
