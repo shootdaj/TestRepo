@@ -151,8 +151,8 @@ namespace ZoneLighting
 			//	ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones, configFilePath);
 			//}
 
-			AddBasementZonesAndPrograms();
-			//AddBasementZonesAndProgramsWithSync();
+			//AddBasementZonesAnd	Programs();
+			AddBasementZonesAndProgramsWithSync();
 
 
 

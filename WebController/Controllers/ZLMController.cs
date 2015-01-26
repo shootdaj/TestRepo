@@ -39,13 +39,23 @@ namespace WebController.Controllers
 		{
 			var split = Command.Split(' ');
 			var command = split[0];
-			var zone = split[1];
+			var zoneString = split[1];
 
 			if (command == "Start")
-				ZoneLightingManager.Instance.Zones.First(z => z.Name == zone).ZoneProgram.Start(liveSync: true);
-			if (command == "Stop")
-				ZoneLightingManager.Instance.Zones.First(z => z.Name == zone).ZoneProgram.Stop(true);
-
+			{
+				if (zoneString == "All")
+					ZoneLightingManager.Instance.Zones.ToList().ForEach(zone => zone.ZoneProgram.Start(liveSync: true));
+				else
+					ZoneLightingManager.Instance.Zones.First(z => z.Name == zoneString).ZoneProgram.Start(liveSync: true);
+			}
+			else if (command == "Stop")
+			{
+				if (zoneString == "All")
+					ZoneLightingManager.Instance.Zones.ToList().ForEach(zone => zone.ZoneProgram.Stop(true));
+				else
+					ZoneLightingManager.Instance.Zones.First(z => z.Name == zoneString).ZoneProgram.Stop(true);
+			}
+			
 			return View("Index", new ZLMViewModel());
 		}
 

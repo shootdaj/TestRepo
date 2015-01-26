@@ -63,6 +63,10 @@
 				@Html.Label("Initialize")
 				@Html.Partial("ZLMInit", Model.ZoneLightingManager)
 			</div>
+			<div class="form-group">
+				@Html.Label("Uninitialize")
+				@Html.Partial("ZLMUninit", Model.ZoneLightingManager)
+			</div>
 			@Html.Partial("Notification", Model.ZoneLightingManager)
 		</div>
 	</div>
