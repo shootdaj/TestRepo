@@ -17,8 +17,4 @@
       <dependency id="SampleDependency" version="1.0" />
     </dependencies>
   </metadata>
-  <files>
-  	<file src="WebController\Programs\*.*" target="" /> 
-	<file src="WebController\Zones\*.*" target="" /> 
-  </files>
 </package>
