@@ -12,8 +12,4 @@
     <description>ZoneLighting</description>
     <releaseNotes>Bro chill</releaseNotes>
   </metadata>
-  <files>
-	<file src="Programs\*.*" target="Content" />
-	<file src="Zones\*.*" target="Content" />
-</files>
 </package>
