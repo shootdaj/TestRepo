@@ -13,7 +13,7 @@
     <releaseNotes>Bro chill</releaseNotes>
   </metadata>
   <files>
-	<file src="Programs\Dummy.dll" target="" />
-	<file src="Zones\Dummy.dll" target="" />
+	<file src="Programs\*.*" target="" />
+	
   </files>
 </package>
