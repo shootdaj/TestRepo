@@ -57,7 +57,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>if not exist $(TargetPath) $(TargetDir)Zones mkdir $(TargetPath) $(TargetDir)Zones
+    <PostBuildEvent>if not exist $(TargetDir)Zones mkdir $(TargetDir)Zones
 copy $(TargetPath) $(TargetDir)Zones\$(TargetFileName)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -67,7 +67,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if not exist $(TargetPath) $(TargetDir)Programs mkdir $(TargetPath) $(TargetDir)Programs
+    <PostBuildEvent>if not exist $(TargetDir)Programs mkdir $(TargetDir)Programs
 copy $(TargetPath) $(TargetDir)Programs\$(TargetFileName)
 copy $(TargetPath) $(SolutionDir)Tests\ZoneLightingTests\Resources\Programs\$(TargetFileName)</PostBuildEvent>
   </PropertyGroup>
