@@ -14,6 +14,5 @@
   </metadata>
   <files>
 	<file src="Programs\*.*" target="" />
-	
   </files>
 </package>
