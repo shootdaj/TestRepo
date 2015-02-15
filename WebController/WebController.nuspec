@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>WebController</id>
+    <title>ZoneLighting WebController</title>
+    <version>1.0.0</version>
+    <authors>Anshul</authors>
+    <owners>Anshul</owners>
+    <licenseUrl>http://yourcompany.com</licenseUrl>
+    <projectUrl>http://yourcompany.com</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>ZoneLighting</description>
+    <releaseNotes>Bro chill</releaseNotes>
+  </metadata>
+  <files>
+	<file src="Programs\*.*" target="" />
+	<file src="Zones\*.*" target="" />
+</files>
+</package>
