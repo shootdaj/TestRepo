@@ -18,8 +18,8 @@
     </dependencies>
   </metadata>
   <files>
-  <file src="WebController\Programs\*" target="" /> 
+  <file src="WebController\Programs\*.*" target="" /> 
   </files>
-  <file src="WebController\Zones\*" target="" /> 
+  <file src="WebController\Zones\*.*" target="" /> 
   </files>
 </package>
