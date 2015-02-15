@@ -5,7 +5,13 @@ VisualStudioVersion = 14.0.22310.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoneLighting", "..\ZoneLighting\ZoneLighting.csproj", "{FE00DB62-6C3C-4D04-9F03-23DA814298B6}"
 EndProject
+
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebController", "..\WebController\WebController.csproj", "{E0D96A42-BD06-4270-9385-CF9FE1004D7B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9F3FC046-7B87-4EDD-8794-C8A8E8B156E8}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
