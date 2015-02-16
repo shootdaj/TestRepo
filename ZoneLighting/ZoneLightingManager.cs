@@ -55,7 +55,7 @@ namespace ZoneLighting
 
 		public bool Initialized { get; private set; }
 
-		public void Initialize(bool loadExternalZones = true, bool initZoneScaffolder = true)
+		public void Initialize(bool loadExternalZones = false, bool initZoneScaffolder = true)
 		{
 			if (!Initialized)
 			{
