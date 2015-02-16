@@ -423,10 +423,10 @@ namespace ZoneLighting
 			var baiClock = AddFadeCandyZone("BaiClock", PixelType.FadeCandyWS2812Pixel, 24, 4);
 
 			//initialize zones
-			leftWing.Initialize(new Rainbow(), null, true, syncContext, true);
-			center.Initialize(new Rainbow(), null, true, syncContext, true);
-			rightWing.Initialize(new Rainbow(), null, true, syncContext, true);
-			baiClock.Initialize(new Rainbow(), null, true, syncContext, true);
+			leftWing.Initialize(new ScrollDot(), null, true, syncContext, true);
+			center.Initialize(new ScrollDot(), null, true, syncContext, true);
+			rightWing.Initialize(new ScrollDot(), null, true, syncContext, true);
+			baiClock.Initialize(new ScrollDot(), null, true, syncContext, true);
 
 			//synchronize and start zone programs
 			syncContext.SyncAndStart(leftWing.ZoneProgram,
