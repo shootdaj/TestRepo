@@ -151,7 +151,7 @@ namespace ZoneLighting
 			//	ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones, configFilePath);
 			//}
 
-			//AddBasementZonesAnd	Programs();
+			//AddBasementZonesAndPrograms();
 			AddBasementZonesAndProgramsWithSync();
 
 
@@ -408,7 +408,6 @@ namespace ZoneLighting
 			rightWing.InterruptingPrograms[0].Start();
 			center.InterruptingPrograms[0].Start();
 			baiClock.InterruptingPrograms[0].Start();
-
 		}
 
 		private void AddBasementZonesAndProgramsWithSync()

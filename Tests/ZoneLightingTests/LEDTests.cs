@@ -21,8 +21,7 @@ namespace ZoneLightingTests
 		public void GetColor_Works()
 		{
 			var color = A.Dummy<Color>();
-			var led = new LED();
-			led.Color = color;
+			var led = new LED {Color = color};
 			Assert.AreEqual(led.GetColor(), color);
 		}
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
@@ -135,10 +136,6 @@ namespace ZoneLighting.ZoneProgramNS
 				//set program state
 				State = ProgramState.Stopped;
 			}
-			else
-			{
-				throw new Exception("Program is already stopped.");
-			}
 		}
 
 		public void Dispose()
@@ -149,8 +146,8 @@ namespace ZoneLighting.ZoneProgramNS
 		public virtual void Dispose(bool force)
 		{
 			Stop(force);
+			UnsetInterruptQueue();		//unset the interrupt queue
 			RemoveAllInputs();
-            UnsetInterruptQueue();		//unset the interrupt queue
 			SyncContext = null;
 			Name = null;
 			Zone = null;

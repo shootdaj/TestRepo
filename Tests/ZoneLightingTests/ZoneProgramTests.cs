@@ -31,15 +31,13 @@ namespace ZoneLightingTests
 			leftWing.Initialize(new ScrollDot(), scrollDotDictionary);
 
 			//act
-			leftWing.ZoneProgram.Stop();
+			leftWing.ZoneProgram.Stop(true);
 
 			//assert
 			Assert.True(leftWing.ZoneProgram.StopTestingTrigger.WaitForFire(1000));
 
 			//cleanup
 			leftWing.Dispose();
-
-			
 		}
 
 		[Test]
