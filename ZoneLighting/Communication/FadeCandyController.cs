@@ -67,8 +67,16 @@ namespace ZoneLighting.Communication
 		{
 			var execExists = File.Exists(ConfigurationManager.AppSettings["FCServerExecutablePath"]);
 			var configExists = File.Exists(ConfigurationManager.AppSettings["FCServerConfigFilePath"]);
-			if (!execExists) throw new Exception("fcserver.exe not found at specified location. Please update the location in the config file. BaseDirectory: " + AppDomain.CurrentDomain.BaseDirectory + ". Looking for path + " + ConfigurationManager.AppSettings["FCServerExecutablePath"]);
-			if (!configExists) throw new Exception("FCServer configuration file not found at specified location. Please update the location in the config file. BaseDirectory: " + AppDomain.CurrentDomain.BaseDirectory + ". Looking for path + " + ConfigurationManager.AppSettings["FCServerConfigFilePath"]);
+			if (!execExists)
+				throw new Exception(
+					"fcserver.exe not found at specified location. Please update the location in the config file. BaseDirectory: " +
+					AppDomain.CurrentDomain.BaseDirectory + ". Looking for path: " +
+					Path.GetFullPath(ConfigurationManager.AppSettings["FCServerExecutablePath"]) + ". Environment Directory: " + Environment.CurrentDirectory);
+			if (!configExists)
+				throw new Exception(
+					"FCServer configuration file not found at specified location. Please update the location in the config file. BaseDirectory: " +
+					AppDomain.CurrentDomain.BaseDirectory + ". Looking for path: " +
+					Path.GetFullPath(ConfigurationManager.AppSettings["FCServerConfigFilePath"]) + ". Environment Directory: " + Environment.CurrentDirectory);
 
 			if (FCServerRunning) return;
 			var cmdInfo = new ProcessStartInfo
