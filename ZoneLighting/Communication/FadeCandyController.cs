@@ -148,6 +148,7 @@ namespace ZoneLighting.Communication
 			//FadeCandyServerProcess.CancelOutputRead();
 			//FadeCandyServerProcess.Close();
 			//FadeCandyServerProcess.CloseMainWindow();
+			if (FadeCandyServerProcess.HasExited) return;
 			FadeCandyServerProcess.Kill();
 			FadeCandyServerProcess.Dispose();
 			FCServerRunning = false;
