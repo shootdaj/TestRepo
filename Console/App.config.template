@@ -4,9 +4,11 @@
         <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5" />
     </startup>
 	<appSettings>
-		<add key="FadeCandyServerURL" value="[URL of server running FadeCandy - if one exists]"/>
-		<add key="ProgramDLLFolder" value ="[Path of folder where all program modules are to be loaded from]"/>
-		<add key="ZoneDLLFolder" value ="[Path of folder where all zone modules are to be loaded from]"/>
-		<add key="ZoneConfigurationSaveFile" value ="[Path of file in which the zone configuration is to be saved]"/>
+		<add key="FadeCandyServerURL" value="ws://127.0.0.1:7890"/>
+		<add key="ProgramDLLFolder" value ="..\..\..\ExternalPrograms\bin\Debug\Programs"/>
+		<add key="ZoneDLLFolder" value ="..\..\..\ExternalZones\bin\Debug\Zones"/>
+		<add key="ZoneConfigurationSaveFile" value ="..\..\..\ZoneLighting\ZoneConfigurationLocal.config"/>
+		<add key="FCServerExecutablePath" value ="..\..\ZoneLighting\FadeCandy\fcserver.exe"/>
+		<add key="FCServerConfigFilePath" value ="..\..\ZoneLighting\FadeCandy\neopixel.json"/>
 	</appSettings>
 </configuration>

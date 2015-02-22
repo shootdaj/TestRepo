@@ -1,6 +1,9 @@
-﻿using FakeItEasy;
+﻿using System.Configuration;
+using System.Net.WebSockets;
+using FakeItEasy;
 using NUnit.Framework;
 using ZoneLighting.Communication;
+using WebSocketState = WebSocketSharp.WebSocketState;
 
 namespace ZoneLightingTests
 {
@@ -12,6 +15,14 @@ namespace ZoneLightingTests
 			var fadeCandyController = new FadeCandyController(A.Dummy<string>());
 			Assert.AreEqual(fadeCandyController.PixelType, typeof(IFadeCandyPixelContainer));
 			//fadeCandyController.Dispose();
+		}
+
+		[Test]
+		public void Initialize_StartsFCServer()
+		{
+			var fadeCandyController = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"]);
+			fadeCandyController.Initialize();
+			Assert.True(fadeCandyController.ConnectionState == WebSocketState.Open);
 		}
 	}
 }

@@ -247,3 +247,5 @@ packages*/
 !NuGet.exe
 !Tests/ZoneLightingTests/Resources/*
 !*packages.config
+ZoneLighting/FadeCandy/Local/*
+!ZoneLighting/FadeCandy/*.exe

@@ -63,6 +63,10 @@
     <Reference Include="Telerik.JustMock">
       <HintPath>..\..\packages\JustMock.2014.3.1204.3\lib\Net35\Telerik.JustMock.dll</HintPath>
     </Reference>
+    <Reference Include="websocket-sharp, Version=1.0.2.41602, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\WebSocketSharp.1.0.3-rc4\lib\websocket-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="xunit">
       <HintPath>..\..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
     </Reference>

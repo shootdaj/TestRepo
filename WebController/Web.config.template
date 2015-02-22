@@ -4,61 +4,63 @@
   http://go.microsoft.com/fwlink/?LinkId=301880
   -->
 <configuration>
-  <configSections>
-    <!-- For more information on Entity Framework configuration, visit http://go.microsoft.com/fwlink/?LinkID=237468 -->
-    <section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
-  </configSections>
-  <connectionStrings>
-    <add name="DefaultConnection" connectionString="Data Source=(LocalDb)\v11.0;AttachDbFilename=|DataDirectory|\aspnet-WebController-20141117114229.mdf;Initial Catalog=aspnet-WebController-20141117114229;Integrated Security=True"
-      providerName="System.Data.SqlClient" />
-  </connectionStrings>
-  <appSettings>
-    <add key="webpages:Version" value="3.0.0.0" />
-    <add key="webpages:Enabled" value="false" />
-    <add key="ClientValidationEnabled" value="true" />
-    <add key="UnobtrusiveJavaScriptEnabled" value="true" />
-	<add key="FadeCandyServerURL" value="ws://127.0.0.1:7890"/>
-	<add key="ProgramDLLFolder" value ="[Put path of external programs here]"/>
-	<add key="ZoneDLLFolder" value ="[Put path of external zones here]"/>
-  </appSettings>
-  <system.web>
-    <authentication mode="None" />
-    <compilation debug="true" targetFramework="4.5" />
-    <httpRuntime targetFramework="4.5" />
-  </system.web>
-  <system.webServer>
-    <modules>
-      <remove name="FormsAuthenticationModule" />
-    </modules>
-  </system.webServer>
-  <runtime>
-    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
-      <dependentAssembly>
-        <assemblyIdentity name="System.Web.Helpers" publicKeyToken="31bf3856ad364e35" />
-        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
-      </dependentAssembly>
-      <dependentAssembly>
-        <assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35" />
-        <bindingRedirect oldVersion="1.0.0.0-5.1.0.0" newVersion="5.1.0.0" />
-      </dependentAssembly>
-      <dependentAssembly>
-        <assemblyIdentity name="System.Web.Optimization" publicKeyToken="31bf3856ad364e35" />
-        <bindingRedirect oldVersion="1.0.0.0-1.1.0.0" newVersion="1.1.0.0" />
-      </dependentAssembly>
-      <dependentAssembly>
-        <assemblyIdentity name="System.Web.WebPages" publicKeyToken="31bf3856ad364e35" />
-        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
-      </dependentAssembly>
-      <dependentAssembly>
-        <assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" />
-        <bindingRedirect oldVersion="1.0.0.0-1.5.2.14234" newVersion="1.5.2.14234" />
-      </dependentAssembly>
-    </assemblyBinding>
-  </runtime>
-  <entityFramework>
-    <defaultConnectionFactory type="System.Data.Entity.Infrastructure.SqlConnectionFactory, EntityFramework" />
-    <providers>
-      <provider invariantName="System.Data.SqlClient" type="System.Data.Entity.SqlServer.SqlProviderServices, EntityFramework.SqlServer" />
-    </providers>
-  </entityFramework>
+	<configSections>
+		<!-- For more information on Entity Framework configuration, visit http://go.microsoft.com/fwlink/?LinkID=237468 -->
+		<section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+	</configSections>
+	<connectionStrings>
+		<add name="DefaultConnection" connectionString="Data Source=(LocalDb)\v11.0;AttachDbFilename=|DataDirectory|\aspnet-WebController-20141117114229.mdf;Initial Catalog=aspnet-WebController-20141117114229;Integrated Security=True"
+		  providerName="System.Data.SqlClient" />
+	</connectionStrings>
+	<appSettings>
+		<add key="webpages:Version" value="3.0.0.0" />
+		<add key="webpages:Enabled" value="false" />
+		<add key="ClientValidationEnabled" value="true" />
+		<add key="UnobtrusiveJavaScriptEnabled" value="true" />
+		<add key="FadeCandyServerURL" value="ws://127.0.0.1:7890"/>
+		<add key="ProgramDLLFolder" value ="..\..\ZoneLighting\ExternalPrograms\bin\Debug\Programs"/>
+		<add key="ZoneDLLFolder" value ="..\..\ExternalZones\bin\Debug\Zones"/>
+		<add key="FCServerExecutablePath" value ="..\..\ZoneLighting\FadeCandy\fcserver.exe"/>
+		<add key="FCServerConfigFilePath" value ="..\..\ZoneLighting\FadeCandy\neopixel.json"/>
+	</appSettings>
+	<system.web>
+		<authentication mode="None" />
+		<compilation debug="true" targetFramework="4.5" />
+		<httpRuntime targetFramework="4.5" />
+	</system.web>
+	<system.webServer>
+		<modules>
+			<remove name="FormsAuthenticationModule" />
+		</modules>
+	</system.webServer>
+	<runtime>
+		<assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+			<dependentAssembly>
+				<assemblyIdentity name="System.Web.Helpers" publicKeyToken="31bf3856ad364e35" />
+				<bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+			</dependentAssembly>
+			<dependentAssembly>
+				<assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35" />
+				<bindingRedirect oldVersion="1.0.0.0-5.1.0.0" newVersion="5.1.0.0" />
+			</dependentAssembly>
+			<dependentAssembly>
+				<assemblyIdentity name="System.Web.Optimization" publicKeyToken="31bf3856ad364e35" />
+				<bindingRedirect oldVersion="1.0.0.0-1.1.0.0" newVersion="1.1.0.0" />
+			</dependentAssembly>
+			<dependentAssembly>
+				<assemblyIdentity name="System.Web.WebPages" publicKeyToken="31bf3856ad364e35" />
+				<bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+			</dependentAssembly>
+			<dependentAssembly>
+				<assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" />
+				<bindingRedirect oldVersion="1.0.0.0-1.5.2.14234" newVersion="1.5.2.14234" />
+			</dependentAssembly>
+		</assemblyBinding>
+	</runtime>
+	<entityFramework>
+		<defaultConnectionFactory type="System.Data.Entity.Infrastructure.SqlConnectionFactory, EntityFramework" />
+		<providers>
+			<provider invariantName="System.Data.SqlClient" type="System.Data.Entity.SqlServer.SqlProviderServices, EntityFramework.SqlServer" />
+		</providers>
+	</entityFramework>
 </configuration>
