@@ -65,6 +65,8 @@ namespace ZoneLighting.Communication
 
 		private void StartFCServer(bool createWindow = false)
 		{
+			Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
 			var execExists = File.Exists(ConfigurationManager.AppSettings["FCServerExecutablePath"]);
 			var configExists = File.Exists(ConfigurationManager.AppSettings["FCServerConfigFilePath"]);
 			if (!execExists)
