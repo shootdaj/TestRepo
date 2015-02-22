@@ -38,6 +38,7 @@ namespace ZoneLightingTests
 
 			//cleanup
 			leftWing.Dispose();
+			FadeCandyController.Instance.Dispose();
 		}
 
 		[Test]
@@ -68,6 +69,7 @@ namespace ZoneLightingTests
 
 			//cleanup
 			leftWing.Dispose();
+			FadeCandyController.Instance.Dispose();
 
 			DebugTools.AddEvent("Test.CooperativeStop_Works", "END CooperativeStop_Works Test");
 

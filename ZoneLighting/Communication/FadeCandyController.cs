@@ -18,7 +18,7 @@ namespace ZoneLighting.Communication
 		#region Singleton
 
 		private static FadeCandyController _instance;
-		public Process FadeCandyServerProcess { get; } = new Process();
+		private Process FadeCandyServerProcess { get; set; } = new Process();
 
 		public static FadeCandyController Instance
 			=> _instance ?? (_instance = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"]));
@@ -79,17 +79,18 @@ namespace ZoneLighting.Communication
 				RedirectStandardOutput = true,
 				CreateNoWindow = !createWindow
 			};
+			FadeCandyServerProcess = new Process();
 			FadeCandyServerProcess.StartInfo = cmdInfo;
-			FadeCandyServerProcess.OutputDataReceived += (s, e1) =>
-			{
-				if (!string.IsNullOrEmpty(e1.Data))
-				{
-					//Console.WriteLine(e1.Data);
-					//do something with returned data? --> procOut += e1.Data + Environment.NewLine;
-				}
-			};
+			//FadeCandyServerProcess.OutputDataReceived += (s, e1) =>
+			//{
+			//	if (!string.IsNullOrEmpty(e1.Data))
+			//	{
+			//		//Console.WriteLine(e1.Data);
+			//		//do something with returned data? --> procOut += e1.Data + Environment.NewLine;
+			//	}
+			//};
 			FadeCandyServerProcess.Start();
-			FadeCandyServerProcess.BeginOutputReadLine();
+			//FadeCandyServerProcess.BeginOutputReadLine();
 
 			FCServerRunning = true;
 		}
@@ -106,6 +107,7 @@ namespace ZoneLighting.Communication
 		{
 			Uninitialize();
 			ServerURL = null;
+			_instance = null;
 		}
 
 		public void Uninitialize()
@@ -131,7 +133,11 @@ namespace ZoneLighting.Communication
 		private void StopFCServer()
 		{
 			if (!FCServerRunning) return;
+			//FadeCandyServerProcess.CancelOutputRead();
+			//FadeCandyServerProcess.Close();
+			//FadeCandyServerProcess.CloseMainWindow();
 			FadeCandyServerProcess.Kill();
+			FadeCandyServerProcess.Dispose();
 			FCServerRunning = false;
 		}
 

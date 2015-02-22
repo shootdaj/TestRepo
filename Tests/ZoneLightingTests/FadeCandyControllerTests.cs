@@ -13,8 +13,9 @@ namespace ZoneLightingTests
 		public void PixelType_ReturnsIFadeCandyPixel()
 		{
 			var fadeCandyController = new FadeCandyController(A.Dummy<string>());
-			Assert.AreEqual(fadeCandyController.PixelType, typeof(IFadeCandyPixelContainer));
-			//fadeCandyController.Dispose();
+			var result = fadeCandyController.PixelType == typeof (IFadeCandyPixelContainer);
+            fadeCandyController.Dispose();
+			Assert.True(result);
 		}
 
 		[Test]
@@ -22,7 +23,9 @@ namespace ZoneLightingTests
 		{
 			var fadeCandyController = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"]);
 			fadeCandyController.Initialize();
-			Assert.True(fadeCandyController.ConnectionState == WebSocketState.Open);
+			var result = fadeCandyController.ConnectionState == WebSocketState.Open;
+			fadeCandyController.Dispose();
+            Assert.True(result);
 		}
 	}
 }
