@@ -34,11 +34,13 @@ namespace ZoneLightingTests
 			leftWing.ZoneProgram.Stop(true);
 
 			//assert
-			Assert.True(leftWing.ZoneProgram.StopTestingTrigger.WaitForFire(1000));
+			var result = leftWing.ZoneProgram.StopTestingTrigger.WaitForFire(1000);
 
 			//cleanup
 			leftWing.Dispose();
 			FadeCandyController.Instance.Dispose();
+
+			Assert.True(result);
 		}
 
 		[Test]
@@ -65,7 +67,7 @@ namespace ZoneLightingTests
 			leftWing.ZoneProgram.Stop(false);
 
 			//assert
-			Assert.True(leftWing.ZoneProgram.StopTestingTrigger.WaitForFire(1000));
+			var result = leftWing.ZoneProgram.StopTestingTrigger.WaitForFire(1000);
 
 			//cleanup
 			leftWing.Dispose();
@@ -73,7 +75,7 @@ namespace ZoneLightingTests
 
 			DebugTools.AddEvent("Test.CooperativeStop_Works", "END CooperativeStop_Works Test");
 
-			DebugTools.Print();
+			Assert.True(result);
 		}
 	}
 }
