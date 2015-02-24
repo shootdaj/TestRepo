@@ -6,7 +6,7 @@ using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.ConfigNS
 {
-	public class Config
+	public class ZoneConfig
 	{
 		public static JsonSerializerSettings SaveZonesSerializerSettings => new JsonSerializerSettings()
 		{

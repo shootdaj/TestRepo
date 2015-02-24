@@ -13,7 +13,6 @@ namespace ZoneLightingTests
 {
 	public class ZoneScaffolderTests
 	{
-		//[Fact]
 		[Ignore]
 		[Test]
 		//TODO: Fix
@@ -66,9 +65,9 @@ namespace ZoneLightingTests
 			var leftWing = new FadeCandyZone("TestZone");
 			leftWing.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 
-			var scrollDotDictionary = new InputStartingValues();
-			scrollDotDictionary.Add("DelayTime", 30);
-			scrollDotDictionary.Add("DotColor", (Color?)Color.Red);
+			dynamic scrollDotDictionary = new InputStartingValues();
+			scrollDotDictionary.DelayTime = 30;
+			scrollDotDictionary.DotColor = (Color?) Color.Red;
 
 			zoneScaffolder.InitializeZone(leftWing, "ScrollDot", scrollDotDictionary);
 

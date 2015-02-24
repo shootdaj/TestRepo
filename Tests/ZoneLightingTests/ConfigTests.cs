@@ -32,26 +32,20 @@ namespace ZoneLightingTests
 			FadeCandyController.Instance.Initialize();
 
 			zones.Add(new FadeCandyZone("TestZone1"));
-			for (int i = 0; i < 6; i++)
-			{
-				zones[0].AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i, pixelType: PixelType.FadeCandyWS2812Pixel));
-			}
-			InputStartingValues startingValuesTZ1 = new InputStartingValues();
-			startingValuesTZ1.Add("DelayTime", 1);
-			startingValuesTZ1.Add("Speed", 1);
+			((FadeCandyZone)zones[0]).AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, fcChannel);
+			dynamic startingValuesOldTz1 = new InputStartingValues();
+			startingValuesOldTz1.DelayTime = 1;
+			startingValuesOldTz1.Speed = 1;
 
-			zones[0].Initialize(new Rainbow(), startingValuesTZ1);
+			zones[0].Initialize(new Rainbow(), startingValuesOldTz1);
 
 			zones.Add(new FadeCandyZone("TestZone2"));
-			for (int i = 0; i < 12; i++)
-			{
-				zones[1].AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i, pixelType: PixelType.FadeCandyWS2812Pixel));
-			}
-			InputStartingValues startingValuesTZ2 = new InputStartingValues();
-			startingValuesTZ2.Add("DelayTime", 1);
-			startingValuesTZ2.Add("DotColor", Color.BlueViolet);
+			((FadeCandyZone)zones[1]).AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 12, fcChannel);
+			dynamic startingValuesOldTz2 = new InputStartingValues();
+			startingValuesOldTz2.DelayTime = 1;
+			startingValuesOldTz2.DotColor = Color.BlueViolet;
 
-			zones[1].Initialize(new ScrollDot(), startingValuesTZ2);
+			zones[1].Initialize(new ScrollDot(), startingValuesOldTz2);
 
 			//act
 			Config.SaveZones(zones, filename);

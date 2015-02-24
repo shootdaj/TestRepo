@@ -22,9 +22,9 @@ namespace ZoneLightingTests
 			var leftWing = new FadeCandyZone("LeftWing");
 			leftWing.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 
-			var scrollDotDictionary = new InputStartingValues();
-			scrollDotDictionary.Add("DelayTime", 30);
-			scrollDotDictionary.Add("DotColor", (Color?)Color.Red);
+			dynamic scrollDotDictionary = new InputStartingValues();
+			scrollDotDictionary.DelayTime = 30;
+			scrollDotDictionary.DotColor = (Color?)Color.Red;
 
 			FadeCandyController.Instance.Initialize();	//needs to be faked somehow
 
@@ -55,9 +55,9 @@ namespace ZoneLightingTests
 			var leftWing = new FadeCandyZone("LeftWing");
 			leftWing.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 
-			var scrollDotDictionary = new InputStartingValues();
-			scrollDotDictionary.Add("DelayTime", 30);
-			scrollDotDictionary.Add("DotColor", (Color?)Color.Red);
+			dynamic scrollDotDictionary = new InputStartingValues();
+			scrollDotDictionary.DelayTime = 30;
+			scrollDotDictionary.DotColor = (Color?)Color.Red;
 
 			FadeCandyController.Instance.Initialize();	//needs to be faked somehow
 
