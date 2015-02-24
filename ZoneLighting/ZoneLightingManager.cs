@@ -450,6 +450,8 @@ namespace ZoneLighting
 			center.InterruptingPrograms[0].Start();
 			baiClock.InterruptingPrograms[0].Start();
 
+
+			
 		}
 
 

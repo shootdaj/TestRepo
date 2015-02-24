@@ -48,7 +48,7 @@ namespace ZoneLightingTests
 			zones[1].Initialize(new ScrollDot(), startingValuesOldTz2);
 
 			//act
-			Config.SaveZones(zones, filename);
+			ZoneConfig.SaveZones(zones, filename);
 
 			//assert
 			var deserializedZones = JsonConvert.DeserializeObject<IEnumerable<Zone>>(File.ReadAllText(filename), new JsonSerializerSettings

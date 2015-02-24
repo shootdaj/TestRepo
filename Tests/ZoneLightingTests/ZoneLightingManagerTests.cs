@@ -71,7 +71,7 @@ namespace ZoneLightingTests
 
 			zoneScaffolder.InitializeZone(leftWing, "ScrollDot", scrollDotDictionary);
 
-			Config.SaveZones(new List<Zone>() {leftWing}, filename);
+			ZoneConfig.SaveZones(new List<Zone>() {leftWing}, filename);
 		}
 	}
 }

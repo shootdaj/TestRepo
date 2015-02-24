@@ -82,7 +82,7 @@
     <Compile Include="Communication\OPCPixelFrame.cs" />
     <Compile Include="Communication\PhysicalRGBLight.cs" />
     <Compile Include="Communication\WebSocketOPCPacket.cs" />
-    <Compile Include="ConfigNS\Config.cs" />
+    <Compile Include="ConfigNS\ZoneConfig.cs" />
     <Compile Include="Communication\IFadeCandyPixel.cs" />
     <Compile Include="DebugTools.cs" />
     <Compile Include="IInitializable.cs" />

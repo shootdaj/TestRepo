@@ -148,7 +148,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 				//used to initialize zonesToLoadInto. Note that this temporary list of zones is scoped to this method
 				//It is used only to get the important values like the program and input starting values and initialize
 				//zonesToLoadInto from those values.
-				var zonesToLoadFrom = Config.LoadZones(configFile);
+				var zonesToLoadFrom = ZoneConfig.LoadZones(configFile);
 				
 				zonesToLoadFrom.ToList().ForEach(zoneToLoadFrom =>
 				{
