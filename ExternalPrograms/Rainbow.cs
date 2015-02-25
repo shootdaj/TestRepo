@@ -19,8 +19,8 @@ namespace ExternalPrograms
 
 		public override void Setup()
 		{
-			AddInput<int>("Speed", speed => Speed = (int)speed);
-			AddInput<int>("DelayTime", delayTime => DelayTime = (int)delayTime);
+			AddMappedInput<int>(this, "Speed", i => i.IsInRange(1, 100));
+			AddMappedInput<int>(this, "DelayTime", i => i.IsInRange(1, 100));
 			AddMappedInput<int>(this, "SyncLevel");
 		}
 
@@ -45,7 +45,7 @@ namespace ExternalPrograms
 				}, out endingColor, SyncLevel == RainbowSyncLevel.Fade ? SyncContext : null);
 
 				if (SyncLevel == RainbowSyncLevel.Color)
-					SyncContext?.SignalAndWait();   //synchronize at the color level
+					SyncContext?.SignalAndWait();	//synchronize at the color level
 			}
 		}
 

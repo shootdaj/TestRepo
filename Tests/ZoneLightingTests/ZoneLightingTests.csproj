@@ -78,6 +78,7 @@
     <Compile Include="ConfigTests.cs" />
     <Compile Include="FadeCandyControllerTests.cs" />
     <Compile Include="InputStartingValuesTests.cs" />
+    <Compile Include="ProgramCommonTests.cs" />
     <Compile Include="InterruptingInputTests.cs" />
     <Compile Include="LEDTests.cs" />
     <Compile Include="MainProgramRunner.cs" />

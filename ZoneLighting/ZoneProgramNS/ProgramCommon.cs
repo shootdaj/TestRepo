@@ -111,6 +111,31 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			lc.SendLights(lights.Cast<ILightingControllerPixel>().ToList());
 		}
+
+		/// <summary>
+		/// Determines if input is in the between the low and high bound (low and high bounds are included in range by default).
+		/// </summary>
+		/// <param name="input">Input value</param>
+		/// <param name="low">Low bound</param>
+		/// <param name="high">High bound</param>
+		/// <param name="lowInclusive">Whether or not to include the low bound in calculation. True by default.</param>
+		/// <param name="highInclusive">Whether or not to include the high bound in calculation. True by default.</param>
+		/// <returns></returns>
+		public static bool IsInRange(this int input, int low, int high, bool lowInclusive = true, bool highInclusive = true)
+		{
+			if (lowInclusive)
+			{
+				if (highInclusive)
+					return input >= low && input <= high;
+
+				return input >= low && input < high;
+			}
+
+			if (highInclusive)
+				return input > low && input <= high;
+
+			return input > low && input < high;
+		}
 	}
 
 	public static class TupleListExtensions

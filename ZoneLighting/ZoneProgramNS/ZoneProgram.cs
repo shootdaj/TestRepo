@@ -308,13 +308,25 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <typeparam name="T"></typeparam>
 		/// <param name="instance"></param>
 		/// <param name="propertyName"></param>
+		/// <param name="filterPredicate">The incoming value will be run through this filter predicate function and only set the value if the function returns true.</param>
 		/// <returns></returns>
-		protected ZoneProgramInput AddMappedInput<T>(object instance, string propertyName)
+		protected ZoneProgramInput AddMappedInput<T>(object instance, string propertyName, Func<T, bool> filterPredicate = null)
 		{
 			var propertyInfo = instance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
 			var input = new ZoneProgramInput(propertyInfo.Name, propertyInfo.PropertyType);
 			Inputs.Add(input);
-			input.Subscribe(incomingValue => propertyInfo.SetValue(instance, incomingValue));
+			if (filterPredicate != null)
+				input.Subscribe(incomingValue =>
+				{
+					if (filterPredicate((T) incomingValue) == true)
+					{
+						propertyInfo.SetValue(instance, incomingValue);
+					}
+				});
+			else
+			{
+				input.Subscribe(incomingValue => propertyInfo.SetValue(instance, incomingValue));
+			}
 			return input;
 		}
 
