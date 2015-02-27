@@ -40,7 +40,7 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// The Lighting Controller used to control this Zone.
 		/// </summary>
-		public LightingController LightingController { get; private set; }
+		public ILightingController LightingController { get; private set; }
 
 		/// <summary>
 		/// The program that is active on this zone.
@@ -74,7 +74,7 @@ namespace ZoneLighting.ZoneNS
 		/// <param name="lightingController"></param>
 		/// <param name="name"></param>
 		/// <param name="brightness">Brightness for this zone.</param>
-		public Zone(LightingController lightingController, string name = "", double? brightness = 1.0)
+		public Zone(ILightingController lightingController, string name = "", double? brightness = 1.0)
 		{
 			Lights = new List<ILogicalRGBLight>();
 			LightingController = lightingController;
@@ -330,7 +330,7 @@ namespace ZoneLighting.ZoneNS
 
 		}
 
-		public void SendLights(LightingController lightingController, IList<ILogicalRGBLight> lights = null)
+		public void SendLights(ILightingController lightingController, IList<ILogicalRGBLight> lights = null)
 		{
 			if (lights == null)
 				Lights.Send(lightingController);

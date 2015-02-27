@@ -42,7 +42,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <summary>
 		/// Lighting controller to be used by the program.
 		/// </summary>
-		public LightingController LightingController { get; set; }
+		public ILightingController LightingController { get; set; }
 
 		/// <summary>
 		/// Inputs for this program.

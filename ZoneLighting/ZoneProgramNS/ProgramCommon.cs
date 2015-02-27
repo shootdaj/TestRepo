@@ -107,7 +107,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 	public static class ProgramExtensions
 	{
-		public static void Send(this IList<ILogicalRGBLight> lights, LightingController lc)
+		public static void Send(this IList<ILogicalRGBLight> lights, ILightingController lc)
 		{
 			lc.SendLights(lights.Cast<ILightingControllerPixel>().ToList());
 		}

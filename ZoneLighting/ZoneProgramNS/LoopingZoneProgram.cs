@@ -19,10 +19,10 @@ namespace ZoneLighting.ZoneProgramNS
 		public override void Dispose(bool force)
 		{
 			Unsetup();
+			base.Dispose(force);
 			LoopCTS.Dispose();
 			IsSynchronizable.Dispose();
 			WaitForSync.Dispose();
-			base.Dispose(force);
 		}
 
 		#region Looping Stuff
