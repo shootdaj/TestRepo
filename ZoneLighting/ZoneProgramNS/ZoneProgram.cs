@@ -54,7 +54,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public ProgramState State { get; private set; } = ProgramState.Stopped;
 
-		public SyncContext SyncContext { get; set; }
+		protected SyncContext SyncContext { get; set; }
 		
 		#region Triggers
 
@@ -158,6 +158,9 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public virtual void SetSyncContext(SyncContext syncContext)
 		{
+			//remove from old sync context, if any
+			SyncContext?.Unsync(this);
+
 			if (State == ProgramState.Stopped)
 				SyncContext = syncContext;	
 			else

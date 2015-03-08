@@ -75,7 +75,7 @@ namespace ZoneLighting.ZoneNS
 					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.Start());						//start
 					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.IsSynchronizable.WaitForFire());   //wait for sync state
 					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => Barrier.AddParticipant());	//add participant for each program
-					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => { if (zp.SyncContext != this) zp.SetSyncContext(this); });	//set this context as sync context if it's not already
+					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => { zp.SetSyncContext(this); });	//set this context as sync context if it's not already
 					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => ZonePrograms.Add(zp));		//add each program to list of programs that are actively using this sync context
 					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.WaitForSync.Fire(null, null)); //release from sync state
 				}
@@ -107,15 +107,15 @@ namespace ZoneLighting.ZoneNS
 				}
 				else if (zoneProgram is LoopingZoneProgram && ZonePrograms.All(zp => zp is LoopingZoneProgram))
 				{
+					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.RequestSyncState());
 					((LoopingZoneProgram)zoneProgram).RequestSyncState();
 					zoneProgram.Start(liveSync: false);
-					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.RequestSyncState());
-					
-					((LoopingZoneProgram)zoneProgram).IsSynchronizable.WaitForFire();
+
 					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.IsSynchronizable.WaitForFire());
+					((LoopingZoneProgram)zoneProgram).IsSynchronizable.WaitForFire();
 
 					AddParticipant(zoneProgram);
-					if (zoneProgram.SyncContext != this) zoneProgram.SetSyncContext(this);
+					zoneProgram.SetSyncContext(this);
 
 					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.WaitForSync.Fire(null, null));
 				}
@@ -161,11 +161,6 @@ namespace ZoneLighting.ZoneNS
 			if (ZonePrograms.Any())
 				Barrier.SignalAndWait();
 		}
-
-		/// <summary>
-		/// Lag means that there are participants we're still waiting on.
-		/// </summary>
-		public bool Lag => Barrier.ParticipantsRemaining != Barrier.ParticipantCount && Barrier.ParticipantsRemaining != 0;
 
 		#endregion
 	}
