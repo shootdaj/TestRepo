@@ -156,7 +156,7 @@ namespace ZoneLighting.ZoneProgramNS
 			StartTrigger.Dispose();
 		}
 
-		public void SetSyncContext(SyncContext syncContext)
+		public virtual void SetSyncContext(SyncContext syncContext)
 		{
 			if (State == ProgramState.Stopped)
 				SyncContext = syncContext;	

@@ -7,31 +7,56 @@ using ZoneLighting.ZoneProgramNS;
 namespace ZoneLighting.ZoneNS
 {
 	/// <summary>
-	/// A wrapper on top of Barrier to have easier manageability.
+	/// A wrapper on top of Barrier to have easier manageability. This class is used to synchronize programs
+	/// by providing a common barrier, and managing the programs around that Barrier. This class is sealed because
+	/// overriding any functionality will most likely break many things in here because a lot of parts are in motion.
 	/// </summary>
 	public sealed class SyncContext : IDisposable
 	{
+		#region CORE
+
+		/// <summary>
+		/// A name for convenience.
+		/// </summary>
 		public string Name { get; private set; }
 
+		/// <summary>
+		/// Underlying barrier that synchronizes the programs that are attached to this SyncContext.
+		/// </summary>
 		private Barrier Barrier { get; set; } = new Barrier(0);
 
+		/// <summary>
+		/// ZonePrograms that are synchronized using this SyncContext.
+		/// </summary>
 		private List<ZoneProgram> ZonePrograms { get; set; } = new List<ZoneProgram>();
 
+		#endregion
+
+		#region C+I
+
+		/// <summary>
+		/// Default constructor.
+		/// </summary>
 		/// <param name="name">Name of synchronization context for handy referencing.</param>
 		public SyncContext(string name = null)
 		{
 			if (name != null)
 				Name = name + "SyncContext";
 		}
-
+		
 		public void Dispose()
 		{
 			Barrier.Dispose();
 			Name = null;
 		}
 
+		#endregion
+
+		#region API
+
 		/// <summary>
-		/// Synchronization when all the programs to be synced are known beforehand and they are all stopped.
+		/// Synchronizes all given programs and starts them.
+		/// Should be called when all the programs to be synced are known beforehand and they are all stopped.
 		/// </summary>
 		/// <param name="zonePrograms"></param>
 		public void SyncAndStart(List<ZoneProgram> zonePrograms)
@@ -50,6 +75,7 @@ namespace ZoneLighting.ZoneNS
 					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.Start());						//start
 					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.IsSynchronizable.WaitForFire());   //wait for sync state
 					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => Barrier.AddParticipant());	//add participant for each program
+					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => { if (zp.SyncContext != this) zp.SetSyncContext(this); });	//set this context as sync context if it's not already
 					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => ZonePrograms.Add(zp));		//add each program to list of programs that are actively using this sync context
 					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.WaitForSync.Fire(null, null)); //release from sync state
 				}
@@ -64,6 +90,11 @@ namespace ZoneLighting.ZoneNS
 			}
 		}
 
+		/// <summary>
+		/// Synchronizes the given program with the programs that are already attached to this context.
+		/// This can be called while the other programs are running, but will wait until they can get into
+		/// their synchronizable states before executing the synchronization.
+		/// </summary>
 		public void SyncAndStartLive(ZoneProgram zoneProgram)
 		{
 			//incoming program must be stopped 
@@ -79,13 +110,12 @@ namespace ZoneLighting.ZoneNS
 					((LoopingZoneProgram)zoneProgram).RequestSyncState();
 					zoneProgram.Start(liveSync: false);
 					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.RequestSyncState());
-
-
+					
 					((LoopingZoneProgram)zoneProgram).IsSynchronizable.WaitForFire();
 					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.IsSynchronizable.WaitForFire());
-					
-					Barrier.AddParticipant();
-					ZonePrograms.Add(zoneProgram);
+
+					AddParticipant(zoneProgram);
+					if (zoneProgram.SyncContext != this) zoneProgram.SetSyncContext(this);
 
 					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.WaitForSync.Fire(null, null));
 				}
@@ -99,7 +129,7 @@ namespace ZoneLighting.ZoneNS
 				throw new Exception("All programs must be stopped before a non-live sync is executed.");
 			}
 		}
-
+		
 		public void SyncAndStart(params ZoneProgram[] zonePrograms)
 		{
 			SyncAndStart(zonePrograms.ToList());
@@ -112,44 +142,31 @@ namespace ZoneLighting.ZoneNS
 		}
 
 		/// <summary>
-		/// A program can request itself to be removed from the synchronization by calling this method
+		/// Removes a given program from the synchronization.
 		/// </summary>
-		/// <param name="program"></param>
 		public void Unsync(ZoneProgram program)
 		{
-			if (ZonePrograms.Contains(program))
-			{
-				if (Barrier.ParticipantsRemaining == 3)	
-					Console.WriteLine("4 Barriers, 3 Remaining");
-				Barrier.RemoveParticipant();
-				ZonePrograms.Remove(program);
-			}
+			if (!ZonePrograms.Contains(program)) return;
+			Barrier.RemoveParticipant();
+			ZonePrograms.Remove(program);
 		}
 
-		///// <summary>
-		///// Makes the given zone a participant of this sync context. 
-		///// </summary>
-		///// <param name="zone"></param>
-		//public void MakeZoneParticipant(Zone zone)
-		//{
-		//	Barrier.AddParticipant();
-		//}
-
-		//public void RemoveZoneParticipant(ZoneProgram zoneProgram)
-		//{
-		//	Barrier.RemoveParticipant();
-		//}
-
+		/// <summary>
+		/// Signals the barrier and waits for the other programs to catch up or if it's the last program,
+		/// then propels all the programs. To be used by programs to signal the other programs that signalling
+		/// program is now waiting on the rest.
+		/// </summary>
 		public void SignalAndWait()
 		{
 			if (ZonePrograms.Any())
 				Barrier.SignalAndWait();
 		}
 
-		//public void Reset()
-		//{
-		//	var participantCount = Barrier.ParticipantCount;
-		//	Barrier = new Barrier(participantCount);
-		//}
+		/// <summary>
+		/// Lag means that there are participants we're still waiting on.
+		/// </summary>
+		public bool Lag => Barrier.ParticipantsRemaining != Barrier.ParticipantCount && Barrier.ParticipantsRemaining != 0;
+
+		#endregion
 	}
 }

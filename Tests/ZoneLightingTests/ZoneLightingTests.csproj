@@ -89,6 +89,7 @@
     <Compile Include="UnderlyingTypeConverterTests.cs" />
     <Compile Include="ZoneLightingManagerTests.cs" />
     <Compile Include="ZoneProgramInputTests.cs" />
+    <Compile Include="SyncContextTests.cs" />
     <Compile Include="ZoneProgramTests.cs" />
     <Compile Include="ZoneTests.cs" />
   </ItemGroup>

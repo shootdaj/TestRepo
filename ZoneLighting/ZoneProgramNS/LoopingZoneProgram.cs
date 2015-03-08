@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using ZoneLighting.TriggerDependencyNS;
@@ -107,6 +108,14 @@ namespace ZoneLighting.ZoneProgramNS
 		}
 
 		public abstract SyncLevel SyncLevel { get; set; }
+
+		public override void SetSyncContext(SyncContext syncContext)
+		{
+			if (State == ProgramState.Stopped || IsSyncStateRequested)
+				SyncContext = syncContext;
+			else
+				throw new Exception("Can only set sync context while program is stopped or if it's in synchronizable state.");
+		}
 
 		#region Overrideables
 

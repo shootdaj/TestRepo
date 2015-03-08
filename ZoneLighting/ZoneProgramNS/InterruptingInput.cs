@@ -50,7 +50,7 @@ namespace ZoneLighting.ZoneProgramNS
 			if (InterruptQueue == null)
 				throw new Exception("Interrupt Queue has not been set or has been set to null.");
 
-			DebugTools.AddEvent("InterruptingInput.SetValue", "START Posting to InterruptQueue");
+			//DebugTools.AddEvent("InterruptingInput.SetValue", "START Posting to InterruptQueue");
 			
 			InterruptQueue.Post(new InterruptInfo()
 			{
@@ -62,7 +62,7 @@ namespace ZoneLighting.ZoneProgramNS
 														//the zone and getting its ZoneProgram property, which is the background program that is to be interrupted.
 			});
 
-			DebugTools.AddEvent("InterruptingInput.SetValue", "END Posting to InterruptQueue");
+			//DebugTools.AddEvent("InterruptingInput.SetValue", "END Posting to InterruptQueue");
 
 			Value = data;
 		}
