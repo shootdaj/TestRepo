@@ -28,7 +28,7 @@ namespace ExternalPrograms
 
 		public override void Loop()
 		{
-			DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
+			//DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
 
 			var colors = new List<Color>();
 			colors.Add(Color.Red);
@@ -52,7 +52,7 @@ namespace ExternalPrograms
 				SyncContext?.SignalAndWait();
 			}
 
-			DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
+			//DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
 		}
 
 		public static class ScrollDotSyncLevel

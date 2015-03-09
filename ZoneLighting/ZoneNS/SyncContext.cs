@@ -46,6 +46,7 @@ namespace ZoneLighting.ZoneNS
 		
 		public void Dispose()
 		{
+			ZonePrograms.Clear();
 			Barrier.Dispose();
 			Name = null;
 		}
@@ -71,13 +72,42 @@ namespace ZoneLighting.ZoneNS
 				}
 				else if (zonePrograms.All(p => p is LoopingZoneProgram))
 				{
-					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.RequestSyncState());	//sync request
-					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.Start());						//start
-					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.IsSynchronizable.WaitForFire());   //wait for sync state
-					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => Barrier.AddParticipant());	//add participant for each program
-					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => { zp.SetSyncContext(this); });	//set this context as sync context if it's not already
-					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => ZonePrograms.Add(zp));		//add each program to list of programs that are actively using this sync context
-					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.WaitForSync.Fire(null, null)); //release from sync state
+					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+					{
+						DebugTools.AddEvent("SyncContext.SyncAndStart", "Requesting sync-state from Program " + zp.Name);
+						zp.RequestSyncState();
+					});	//sync request
+					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+					{
+						DebugTools.AddEvent("SyncContext.SyncAndStart", "Starting Program " + zp.Name);
+						zp.Start();
+					});						//start
+					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+					{
+						DebugTools.AddEvent("SyncContext.SyncAndStart", "Waiting for Sync-State from Program " + zp.Name);
+						zp.IsSynchronizable.WaitForFire();
+					});   //wait for sync state
+
+					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+					{
+						DebugTools.AddEvent("SyncContext.SyncAndStart", "Adding Barrier on behalf of " + zp.Name);
+						Barrier.AddParticipant();
+					});	//add participant for each program
+					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+					{
+						DebugTools.AddEvent("SyncContext.SyncAndStart", "Setting Sync-Context for " + zp.Name);
+						zp.SetSyncContext(this);
+					});	//set this context as sync context if it's not already
+					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+					{
+						DebugTools.AddEvent("SyncContext.SyncAndStart", "Adding to ZonePrograms: " + zp.Name);
+						ZonePrograms.Add(zp);
+					});		//add each program to list of programs that are actively using this sync context
+					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+					{
+						DebugTools.AddEvent("SyncContext.SyncAndStart", "Release from Sync-State " + zp.Name);
+						zp.WaitForSync.Fire(null, null);
+					}); //release from sync state
 				}
 				else
 				{
@@ -107,17 +137,52 @@ namespace ZoneLighting.ZoneNS
 				}
 				else if (zoneProgram is LoopingZoneProgram && ZonePrograms.All(zp => zp is LoopingZoneProgram))
 				{
-					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.RequestSyncState());
+					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+					{
+						DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Requesting sync-state from Program " + zp.Name);
+						zp.RequestSyncState();
+					});
+					DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Requesting sync-state from Program " + zoneProgram.Name);
 					((LoopingZoneProgram)zoneProgram).RequestSyncState();
+
+
+
+					DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Starting Program " + zoneProgram.Name);
 					zoneProgram.Start(liveSync: false);
 
-					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.IsSynchronizable.WaitForFire());
+
+
+					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+					{
+						DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Waiting for Sync-State from Program " + zp.Name);
+						zp.IsSynchronizable.WaitForFire();
+					});
+					DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Waiting for Sync-State from Program " + zoneProgram.Name);
 					((LoopingZoneProgram)zoneProgram).IsSynchronizable.WaitForFire();
 
-					AddParticipant(zoneProgram);
+
+
+					DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Adding Barrier on behalf of " + zoneProgram.Name);
+					Barrier.AddParticipant();
+
+
+
+					DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Setting Sync-Context for " + zoneProgram.Name);
 					zoneProgram.SetSyncContext(this);
 
-					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp => zp.WaitForSync.Fire(null, null));
+
+
+					DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Adding to ZonePrograms: " + zoneProgram.Name);
+					ZonePrograms.Add(zoneProgram);
+
+					//AddParticipant(zoneProgram);
+
+
+					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+					{
+						DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Release from Sync-State " + zp.Name);
+						zp.WaitForSync.Fire(null, null);
+					});
 				}
 				else
 				{

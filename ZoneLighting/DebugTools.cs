@@ -146,6 +146,8 @@ namespace ZoneLighting
 		/// <param name="longDurationThreshold">What is the duration for a timespan between two events to be marked as "long".</param>
 		public static void Print(bool timeSpans = true, bool printTotal = true, bool clearEvents = false, bool deactivate = false, bool printLabel = false, int longDurationThreshold = 250)
 		{
+			Active = false;
+
 			if (OutputActive)
 			{
 				if (Events.Any())

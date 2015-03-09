@@ -132,6 +132,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 				//remove from synccontext
 				SyncContext?.Unsync(this);
+				SyncContext = null;
 
 				//set program state
 				State = ProgramState.Stopped;
@@ -148,7 +149,6 @@ namespace ZoneLighting.ZoneProgramNS
 			Stop(force);
 			UnsetInterruptQueue();		//unset the interrupt queue
 			RemoveAllInputs();
-			SyncContext = null;
 			Name = null;
 			Zone = null;
 			StopTrigger.Dispose();

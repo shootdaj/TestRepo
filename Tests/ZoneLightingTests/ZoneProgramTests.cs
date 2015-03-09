@@ -46,7 +46,7 @@ namespace ZoneLightingTests
 		[Test]
 		public void CooperativeStop_Works()
 		{
-			DebugTools.AddEvent("Test.CooperativeStop_Works", "START CooperativeStop_Works Test");
+			//DebugTools.AddEvent("Test.CooperativeStop_Works", "START CooperativeStop_Works Test");
 
 			//arrange
 			var zoneScaffolder = new ZoneScaffolder();
@@ -73,7 +73,7 @@ namespace ZoneLightingTests
 			leftWing.Dispose();
 			FadeCandyController.Instance.Dispose();
 
-			DebugTools.AddEvent("Test.CooperativeStop_Works", "END CooperativeStop_Works Test");
+			//DebugTools.AddEvent("Test.CooperativeStop_Works", "END CooperativeStop_Works Test");
 
 			Assert.True(result);
 		}
