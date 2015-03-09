@@ -13,300 +13,289 @@ namespace ZoneLightingTests
 {
 	public class SyncContextTests
 	{
-		[Test]
-		public void SyncAndStart_TwoSteppers_Works()
+		[TestCase(30)]
+		public void SyncAndStart_TwoSteppers_Works(int timeout)
 		{
-			//create a sync context to conduct the test with
-			var testContext = new SyncContext();
-
-			//create two programs to be synced
-			var stepperA = new Stepper("a");
-			var stepperB = new Stepper("b");
-
-			//sync and start
-			testContext.SyncAndStart(stepperA, stepperB);
-
-			int[] stepperSteps;
-			var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB);
-
-			//cleanup
-			stepperA.Dispose(true);
-			stepperB.Dispose(true);
-			testContext.Dispose();
-
-			//assert
-			if (result)
-				Assert.Pass();
-			else
-				Assert.Fail("The two programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] + ":" +
-							stepperB.Name + "=" + stepperSteps[1]);
-		}
-
-		[Test]
-		public void SyncAndStart_FourSteppers_Works()
-		{
-			//create a sync context to conduct the test with
-			var testContext = new SyncContext();
-
-			//create two programs to be synced
-			var stepperA = new Stepper("a");
-			var stepperB = new Stepper("b");
-			var stepperC = new Stepper("c");
-			var stepperD = new Stepper("d");
-
-			//sync and start
-			testContext.SyncAndStart(stepperA, stepperB, stepperC, stepperD);
-
-			int[] stepperSteps;
-			var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB, stepperC, stepperD);
-
-			//cleanup
-			stepperA.Dispose(true);
-			stepperB.Dispose(true);
-			stepperC.Dispose(true);
-			stepperD.Dispose(true);
-			testContext.Dispose();
-
-			//assert
-			if (result)
-				Assert.Pass();
-			else
-				Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] + ":" +
-							stepperB.Name + "=" + stepperSteps[1] + ":" +
-							stepperC.Name + "=" + stepperSteps[2] + ":" +
-							stepperD.Name + "=" + stepperSteps[3]);
-		}
-
-		[Test]
-		public void SyncAndStartLive_TwoSteppers_Works()
-		{
-			//create a sync context to conduct the test with
-			var testContext = new SyncContext();
-
-			//create two programs to be synced
-			var stepperA = new StepperInternalLoop("a");
-			var stepperB = new StepperInternalLoop("b");
-
-			//sync and start A
-			testContext.SyncAndStart(stepperA);
-
-			//start B as a live sync with testContext when stepper A is back to the beginning
-			testContext.SyncAndStartLive(stepperB);
-
-			int[] stepperSteps;
-			var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB);
-
-			//cleanup
-			stepperA.Dispose(true);
-			stepperB.Dispose(true);
-			testContext.Dispose();
-
-			//assert
-			if (result)
-				Assert.Pass();
-			else
-				Assert.Fail("The two programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] + ":" +
-							stepperB.Name + "=" + stepperSteps[1]);
-		}
-
-		//[TestCase(60)]
-		[Test]
-		public void SyncAndStartLive_OneStepperSyncingWithThree_Works()
-		{
-			//var timeoutSeconds = 30;
-			//var task = Task.Factory.StartNew(() =>
-			//{
-
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "START");
-
-			//create a sync context to conduct the test with
-			var testContext = new SyncContext();
-
-			//create two programs to be synced
-			var stepperA = new StepperInternalLoop("A");
-			var stepperB = new StepperInternalLoop("B");
-			var stepperC = new StepperInternalLoop("C");
-			var stepperD = new StepperInternalLoop("D");
-
-			//sync and start ABC
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
-			testContext.SyncAndStart(stepperA, stepperB, stepperC);
-
-			//start D as a live sync with testContext when steppers ABC is back to the beginning
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "LiveSync-Starting Stepper D");
-			testContext.SyncAndStartLive(stepperD);
-
-			int[] stepperSteps;
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Validating Sync Phases");
-			var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB, stepperC, stepperD);
-
-			//cleanup
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper A");
-			stepperA.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper B");
-			stepperB.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper C");
-			stepperC.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper D");
-			stepperD.Dispose(true);
-			testContext.Dispose();
-
-			DebugTools.Print();
-
-			if (result)
+			RunTimeboundTest(new Thread(() =>
 			{
-				Assert.Pass();
-			}
-			else
+				DebugTools.AddEvent("SyncAndStart_TwoSteppers_Works", "START");
+
+				//create a sync context to conduct the test with
+				var testContext = new SyncContext();
+
+				//create two programs to be synced
+				var stepperA = new Stepper("a");
+				var stepperB = new Stepper("b");
+
+				//sync and start
+				testContext.SyncAndStart(stepperA, stepperB);
+
+				int[] stepperSteps;
+				var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB);
+
+				//cleanup
+				stepperA.Dispose(true);
+				stepperB.Dispose(true);
+				testContext.Dispose();
+
+				//assert
+				if (result)
+					Assert.Pass();
+				else
+					Assert.Fail("The two programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] +
+					            ":" +
+					            stepperB.Name + "=" + stepperSteps[1]);
+			}), timeout);
+		}
+
+		[TestCase(30)]
+		public void SyncAndStart_FourSteppers_Works(int timeout)
+		{
+			RunTimeboundTest(new Thread(() =>
 			{
-				Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] + ":" +
-				            stepperB.Name + "=" + stepperSteps[1] + ":" +
-				            stepperC.Name + "=" + stepperSteps[2] + ":" +
-				            stepperD.Name + "=" + stepperSteps[3]);
-			}
+				DebugTools.AddEvent("SyncAndStart_FourSteppers_Works", "START");
 
-			//});
+				//create a sync context to conduct the test with
+				var testContext = new SyncContext();
 
-			//t.Start();
-			//if (!t.Join(TimeSpan.FromSeconds(30)))
-			//{
-			//	t.Abort();
-			//}
+				//create two programs to be synced
+				var stepperA = new Stepper("a");
+				var stepperB = new Stepper("b");
+				var stepperC = new Stepper("c");
+				var stepperD = new Stepper("d");
 
+				//sync and start
+				testContext.SyncAndStart(stepperA, stepperB, stepperC, stepperD);
 
+				int[] stepperSteps;
+				var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB, stepperC, stepperD);
 
-			//Task.WaitAny(new[]{task.ContinueWith(task1 =>
-			//{
-			//	DebugTools.Print();
-			//	Assert.Fail();
-			//})}, TimeSpan.FromSeconds(timeoutSeconds)).;
+				//cleanup
+				stepperA.Dispose(true);
+				stepperB.Dispose(true);
+				stepperC.Dispose(true);
+				stepperD.Dispose(true);
+				testContext.Dispose();
 
-			//int timeout = 1000;
+				//assert
+				if (result)
+					Assert.Pass();
+				else
+					Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] + ":" +
+					            stepperB.Name + "=" + stepperSteps[1] + ":" +
+					            stepperC.Name + "=" + stepperSteps[2] + ":" +
+					            stepperD.Name + "=" + stepperSteps[3]);
 
-			//if (await Task.WhenAny(task, Task.Delay(timeout)) == task)
-			//{
-			//	// task completed within timeout
-			//}
-			//else
-			//{
-			//	// timeout logic
-			//}
+			}), timeout);
+		}
+
+		[TestCase(30)]
+		public void SyncAndStartLive_TwoSteppers_Works(int timeout)
+		{
+			RunTimeboundTest(new Thread(() =>
+			{
+				DebugTools.AddEvent("SyncAndStartLive_TwoSteppers_Works", "START");
+
+				//create a sync context to conduct the test with
+				var testContext = new SyncContext();
+
+				//create two programs to be synced
+				var stepperA = new StepperInternalLoop("A");
+				var stepperB = new StepperInternalLoop("B");
+
+				//sync and start A
+				DebugTools.AddEvent("SyncAndStartLive_TwoSteppers_Works", "Sync-Starting Stepper A");
+				testContext.SyncAndStart(stepperA);
+
+				//start B as a live sync with testContext when stepper A is back to the beginning
+				DebugTools.AddEvent("SyncAndStartLive_TwoSteppers_Works", "LiveSync-Starting Stepper B");
+				testContext.SyncAndStartLive(stepperB);
+
+				int[] stepperSteps;
+				var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB);
+
+				//cleanup
+				stepperA.Dispose(true);
+				stepperB.Dispose(true);
+				testContext.Dispose();
+
+				//assert
+				if (result)
+					Assert.Pass();
+				else
+					Assert.Fail("The two programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] +
+					            ":" +
+					            stepperB.Name + "=" + stepperSteps[1]);
+
+			}), timeout);
+		}
+
+		[TestCase(30)]
+		public void SyncAndStartLive_OneStepperSyncingWithThree_Works(int timeout)
+		{
+			RunTimeboundTest(new Thread(() =>
+			{
+				DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "START");
+
+				//create a sync context to conduct the test with
+				var testContext = new SyncContext();
+
+				//create two programs to be synced
+				var stepperA = new StepperInternalLoop("A");
+				var stepperB = new StepperInternalLoop("B");
+				var stepperC = new StepperInternalLoop("C");
+				var stepperD = new StepperInternalLoop("D");
+
+				//sync and start ABC
+				DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
+				testContext.SyncAndStart(stepperA, stepperB, stepperC);
+
+				//start D as a live sync with testContext when steppers ABC is back to the beginning
+				DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "LiveSync-Starting Stepper D");
+				testContext.SyncAndStartLive(stepperD);
+
+				int[] stepperSteps;
+				var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB, stepperC, stepperD);
+
+				//cleanup
+				DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper A");
+				stepperA.Dispose(true);
+				DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper B");
+				stepperB.Dispose(true);
+				DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper C");
+				stepperC.Dispose(true);
+				DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper D");
+				stepperD.Dispose(true);
+				testContext.Dispose();
+
+				if (result)
+				{
+					Assert.Pass();
+				}
+				else
+				{
+					Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] + ":" +
+					            stepperB.Name + "=" + stepperSteps[1] + ":" +
+					            stepperC.Name + "=" + stepperSteps[2] + ":" +
+					            stepperD.Name + "=" + stepperSteps[3]);
+				}
+
+			}), timeout);
 		}
 
 		[Test]
-		[Ignore]
-		public void SyncAndStartLive_TwoStepperSyncingWithTwo_Works()
+		public void SyncAndStartLive_TwoStepperSyncingWithTwo_Works(int timeout)
 		{
-			//create a sync context to conduct the test with
-			var testContext = new SyncContext();
+			RunTimeboundTest(new Thread(() =>
+			{
+				DebugTools.AddEvent("SyncAndStartLive_TwoStepperSyncingWithTwo_Works", "START");
 
-			//create two programs to be synced
-			var stepperA = new StepperInternalLoop("a");
-			var stepperB = new StepperInternalLoop("b");
-			var stepperC = new StepperInternalLoop("c");
-			var stepperD = new StepperInternalLoop("d");
+				//create a sync context to conduct the test with
+				var testContext = new SyncContext();
 
-			//sync and start AB
-			testContext.SyncAndStart(stepperA, stepperB);
+				//create two programs to be synced
+				var stepperA = new StepperInternalLoop("a");
+				var stepperB = new StepperInternalLoop("b");
+				var stepperC = new StepperInternalLoop("c");
+				var stepperD = new StepperInternalLoop("d");
 
-			//start CD as a live sync with testContext when steppers AB is back to the beginning
-			testContext.SyncAndStartLive(stepperC);
-			testContext.SyncAndStartLive(stepperD);
+				//sync and start AB
+				testContext.SyncAndStart(stepperA, stepperB);
 
-			int[] stepperSteps;
-			var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB, stepperC, stepperD);
+				//start CD as a live sync with testContext when steppers AB is back to the beginning
+				testContext.SyncAndStartLive(stepperC);
+				testContext.SyncAndStartLive(stepperD);
 
-			//cleanup
-			stepperA.Dispose(true);
-			stepperB.Dispose(true);
-			stepperC.Dispose(true);
-			stepperD.Dispose(true);
-			testContext.Dispose();
+				int[] stepperSteps;
+				var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB, stepperC, stepperD);
 
-			//assert
-			if (result)
-				Assert.Pass();
-			else
-				Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] + ":" +
-							stepperB.Name + "=" + stepperSteps[1] + ":" +
-							stepperC.Name + "=" + stepperSteps[2] + ":"
-							+ stepperD.Name + "=" + stepperSteps[3]
-							);
+				//cleanup
+				stepperA.Dispose(true);
+				stepperB.Dispose(true);
+				stepperC.Dispose(true);
+				stepperD.Dispose(true);
+				testContext.Dispose();
+
+				//assert
+				if (result)
+					Assert.Pass();
+				else
+					Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] + ":" +
+					            stepperB.Name + "=" + stepperSteps[1] + ":" +
+					            stepperC.Name + "=" + stepperSteps[2] + ":"
+					            + stepperD.Name + "=" + stepperSteps[3]
+						);
+			}), timeout);
+
 		}
 
 		[Test]
-		public void SyncAndStartLive_ThreeStepperSyncingWithOne_Works()
+		public void SyncAndStartLive_ThreeStepperSyncingWithOne_Works(int timeout)
 		{
-			//var task = Task.Factory.StartNew(() =>
-			//{
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "START");
-
-			//create a sync context to conduct the test with
-			var testContext = new SyncContext();
-
-			//create two programs to be synced
-			var stepperA = new StepperInternalLoop("A");
-			var stepperB = new StepperInternalLoop("B");
-			var stepperC = new StepperInternalLoop("C");
-			var stepperD = new StepperInternalLoop("D");
-
-			//sync and start A
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Sync-Starting Stepper A");
-			testContext.SyncAndStart(stepperA);
-
-			//start BCD as a live sync with testContext when steppers A is back to the beginning
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "LiveSync-Starting Stepper B");
-			testContext.SyncAndStartLive(stepperB);
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "LiveSync-Starting Stepper C");
-			testContext.SyncAndStartLive(stepperC);
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "LiveSync-Starting Stepper D");
-			testContext.SyncAndStartLive(stepperD);
-
-			int[] stepperSteps;
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Validating Sync Phases");
-			var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB, stepperC, stepperD);
-
-			//cleanup
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper A");
-			stepperA.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper B");
-			stepperB.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper C");
-			stepperC.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper D");
-			stepperD.Dispose(true);
-			testContext.Dispose();
-
-			//assert
-			if (result)
+			RunTimeboundTest(new Thread(() =>
 			{
-				Assert.Pass();
-			}
-			else
-			{
-				DebugTools.Print();
+				DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "START");
 
-				Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] + ":" +
-				            stepperB.Name + "=" + stepperSteps[1] + ":" +
-				            stepperC.Name + "=" + stepperSteps[2] + ":"
-				            + stepperD.Name + "=" + stepperSteps[3]);
-			}
+				//create a sync context to conduct the test with
+				var testContext = new SyncContext();
 
+				//create two programs to be synced
+				var stepperA = new StepperInternalLoop("A");
+				var stepperB = new StepperInternalLoop("B");
+				var stepperC = new StepperInternalLoop("C");
+				var stepperD = new StepperInternalLoop("D");
 
-			//});
+				//sync and start A
+				DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Sync-Starting Stepper A");
+				testContext.SyncAndStart(stepperA);
 
-			//Task.WaitAny(new[] { task }, TimeSpan.FromSeconds(20));
-			//DebugTools.Print();
+				//start BCD as a live sync with testContext when steppers A is back to the beginning
+				DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "LiveSync-Starting Stepper B");
+				testContext.SyncAndStartLive(stepperB);
+				DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "LiveSync-Starting Stepper C");
+				testContext.SyncAndStartLive(stepperC);
+				DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "LiveSync-Starting Stepper D");
+				testContext.SyncAndStartLive(stepperD);
+
+				int[] stepperSteps;
+				DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Validating Sync Phases");
+				var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB, stepperC, stepperD);
+
+				//cleanup
+				DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper A");
+				stepperA.Dispose(true);
+				DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper B");
+				stepperB.Dispose(true);
+				DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper C");
+				stepperC.Dispose(true);
+				DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper D");
+				stepperD.Dispose(true);
+				testContext.Dispose();
+
+				//assert
+				if (result)
+				{
+					Assert.Pass();
+				}
+				else
+				{
+					DebugTools.Print();
+
+					Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] + ":" +
+					            stepperB.Name + "=" + stepperSteps[1] + ":" +
+					            stepperC.Name + "=" + stepperSteps[2] + ":"
+					            + stepperD.Name + "=" + stepperSteps[3]);
+				}
+			}), timeout);
 		}
 
 		/// <summary>
 		/// Checks to make sure that the steppers provided are in within 1 step of each other.
 		/// </summary>
-		/// <param name="stepperSteps"></param>
-		/// <param name="steppers"></param>
-		/// <returns></returns>
 		private static bool ValidateStepperSyncPhase(out int[] stepperSteps, params Stepper[] steppers)
 		{
+			DebugTools.AddEvent("ValidateStepperSyncPhase", "STARTs");
+
 			var result = true;
 			stepperSteps = new int[steppers.Length];
 
@@ -350,7 +339,26 @@ namespace ZoneLightingTests
 				Thread.Sleep(1);
 			}
 
+			DebugTools.AddEvent("ValidateStepperSyncPhase", "END result: " + result);
+
 			return result;
+		}
+
+		private void RunTimeboundTest(Thread testThread, int timeout)
+		{
+			testThread.Start();
+			var didTestFinish = testThread.Join(TimeSpan.FromSeconds(timeout));
+			if (!didTestFinish)
+			{
+				testThread.Abort();
+				DebugTools.Print();
+				Assert.Fail();
+			}
+			//i think this should never get called, because it the test finishes, it should never get here because of the asserts
+			else
+			{
+				DebugTools.Print();
+			}
 		}
 
 	}
