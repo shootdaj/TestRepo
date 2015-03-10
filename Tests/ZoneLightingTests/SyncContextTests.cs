@@ -292,8 +292,6 @@ namespace ZoneLightingTests
 			}), timeout);
 		}
 
-
-
 		/// <summary>
 		/// Checks to make sure that the steppers provided are in within 1 step of each other.
 		/// </summary>
@@ -341,7 +339,7 @@ namespace ZoneLightingTests
 				}
 
 				//sleep cuz we want some cycles of execution to happen in the programs
-				Thread.Sleep(1);
+				Thread.Sleep(10);
 			}
 
 			DebugTools.AddEvent("ValidateStepperSyncPhase", "END result: " + result);
@@ -378,7 +376,11 @@ namespace ZoneLightingTests
 
 		public override void Loop()
 		{
+			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Signalling and waiting: " + this.Name);
+
 			SyncContext?.SignalAndWait();
+
+			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Signal received. Continuing: " + this.Name);
 
 			while (true)
 			{
@@ -398,7 +400,11 @@ namespace ZoneLightingTests
 				//Debug.Print(this.Name + " " + CurrentStep);
 			}
 
+			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Signalling and waiting: " + this.Name);
+
 			SyncContext?.SignalAndWait();
+
+			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Signal received. Continuing: " + this.Name);
 		}
 	}
 

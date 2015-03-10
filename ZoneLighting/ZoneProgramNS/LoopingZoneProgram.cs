@@ -31,6 +31,8 @@ namespace ZoneLighting.ZoneProgramNS
 		protected bool IsSyncStateRequested { get; set; }
 		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
 		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
+		
+		public object SyncLock { get; set; } = new object();
 
 		private bool Running { get; set; }
 
@@ -73,15 +75,22 @@ namespace ZoneLighting.ZoneProgramNS
 						//if sync is requested, go into synchronizable state
 						if (IsSyncStateRequested)
 						{
-							DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Entering Sync-State: " + Name);
-							IsSynchronizable.Fire(this, null);
-							DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "In Sync-State - Waiting for Signal from SyncContext: " + Name);
-							WaitForSync.WaitForFire();
-							DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Leaving Sync-State: " + Name);
-							IsSyncStateRequested = false;
+							lock (SyncLock)
+							{
+								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Entering Sync-State: " + Name);
+								IsSynchronizable.Fire(this, null);
+
+								//SyncContext?.SignalAndWait();
+
+								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask",
+									"In Sync-State - Waiting for Signal from SyncContext: " + Name);
+								WaitForSync.WaitForFire();
+								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Leaving Sync-State: " + Name);
+								IsSyncStateRequested = false;
+							}
 						}
 
-						SyncContext?.SignalAndWait();
+						//SyncContext?.SignalAndWait();
 
 						//start loop
 						Loop();
@@ -154,7 +163,10 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <returns></returns>
 		public void RequestSyncState()
 		{
-			IsSyncStateRequested = true;
+			lock (SyncLock)
+			{
+				IsSyncStateRequested = true;
+			}
 		}
 
 		/// <summary>
