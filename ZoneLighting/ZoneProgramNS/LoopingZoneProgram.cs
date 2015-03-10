@@ -81,7 +81,7 @@ namespace ZoneLighting.ZoneProgramNS
 							IsSyncStateRequested = false;
 						}
 
-						//SyncContext?.SignalAndWait();
+						SyncContext?.SignalAndWait();
 
 						//start loop
 						Loop();
@@ -182,10 +182,11 @@ namespace ZoneLighting.ZoneProgramNS
 
 		protected override void StopCore(bool force)
 		{
-			DebugTools.AddEvent("LoopingZoneProgram.StopCore", "Canceling Sync-State on Program " + Name);
+			DebugTools.AddEvent("LoopingZoneProgram.StopCore", "STOP " + Name);
+			//DebugTools.AddEvent("LoopingZoneProgram.StopCore", "Canceling Sync-State on Program " + Name);
 
 			//cancel sync state req and release from sync state
-			CancelSyncState();
+			//CancelSyncState();
 
 			//DebugTools.AddEvent("LoopingZoneProgram.Stop", "START Stopping BG Program");
 

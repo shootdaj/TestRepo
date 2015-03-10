@@ -159,14 +159,14 @@ namespace ZoneLighting
 					{
 						if (timeSpans && lastDebugEvent != null)
 						{
-							var totalMillisecondDifference = ((int)((debugEvent.EventTime - lastDebugEvent.EventTime).TotalMilliseconds));
+							var totalMillisecondDifference = ((int) ((debugEvent.EventTime - lastDebugEvent.EventTime).TotalMilliseconds));
 
 							PrintOut("");
 							PrintOut("   " + totalMillisecondDifference.ToString() +
-										(printLabel ? " ms" : "") +
-										(totalMillisecondDifference > longDurationThreshold
-											 ? "                            !---------LONG--------!"
-											 : ""));
+							         (printLabel ? " ms" : "") +
+							         (totalMillisecondDifference > longDurationThreshold
+								         ? "                            !---------LONG--------!"
+								         : ""));
 							PrintOut("");
 						}
 						debugEvent.Print();
@@ -179,17 +179,22 @@ namespace ZoneLighting
 						PrintOut("----------------------------------------------");
 						PrintOut("");
 						PrintOut("Total Time: " + (Events.Last().EventTime - Events.First().EventTime).TotalMilliseconds +
-									(printLabel ? " ms" : ""));
+						         (printLabel ? " ms" : ""));
 						PrintOut("");
 					}
 
-					if (deactivate)
-						Active = false;
-
 					if (clearEvents)
 						Events.Clear();
+
+					if (deactivate)
+					{
+						Active = false;
+						return;
+					}
 				}
 			}
+
+			Active = true;
 		}
 
 		public static void PrintOut(string text, bool console = false, bool debug = true)
