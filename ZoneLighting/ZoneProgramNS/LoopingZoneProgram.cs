@@ -77,6 +77,8 @@ namespace ZoneLighting.ZoneProgramNS
 						{
 							lock (SyncStateRequestLock)
 							{
+								//SyncContext?.Unsync(this);
+								
 								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Entering Sync-State: " + Name);
 								IsSynchronizable.Fire(this, null);
 								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask",
@@ -85,8 +87,12 @@ namespace ZoneLighting.ZoneProgramNS
 								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Leaving Sync-State: " + Name);
 								IsSyncStateRequested = false;
 								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "IsSyncStateRequested = false: " + this.Name);
+
+								//SyncContext?.AddParticipant(this);
 							}
 						}
+
+						LeftSyncTrigger.Fire(this, null);
 
 						DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Starting Loop: " + this.Name);
 
@@ -116,10 +122,12 @@ namespace ZoneLighting.ZoneProgramNS
 				{
 					Running = false;
 					StopTrigger.Fire(this, null);
-					DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method", "Unexpected exception in LoopingTask");
+					DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method", "Unexpected exception in LoopingTask: " + ex.Message);
 				}
 			}, LoopCTS.Token);
 		}
+
+		public Trigger LeftSyncTrigger { get; set; } = new Trigger("LeftSyncTrigger");
 
 		public abstract SyncLevel SyncLevel { get; set; }
 
