@@ -32,7 +32,7 @@ namespace ZoneLighting.ZoneProgramNS
 		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
 		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
 		
-		public object SyncLock { get; set; } = new object();
+		public object SyncStateRequestLock { get; set; } = new object();
 
 		private bool Running { get; set; }
 
@@ -75,25 +75,25 @@ namespace ZoneLighting.ZoneProgramNS
 						//if sync is requested, go into synchronizable state
 						if (IsSyncStateRequested)
 						{
-							lock (SyncLock)
+							lock (SyncStateRequestLock)
 							{
 								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Entering Sync-State: " + Name);
 								IsSynchronizable.Fire(this, null);
-
-								//SyncContext?.SignalAndWait();
-
 								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask",
 									"In Sync-State - Waiting for Signal from SyncContext: " + Name);
 								WaitForSync.WaitForFire();
 								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Leaving Sync-State: " + Name);
 								IsSyncStateRequested = false;
+								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "IsSyncStateRequested = false: " + this.Name);
 							}
 						}
 
-						//SyncContext?.SignalAndWait();
+						DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Starting Loop: " + this.Name);
 
 						//start loop
 						Loop();
+
+						DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Finished Loop: " + this.Name);
 
 						//if cancellation is requested, break out of loop after setting notification parameters for the consumer
 						if (LoopCTS.IsCancellationRequested)
@@ -163,9 +163,10 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <returns></returns>
 		public void RequestSyncState()
 		{
-			lock (SyncLock)
+			lock (SyncStateRequestLock)
 			{
 				IsSyncStateRequested = true;
+				DebugTools.AddEvent("LoopingZoneProgram.RequestSyncState", "IsSyncStateRequested = true: " + this.Name);
 			}
 		}
 

@@ -155,7 +155,8 @@ namespace ZoneLighting
 					File.WriteAllText(OutputFile, string.Empty); //clear output file
 
 					DebugEvent lastDebugEvent = null;
-					foreach (var debugEvent in Events.OrderBy(x => x.EventOrderingNumber))
+					
+					foreach (var debugEvent in Events.Where(x => x != null).OrderBy(x => x.EventOrderingNumber))
 					{
 						if (timeSpans && lastDebugEvent != null)
 						{

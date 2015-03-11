@@ -14,11 +14,12 @@ namespace ZoneLightingTests
 {
 	public class SyncContextTests
 	{
-		[TestCase(30)]
-		public void SyncAndStartLive_OneStepperSyncingWithThree_Works(int timeout)
+		[TestCase(30, 30)]
+		[Timeout(120000)]
+		public void SyncAndStartLive_OneStepperSyncingWithThree_Works(int timeout, int numberOfChecks)
 		{
-			RunTimeboundTest(new Thread(() =>
-			{
+			//RunTimeboundTest(new Thread(() =>
+			//{
 				DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "START");
 
 				//create a sync context to conduct the test with
@@ -38,8 +39,8 @@ namespace ZoneLightingTests
 				DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "LiveSync-Starting Stepper D");
 				testContext.SyncAndStartLive(stepperD);
 
-				int[] stepperSteps;
-				var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB, stepperC, stepperD);
+				int[,] stepperSteps;
+				var result = ValidateStepperSyncPhase(out stepperSteps, numberOfChecks, stepperA, stepperB, stepperC, stepperD);
 
 				//cleanup
 				DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper A");
@@ -58,20 +59,21 @@ namespace ZoneLightingTests
 				}
 				else
 				{
-					Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] + ":" +
-								stepperB.Name + "=" + stepperSteps[1] + ":" +
-								stepperC.Name + "=" + stepperSteps[2] + ":" +
-								stepperD.Name + "=" + stepperSteps[3]);
+					Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[numberOfChecks - 1, 0] + ":" +
+								stepperB.Name + "=" + stepperSteps[numberOfChecks - 1, 1] + ":" +
+								stepperC.Name + "=" + stepperSteps[numberOfChecks - 1, 2] + ":" +
+								stepperD.Name + "=" + stepperSteps[numberOfChecks - 1, 3]);
 				}
 
-			}), timeout);
+			//}), timeout);
 		}
 
-		[TestCase(30)]
-		public void SyncAndStartLive_ThreeStepperSyncingWithOne_Works(int timeout)
+		[TestCase(30, 30)]
+		[Timeout(30000)]
+		public void SyncAndStartLive_ThreeStepperSyncingWithOne_Works(int timeout, int numberOfChecks)
 		{
-			RunTimeboundTest(new Thread(() =>
-			{
+			//RunTimeboundTest(new Thread(() =>
+			//{
 				DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "START");
 
 				//create a sync context to conduct the test with
@@ -95,9 +97,9 @@ namespace ZoneLightingTests
 				DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "LiveSync-Starting Stepper D");
 				testContext.SyncAndStartLive(stepperD);
 
-				int[] stepperSteps;
+				int[,] stepperSteps;
 				DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Validating Sync Phases");
-				var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB, stepperC, stepperD);
+				var result = ValidateStepperSyncPhase(out stepperSteps, numberOfChecks, stepperA, stepperB, stepperC, stepperD);
 
 				//cleanup
 				DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper A");
@@ -119,19 +121,20 @@ namespace ZoneLightingTests
 				{
 					DebugTools.Print();
 
-					Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] + ":" +
-								stepperB.Name + "=" + stepperSteps[1] + ":" +
-								stepperC.Name + "=" + stepperSteps[2] + ":"
-								+ stepperD.Name + "=" + stepperSteps[3]);
+					Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[numberOfChecks - 1, 0] + ":" +
+								stepperB.Name + "=" + stepperSteps[numberOfChecks - 1, 1] + ":" +
+								stepperC.Name + "=" + stepperSteps[numberOfChecks - 1, 2] + ":"
+								+ stepperD.Name + "=" + stepperSteps[numberOfChecks - 1, 3]);
 				}
-			}), timeout);
+			//}), timeout);
 		}
 
-		[TestCase(30)]
-		public void SyncAndStartLive_TwoStepperSyncingWithTwo_Works(int timeout)
+		[TestCase(30, 30)]
+		[Timeout(30000)]
+		public void SyncAndStartLive_TwoStepperSyncingWithTwo_Works(int timeout, int numberOfChecks)
 		{
-			RunTimeboundTest(new Thread(() =>
-			{
+			//RunTimeboundTest(new Thread(() =>
+			//{
 				DebugTools.AddEvent("SyncAndStartLive_TwoStepperSyncingWithTwo_Works", "START");
 
 				//create a sync context to conduct the test with
@@ -150,8 +153,8 @@ namespace ZoneLightingTests
 				testContext.SyncAndStartLive(stepperC);
 				testContext.SyncAndStartLive(stepperD);
 
-				int[] stepperSteps;
-				var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB, stepperC, stepperD);
+				int[,] stepperSteps;
+				var result = ValidateStepperSyncPhase(out stepperSteps, numberOfChecks, stepperA, stepperB, stepperC, stepperD);
 
 				//cleanup
 				stepperA.Dispose(true);
@@ -164,20 +167,21 @@ namespace ZoneLightingTests
 				if (result)
 					Assert.Pass();
 				else
-					Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] + ":" +
-								stepperB.Name + "=" + stepperSteps[1] + ":" +
-								stepperC.Name + "=" + stepperSteps[2] + ":"
-								+ stepperD.Name + "=" + stepperSteps[3]
+					Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[numberOfChecks - 1, 0] + ":" +
+								stepperB.Name + "=" + stepperSteps[numberOfChecks - 1, 1] + ":" +
+								stepperC.Name + "=" + stepperSteps[numberOfChecks - 1, 2] + ":"
+								+ stepperD.Name + "=" + stepperSteps[numberOfChecks - 1, 3]
 						);
-			}), timeout);
+			//}), timeout);
 
 		}
 		
-		[TestCase(30)]
-		public void SyncAndStartLive_TwoSteppers_Works(int timeout)
+		[TestCase(30, 30)]
+		[Timeout(30000)]
+		public void SyncAndStartLive_TwoSteppers_Works(int timeout, int numberOfChecks)
 		{
-			RunTimeboundTest(new Thread(() =>
-			{
+			//RunTimeboundTest(new Thread(() =>
+			//{
 				DebugTools.AddEvent("SyncAndStartLive_TwoSteppers_Works", "START");
 
 				//create a sync context to conduct the test with
@@ -195,8 +199,8 @@ namespace ZoneLightingTests
 				DebugTools.AddEvent("SyncAndStartLive_TwoSteppers_Works", "LiveSync-Starting Stepper B");
 				testContext.SyncAndStartLive(stepperB);
 
-				int[] stepperSteps;
-				var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB);
+				int[,] stepperSteps;
+				var result = ValidateStepperSyncPhase(out stepperSteps, numberOfChecks, stepperA, stepperB);
 
 				//cleanup
 				stepperA.Dispose(true);
@@ -207,18 +211,19 @@ namespace ZoneLightingTests
 				if (result)
 					Assert.Pass();
 				else
-					Assert.Fail("The two programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] +
+					Assert.Fail("The two programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[numberOfChecks - 1, 0] +
 					            ":" +
-					            stepperB.Name + "=" + stepperSteps[1]);
+					            stepperB.Name + "=" + stepperSteps[numberOfChecks - 1, 1]);
 
-			}), timeout);
+			//}), timeout);
 		}
 
-		[TestCase(30)]
-		public void SyncAndStart_FourSteppers_Works(int timeout)
+		[TestCase(30, 30)]
+		[Timeout(30000)]
+		public void SyncAndStart_FourSteppers_Works(int timeout, int numberOfChecks)
 		{
-			RunTimeboundTest(new Thread(() =>
-			{
+			//RunTimeboundTest(new Thread(() =>
+			//{
 				DebugTools.AddEvent("SyncAndStart_FourSteppers_Works", "START");
 
 				//create a sync context to conduct the test with
@@ -233,10 +238,8 @@ namespace ZoneLightingTests
 				//sync and start
 				testContext.SyncAndStart(stepperA, stepperB, stepperC, stepperD);
 
-
-
-				int[] stepperSteps;
-				var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB, stepperC, stepperD);
+				int[,] stepperSteps;
+				var result = ValidateStepperSyncPhase(out stepperSteps, numberOfChecks, stepperA, stepperB, stepperC, stepperD);
 
 				//cleanup
 				stepperA.Dispose(true);
@@ -249,19 +252,20 @@ namespace ZoneLightingTests
 				if (result)
 					Assert.Pass();
 				else
-					Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] + ":" +
-								stepperB.Name + "=" + stepperSteps[1] + ":" +
-								stepperC.Name + "=" + stepperSteps[2] + ":" +
-								stepperD.Name + "=" + stepperSteps[3]);
+					Assert.Fail("The programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[numberOfChecks - 1, 0] + ":" +
+								stepperB.Name + "=" + stepperSteps[numberOfChecks - 1, 1] + ":" +
+								stepperC.Name + "=" + stepperSteps[numberOfChecks - 1, 2] + ":" +
+								stepperD.Name + "=" + stepperSteps[numberOfChecks - 1, 3]);
 
-			}), timeout);
+			//}), timeout);
 		}
 
-		[TestCase(30)]
-		public void SyncAndStart_TwoSteppers_Works(int timeout)
+		[TestCase(30, 30)]
+		[Timeout(30000)]
+		public void SyncAndStart_TwoSteppers_Works(int timeout, int numberOfChecks)
 		{
-			RunTimeboundTest(new Thread(() =>
-			{
+			//RunTimeboundTest(new Thread(() =>
+			//{
 				DebugTools.AddEvent("SyncAndStart_TwoSteppers_Works", "START");
 
 				//create a sync context to conduct the test with
@@ -274,8 +278,8 @@ namespace ZoneLightingTests
 				//sync and start
 				testContext.SyncAndStart(stepperA, stepperB);
 
-				int[] stepperSteps;
-				var result = ValidateStepperSyncPhase(out stepperSteps, stepperA, stepperB);
+				int[,] stepperSteps;
+				var result = ValidateStepperSyncPhase(out stepperSteps, numberOfChecks, stepperA, stepperB);
 
 				//cleanup
 				stepperA.Dispose(true);
@@ -286,25 +290,29 @@ namespace ZoneLightingTests
 				if (result)
 					Assert.Pass();
 				else
-					Assert.Fail("The two programs are not within one step of each other --> " + stepperA.Name + "=" + stepperSteps[0] +
-								":" +
-								stepperB.Name + "=" + stepperSteps[1]);
-			}), timeout);
+					Assert.Fail("The two programs are not within one step of each other --> "
+					            + stepperA.Name + "=" + stepperSteps[numberOfChecks, 0]
+					            + ":"
+					            + stepperB.Name + "=" + stepperSteps[numberOfChecks, 1]);
+			//}), timeout);
 		}
 
 		/// <summary>
 		/// Checks to make sure that the steppers provided are in within 1 step of each other.
 		/// </summary>
-		private static bool ValidateStepperSyncPhase(out int[] stepperSteps, params Stepper[] steppers)
+		private static bool ValidateStepperSyncPhase(out int[,] stepperSteps, int numberOfChecks = 30, params Stepper[] steppers)
 		{
 			DebugTools.AddEvent("ValidateStepperSyncPhase", "START");
 
 			var result = true;
-			stepperSteps = new int[steppers.Length];
+			stepperSteps = new int[numberOfChecks, steppers.Length];
 			
-			for (var i = 0; i < steppers.Length; i++)
+			for (var i = 0; i < numberOfChecks; i++)
 			{
-				stepperSteps[i] = 0;
+				for (var j = 0; j < steppers.Length; j++)
+				{
+					stepperSteps[i,j] = 0;
+				}
 			}
 
 			//every time we check the step, it should be within 1 for both programs
@@ -314,11 +322,11 @@ namespace ZoneLightingTests
 			//does not imply that the programs are out of sync. if the programs do go out of sync, 
 			//with enough repetitions they will go out of sync even more, which means their steps
 			//will eventually differ by more than 1, which is what this for loop is testing
-			for (int i = 0; i < 30; i++)
+			for (int i = 0; i < numberOfChecks; i++)
 			{
-				for (var x = 0; x < steppers.Length; x++)
+				for (var j = 0; j < steppers.Length; j++)
 				{
-					stepperSteps[x] = steppers[x].CurrentStep;
+					stepperSteps[i,j] = steppers[j].CurrentStep;
 				}
 
 				//check to make sure the difference in steps in no more than 1 (and check for wrapping)
@@ -326,11 +334,11 @@ namespace ZoneLightingTests
 				{
 					for (int comparisonTarget = 0; comparisonTarget < steppers.Length; comparisonTarget++)
 					{
-						if (Math.Abs(stepperSteps[comparisonSource] - stepperSteps[comparisonTarget]) > 1 &&
-							!(stepperSteps[comparisonSource] == steppers[comparisonSource].EndStep &&
-							  stepperSteps[comparisonTarget] == steppers[comparisonTarget].StartStep) &&
-							!(stepperSteps[comparisonSource] == steppers[comparisonSource].StartStep &&
-							  stepperSteps[comparisonTarget] == steppers[comparisonTarget].EndStep))
+						if (Math.Abs(stepperSteps[i, comparisonSource] - stepperSteps[i, comparisonTarget]) > 1 &&
+							!(stepperSteps[i, comparisonSource] == steppers[comparisonSource].EndStep &&
+							  stepperSteps[i, comparisonTarget] == steppers[comparisonTarget].StartStep) &&
+							!(stepperSteps[i, comparisonSource] == steppers[comparisonSource].StartStep &&
+							  stepperSteps[i, comparisonTarget] == steppers[comparisonTarget].EndStep))
 						{
 							result = false;
 							break;
@@ -339,7 +347,7 @@ namespace ZoneLightingTests
 				}
 
 				//sleep cuz we want some cycles of execution to happen in the programs
-				Thread.Sleep(10);
+				Thread.Sleep(1);
 			}
 
 			DebugTools.AddEvent("ValidateStepperSyncPhase", "END result: " + result);
@@ -349,7 +357,15 @@ namespace ZoneLightingTests
 
 		private void RunTimeboundTest(Thread testThread, int timeout)
 		{
-			testThread.Start();
+			try
+			{
+				testThread.Start();
+			}
+			catch (Exception ex)
+			{
+				Assert.Fail("Unexpected exception occurred in test: \n" + ex.Message);
+			}
+
 			var didTestFinish = testThread.Join(TimeSpan.FromSeconds(timeout));
 			if (!didTestFinish)
 			{
@@ -361,6 +377,15 @@ namespace ZoneLightingTests
 			}
 			//i think this should never get called, because it the test finishes, it should never get here because of the asserts
 			else
+			{
+				DebugTools.Print();
+			}
+		}
+
+		[TearDown]
+		public void TearDown()
+		{
+			if (TestContext.CurrentContext.Result.Status == TestStatus.Failed)
 			{
 				DebugTools.Print();
 			}
@@ -425,19 +450,9 @@ namespace ZoneLightingTests
 		{
 			CurrentStep = StartStep;
 		}
-
-		public bool StepStateActive { get; private set; } = false;
-
-		private void Activate()
-		{
-			if (!StepStateActive)
-				StepStateActive = true;
-		}
-
+		
 		public override void Loop()
 		{
-			//Activate();
-
 			SyncContext?.SignalAndWait();
 
 			if (CurrentStep + 1 > EndStep)
