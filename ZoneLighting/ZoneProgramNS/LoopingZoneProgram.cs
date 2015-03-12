@@ -94,12 +94,12 @@ namespace ZoneLighting.ZoneProgramNS
 
 						LeftSyncTrigger.Fire(this, null);
 
-						DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Starting Loop: " + this.Name);
+						//DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Starting Loop: " + this.Name);
 
 						//start loop
 						Loop();
 
-						DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Finished Loop: " + this.Name);
+						//DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Finished Loop: " + this.Name);
 
 						//if cancellation is requested, break out of loop after setting notification parameters for the consumer
 						if (LoopCTS.IsCancellationRequested)
