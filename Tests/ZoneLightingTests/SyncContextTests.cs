@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using ZoneLighting;
+using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
@@ -31,6 +32,7 @@ namespace ZoneLightingTests
 			var stepperB = new StepperInternalLoop("B");
 			var stepperC = new StepperInternalLoop("C");
 			var stepperD = new StepperInternalLoop("D");
+			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start ABC
 			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
@@ -41,7 +43,7 @@ namespace ZoneLightingTests
 			testContext.SyncAndStartLive(stepperD);
 
 			int[,] stepperSteps;
-			var result = ValidateStepperSyncPhase(out stepperSteps, numberOfChecks, stepperA, stepperB, stepperC, stepperD);
+			var result = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
 
 			//cleanup
 			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper A");
@@ -85,6 +87,7 @@ namespace ZoneLightingTests
 			var stepperB = new StepperInternalLoop("B");
 			var stepperC = new StepperInternalLoop("C");
 			var stepperD = new StepperInternalLoop("D");
+			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start A
 			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Sync-Starting Stepper A");
@@ -100,7 +103,7 @@ namespace ZoneLightingTests
 
 			int[,] stepperSteps;
 			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Validating Sync Phases");
-			var result = ValidateStepperSyncPhase(out stepperSteps, numberOfChecks, stepperA, stepperB, stepperC, stepperD);
+			var result = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
 
 			//cleanup
 			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper A");
@@ -146,6 +149,7 @@ namespace ZoneLightingTests
 			var stepperB = new StepperInternalLoop("b");
 			var stepperC = new StepperInternalLoop("c");
 			var stepperD = new StepperInternalLoop("d");
+			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start AB
 			testContext.SyncAndStart(stepperA, stepperB);
@@ -157,7 +161,7 @@ namespace ZoneLightingTests
 			testContext.SyncAndStartLive(stepperD);
 
 			int[,] stepperSteps;
-			var result = ValidateStepperSyncPhase(out stepperSteps, numberOfChecks, stepperA, stepperB, stepperC, stepperD);
+			var result = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
 
 			//cleanup
 			stepperA.Dispose(true);
@@ -180,7 +184,7 @@ namespace ZoneLightingTests
 
 		}
 
-		[TestCase(30, 30)]
+		[TestCase(30, 1000)]
 		[Timeout(30000)]
 		public void SyncAndStartLive_TwoSteppers_Works(int timeout, int numberOfChecks)
 		{
@@ -194,6 +198,7 @@ namespace ZoneLightingTests
 			//create two programs to be synced
 			var stepperA = new StepperInternalLoop("A");
 			var stepperB = new StepperInternalLoop("B");
+			Stepper[] steppers = { stepperA, stepperB };
 
 			//sync and start A
 			DebugTools.AddEvent("SyncAndStartLive_TwoSteppers_Works", "Sync-Starting Stepper A");
@@ -204,7 +209,9 @@ namespace ZoneLightingTests
 			testContext.SyncAndStartLive(stepperB);
 
 			int[,] stepperSteps;
-			var result = ValidateStepperSyncPhase(out stepperSteps, numberOfChecks, stepperA, stepperB);
+			var result = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
+
+			PrintStepperSteps(steppers, stepperSteps);
 
 			//cleanup
 			stepperA.Dispose(true);
@@ -244,7 +251,7 @@ namespace ZoneLightingTests
 			testContext.SyncAndStart(stepperA, stepperB, stepperC, stepperD);
 
 			int[,] stepperSteps;
-			var result = ValidateStepperSyncPhase(out stepperSteps, numberOfChecks, stepperA, stepperB, stepperC, stepperD);
+			var result = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
 
 			PrintStepperSteps(steppers, stepperSteps);
 
@@ -281,13 +288,13 @@ namespace ZoneLightingTests
 			//create two programs to be synced
 			var stepperA = new Stepper("A");
 			var stepperB = new Stepper("B");
-			Stepper[] steppers = {stepperA, stepperB};
+			Stepper[] steppers = { stepperA, stepperB };
 
 			//sync and start
 			testContext.SyncAndStart(stepperA, stepperB);
 
 			int[,] stepperSteps;
-			var result = ValidateStepperSyncPhase(out stepperSteps, numberOfChecks, stepperA, stepperB);
+			var result = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
 
 			PrintStepperSteps(steppers, stepperSteps);
 
@@ -353,10 +360,10 @@ namespace ZoneLightingTests
 		/// <summary>
 		/// Checks to make sure that the steppers provided are in within 1 step of each other.
 		/// </summary>
-		private static bool ValidateStepperSyncPhase(out int[,] stepperSteps, int numberOfChecks = 30, params Stepper[] steppers)
+		private static bool ValidateStepperSyncPhase(Stepper[] steppers, out int[,] stepperSteps, int numberOfChecks = 30, int msToWaitBeforeStart = 10, int msToWaitBetweenChecks = 1)
 		{
 			//sleep cuz we want the programs to get going 
-			Thread.Sleep(10);
+			Thread.Sleep(msToWaitBeforeStart);
 
 			DebugTools.AddEvent("ValidateStepperSyncPhase", "START");
 
@@ -380,10 +387,12 @@ namespace ZoneLightingTests
 			//will eventually differ by more than 1, which is what this for loop is testing
 			for (int i = 0; i < numberOfChecks; i++)
 			{
+				//TODO: this needs to happen atomically.. how?
 				for (var j = 0; j < steppers.Length; j++)
 				{
 					stepperSteps[i, j] = steppers[j].CurrentStep;
 				}
+				
 
 				//check to make sure the difference in steps in no more than 1 (and check for wrapping)
 				for (int comparisonSource = 0; comparisonSource < steppers.Length; comparisonSource++)
@@ -403,7 +412,8 @@ namespace ZoneLightingTests
 				}
 
 				//sleep cuz we want some cycles to execute
-				//Thread.Sleep(1);
+				if (msToWaitBetweenChecks > 0)
+					Thread.Sleep(msToWaitBetweenChecks);
 			}
 
 			DebugTools.AddEvent("ValidateStepperSyncPhase", "END result: " + result);
@@ -456,11 +466,11 @@ namespace ZoneLightingTests
 
 		public override void Loop()
 		{
-			DebugTools.AddEvent("StepperInternalLoop.Loop", "Signalling and waiting: " + this.Name);
+			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Signalling and waiting: " + this.Name);
 
 			SyncContext?.SignalAndWait();
 
-			DebugTools.AddEvent("StepperInternalLoop.Loop", "Signal received. Continuing: " + this.Name);
+			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Signal received. Continuing: " + this.Name);
 
 			while (true)
 			{
@@ -481,11 +491,11 @@ namespace ZoneLightingTests
 				//Thread.Sleep(1);
 			}
 
-			DebugTools.AddEvent("StepperInternalLoop.Loop", "Signalling and waiting: " + this.Name);
+			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Signalling and waiting: " + this.Name);
 
 			SyncContext?.SignalAndWait();
 
-			DebugTools.AddEvent("StepperInternalLoop.Loop", "Signal received. Continuing: " + this.Name);
+			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Signal received. Continuing: " + this.Name);
 		}
 	}
 
