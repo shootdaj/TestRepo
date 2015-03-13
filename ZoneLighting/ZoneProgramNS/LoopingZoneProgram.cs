@@ -73,12 +73,12 @@ namespace ZoneLighting.ZoneProgramNS
 					while (true)
 					{
 						//if sync is requested, go into synchronizable state
-						if (IsSyncStateRequested)
+						lock (SyncStateRequestLock)
 						{
-							lock (SyncStateRequestLock)
+							if (IsSyncStateRequested)
 							{
 								//SyncContext?.Unsync(this);
-								
+
 								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Entering Sync-State: " + Name);
 								IsSynchronizable.Fire(this, null);
 								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask",

@@ -21,16 +21,31 @@ namespace ZoneLighting.ZoneNS
 		public string Name { get; private set; }
 
 		private object _barrierLock;
+		private List<ZoneProgram> _zonePrograms = new List<ZoneProgram>();
 
 		/// <summary>
 		/// Underlying barrier that synchronizes the programs that are attached to this SyncContext.
 		/// </summary>
 		private Barrier Barrier { get; set; } = new Barrier(0);
 
+		private object _zoneProgramsLock = new object();
+
 		/// <summary>
 		/// ZonePrograms that are synchronized using this SyncContext.
 		/// </summary>
-		private List<ZoneProgram> ZonePrograms { get; set; } = new List<ZoneProgram>();
+		private List<ZoneProgram> ZonePrograms
+		{
+			get
+			{
+				lock (_zoneProgramsLock)
+					return _zonePrograms;
+			}
+			set
+			{
+				lock (_zoneProgramsLock)
+					_zonePrograms = value;
+			}
+		}
 
 		#endregion
 
@@ -280,6 +295,11 @@ namespace ZoneLighting.ZoneNS
 		{
 			if (ZonePrograms.Any())
 				Barrier.SignalAndWait();
+		}
+
+		public int Remaining()
+		{
+			return Barrier.ParticipantsRemaining;
 		}
 
 		#endregion

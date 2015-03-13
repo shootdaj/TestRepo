@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace ZoneLighting
 {
@@ -25,14 +26,14 @@ namespace ZoneLighting
 		{
 			get
 			{
-				lock (EventsLock)
+				lock (_eventsLock)
 				{
 					return _events;
 				}
 			}
 		}
 
-		public static object EventsLock = new object();
+		private static object _eventsLock = new object();
 		public static string DateTimeFormatString;
 		public static bool OutputActive = false;
 		public static bool Active = true;
@@ -124,11 +125,11 @@ namespace ZoneLighting
 			return null;
 		}
 
-		public static void Print(this DebugEvent debugEvent)
+		public static void BuildOutput(this DebugEvent debugEvent)
 		{
 			if (OutputActive)
 			{
-				PrintOut(debugEvent.EventOrderingNumber + "[" + debugEvent.EventTime.ToString(DateTimeFormatString) + "]" + debugEvent.MethodName + ": " +
+				BuildOutput(debugEvent.EventOrderingNumber + "[" + debugEvent.EventTime.ToString(DateTimeFormatString) + "]" + debugEvent.MethodName + ": " +
 								debugEvent.Message);
 			}
 		}
@@ -162,26 +163,26 @@ namespace ZoneLighting
 						{
 							var totalMillisecondDifference = ((int) ((debugEvent.EventTime - lastDebugEvent.EventTime).TotalMilliseconds));
 
-							PrintOut("");
-							PrintOut("   " + totalMillisecondDifference.ToString() +
+							BuildOutput("");
+							BuildOutput("   " + totalMillisecondDifference.ToString() +
 							         (printLabel ? " ms" : "") +
 							         (totalMillisecondDifference > longDurationThreshold
 								         ? "                            !---------LONG--------!"
 								         : ""));
-							PrintOut("");
+							BuildOutput("");
 						}
-						debugEvent.Print();
+						debugEvent.BuildOutput();
 						lastDebugEvent = debugEvent;
 					}
 
 					if (printTotal)
 					{
-						PrintOut("");
-						PrintOut("----------------------------------------------");
-						PrintOut("");
-						PrintOut("Total Time: " + (Events.Last().EventTime - Events.First().EventTime).TotalMilliseconds +
+						BuildOutput("");
+						BuildOutput("----------------------------------------------");
+						BuildOutput("");
+						BuildOutput("Total Time: " + (Events.Last().EventTime - Events.First().EventTime).TotalMilliseconds +
 						         (printLabel ? " ms" : ""));
-						PrintOut("");
+						BuildOutput("");
 					}
 
 					if (clearEvents)
@@ -192,25 +193,37 @@ namespace ZoneLighting
 						Active = false;
 						return;
 					}
+
+					PrintOutput();
 				}
 			}
 
 			Active = true;
 		}
 
-		public static void PrintOut(string text, bool console = false, bool debug = true)
+		private static StringBuilder _output = new StringBuilder();
+
+		private static void BuildOutput(string text)
+		{
+			_output.AppendLine(text);
+		}
+
+		private static void PrintOutput(bool console = false, bool debug = true, bool clearOutput = true)
 		{
 			if (console)
-				Console.WriteLine(text);
+				Console.Write(_output.ToString());
 			if (debug)
-				Debug.Print(text);
+				Debug.Print(_output.ToString());
 			if (OutputFile != null)
 			{
 				using (StreamWriter outfile = File.AppendText(OutputFile))
 				{
-					outfile.WriteLine(text);
+					outfile.Write(_output.ToString());
 				}
 			}
+
+			if (clearOutput)
+				_output.Clear();
 		}
 	}
 }
