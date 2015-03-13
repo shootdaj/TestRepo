@@ -208,7 +208,7 @@ namespace ZoneLighting
 			_output.AppendLine(text);
 		}
 
-		private static void PrintOutput(bool console = false, bool debug = true, bool clearOutput = true)
+		private static void PrintOutput(bool console = false, bool debug = false, bool clearOutput = true)
 		{
 			if (console)
 				Console.Write(_output.ToString());

@@ -20,16 +20,22 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public string Name { get; private set; }
 
-		private object _barrierLock;
-		private List<ZoneProgram> _zonePrograms = new List<ZoneProgram>();
-
+		private object _barrierLock = new object();
+		private Barrier _barrier = new Barrier(0);
 		/// <summary>
 		/// Underlying barrier that synchronizes the programs that are attached to this SyncContext.
 		/// </summary>
-		private Barrier Barrier { get; set; } = new Barrier(0);
+		private Barrier Barrier
+		{
+			get
+			{
+				lock (_barrierLock)
+					return _barrier;
+			}
+		}
 
 		private object _zoneProgramsLock = new object();
-
+		private List<ZoneProgram> _zonePrograms = new List<ZoneProgram>();
 		/// <summary>
 		/// ZonePrograms that are synchronized using this SyncContext.
 		/// </summary>
@@ -39,11 +45,6 @@ namespace ZoneLighting.ZoneNS
 			{
 				lock (_zoneProgramsLock)
 					return _zonePrograms;
-			}
-			set
-			{
-				lock (_zoneProgramsLock)
-					_zonePrograms = value;
 			}
 		}
 
@@ -100,13 +101,6 @@ namespace ZoneLighting.ZoneNS
 						zp.Start();
 					});
 
-					//
-					//zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-					//{
-						
-						
-					//});
-
 					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
 					{
 						//wait for sync state
@@ -114,7 +108,6 @@ namespace ZoneLighting.ZoneNS
 						zp.IsSynchronizable.WaitForFire();
 					});
 
-					
 					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
 					{
 						//add participant for each program
@@ -129,19 +122,6 @@ namespace ZoneLighting.ZoneNS
 						//DebugTools.AddEvent("SyncContext.SyncAndStart", "Adding to ZonePrograms: " + zp.Name);
 						ZonePrograms.Add(zp);
 					});
-
-					
-					//zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-					//{
-						
-					//});
-
-					
-					//zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-					//{
-						
-						
-					//});
 
 					//release from sync state	
 					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
@@ -252,11 +232,11 @@ namespace ZoneLighting.ZoneNS
 			SyncAndStart(zonePrograms.ToList());
 		}
 
-		public void AddParticipant(ZoneProgram zoneProgram)
-		{
-			Barrier.AddParticipant();
-			ZonePrograms.Add(zoneProgram);
-		}
+		//public void AddParticipant(ZoneProgram zoneProgram)
+		//{
+		//	Barrier.AddParticipant();
+		//	ZonePrograms.Add(zoneProgram);
+		//}
 
 		/// <summary>
 		/// Removes a given program from the synchronization.
@@ -268,24 +248,6 @@ namespace ZoneLighting.ZoneNS
 			ZonePrograms.Remove(program);
 		}
 
-		//public void RemoveFromParticipantList(ZoneProgram program)
-		//{
-		//	if (ZonePrograms.Contains(program))
-		//	{
-		//		DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Removing temporarily from SyncContext: " + Name);
-		//		Barrier.RemoveParticipant();
-		//	}
-		//}
-
-		//public void AddToParticipantList(ZoneProgram program)
-		//{
-		//	if (ZonePrograms.Contains(program))
-		//	{
-		//		DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Adding back to SyncContext: " + Name);
-		//		Barrier.AddParticipant();
-		//	}
-		//}
-
 		/// <summary>
 		/// Signals the barrier and waits for the other programs to catch up or if it's the last program,
 		/// then propels all the programs. To be used by programs to signal the other programs that signalling
@@ -293,14 +255,13 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public void SignalAndWait()
 		{
-			if (ZonePrograms.Any())
+			if (ZonePrograms.ToList().Any())
 				Barrier.SignalAndWait();
 		}
 
-		public int Remaining()
-		{
-			return Barrier.ParticipantsRemaining;
-		}
+		public int GetNumberOfRemainingParticipants() => Barrier.ParticipantsRemaining;
+
+		public int GetNumberOfTotalParticipants() => Barrier.ParticipantCount;
 
 		#endregion
 	}

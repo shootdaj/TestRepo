@@ -455,40 +455,12 @@ namespace ZoneLightingTests
 			return invalidStepIndex.ToArray();
 		}
 
-		private void RunTimeboundTest(Thread testThread, int timeout)
-		{
-			try
-			{
-				testThread.Start();
-			}
-			catch (Exception ex)
-			{
-				Assert.Fail("Unexpected exception occurred in test: \n" + ex.Message);
-			}
-
-			var didTestFinish = testThread.Join(TimeSpan.FromSeconds(timeout));
-			if (!didTestFinish)
-			{
-				DebugTools.AddEvent("SyncContextTests.RunTimeboundTest", "TEST FAILED - DID NOT FINISH");
-
-				testThread.Abort();
-				DebugTools.Print();
-				Assert.Fail();
-			}
-			//i think this should never get called, because it the test finishes, it should never get here because of the asserts
-			else
-			{
-				DebugTools.Print();
-			}
-		}
-
 		[TearDown]
 		public void TearDown()
 		{
 			//if (TestContext.CurrentContext.Result.Status != TestStatus.Failed) return;
 			DebugTools.AddEvent("TearDown", "DebugTools.Print");
 			DebugTools.Print(clearEvents: true);
-
 		}
 
 	}
@@ -501,51 +473,42 @@ namespace ZoneLightingTests
 
 		public override void Loop()
 		{
-			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Signalling and waiting: " + this.Name);
-
-			DebugTools.AddEvent("StepperInternalLoop.Loop", "Signalling and waiting on " + (SyncContext?.Remaining() - 1) + ": " + this.Name);
+			DebugTools.AddEvent("StepperInternalLoop.Loop", "Loop Start. Signalling and waiting on " + (SyncContext?.GetNumberOfRemainingParticipants() - 1) + ". Total participants = " + SyncContext?.GetNumberOfTotalParticipants() + " : " + this.Name);
 			SyncContext?.SignalAndWait();
-			DebugTools.AddEvent("StepperInternalLoop.Loop", "Signal received. Continuing: " + this.Name);
-
-			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Signal received. Continuing: " + this.Name);
+			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Loop Start. Signal received. Continuing: " + this.Name);
 
 			while (true)
 			{
 				if (CurrentStep + 1 > EndStep)
 				{
-					//Debug.Print(this.Name + " --");
 					CurrentStep = StartStep;
 					break;
 				}
 				else
 				{
-					//Debug.Print(this.Name + " ++");
 					CurrentStep++;
 				}
 				
 				while (PauseForTest)
 				{
-					//DebugTools.AddEvent("Stepper.Loop", "Paused for test: " + Name);
 					Thread.Sleep(1);
 				}
 
-				DebugTools.AddEvent("StepperInternalLoop.Loop", "Signalling and waiting on " + SyncContext?.Remaining() + ": " + this.Name);
+				DebugTools.AddEvent("StepperInternalLoop.Loop", "In While. Signalling and waiting on " + (SyncContext?.GetNumberOfRemainingParticipants() - 1) + ". Total participants = " + SyncContext?.GetNumberOfTotalParticipants() + " : " + this.Name);
 				SyncContext?.SignalAndWait();
-				DebugTools.AddEvent("StepperInternalLoop.Loop", "Signal received. Continuing: " + this.Name);
-				//Debug.Print(this.Name + " " + CurrentStep);
-				//Thread.Sleep(1);
+				//DebugTools.AddEvent("StepperInternalLoop.Loop", "In While. Signal received. Continuing: " + this.Name);
 			}
 
-			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Signalling and waiting: " + this.Name);
-
-			//SyncContext?.SignalAndWait();
-
-			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Signal received. Continuing: " + this.Name);
+			DebugTools.AddEvent("StepperInternalLoop.Loop", "Loop End. Signalling and waiting on " + (SyncContext?.GetNumberOfRemainingParticipants() - 1) + ". Total participants = " + SyncContext?.GetNumberOfTotalParticipants() + " : " + this.Name);
+			SyncContext?.SignalAndWait();
+			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Loop End. Signal received. Continuing: " + this.Name);
 		}
 	}
 
 	public class Stepper : LoopingZoneProgram
 	{
+		#region CORE + C + I
+
 		public override SyncLevel SyncLevel { get; set; } = StepperSyncLevel.Step;
 
 		public int StartStep { get; } = 1;
@@ -602,30 +565,31 @@ namespace ZoneLightingTests
 			CurrentStep = StartStep;
 		}
 
+		#endregion
+
 		public override void Loop()
 		{
+			DebugTools.AddEvent("StepperInternalLoop.Loop", "Signalling and waiting on " + (SyncContext?.GetNumberOfRemainingParticipants() - 1) + ". Total participants = " + SyncContext?.GetNumberOfTotalParticipants() + " : " + this.Name);
 			SyncContext?.SignalAndWait();
+			DebugTools.AddEvent("StepperInternalLoop.Loop", "Signal received. Continuing: " + this.Name);
 
 			if (CurrentStep + 1 > EndStep)
 			{
-				//Debug.Print(this.Name + " --");
 				CurrentStep = StartStep;
 			}
 			else
 			{
-				//Debug.Print(this.Name + " ++");
 				CurrentStep++;	
 			}
 
 			while (PauseForTest)
 			{
-				//DebugTools.AddEvent("Stepper.Loop", "Paused for test: " + Name);
 				Thread.Sleep(1);
 			}
 
+			DebugTools.AddEvent("StepperInternalLoop.Loop", "Signalling and waiting on " + (SyncContext?.GetNumberOfRemainingParticipants() - 1) + ". Total participants = " + SyncContext?.GetNumberOfTotalParticipants() + " : " + this.Name);
 			SyncContext?.SignalAndWait();
-			//Thread.Sleep(1);
-			//Debug.Print(this.Name + " " + CurrentStep);
+			DebugTools.AddEvent("StepperInternalLoop.Loop", "Signal received. Continuing: " + this.Name);
 		}
 
 		public static class StepperSyncLevel
