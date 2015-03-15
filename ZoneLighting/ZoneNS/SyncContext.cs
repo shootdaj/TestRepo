@@ -136,8 +136,6 @@ namespace ZoneLighting.ZoneNS
 						zp.LeftSyncTrigger.WaitForFire();
 						DebugTools.AddEvent("SyncContext.SyncAndStart", "Left Sync-State: " + zp.Name);
 					});
-
-
 				}
 				else
 				{
@@ -150,112 +148,59 @@ namespace ZoneLighting.ZoneNS
 			}
 		}
 
-		/// <summary>
-		/// Synchronizes the given program with the programs that are already attached to this context.
-		/// This can be called while the other programs are running, but will wait until they can get into
-		/// their synchronizable states before executing the synchronization.
-		/// </summary>
 		public void SyncLive(ZoneProgram zoneProgram)
 		{
 			SyncLive(new[] {zoneProgram});
-
-			////incoming program must be stopped 
-			//if (zoneProgram.State != ProgramState.Stopped)
-			//	throw new Exception("Given program must be stopped before a live sync is executed.");
-
-			//if (zoneProgram is ReactiveZoneProgram)
-			//{
-			//	Barrier.AddParticipant(); //add participant for each program
-			//	ZonePrograms.Add(zoneProgram);
-			//}
-			//else if (zoneProgram is LoopingZoneProgram && ZonePrograms.All(zp => zp is LoopingZoneProgram))
-			//{
-			//	ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-			//	{
-			//		DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Requesting sync-state from Program " + zp.Name);
-			//		zp.RequestSyncState();
-			//	});
-
-			//	DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Requesting sync-state from Program " + zoneProgram.Name);
-			//	((LoopingZoneProgram) zoneProgram).RequestSyncState();
-
-			//	DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Starting Program " + zoneProgram.Name);
-			//	zoneProgram.Start(liveSync: false);
-
-			//	ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-			//	{
-			//		DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Waiting for Sync-State from Program " + zp.Name);
-			//		zp.IsSynchronizable.WaitForFire();
-			//	});
-			//	DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Waiting for Sync-State from Program " + zoneProgram.Name);
-			//	((LoopingZoneProgram) zoneProgram).IsSynchronizable.WaitForFire();
-
-			//	DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Syncing " + zoneProgram.Name);
-			//	Barrier.AddParticipant();
-			//	zoneProgram.SetSyncContext(this);
-			//	ZonePrograms.Add(zoneProgram);
-
-			//	ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-			//	{
-			//		DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Release from Sync-State " + zp.Name);
-			//		zp.WaitForSync.Fire(null, null);
-			//	});
-
-			//	ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-			//	{
-			//		DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Wait for Leaving Sync-State: " + zp.Name);
-			//		zp.LeftSyncTrigger.WaitForFire();
-			//		DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Left Sync-State: " + zp.Name);
-			//	});
-			//}
-			//else
-			//{
-			//	throw new Exception(
-			//		"All programs must be of the same type and must be included in the if statement that precedes this exception.");
-			//}
 		}
-
-		public void SyncLive(params ZoneProgram[] zonePrograms)
+		
+		/// <summary>
+		/// Synchronizes the given programs with the programs that are already attached to this context.
+		/// This can be called while the other programs are running, but will wait until they can get into
+		/// their synchronizable states before executing the synchronization.
+		/// </summary>
+		public void SyncLive(IEnumerable<ZoneProgram> zonePrograms)
 		{
-			//incoming program must be stopped 
-			if (zonePrograms.Any(zp => zp.State != ProgramState.Stopped))
+			var zoneProgramsEnumerated = zonePrograms as IList<ZoneProgram> ?? zonePrograms.ToList();
+
+			//incoming program must be stopped
+			if (zoneProgramsEnumerated.Any(zp => zp.State != ProgramState.Stopped))
 				throw new Exception("Given program must be stopped before a live sync is executed.");
 
-			if (zonePrograms.All(zp => zp is ReactiveZoneProgram))
+			if (zoneProgramsEnumerated.All(zp => zp is ReactiveZoneProgram))
 			{
-				zonePrograms.ToList().ForEach(zoneProgram =>
+				zoneProgramsEnumerated.ToList().ForEach(zoneProgram =>
 				{
 					Barrier.AddParticipant(); //add participant for each program
 					ZonePrograms.Add(zoneProgram);
 				});
 			}
-			else if (zonePrograms.All(zp => zp is LoopingZoneProgram) && ZonePrograms.All(zp => zp is LoopingZoneProgram))
+			else if (zoneProgramsEnumerated.All(zp => zp is LoopingZoneProgram) && ZonePrograms.All(zp => zp is LoopingZoneProgram))
 			{
 				//request sync-state from existing programs and incoming programs
 				ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
 				{
 					zp.RequestSyncState();
 				});
-				zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+				zoneProgramsEnumerated.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
 				{
 					zp.RequestSyncState();
 				});
 
 				//start all incoming programs
-				zonePrograms.ToList().ForEach(zoneProgram => zoneProgram.Start(liveSync: false));
+				zoneProgramsEnumerated.ToList().ForEach(zoneProgram => zoneProgram.Start(liveSync: false));
 
 				//wait for sync-state from all programs (incoming and existing)
 				ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
 				{
 					zp.IsSynchronizable.WaitForFire();
 				});
-				zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+				zoneProgramsEnumerated.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
 				{
 					zp.IsSynchronizable.WaitForFire();
 				});
 
 				//sync all incoming programs
-				zonePrograms.ToList().ForEach(zoneProgram =>
+				zoneProgramsEnumerated.ToList().ForEach(zoneProgram =>
 				{
 					Barrier.AddParticipant();
 					zoneProgram.SetSyncContext(this);
@@ -279,6 +224,11 @@ namespace ZoneLighting.ZoneNS
 				throw new Exception(
 					"All programs must be of the same type and must be included in the if statement that precedes this exception.");
 			}
+		}
+
+		public void SyncLive(params ZoneProgram[] zonePrograms)
+		{
+			SyncLive(zonePrograms.ToList());
 		}
 
 		public void SyncAndStart(params ZoneProgram[] zonePrograms)
