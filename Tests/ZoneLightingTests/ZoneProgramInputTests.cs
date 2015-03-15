@@ -20,7 +20,7 @@ namespace ZoneLightingTests
 			rainbow.SetInput("Speed", 50);
 			Assert.AreEqual(rainbow.Speed, 50);
 		}
-
+		
 		[Test]
 		public void AddMappedInput_InputNotInRange_DoesNotSetInput()
 		{
@@ -29,6 +29,12 @@ namespace ZoneLightingTests
 			Assert.AreNotEqual(rainbow.Speed, 101);
 		}
 
+		/// <summary>
+		/// AddMappedInput can be called with a predicate, which determines whether or not the input will 
+		/// be set. It's a filtering mechanism. This test is essentially calling that AddMappedInput without any
+		/// predicates because SyncLevel is not set with any predicates (meaning it can be set to anything as long
+		/// as the types match).
+		/// </summary>
 		[Test]
 		public void AddMappedInput_UnpredicatedInput_SetsInput()
 		{

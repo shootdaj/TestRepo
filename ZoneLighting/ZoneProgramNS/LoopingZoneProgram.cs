@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneNS;
 
@@ -9,8 +10,14 @@ namespace ZoneLighting.ZoneProgramNS
 {
 	public abstract class LoopingZoneProgram : ZoneProgram
 	{
+		//[SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+		//protected LoopingZoneProgram()
+		//{
+
+		//}
+
 		[SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-		protected LoopingZoneProgram()
+		protected LoopingZoneProgram(string name = null, SyncContext syncContext = null) : base (name, syncContext)
 		{
 			Setup();
 			LoopCTS = new CancellationTokenSource();

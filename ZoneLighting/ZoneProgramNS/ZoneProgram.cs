@@ -99,12 +99,23 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <param name="inputStartingValues">Starting values for the program.</param>
 		/// <param name="interruptQueue">InterruptQueue to be used for interrupting inputs.</param>
 		/// <param name="isSyncRequested"></param>
-		public void Start(InputStartingValues inputStartingValues = null, bool liveSync = false)
+		public void Start(InputStartingValues inputStartingValues = null, bool liveSync = false, SyncContext syncContext = null)
 		{
 			if (State == ProgramState.Stopped)
 			{
-				if (liveSync && SyncContext != null)
-					SyncContext?.SyncAndStartLive(this);
+				if (liveSync)
+				{
+					if (syncContext == null)
+					{
+						if (SyncContext == null)
+							throw new Exception("If Start is called with LiveSync, either a Sync Context must be passed in with it or one must be set before calling Start.");
+						SyncContext.SyncLive(this);
+					}
+					else
+					{
+						syncContext.SyncLive(this);
+					}
+				}
 				else
 				{
 					//subclass processing
@@ -160,6 +171,10 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			//remove from old sync context, if any
 			SyncContext?.Unsync(this);
+
+			//if same sync context is being passed, ignore request
+			if (syncContext == SyncContext)
+				return;
 
 			if (State == ProgramState.Stopped)
 				SyncContext = syncContext;	
