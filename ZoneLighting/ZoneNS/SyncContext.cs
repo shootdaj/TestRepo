@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.ZoneNS
@@ -47,6 +48,9 @@ namespace ZoneLighting.ZoneNS
 					return _zonePrograms;
 			}
 		}
+
+		public object SyncStateRequestLock { get; set; } = new object();
+		public bool IsSyncStateRequested { get; set; }
 
 		#endregion
 
@@ -102,6 +106,10 @@ namespace ZoneLighting.ZoneNS
 			}
 			else if (zoneProgramsEnumerated.All(zp => zp is LoopingZoneProgram) && ZonePrograms.All(zp => zp is LoopingZoneProgram))
 			{
+				//send sync-state request
+				
+				IsSyncStateRequested = true;
+
 				//request sync-state from existing programs and incoming programs
 				ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
 				{
@@ -162,6 +170,13 @@ namespace ZoneLighting.ZoneNS
 			ZonePrograms.Remove(program);
 		}
 
+		//public void AddParticipant(ZoneProgram program)
+		//{
+		//	if (ZonePrograms.Contains(program)) return;
+		//	Barrier.AddParticipant();
+		//	ZonePrograms.Add(program);
+		//}
+
 		/// <summary>
 		/// Signals the barrier and waits for the other programs to catch up or if it's the last program,
 		/// then propels all the programs. To be used by programs to signal the other programs that signalling
@@ -171,6 +186,14 @@ namespace ZoneLighting.ZoneNS
 		{
 			if (ZonePrograms.ToList().Any())
 				Barrier.SignalAndWait();
+		}
+
+		public void Reset()
+		{
+			for (int i = 0; i < Barrier.ParticipantsRemaining; i++)
+			{
+				Task.Run(() => Barrier.SignalAndWait());
+			}
 		}
 
 		public int GetNumberOfRemainingParticipants() => Barrier.ParticipantsRemaining;

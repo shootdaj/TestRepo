@@ -13,7 +13,7 @@ namespace ZoneLightingTests
 	public class SyncContextTests
 	{
 		[TestCase(1000)]
-		[Timeout(30000)]
+		[Timeout(120000)]
 		public void Sync_OneStepperSyncingWithThree_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "START");

@@ -105,17 +105,17 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			if (State == ProgramState.Stopped)
 			{
-				if (sync)
+				if (sync || syncContext != null)
 				{
-					if (syncContext == null)
+					if (syncContext != null)
+					{
+						syncContext.Sync(this);
+					}
+					else
 					{
 						if (SyncContext == null)
 							throw new Exception("If Start is called with LiveSync, either a Sync Context must be passed in with it or one must be set before calling Start.");
 						SyncContext.Sync(this);
-					}
-					else
-					{
-						syncContext.Sync(this);
 					}
 				}
 				else
@@ -355,7 +355,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <param name="name"></param>
 		protected void RemoveInput(string name)
 		{
-			GetInput(name).Unsubscribe();
+			GetInput(name)?.Unsubscribe();
 		}
 
 		/// <summary>
@@ -363,13 +363,15 @@ namespace ZoneLighting.ZoneProgramNS
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public ZoneProgramInput GetInput(string name)
+		public ZoneProgramInput GetInput(string name, bool silent = true)
 		{
 			if (Inputs.Contains(name))
 				return Inputs[name];
 			else
 			{
-				throw new Exception("No input with the name '" + name + "' found in this program.");
+				if (!silent)
+					throw new Exception("No input with the name '" + name + "' found in this program.");
+				return null;
 			}
 		}
 

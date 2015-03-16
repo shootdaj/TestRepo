@@ -35,11 +35,15 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Looping Stuff
 
-		protected bool IsSyncStateRequested { get; set; }
+		//protected bool? IsSyncStateRequested
+		//{
+		//	get { return SyncContext?.IsSyncStateRequested; }
+		//}
+
 		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
 		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
-		
-		public object SyncStateRequestLock { get; set; } = new object();
+		//private object SyncStateRequestLock => SyncContext?.SyncStateRequestLock;
+
 
 		private bool Running { get; set; }
 
@@ -79,27 +83,29 @@ namespace ZoneLighting.ZoneProgramNS
 					RunProgramThread = Thread.CurrentThread;
 					while (true)
 					{
-						//if sync is requested, go into synchronizable state
-						lock (SyncStateRequestLock)
+						if (SyncContext != null)
 						{
-							if (IsSyncStateRequested)
+							//if sync is requested, go into synchronizable state
+							lock (SyncContext.SyncStateRequestLock)
 							{
-								//SyncContext?.Unsync(this);
+								if (SyncContext.IsSyncStateRequested)
+								{
+									//SyncContext?.SignalAndWait();
 
-								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Entering Sync-State: " + Name);
-								IsSynchronizable.Fire(this, null);
-								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask",
-									"In Sync-State - Waiting for Signal from SyncContext: " + Name);
-								WaitForSync.WaitForFire();
-								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Leaving Sync-State: " + Name);
-								IsSyncStateRequested = false;
-								DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "IsSyncStateRequested = false: " + this.Name);
+									DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Entering Sync-State: " + Name);
+									IsSynchronizable.Fire(this, null);
+									DebugTools.AddEvent("LoopingZoneProgram.LoopingTask",
+										"In Sync-State - Waiting for Signal from SyncContext: " + Name);
+									WaitForSync.WaitForFire();
+									DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Leaving Sync-State: " + Name);
 
-								//SyncContext?.AddParticipant(this);
+									//SyncContext?.Reset();
+									//SyncContext?.AddParticipant(this);
+								}
 							}
-						}
 
-						LeftSyncTrigger.Fire(this, null);
+							LeftSyncTrigger.Fire(this, null);
+						}
 
 						//DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Starting Loop: " + this.Name);
 
@@ -146,7 +152,7 @@ namespace ZoneLighting.ZoneProgramNS
 			//if same sync context is being passed, ignore request
 			if (syncContext == SyncContext) return;
 
-			if (State == ProgramState.Stopped || IsSyncStateRequested)
+			if (State == ProgramState.Stopped || IsSyncStateRequested == true)
 				SyncContext = syncContext;
 			else
 				throw new Exception("Can only set sync context while program is stopped or if it's in synchronizable state.");
