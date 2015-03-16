@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.ZoneNS
@@ -50,7 +51,7 @@ namespace ZoneLighting.ZoneNS
 		}
 
 		public object SyncStateRequestLock { get; set; } = new object();
-		public bool IsSyncStateRequested { get; set; }
+		//public bool IsSyncStateRequested { get; set; }
 
 		#endregion
 
@@ -65,7 +66,7 @@ namespace ZoneLighting.ZoneNS
 			if (name != null)
 				Name = name + "SyncContext";
 		}
-		
+
 		public void Dispose()
 		{
 			ZonePrograms.Clear();
@@ -106,52 +107,50 @@ namespace ZoneLighting.ZoneNS
 			}
 			else if (zoneProgramsEnumerated.All(zp => zp is LoopingZoneProgram) && ZonePrograms.All(zp => zp is LoopingZoneProgram))
 			{
-				//send sync-state request
-				
-				IsSyncStateRequested = true;
+				lock (SyncStateRequestLock)
+				{
+					//IsSyncStateRequested = true;
 
-				//request sync-state from existing programs and incoming programs
-				ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-				{
-					zp.RequestSyncState();
-				});
-				zoneProgramsEnumerated.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-				{
-					zp.RequestSyncState();
-				});
+					ProgramsToSync.AddRange(zoneProgramsEnumerated);
 
-				//start all incoming programs
-				zoneProgramsEnumerated.ToList().ForEach(zoneProgram => zoneProgram.Start(sync: false));
+					zoneProgramsEnumerated.ToList().ForEach(zoneProgram =>
+					{
+						zoneProgram.SetSyncContext(this);
+						ZonePrograms.Add(zoneProgram);
+					});
 
-				//wait for sync-state from all programs (incoming and existing)
-				ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-				{
-					zp.IsSynchronizable.WaitForFire();
-				});
-				zoneProgramsEnumerated.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-				{
-					zp.IsSynchronizable.WaitForFire();
-				});
+					zoneProgramsEnumerated.ToList().ForEach(zoneProgram => zoneProgram.Start(sync: false));
+				}
 
-				//sync all incoming programs
-				zoneProgramsEnumerated.ToList().ForEach(zoneProgram =>
-				{
-					Barrier.AddParticipant();
-					zoneProgram.SetSyncContext(this);
-					ZonePrograms.Add(zoneProgram);
-				});
+				////wait for sync-state from all programs (incoming and existing)
+				//ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+				//{
+				//	zp.IsSynchronizable.WaitForFire();
+				//});
+				//zoneProgramsEnumerated.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+				//{
+				//	zp.IsSynchronizable.WaitForFire();
+				//});
 
-				//release all programs from sync-state
-				ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-				{
-					zp.WaitForSync.Fire(null, null);
-				});
+				////sync all incoming programs
+				//zoneProgramsEnumerated.ToList().ForEach(zoneProgram =>
+				//{
+				//	Barrier.AddParticipant();
+				//	zoneProgram.SetSyncContext(this);
+				//	ZonePrograms.Add(zoneProgram);
+				//});
 
-				//wait until all programs have left sync-state
-				ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-				{
-					zp.LeftSyncTrigger.WaitForFire();
-				});
+				////release all programs from sync-state
+				//ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+				//{
+				//	zp.WaitForSync.Fire(null, null);
+				//});
+
+				////wait until all programs have left sync-state
+				//ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+				//{
+				//	zp.LeftSyncTrigger.WaitForFire();
+				//});
 			}
 			else
 			{
@@ -188,13 +187,32 @@ namespace ZoneLighting.ZoneNS
 				Barrier.SignalAndWait();
 		}
 
-		public void Reset()
+		public void NextMove(ZoneProgram program)
 		{
-			for (int i = 0; i < Barrier.ParticipantsRemaining; i++)
+			lock (SyncStateRequestLock)
 			{
-				Task.Run(() => Barrier.SignalAndWait());
+				if (ProgramsToSync.Any())
+				{
+					WaitingPrograms.Add(program);
+					if (ZonePrograms.All(zp => WaitingPrograms.Contains(zp)))
+					{
+						ProgramsToSync.ToList().ForEach(sp => Barrier.AddParticipant());
+						ProgramsToSync.Clear();
+						WaitingPrograms.Clear();
+						ZonePrograms.ForEach(zp => WaitForAllPrograms.Fire(this, null));
+						SyncFinished.Fire(this, null);
+					}
+				}
 			}
 		}
+		
+		private List<ZoneProgram>  ProgramsToSync { get; set; } = new List<ZoneProgram>();
+
+		public Trigger SyncFinished { get; set; } = new Trigger("SyncContext.SyncFinished");
+
+		public Trigger WaitForAllPrograms { get; set; } = new Trigger("SyncContext.WaitForSync");
+
+		private List<ZoneProgram> WaitingPrograms { get; set; } = new List<ZoneProgram>();
 
 		public int GetNumberOfRemainingParticipants() => Barrier.ParticipantsRemaining;
 

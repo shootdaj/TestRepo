@@ -30,7 +30,6 @@ namespace ZoneLighting.ZoneProgramNS
 			base.Dispose(force);
 			LoopCTS.Dispose();
 			IsSynchronizable.Dispose();
-			WaitForSync.Dispose();
 		}
 
 		#region Looping Stuff
@@ -41,7 +40,7 @@ namespace ZoneLighting.ZoneProgramNS
 		//}
 
 		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
-		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
+		//public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
 		//private object SyncStateRequestLock => SyncContext?.SyncStateRequestLock;
 
 
@@ -85,26 +84,8 @@ namespace ZoneLighting.ZoneProgramNS
 					{
 						if (SyncContext != null)
 						{
-							//if sync is requested, go into synchronizable state
-							lock (SyncContext.SyncStateRequestLock)
-							{
-								if (SyncContext.IsSyncStateRequested)
-								{
-									//SyncContext?.SignalAndWait();
-
-									DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Entering Sync-State: " + Name);
-									IsSynchronizable.Fire(this, null);
-									DebugTools.AddEvent("LoopingZoneProgram.LoopingTask",
-										"In Sync-State - Waiting for Signal from SyncContext: " + Name);
-									WaitForSync.WaitForFire();
-									DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Leaving Sync-State: " + Name);
-
-									//SyncContext?.Reset();
-									//SyncContext?.AddParticipant(this);
-								}
-							}
-
-							LeftSyncTrigger.Fire(this, null);
+							SyncContext.NextMove(this);
+							SyncContext.WaitForAllPrograms.WaitForFire();
 						}
 
 						//DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Starting Loop: " + this.Name);
@@ -144,19 +125,19 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public abstract SyncLevel SyncLevel { get; set; }
 
-		public override void SetSyncContext(SyncContext syncContext)
-		{
-			//remove from old sync context, if any
-			SyncContext?.Unsync(this);
+		//public override void SetSyncContext(SyncContext syncContext)
+		//{
+		//	//remove from old sync context, if any
+		//	SyncContext?.Unsync(this);
 
-			//if same sync context is being passed, ignore request
-			if (syncContext == SyncContext) return;
+		//	//if same sync context is being passed, ignore request
+		//	if (syncContext == SyncContext) return;
 
-			if (State == ProgramState.Stopped || IsSyncStateRequested == true)
-				SyncContext = syncContext;
-			else
-				throw new Exception("Can only set sync context while program is stopped or if it's in synchronizable state.");
-		}
+		//	if (State == ProgramState.Stopped || IsSyncStateRequested == true)
+		//		SyncContext = syncContext;
+		//	else
+		//		throw new Exception("Can only set sync context while program is stopped or if it's in synchronizable state.");
+		//}
 
 		#region Overrideables
 
@@ -178,31 +159,31 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Transport Controls
 
-		/// <summary>
-		/// Requests the program to pause when it's at its synchronizable state.
-		/// </summary>
-		/// <returns></returns>
-		public void RequestSyncState()
-		{
-			lock (SyncStateRequestLock)
-			{
-				IsSyncStateRequested = true;
-				DebugTools.AddEvent("LoopingZoneProgram.RequestSyncState", "IsSyncStateRequested = true: " + this.Name);
-			}
-		}
+		///// <summary>
+		///// Requests the program to pause when it's at its synchronizable state.
+		///// </summary>
+		///// <returns></returns>
+		//public void RequestSyncState()
+		//{
+		//	lock (SyncStateRequestLock)
+		//	{
+		//		IsSyncStateRequested = true;
+		//		DebugTools.AddEvent("LoopingZoneProgram.RequestSyncState", "IsSyncStateRequested = true: " + this.Name);
+		//	}
+		//}
 
-		/// <summary>
-		/// Cancels Sync State request and releases from the sync state, if in that state.
-		/// </summary>
-		public void CancelSyncState()
-		{
-			//if this program is in its sync state, release it
-			if (IsSyncStateRequested)
-			{
-				WaitForSync.Fire(null, null);
-			}
-			IsSyncStateRequested = false;
-		}
+		///// <summary>
+		///// Cancels Sync State request and releases from the sync state, if in that state.
+		///// </summary>
+		//public void CancelSyncState()
+		//{
+		//	//if this program is in its sync state, release it
+		//	if (IsSyncStateRequested)
+		//	{
+		//		WaitForSync.Fire(null, null);
+		//	}
+		//	IsSyncStateRequested = false;
+		//}
 
 		protected override void StartCore()//bool isSyncRequested)
 		{

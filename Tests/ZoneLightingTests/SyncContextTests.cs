@@ -13,7 +13,7 @@ namespace ZoneLightingTests
 	public class SyncContextTests
 	{
 		[TestCase(1000)]
-		[Timeout(120000)]
+		[Timeout(1200000)]
 		public void Sync_OneStepperSyncingWithThree_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "START");
@@ -31,10 +31,12 @@ namespace ZoneLightingTests
 			//sync and start ABC
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
 			testContext.Sync(stepperA, stepperB, stepperC);
+			testContext.SyncFinished.WaitForFire();
 
 			//start D in sync with testContext when steppers ABC is back to the beginning
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Syncing Stepper D");
 			testContext.Sync(stepperD);
+			testContext.SyncFinished.WaitForFire();
 
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
@@ -81,14 +83,18 @@ namespace ZoneLightingTests
 			//sync and start A
 			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Sync-Starting Stepper A");
 			testContext.Sync(stepperA);
+			testContext.SyncFinished.WaitForFire();
 
 			//start BCD in sync with testContext when steppers A is back to the beginning
 			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Syncing Stepper B");
 			testContext.Sync(stepperB);
+			testContext.SyncFinished.WaitForFire();
 			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Syncing Stepper C");
 			testContext.Sync(stepperC);
+			testContext.SyncFinished.WaitForFire();
 			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Syncing Stepper D");
 			testContext.Sync(stepperD);
+			testContext.SyncFinished.WaitForFire();
 
 			int[,] stepperSteps;
 			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Validating Sync Phases");
@@ -137,12 +143,15 @@ namespace ZoneLightingTests
 
 			//sync and start AB
 			testContext.Sync(stepperA, stepperB);
+			testContext.SyncFinished.WaitForFire();
 
 			//start CD in sync with testContext when steppers AB is back to the beginning
 			DebugTools.AddEvent("Sync_TwoStepperSyncingWithTwo_Works", "Syncing Stepper C");
 			testContext.Sync(stepperC);
+			testContext.SyncFinished.WaitForFire();
 			DebugTools.AddEvent("Sync_TwoStepperSyncingWithTwo_Works", "Syncing Stepper D");
 			testContext.Sync(stepperD);
+			testContext.SyncFinished.WaitForFire();
 
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
@@ -166,7 +175,7 @@ namespace ZoneLightingTests
 		}
 
 		[TestCase(1000)]
-		[Timeout(30000)]
+		[Timeout(1200000)]
 		public void Sync_TwoSteppersInternalLoop_Consecutive_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_TwoSteppers_Works", "START");
@@ -182,10 +191,12 @@ namespace ZoneLightingTests
 			//sync and start A
 			DebugTools.AddEvent("Sync_TwoSteppers_Works", "Sync-Starting Stepper A");
 			testContext.Sync(stepperA);
+			testContext.SyncFinished.WaitForFire();
 
 			//start B in sync with testContext when stepper A is back to the beginning
 			DebugTools.AddEvent("Sync_TwoSteppers_Works", "Syncing Stepper B");
 			testContext.Sync(stepperB);
+			testContext.SyncFinished.WaitForFire();
 
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
@@ -210,7 +221,7 @@ namespace ZoneLightingTests
 
 		[TestCase(1000)]
 		[Timeout(30000)]
-		public void Sync_FourSteppers_Works(int numberOfChecks)
+		public void Sync_FourSteppers_Simultaneous_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_FourSteppers_Works", "START");
 
@@ -226,6 +237,7 @@ namespace ZoneLightingTests
 
 			//sync and start
 			testContext.Sync(stepperA, stepperB, stepperC, stepperD);
+			testContext.SyncFinished.WaitForFire();
 
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
@@ -266,6 +278,7 @@ namespace ZoneLightingTests
 
 			//sync and start
 			testContext.Sync(stepperA, stepperB);
+			testContext.SyncFinished.WaitForFire();
 
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
@@ -307,10 +320,12 @@ namespace ZoneLightingTests
 			//sync and start ABC
 			DebugTools.AddEvent("ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
 			testContext.Sync(stepperA, stepperB, stepperC);
-			
+			testContext.SyncFinished.WaitForFire();
+
 			//start D as a sync with testContext when steppers ABC is back to the beginning
 			DebugTools.AddEvent("ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works", "Syncing Stepper D");
 			stepperD.Start(sync: true, syncContext:testContext);
+			testContext.SyncFinished.WaitForFire();
 
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
@@ -357,10 +372,12 @@ namespace ZoneLightingTests
 			//sync and start ABC
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
 			testContext.Sync(stepperA, stepperB, stepperC);
+			testContext.SyncFinished.WaitForFire();
 
 			//start D in sync with testContext when steppers ABC is back to the beginning
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Syncing Stepper D");
 			stepperD.Start(sync: true);
+			testContext.SyncFinished.WaitForFire();
 
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
@@ -389,8 +406,8 @@ namespace ZoneLightingTests
 		}
 		
 		[TestCase(100)]
-		[Timeout(30000)]
-		public void Sync_OneProgram_Works(int numberOfChecks)
+		[Timeout(1200000)]
+		public void Sync_OneStepper_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "START");
 
@@ -404,6 +421,7 @@ namespace ZoneLightingTests
 			//sync and start ABC
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
 			testContext.Sync(stepperA);
+			testContext.SyncFinished.WaitForFire();
 			
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
@@ -441,9 +459,11 @@ namespace ZoneLightingTests
 
 			//sync and start A
 			testContext.Sync(stepperA);
+			testContext.SyncFinished.WaitForFire();
 
 			//start BCD in sync with testContext when steppers A is back to the beginning
 			testContext.Sync(stepperB, stepperC, stepperD);
+			testContext.SyncFinished.WaitForFire();
 
 			int[,] stepperSteps;
 			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Validating Sync Phases");
