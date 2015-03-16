@@ -428,7 +428,7 @@ namespace ZoneLighting
 			baiClock.Initialize(new Rainbow(), null, true, syncContext, true);
 
 			//synchronize and start zone programs
-			syncContext.SyncAndStart(leftWing.ZoneProgram,
+			syncContext.Sync(leftWing.ZoneProgram,
 									center.ZoneProgram,
 									rightWing.ZoneProgram,
 									baiClock.ZoneProgram);
@@ -440,7 +440,7 @@ namespace ZoneLighting
 			baiClock.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
 
 			//synchronize and start interrupting programs
-			notificationSyncContext.SyncAndStart(leftWing.InterruptingPrograms[0],
+			notificationSyncContext.Sync(leftWing.InterruptingPrograms[0],
 												rightWing.InterruptingPrograms[0],
 												center.InterruptingPrograms[0],
 												baiClock.InterruptingPrograms[0]);

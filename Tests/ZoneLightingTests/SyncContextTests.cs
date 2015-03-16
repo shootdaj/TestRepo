@@ -14,11 +14,9 @@ namespace ZoneLightingTests
 	{
 		[TestCase(1000)]
 		[Timeout(30000)]
-		public void SyncAndStartLive_OneStepperSyncingWithThree_Works(int numberOfChecks)
+		public void Sync_OneStepperSyncingWithThree_Works(int numberOfChecks)
 		{
-			//RunTimeboundTest(new Thread(() =>
-			//{
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "START");
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "START");
 
 			//create a sync context to conduct the test with
 			var testContext = new SyncContext();
@@ -31,25 +29,25 @@ namespace ZoneLightingTests
 			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start ABC
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
-			testContext.SyncAndStart(stepperA, stepperB, stepperC);
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
+			testContext.Sync(stepperA, stepperB, stepperC);
 
-			//start D as a live sync with testContext when steppers ABC is back to the beginning
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "LiveSync-Starting Stepper D");
-			testContext.SyncLive(stepperD);
+			//start D in sync with testContext when steppers ABC is back to the beginning
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Syncing Stepper D");
+			testContext.Sync(stepperD);
 
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
 			var result = invalidStepIndex.Length == 0;
 
 			//cleanup
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper A");
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Disposing Stepper A");
 			stepperA.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper B");
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Disposing Stepper B");
 			stepperB.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper C");
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Disposing Stepper C");
 			stepperC.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper D");
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Disposing Stepper D");
 			stepperD.Dispose(true);
 			testContext.Dispose();
 
@@ -66,11 +64,9 @@ namespace ZoneLightingTests
 
 		[TestCase(1000)]
 		[Timeout(30000)]
-		public void SyncAndStartLive_ThreeStepperSyncingWithOne_Works(int numberOfChecks)
+		public void Sync_ThreeStepperSyncingWithOne_Consecutive_Works(int numberOfChecks)
 		{
-			//RunTimeboundTest(new Thread(() =>
-			//{
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "START");
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "START");
 
 			//create a sync context to conduct the test with
 			var testContext = new SyncContext();
@@ -83,30 +79,30 @@ namespace ZoneLightingTests
 			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start A
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Sync-Starting Stepper A");
-			testContext.SyncAndStart(stepperA);
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Sync-Starting Stepper A");
+			testContext.Sync(stepperA);
 
-			//start BCD as a live sync with testContext when steppers A is back to the beginning
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "LiveSync-Starting Stepper B");
-			testContext.SyncLive(stepperB);
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "LiveSync-Starting Stepper C");
-			testContext.SyncLive(stepperC);
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "LiveSync-Starting Stepper D");
-			testContext.SyncLive(stepperD);
+			//start BCD in sync with testContext when steppers A is back to the beginning
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Syncing Stepper B");
+			testContext.Sync(stepperB);
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Syncing Stepper C");
+			testContext.Sync(stepperC);
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Syncing Stepper D");
+			testContext.Sync(stepperD);
 
 			int[,] stepperSteps;
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Validating Sync Phases");
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Validating Sync Phases");
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
 			var result = invalidStepIndex.Length == 0;
 
 			//cleanup
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper A");
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Disposing Stepper A");
 			stepperA.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper B");
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Disposing Stepper B");
 			stepperB.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper C");
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Disposing Stepper C");
 			stepperC.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper D");
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Disposing Stepper D");
 			stepperD.Dispose(true);
 			testContext.Dispose();
 
@@ -120,16 +116,14 @@ namespace ZoneLightingTests
 				var failStringBuilder = BuildFailString(invalidStepIndex, steppers, stepperSteps);
 				Assert.Fail(failStringBuilder.ToString());
 			}
-			//}), timeout);
+			
 		}
 
 		[TestCase(1000)]
 		[Timeout(30000)]
-		public void SyncAndStartLive_TwoStepperSyncingWithTwo_Works(int numberOfChecks)
+		public void Sync_TwoStepperSyncingWithTwo_Works(int numberOfChecks)
 		{
-			//RunTimeboundTest(new Thread(() =>
-			//{
-			DebugTools.AddEvent("SyncAndStartLive_TwoStepperSyncingWithTwo_Works", "START");
+			DebugTools.AddEvent("Sync_TwoStepperSyncingWithTwo_Works", "START");
 
 			//create a sync context to conduct the test with
 			var testContext = new SyncContext();
@@ -142,13 +136,13 @@ namespace ZoneLightingTests
 			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start AB
-			testContext.SyncAndStart(stepperA, stepperB);
+			testContext.Sync(stepperA, stepperB);
 
-			//start CD as a live sync with testContext when steppers AB is back to the beginning
-			DebugTools.AddEvent("SyncAndStartLive_TwoStepperSyncingWithTwo_Works", "LiveSync-Starting Stepper C");
-			testContext.SyncLive(stepperC);
-			DebugTools.AddEvent("SyncAndStartLive_TwoStepperSyncingWithTwo_Works", "LiveSync-Starting Stepper D");
-			testContext.SyncLive(stepperD);
+			//start CD in sync with testContext when steppers AB is back to the beginning
+			DebugTools.AddEvent("Sync_TwoStepperSyncingWithTwo_Works", "Syncing Stepper C");
+			testContext.Sync(stepperC);
+			DebugTools.AddEvent("Sync_TwoStepperSyncingWithTwo_Works", "Syncing Stepper D");
+			testContext.Sync(stepperD);
 
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
@@ -169,17 +163,13 @@ namespace ZoneLightingTests
 				var failStringBuilder = BuildFailString(invalidStepIndex, steppers, stepperSteps);
 				Assert.Fail(failStringBuilder.ToString());
 			}
-			//}), timeout);
-
 		}
 
 		[TestCase(1000)]
 		[Timeout(30000)]
-		public void SyncAndStartLive_TwoSteppers_Works(int numberOfChecks)
+		public void Sync_TwoSteppersInternalLoop_Consecutive_Works(int numberOfChecks)
 		{
-			//RunTimeboundTest(new Thread(() =>
-			//{
-			DebugTools.AddEvent("SyncAndStartLive_TwoSteppers_Works", "START");
+			DebugTools.AddEvent("Sync_TwoSteppers_Works", "START");
 
 			//create a sync context to conduct the test with
 			var testContext = new SyncContext();
@@ -190,12 +180,12 @@ namespace ZoneLightingTests
 			Stepper[] steppers = { stepperA, stepperB };
 
 			//sync and start A
-			DebugTools.AddEvent("SyncAndStartLive_TwoSteppers_Works", "Sync-Starting Stepper A");
-			testContext.SyncAndStart(stepperA);
+			DebugTools.AddEvent("Sync_TwoSteppers_Works", "Sync-Starting Stepper A");
+			testContext.Sync(stepperA);
 
-			//start B as a live sync with testContext when stepper A is back to the beginning
-			DebugTools.AddEvent("SyncAndStartLive_TwoSteppers_Works", "LiveSync-Starting Stepper B");
-			testContext.SyncLive(stepperB);
+			//start B in sync with testContext when stepper A is back to the beginning
+			DebugTools.AddEvent("Sync_TwoSteppers_Works", "Syncing Stepper B");
+			testContext.Sync(stepperB);
 
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
@@ -216,16 +206,13 @@ namespace ZoneLightingTests
 				var failStringBuilder = BuildFailString(invalidStepIndex, steppers, stepperSteps);
 				Assert.Fail(failStringBuilder.ToString());
 			}
-			//}), timeout);
 		}
 
 		[TestCase(1000)]
 		[Timeout(30000)]
-		public void SyncAndStart_FourSteppers_Works(int numberOfChecks)
+		public void Sync_FourSteppers_Works(int numberOfChecks)
 		{
-			//RunTimeboundTest(new Thread(() =>
-			//{
-			DebugTools.AddEvent("SyncAndStart_FourSteppers_Works", "START");
+			DebugTools.AddEvent("Sync_FourSteppers_Works", "START");
 
 			//create a sync context to conduct the test with
 			var testContext = new SyncContext();
@@ -238,7 +225,7 @@ namespace ZoneLightingTests
 			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start
-			testContext.SyncAndStart(stepperA, stepperB, stepperC, stepperD);
+			testContext.Sync(stepperA, stepperB, stepperC, stepperD);
 
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
@@ -260,17 +247,14 @@ namespace ZoneLightingTests
 			{
 				var failStringBuilder = BuildFailString(invalidStepIndex, steppers, stepperSteps);
 				Assert.Fail(failStringBuilder.ToString());
-			}
-			//}), timeout);
+			}	
 		}
 
 		[TestCase(1000)]
 		[Timeout(30000)]
-		public void SyncAndStart_TwoSteppers_Works(int numberOfChecks)
+		public void Sync_TwoSteppers_Simultaneous_Works(int numberOfChecks)
 		{
-			//RunTimeboundTest(new Thread(() =>
-			//{
-			DebugTools.AddEvent("SyncAndStart_TwoSteppers_Works", "START");
+			DebugTools.AddEvent("Sync_TwoSteppers_Works", "START");
 
 			//create a sync context to conduct the test with
 			var testContext = new SyncContext();
@@ -281,7 +265,7 @@ namespace ZoneLightingTests
 			Stepper[] steppers = {stepperA, stepperB};
 
 			//sync and start
-			testContext.SyncAndStart(stepperA, stepperB);
+			testContext.Sync(stepperA, stepperB);
 
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
@@ -302,16 +286,13 @@ namespace ZoneLightingTests
 				var failStringBuilder = BuildFailString(invalidStepIndex, steppers, stepperSteps);
 				Assert.Fail(failStringBuilder.ToString());
 			}
-			//}), timeout);
 		}
 
 		[TestCase(100)]
 		[Timeout(30000)]
-		public void ZoneProgram_StartWithLiveSync_OneStepperSyncingWithThree_Works(int numberOfChecks)
+		public void ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works(int numberOfChecks)
 		{
-			//RunTimeboundTest(new Thread(() =>
-			//{
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "START");
+			DebugTools.AddEvent("ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works", "START");
 
 			//create a sync context to conduct the test with
 			var testContext = new SyncContext();
@@ -324,25 +305,25 @@ namespace ZoneLightingTests
 			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start ABC
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
-			testContext.SyncAndStart(stepperA, stepperB, stepperC);
+			DebugTools.AddEvent("ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
+			testContext.Sync(stepperA, stepperB, stepperC);
 			
-			//start D as a live sync with testContext when steppers ABC is back to the beginning
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "LiveSync-Starting Stepper D");
-			stepperD.Start(liveSync: true, syncContext:testContext);
+			//start D as a sync with testContext when steppers ABC is back to the beginning
+			DebugTools.AddEvent("ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works", "Syncing Stepper D");
+			stepperD.Start(sync: true, syncContext:testContext);
 
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
 			var result = invalidStepIndex.Length == 0;
 
 			//cleanup
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper A");
+			DebugTools.AddEvent("ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works", "Disposing Stepper A");
 			stepperA.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper B");
+			DebugTools.AddEvent("ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works", "Disposing Stepper B");
 			stepperB.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper C");
+			DebugTools.AddEvent("ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works", "Disposing Stepper C");
 			stepperC.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper D");
+			DebugTools.AddEvent("ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works", "Disposing Stepper D");
 			stepperD.Dispose(true);
 			testContext.Dispose();
 
@@ -354,27 +335,14 @@ namespace ZoneLightingTests
 			{
 				var failStringBuilder = BuildFailString(invalidStepIndex, steppers, stepperSteps);
 				Assert.Fail(failStringBuilder.ToString());
-
-				//Assert.Fail("The programs are not within one step of each other --> "
-				//			+ stepperA.Name + "stepperSteps[" + invalidStepIndex[i] + ",0" + "]" + "=" + stepperSteps[invalidStepIndex, 0]
-				//			+ " | "
-				//			+ stepperB.Name + "stepperSteps[" + invalidStepIndex + ",1" + "]" + "=" + stepperSteps[invalidStepIndex, 1]
-				//			+ " | "
-				//			+ stepperC.Name + "stepperSteps[" + invalidStepIndex + ",2" + "]" + "=" + stepperSteps[invalidStepIndex, 2]
-				//			+ " | "
-				//			+ stepperD.Name + "stepperSteps[" + invalidStepIndex + ",3" + "]" + "=" + stepperSteps[invalidStepIndex, 3]);
 			}
-
-			//}), timeout);
 		}
 
 		[TestCase(100)]
 		[Timeout(30000)]
-		public void ZoneProgram_StartWithLiveSync_StepperConstructorSyncContext_OneStepperSyncingWithThree_Works(int numberOfChecks)
+		public void ZoneProgram_StartWithSync_StepperConstructorSyncContext_OneStepperSyncingWithThree_Works(int numberOfChecks)
 		{
-			//RunTimeboundTest(new Thread(() =>
-			//{
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "START");
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "START");
 
 			//create a sync context to conduct the test with
 			var testContext = new SyncContext();
@@ -387,25 +355,25 @@ namespace ZoneLightingTests
 			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start ABC
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
-			testContext.SyncAndStart(stepperA, stepperB, stepperC);
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
+			testContext.Sync(stepperA, stepperB, stepperC);
 
-			//start D as a live sync with testContext when steppers ABC is back to the beginning
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "LiveSync-Starting Stepper D");
-			stepperD.Start(liveSync: true);
+			//start D in sync with testContext when steppers ABC is back to the beginning
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Syncing Stepper D");
+			stepperD.Start(sync: true);
 
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
 			var result = invalidStepIndex.Length == 0;
 
 			//cleanup
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper A");
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Disposing Stepper A");
 			stepperA.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper B");
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Disposing Stepper B");
 			stepperB.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper C");
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Disposing Stepper C");
 			stepperC.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper D");
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Disposing Stepper D");
 			stepperD.Dispose(true);
 			testContext.Dispose();
 
@@ -417,27 +385,14 @@ namespace ZoneLightingTests
 			{
 				var failStringBuilder = BuildFailString(invalidStepIndex, steppers, stepperSteps);
 				Assert.Fail(failStringBuilder.ToString());
-
-				//Assert.Fail("The programs are not within one step of each other --> "
-				//			+ stepperA.Name + "stepperSteps[" + invalidStepIndex[i] + ",0" + "]" + "=" + stepperSteps[invalidStepIndex, 0]
-				//			+ " | "
-				//			+ stepperB.Name + "stepperSteps[" + invalidStepIndex + ",1" + "]" + "=" + stepperSteps[invalidStepIndex, 1]
-				//			+ " | "
-				//			+ stepperC.Name + "stepperSteps[" + invalidStepIndex + ",2" + "]" + "=" + stepperSteps[invalidStepIndex, 2]
-				//			+ " | "
-				//			+ stepperD.Name + "stepperSteps[" + invalidStepIndex + ",3" + "]" + "=" + stepperSteps[invalidStepIndex, 3]);
 			}
-
-			//}), timeout);
 		}
 		
 		[TestCase(100)]
 		[Timeout(30000)]
-		public void SyncAndStart_OneProgram_Works(int numberOfChecks)
+		public void Sync_OneProgram_Works(int numberOfChecks)
 		{
-			//RunTimeboundTest(new Thread(() =>
-			//{
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "START");
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "START");
 
 			//create a sync context to conduct the test with
 			var testContext = new SyncContext();
@@ -447,15 +402,15 @@ namespace ZoneLightingTests
 			Stepper[] steppers = { stepperA };
 
 			//sync and start ABC
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
-			testContext.SyncAndStart(stepperA);
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
+			testContext.Sync(stepperA);
 			
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
 			var result = invalidStepIndex.Length == 0 && stepperSteps.Length != 0;
 
 			//cleanup
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper A");
+			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Disposing Stepper A");
 			stepperA.Dispose(true);
 			testContext.Dispose();
 
@@ -467,73 +422,12 @@ namespace ZoneLightingTests
 			{
 				var failStringBuilder = BuildFailString(invalidStepIndex, steppers, stepperSteps);
 				Assert.Fail(failStringBuilder.ToString());
-
-				//Assert.Fail("The programs are not within one step of each other --> "
-				//			+ stepperA.Name + "stepperSteps[" + invalidStepIndex[i] + ",0" + "]" + "=" + stepperSteps[invalidStepIndex, 0]
-				//			+ " | "
-				//			+ stepperB.Name + "stepperSteps[" + invalidStepIndex + ",1" + "]" + "=" + stepperSteps[invalidStepIndex, 1]
-				//			+ " | "
-				//			+ stepperC.Name + "stepperSteps[" + invalidStepIndex + ",2" + "]" + "=" + stepperSteps[invalidStepIndex, 2]
-				//			+ " | "
-				//			+ stepperD.Name + "stepperSteps[" + invalidStepIndex + ",3" + "]" + "=" + stepperSteps[invalidStepIndex, 3]);
 			}
-
-			//}), timeout);
 		}
 
 		[TestCase(100)]
 		[Timeout(30000)]
-		public void SyncLive_OneProgram_Works(int numberOfChecks)
-		{
-			//RunTimeboundTest(new Thread(() =>
-			//{
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "START");
-
-			//create a sync context to conduct the test with
-			var testContext = new SyncContext();
-
-			//create two programs to be synced
-			var stepperA = new StepperInternalLoop("A");
-			Stepper[] steppers = { stepperA };
-
-			//sync and start ABC
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
-			testContext.SyncLive(stepperA);
-			
-			int[,] stepperSteps;
-			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
-			var result = invalidStepIndex.Length == 0 && stepperSteps.Length != 0;
-
-			//cleanup
-			DebugTools.AddEvent("SyncAndStartLive_OneStepperSyncingWithThree_Works", "Disposing Stepper A");
-			stepperA.Dispose(true);
-			testContext.Dispose();
-
-			if (result)
-			{
-				Assert.Pass();
-			}
-			else
-			{
-				var failStringBuilder = BuildFailString(invalidStepIndex, steppers, stepperSteps);
-				Assert.Fail(failStringBuilder.ToString());
-
-				//Assert.Fail("The programs are not within one step of each other --> "
-				//			+ stepperA.Name + "stepperSteps[" + invalidStepIndex[i] + ",0" + "]" + "=" + stepperSteps[invalidStepIndex, 0]
-				//			+ " | "
-				//			+ stepperB.Name + "stepperSteps[" + invalidStepIndex + ",1" + "]" + "=" + stepperSteps[invalidStepIndex, 1]
-				//			+ " | "
-				//			+ stepperC.Name + "stepperSteps[" + invalidStepIndex + ",2" + "]" + "=" + stepperSteps[invalidStepIndex, 2]
-				//			+ " | "
-				//			+ stepperD.Name + "stepperSteps[" + invalidStepIndex + ",3" + "]" + "=" + stepperSteps[invalidStepIndex, 3]);
-			}
-
-			//}), timeout);
-		}
-
-		[TestCase(100)]
-		[Timeout(30000)]
-		public void SyncLive_SimultaneousSync_ThreeStepperSyncingWithOne_Works(int numberOfChecks)
+		public void Sync_SimultaneousSync_ThreeStepperSyncingWithOne_Simultaneous_Works(int numberOfChecks)
 		{
 			//create a sync context to conduct the test with
 			var testContext = new SyncContext();
@@ -546,24 +440,24 @@ namespace ZoneLightingTests
 			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start A
-			testContext.SyncAndStart(stepperA);
+			testContext.Sync(stepperA);
 
-			//start BCD as a live sync with testContext when steppers A is back to the beginning
-			testContext.SyncLive(stepperB, stepperC, stepperD);
+			//start BCD in sync with testContext when steppers A is back to the beginning
+			testContext.Sync(stepperB, stepperC, stepperD);
 
 			int[,] stepperSteps;
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Validating Sync Phases");
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Validating Sync Phases");
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
 			var result = invalidStepIndex.Length == 0;
 
 			//cleanup
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper A");
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Disposing Stepper A");
 			stepperA.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper B");
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Disposing Stepper B");
 			stepperB.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper C");
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Disposing Stepper C");
 			stepperC.Dispose(true);
-			DebugTools.AddEvent("SyncAndStartLive_ThreeStepperSyncingWithOne_Works", "Disposing Stepper D");
+			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Disposing Stepper D");
 			stepperD.Dispose(true);
 			testContext.Dispose();
 
@@ -577,7 +471,6 @@ namespace ZoneLightingTests
 				var failStringBuilder = BuildFailString(invalidStepIndex, steppers, stepperSteps);
 				Assert.Fail(failStringBuilder.ToString());
 			}
-			//}), timeout);
 		}
 
 		#region Helpers
@@ -641,7 +534,7 @@ namespace ZoneLightingTests
 				stringBuilder.Append(Environment.NewLine);
 			}
 
-			DebugTools.AddEvent("SyncAndStart_TwoSteppers_Works", stringBuilder.ToString());
+			DebugTools.AddEvent("Sync_TwoSteppers_Works", stringBuilder.ToString());
 		}
 
 		/// <summary>

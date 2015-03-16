@@ -97,23 +97,25 @@ namespace ZoneLighting.ZoneProgramNS
 		/// Starts the zone program.
 		/// </summary>
 		/// <param name="inputStartingValues">Starting values for the program.</param>
-		/// <param name="interruptQueue">InterruptQueue to be used for interrupting inputs.</param>
-		/// <param name="isSyncRequested"></param>
-		public void Start(InputStartingValues inputStartingValues = null, bool liveSync = false, SyncContext syncContext = null)
+		/// <param name="sync">Whether or not to start the program in sync with a SyncContext.</param>
+		/// <param name="syncContext">If this parameter is supplied when sync=true, this method will use the supplied SyncContext to
+		/// sync this program with. If sync=true and this parameter is not supplied, this method will use the already assigned
+		/// SyncContext to sync this program with.</param>
+		public void Start(InputStartingValues inputStartingValues = null, bool sync = false, SyncContext syncContext = null)
 		{
 			if (State == ProgramState.Stopped)
 			{
-				if (liveSync)
+				if (sync)
 				{
 					if (syncContext == null)
 					{
 						if (SyncContext == null)
 							throw new Exception("If Start is called with LiveSync, either a Sync Context must be passed in with it or one must be set before calling Start.");
-						SyncContext.SyncLive(this);
+						SyncContext.Sync(this);
 					}
 					else
 					{
-						syncContext.SyncLive(this);
+						syncContext.Sync(this);
 					}
 				}
 				else
