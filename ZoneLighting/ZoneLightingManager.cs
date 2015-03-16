@@ -43,7 +43,7 @@ namespace ZoneLighting
 		/// <summary>
 		/// Synchronization contexts (clocks) for synchronizing the programs running in different zones.
 		/// </summary>
-		private IList<SyncContext> SyncContexts { get; set; } = new List<SyncContext>();
+		public IList<SyncContext> SyncContexts { get; set; } = new List<SyncContext>();
 
 		#endregion
 
@@ -412,8 +412,9 @@ namespace ZoneLighting
 
 		private void AddBasementZonesAndProgramsWithSync()
 		{
-			var syncContext = new SyncContext();
-			var notificationSyncContext = new SyncContext();
+			var syncContext = new SyncContext("SyncContext");
+			var notificationSyncContext = new SyncContext("NotificationContext");
+			SyncContexts.Add(syncContext);
 
 			//add zones
 			var leftWing = AddFadeCandyZone("LeftWing", PixelType.FadeCandyWS2812Pixel, 6, 1);
@@ -422,16 +423,21 @@ namespace ZoneLighting
 			var baiClock = AddFadeCandyZone("BaiClock", PixelType.FadeCandyWS2812Pixel, 24, 4);
 
 			//initialize zones
-			leftWing.Initialize(new Rainbow(), null, true, syncContext, true);
-			center.Initialize(new Rainbow(), null, true, syncContext, true);
-			rightWing.Initialize(new Rainbow(), null, true, syncContext, true);
-			baiClock.Initialize(new Rainbow(), null, true, syncContext, true);
+			leftWing.Initialize(new ScrollDot(), null, true, syncContext, true);
+			center.Initialize(new ScrollDot(), null, true, syncContext, true);
+			rightWing.Initialize(new ScrollDot(), null, true, syncContext, true);
+			baiClock.Initialize(new ScrollDot(), null, true, syncContext, true);
 
 			//synchronize and start zone programs
-			syncContext.SyncAndStart(leftWing.ZoneProgram,
-									center.ZoneProgram,
-									rightWing.ZoneProgram,
-									baiClock.ZoneProgram);
+			leftWing.ZoneProgram.Start(syncContext: syncContext);
+			center.ZoneProgram.Start(syncContext: syncContext);
+			rightWing.ZoneProgram.Start(syncContext: syncContext);
+			baiClock.ZoneProgram.Start(syncContext: syncContext);
+
+			//syncContext.Sync(leftWing.ZoneProgram,
+			//						center.ZoneProgram,
+			//						rightWing.ZoneProgram,
+			//						baiClock.ZoneProgram);
 			
 			//setup interrupting inputs
 			leftWing.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
@@ -440,7 +446,7 @@ namespace ZoneLighting
 			baiClock.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
 
 			//synchronize and start interrupting programs
-			notificationSyncContext.SyncAndStart(leftWing.InterruptingPrograms[0],
+			notificationSyncContext.Sync(leftWing.InterruptingPrograms[0],
 												rightWing.InterruptingPrograms[0],
 												center.InterruptingPrograms[0],
 												baiClock.InterruptingPrograms[0]);

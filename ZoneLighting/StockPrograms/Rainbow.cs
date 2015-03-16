@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
+using System.Threading.Tasks.Dataflow;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
@@ -13,9 +14,13 @@ namespace ZoneLighting.StockPrograms
 	[ExportMetadata("Name", "Rainbow")]
 	public class Rainbow : LoopingZoneProgram
 	{
-		public int DelayTime { get; set; } = 50;
-		public int Speed { get; set; } = 1;
+		public int DelayTime { get; set; } = 1;
+		public int Speed { get; set; } = 2;
 		public override SyncLevel SyncLevel { get; set; } = RainbowSyncLevel.Fade;
+
+		public Rainbow(SyncContext syncContext = null) : base(syncContext: syncContext)
+		{
+		}
 
 		public override void Setup()
 		{

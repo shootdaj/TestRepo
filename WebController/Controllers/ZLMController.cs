@@ -44,9 +44,10 @@ namespace WebController.Controllers
 			if (command == "Start")
 			{
 				if (zoneString == "All")
-					ZoneLightingManager.Instance.Zones.ToList().ForEach(zone => zone.ZoneProgram.Start(liveSync: true));
+					ZoneLightingManager.Instance.SyncContexts[0].Sync(ZoneLightingManager.Instance.Zones.Select(zone => zone.ZoneProgram));
+					//ZoneLightingManager.Instance.Zones.ToList().ForEach(zone => zone.ZoneProgram.Start(sync: true));
 				else
-					ZoneLightingManager.Instance.Zones.First(z => z.Name == zoneString).ZoneProgram.Start(liveSync: true);
+					ZoneLightingManager.Instance.Zones.First(z => z.Name == zoneString).ZoneProgram.Start(sync: true);
 			}
 			else if (command == "Stop")
 			{

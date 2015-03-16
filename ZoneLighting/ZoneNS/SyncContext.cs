@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.ZoneNS
@@ -48,6 +49,9 @@ namespace ZoneLighting.ZoneNS
 			}
 		}
 
+		public object SyncStateRequestLock { get; set; } = new object();
+		public bool IsSyncStateRequested { get; set; }
+
 		#endregion
 
 		#region C+I
@@ -73,170 +77,88 @@ namespace ZoneLighting.ZoneNS
 
 		#region API
 
-		/// <summary>
-		/// Synchronizes all given programs and starts them.
-		/// Should be called when all the programs to be synced are known beforehand and they are all stopped.
-		/// </summary>
-		/// <param name="zonePrograms"></param>
-		public void SyncAndStart(List<ZoneProgram> zonePrograms)
+		public void Sync(params ZoneProgram[] zonePrograms)
 		{
-			//all programs must be stopped 
-			if (zonePrograms.All(p => p.State == ProgramState.Stopped))
-			{
-				if (zonePrograms.All(p => p is ReactiveZoneProgram))
-				{
-					zonePrograms.ToList().ForEach(zp => Barrier.AddParticipant());	 //add participant for each program
-					zonePrograms.ToList().ForEach(zp => ZonePrograms.Add(zp));
-				}
-				else if (zonePrograms.All(p => p is LoopingZoneProgram))
-				{
-					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-					{
-						//sync request
-						DebugTools.AddEvent("SyncContext.SyncAndStart", "Requesting sync-state from Program " + zp.Name);
-						zp.RequestSyncState();
-
-						//start
-						DebugTools.AddEvent("SyncContext.SyncAndStart", "Starting Program " + zp.Name);
-						zp.Start();
-					});
-
-					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-					{
-						//wait for sync state
-						DebugTools.AddEvent("SyncContext.SyncAndStart", "Waiting for Sync-State from Program " + zp.Name);
-						zp.IsSynchronizable.WaitForFire();
-					});
-
-					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-					{
-						//add participant for each program
-						DebugTools.AddEvent("SyncContext.SyncAndStart", "Syncing " + zp.Name);
-						Barrier.AddParticipant();
-
-						//set this context as sync context if it's not already
-						//DebugTools.AddEvent("SyncContext.SyncAndStart", "Setting Sync-Context for " + zp.Name);
-						zp.SetSyncContext(this);
-
-						//add each program to list of programs that are actively using this sync context
-						//DebugTools.AddEvent("SyncContext.SyncAndStart", "Adding to ZonePrograms: " + zp.Name);
-						ZonePrograms.Add(zp);
-					});
-
-					//release from sync state	
-					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-					{
-						DebugTools.AddEvent("SyncContext.SyncAndStart", "Release from Sync-State " + zp.Name);
-						zp.WaitForSync.Fire(null, null);
-					});
-
-					zonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-					{
-						DebugTools.AddEvent("SyncContext.SyncAndStart", "Wait for Leaving Sync-State: " + zp.Name);
-						zp.LeftSyncTrigger.WaitForFire();
-						DebugTools.AddEvent("SyncContext.SyncAndStart", "Left Sync-State: " + zp.Name);
-					});
-
-
-				}
-				else
-				{
-					throw new Exception("All programs must be of the same type and must be included in the if statement that precedes this exception.");
-				}
-			}
-			else
-			{
-				throw new Exception("All programs must be stopped before a non-live sync is executed.");
-			}
+			Sync(zonePrograms.ToList());
 		}
 
 		/// <summary>
-		/// Synchronizes the given program with the programs that are already attached to this context.
+		/// Synchronizes the given programs with the programs that are already attached to this context.
 		/// This can be called while the other programs are running, but will wait until they can get into
-		/// their synchronizable states before executing the synchronization.
+		/// their synchronizable states before executing the synchronization. If no programs are already attached,
+		/// then this method attaches the given program(s) to this context and starts them.
 		/// </summary>
-		public void SyncAndStartLive(ZoneProgram zoneProgram)
+		public void Sync(IEnumerable<ZoneProgram> zonePrograms)
 		{
-			//incoming program must be stopped 
-			if (zoneProgram.State == ProgramState.Stopped)
+			var zoneProgramsEnumerated = zonePrograms as IList<ZoneProgram> ?? zonePrograms.ToList();
+
+			//incoming program must be stopped
+			if (zoneProgramsEnumerated.Any(zp => zp.State != ProgramState.Stopped))
+				throw new Exception("Given program must be stopped before a live sync is executed.");
+
+			if (zoneProgramsEnumerated.All(zp => zp is ReactiveZoneProgram))
 			{
-				if (zoneProgram is ReactiveZoneProgram)
+				zoneProgramsEnumerated.ToList().ForEach(zoneProgram =>
 				{
-					Barrier.AddParticipant();		 //add participant for each program
+					Barrier.AddParticipant(); //add participant for each program
 					ZonePrograms.Add(zoneProgram);
-				}
-				else if (zoneProgram is LoopingZoneProgram && ZonePrograms.All(zp => zp is LoopingZoneProgram))
+				});
+			}
+			else if (zoneProgramsEnumerated.All(zp => zp is LoopingZoneProgram) && ZonePrograms.All(zp => zp is LoopingZoneProgram))
+			{
+				//send sync-state request
+				
+				IsSyncStateRequested = true;
+
+				//request sync-state from existing programs and incoming programs
+				ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
 				{
-					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-					{
-						DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Requesting sync-state from Program " + zp.Name);
-						zp.RequestSyncState();
-					});
+					zp.RequestSyncState();
+				});
+				zoneProgramsEnumerated.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+				{
+					zp.RequestSyncState();
+				});
 
-					DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Requesting sync-state from Program " + zoneProgram.Name);
-					((LoopingZoneProgram)zoneProgram).RequestSyncState();
+				//start all incoming programs
+				zoneProgramsEnumerated.ToList().ForEach(zoneProgram => zoneProgram.Start(sync: false));
 
-					DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Starting Program " + zoneProgram.Name);
-					zoneProgram.Start(liveSync: false);
-					
-					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-					{
-						DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Waiting for Sync-State from Program " + zp.Name);
-						zp.IsSynchronizable.WaitForFire();
-					});
-					DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Waiting for Sync-State from Program " + zoneProgram.Name);
-					((LoopingZoneProgram)zoneProgram).IsSynchronizable.WaitForFire();
+				//wait for sync-state from all programs (incoming and existing)
+				ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+				{
+					zp.IsSynchronizable.WaitForFire();
+				});
+				zoneProgramsEnumerated.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+				{
+					zp.IsSynchronizable.WaitForFire();
+				});
 
-
-					DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Syncing " + zoneProgram.Name);
+				//sync all incoming programs
+				zoneProgramsEnumerated.ToList().ForEach(zoneProgram =>
+				{
 					Barrier.AddParticipant();
-					
-					//DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Setting Sync-Context for " + zoneProgram.Name);
 					zoneProgram.SetSyncContext(this);
-
-
-
-					//DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Adding to ZonePrograms: " + zoneProgram.Name);
 					ZonePrograms.Add(zoneProgram);
+				});
 
-					//AddParticipant(zoneProgram);
-
-
-					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-					{
-						DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Release from Sync-State " + zp.Name);
-						zp.WaitForSync.Fire(null, null);
-						
-					});
-
-					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
-					{
-						DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Wait for Leaving Sync-State: " + zp.Name);
-						zp.LeftSyncTrigger.WaitForFire();
-						DebugTools.AddEvent("SyncContext.SyncAndStartLive", "Left Sync-State: " + zp.Name);
-					});
-				}
-				else
+				//release all programs from sync-state
+				ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
 				{
-					throw new Exception("All programs must be of the same type and must be included in the if statement that precedes this exception.");
-				}
+					zp.WaitForSync.Fire(null, null);
+				});
+
+				//wait until all programs have left sync-state
+				ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+				{
+					zp.LeftSyncTrigger.WaitForFire();
+				});
 			}
 			else
 			{
-				throw new Exception("All programs must be stopped before a non-live sync is executed.");
+				throw new Exception(
+					"All programs must be of the same type and must be included in the if statement that precedes this exception.");
 			}
 		}
-		
-		public void SyncAndStart(params ZoneProgram[] zonePrograms)
-		{
-			SyncAndStart(zonePrograms.ToList());
-		}
-
-		//public void AddParticipant(ZoneProgram zoneProgram)
-		//{
-		//	Barrier.AddParticipant();
-		//	ZonePrograms.Add(zoneProgram);
-		//}
 
 		/// <summary>
 		/// Removes a given program from the synchronization.
@@ -248,6 +170,13 @@ namespace ZoneLighting.ZoneNS
 			ZonePrograms.Remove(program);
 		}
 
+		//public void AddParticipant(ZoneProgram program)
+		//{
+		//	if (ZonePrograms.Contains(program)) return;
+		//	Barrier.AddParticipant();
+		//	ZonePrograms.Add(program);
+		//}
+
 		/// <summary>
 		/// Signals the barrier and waits for the other programs to catch up or if it's the last program,
 		/// then propels all the programs. To be used by programs to signal the other programs that signalling
@@ -257,6 +186,14 @@ namespace ZoneLighting.ZoneNS
 		{
 			if (ZonePrograms.ToList().Any())
 				Barrier.SignalAndWait();
+		}
+
+		public void Reset()
+		{
+			for (int i = 0; i < Barrier.ParticipantsRemaining; i++)
+			{
+				Task.Run(() => Barrier.SignalAndWait());
+			}
 		}
 
 		public int GetNumberOfRemainingParticipants() => Barrier.ParticipantsRemaining;

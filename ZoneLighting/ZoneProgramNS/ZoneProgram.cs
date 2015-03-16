@@ -97,14 +97,27 @@ namespace ZoneLighting.ZoneProgramNS
 		/// Starts the zone program.
 		/// </summary>
 		/// <param name="inputStartingValues">Starting values for the program.</param>
-		/// <param name="interruptQueue">InterruptQueue to be used for interrupting inputs.</param>
-		/// <param name="isSyncRequested"></param>
-		public void Start(InputStartingValues inputStartingValues = null, bool liveSync = false)
+		/// <param name="sync">Whether or not to start the program in sync with a SyncContext.</param>
+		/// <param name="syncContext">If this parameter is supplied when sync=true, this method will use the supplied SyncContext to
+		/// sync this program with. If sync=true and this parameter is not supplied, this method will use the already assigned
+		/// SyncContext to sync this program with.</param>
+		public void Start(InputStartingValues inputStartingValues = null, bool sync = false, SyncContext syncContext = null)
 		{
 			if (State == ProgramState.Stopped)
 			{
-				if (liveSync && SyncContext != null)
-					SyncContext?.SyncAndStartLive(this);
+				if (sync || syncContext != null)
+				{
+					if (syncContext != null)
+					{
+						syncContext.Sync(this);
+					}
+					else
+					{
+						if (SyncContext == null)
+							throw new Exception("If Start is called with LiveSync, either a Sync Context must be passed in with it or one must be set before calling Start.");
+						SyncContext.Sync(this);
+					}
+				}
 				else
 				{
 					//subclass processing
@@ -132,7 +145,6 @@ namespace ZoneLighting.ZoneProgramNS
 
 				//remove from synccontext
 				SyncContext?.Unsync(this);
-				SyncContext = null;
 
 				//set program state
 				State = ProgramState.Stopped;
@@ -160,6 +172,10 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			//remove from old sync context, if any
 			SyncContext?.Unsync(this);
+
+			//if same sync context is being passed, ignore request
+			if (syncContext == SyncContext)
+				return;
 
 			if (State == ProgramState.Stopped)
 				SyncContext = syncContext;	
@@ -339,7 +355,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <param name="name"></param>
 		protected void RemoveInput(string name)
 		{
-			GetInput(name).Unsubscribe();
+			GetInput(name)?.Unsubscribe();
 		}
 
 		/// <summary>
@@ -347,13 +363,15 @@ namespace ZoneLighting.ZoneProgramNS
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public ZoneProgramInput GetInput(string name)
+		public ZoneProgramInput GetInput(string name, bool silent = true)
 		{
 			if (Inputs.Contains(name))
 				return Inputs[name];
 			else
 			{
-				throw new Exception("No input with the name '" + name + "' found in this program.");
+				if (!silent)
+					throw new Exception("No input with the name '" + name + "' found in this program.");
+				return null;
 			}
 		}
 
