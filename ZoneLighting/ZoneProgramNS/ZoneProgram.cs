@@ -145,7 +145,6 @@ namespace ZoneLighting.ZoneProgramNS
 
 				//remove from synccontext
 				SyncContext?.Unsync(this);
-				SyncContext = null;
 
 				//set program state
 				State = ProgramState.Stopped;
