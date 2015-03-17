@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,37 +22,18 @@ namespace ZoneLighting.ZoneNS
 		/// A name for convenience.
 		/// </summary>
 		public string Name { get; private set; }
-
-		private object _barrierLock = new object();
-		private Barrier _barrier = new Barrier(0);
+		
 		/// <summary>
 		/// Underlying barrier that synchronizes the programs that are attached to this SyncContext.
 		/// </summary>
-		private Barrier Barrier
-		{
-			get
-			{
-				lock (_barrierLock)
-					return _barrier;
-			}
-		}
+		private Barrier Barrier { get; } = new Barrier(0);
 
-		private object _zoneProgramsLock = new object();
-		private List<ZoneProgram> _zonePrograms = new List<ZoneProgram>();
 		/// <summary>
 		/// ZonePrograms that are synchronized using this SyncContext.
 		/// </summary>
-		private List<ZoneProgram> ZonePrograms
-		{
-			get
-			{
-				lock (_zoneProgramsLock)
-					return _zonePrograms;
-			}
-		}
+		private List<ZoneProgram> ZonePrograms { get; } = new List<ZoneProgram>();
 
-		public object SyncStateRequestLock { get; set; } = new object();
-		//public bool IsSyncStateRequested { get; set; }
+		public object SyncStateLock { get; } = new object();
 
 		#endregion
 
@@ -101,22 +83,31 @@ namespace ZoneLighting.ZoneNS
 			{
 				zoneProgramsEnumerated.ToList().ForEach(zoneProgram =>
 				{
-					Barrier.AddParticipant(); //add participant for each program
-					ZonePrograms.Add(zoneProgram);
+					lock (Barrier)
+					{
+						Barrier.AddParticipant(); //add participant for each program
+					}
+
+					lock (ZoneProgramsLock)
+					{
+						ZonePrograms.Add(zoneProgram);
+					}
 				});
 			}
 			else if (zoneProgramsEnumerated.All(zp => zp is LoopingZoneProgram) && ZonePrograms.All(zp => zp is LoopingZoneProgram))
 			{
-				lock (SyncStateRequestLock)
+				lock (SyncStateLock)
 				{
 					//IsSyncStateRequested = true;
 
 					ProgramsToSync.AddRange(zoneProgramsEnumerated);
-
-					zoneProgramsEnumerated.ToList().ForEach(zoneProgram =>
+					ProgramsToSync.ForEach(zoneProgram =>
 					{
 						zoneProgram.SetSyncContext(this);
-						ZonePrograms.Add(zoneProgram);
+						lock (ZoneProgramsLock)
+						{
+							ZonePrograms.Add(zoneProgram);
+						}
 					});
 
 					zoneProgramsEnumerated.ToList().ForEach(zoneProgram => zoneProgram.Start(sync: false));
@@ -164,17 +155,19 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public void Unsync(ZoneProgram program)
 		{
-			if (!ZonePrograms.Contains(program)) return;
-			Barrier.RemoveParticipant();
-			ZonePrograms.Remove(program);
+			lock (ZoneProgramsLock)
+			{
+				if (!ZonePrograms.Contains(program)) return;
+			}
+			lock (Barrier)
+			{
+				Barrier.RemoveParticipant();
+			}
+			lock (ZoneProgramsLock)
+			{
+				ZonePrograms.Remove(program);
+			}
 		}
-
-		//public void AddParticipant(ZoneProgram program)
-		//{
-		//	if (ZonePrograms.Contains(program)) return;
-		//	Barrier.AddParticipant();
-		//	ZonePrograms.Add(program);
-		//}
 
 		/// <summary>
 		/// Signals the barrier and waits for the other programs to catch up or if it's the last program,
@@ -183,30 +176,44 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public void SignalAndWait()
 		{
-			if (ZonePrograms.ToList().Any())
+			if (Barrier.ParticipantCount > 0)
 				Barrier.SignalAndWait();
 		}
 
 		public void NextMove(ZoneProgram program)
 		{
-			lock (SyncStateRequestLock)
+			lock (SyncStateLock)
 			{
-				if (ProgramsToSync.Any())
+				DebugTools.AddEvent("SyncContext.NextMove", "SyncStateRequestedLock acquired: " + program.Name);
+				WaitingPrograms.Add(program);
+				if (ZonePrograms.All(zp => WaitingPrograms.Contains(zp)))
 				{
-					WaitingPrograms.Add(program);
-					if (ZonePrograms.All(zp => WaitingPrograms.Contains(zp)))
+					if (ProgramsToSync.Any())
 					{
-						ProgramsToSync.ToList().ForEach(sp => Barrier.AddParticipant());
+						DebugTools.AddEvent("SyncContext.NextMove", "Set context, add barrier, add to ZonePrograms: " + program.Name);
+
+						ProgramsToSync.ToList().ForEach(zoneProgram =>
+						{
+							lock (Barrier)
+							{
+								Barrier.AddParticipant();
+							}
+						});
+
 						ProgramsToSync.Clear();
-						WaitingPrograms.Clear();
-						ZonePrograms.ForEach(zp => WaitForAllPrograms.Fire(this, null));
-						SyncFinished.Fire(this, null);
 					}
+
+					WaitingPrograms.Clear();
+					ZonePrograms.ForEach(zp => WaitForAllPrograms.Fire(this, null));
+					SyncFinished.Fire(this, null);
 				}
 			}
+			DebugTools.AddEvent("SyncContext.NextMove", "SyncStateRequestedLock released: " + program.Name);
 		}
-		
-		private List<ZoneProgram>  ProgramsToSync { get; set; } = new List<ZoneProgram>();
+
+		private object ZoneProgramsLock { get; } = new object();
+
+		private List<ZoneProgram> ProgramsToSync { get; set; } = new List<ZoneProgram>();
 
 		public Trigger SyncFinished { get; set; } = new Trigger("SyncContext.SyncFinished");
 

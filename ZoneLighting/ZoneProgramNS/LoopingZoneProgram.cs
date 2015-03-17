@@ -116,7 +116,7 @@ namespace ZoneLighting.ZoneProgramNS
 				{
 					Running = false;
 					StopTrigger.Fire(this, null);
-					DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method", "Unexpected exception in LoopingTask: " + ex.Message);
+					DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method", "Unexpected exception in LoopingTask: " + ex.Message + " | StackTrace: " + ex.StackTrace);
 				}
 			}, LoopCTS.Token);
 		}

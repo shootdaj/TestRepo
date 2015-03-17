@@ -170,12 +170,12 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public virtual void SetSyncContext(SyncContext syncContext)
 		{
-			//remove from old sync context, if any
-			SyncContext?.Unsync(this);
-
 			//if same sync context is being passed, ignore request
 			if (syncContext == SyncContext)
 				return;
+
+			//remove from old sync context, if any
+			//SyncContext?.Unsync(this);
 
 			if (State == ProgramState.Stopped)
 				SyncContext = syncContext;	

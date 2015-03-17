@@ -13,7 +13,7 @@ namespace ZoneLightingTests
 	public class SyncContextTests
 	{
 		[TestCase(1000)]
-		[Timeout(1200000)]
+		[Timeout(30000)]
 		public void Sync_OneStepperSyncingWithThree_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "START");
@@ -175,7 +175,7 @@ namespace ZoneLightingTests
 		}
 
 		[TestCase(1000)]
-		[Timeout(1200000)]
+		[Timeout(30000)]
 		public void Sync_TwoSteppersInternalLoop_Consecutive_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_TwoSteppers_Works", "START");
@@ -406,7 +406,7 @@ namespace ZoneLightingTests
 		}
 		
 		[TestCase(100)]
-		[Timeout(1200000)]
+		[Timeout(30000)]
 		public void Sync_OneStepper_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "START");
@@ -634,7 +634,7 @@ namespace ZoneLightingTests
 		[TearDown]
 		public void TearDown()
 		{
-			//if (TestContext.CurrentContext.Result.Status != TestStatus.Failed) return;
+			if (TestContext.CurrentContext.Result.Status != TestStatus.Failed) return;
 			DebugTools.AddEvent("TearDown", "DebugTools.Print");
 			DebugTools.Print(clearEvents: true);
 		}
