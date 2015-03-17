@@ -175,7 +175,7 @@ namespace ZoneLighting.ZoneProgramNS
 				return;
 
 			//remove from old sync context, if any
-			//SyncContext?.Unsync(this);
+			SyncContext?.Unsync(this);
 
 			if (State == ProgramState.Stopped)
 				SyncContext = syncContext;	
