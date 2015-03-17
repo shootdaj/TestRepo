@@ -65,65 +65,70 @@ namespace ZoneLighting
 			Events.Clear();
 		}
 
-		/// <summary>
-		/// Adds a Debug Event
-		/// </summary>
-		/// <param name="methodName">Name of the method where this event is being added</param>
-		/// <param name="eventOrderingNumber">If the event is to be placed at a specific ordering number, it can be specified</param>
-		/// <param name="eventTime">A different time for the event can be specifiied (different than the time when the event is logged)</param>
-		/// <param name="message">A message to describe the event</param>
-		public static DebugEvent AddEvent(string methodName, string message, decimal eventOrderingNumber, DateTime? eventTime = null)
+		///// <summary>
+		///// Adds a Debug Event
+		///// </summary>
+		///// <param name="methodName">Name of the method where this event is being added</param>
+		///// <param name="eventOrderingNumber">If the event is to be placed at a specific ordering number, it can be specified</param>
+		///// <param name="eventTime">A different time for the event can be specifiied (different than the time when the event is logged)</param>
+		///// <param name="message">A message to describe the event</param>
+		//public static DebugEvent AddEvent(string methodName, string message, decimal eventOrderingNumber, DateTime? eventTime = null)
+		//{
+		//	if (Active)
+		//	{
+		//		var x = new DebugEvent()
+		//		{
+		//			EventOrderingNumber = eventOrderingNumber,
+		//			MethodName = methodName,
+		//			EventTime = eventTime ?? DateTime.Now,
+		//			Message = message
+		//		};
+		//		Events.Add(x);
+		//		return x;
+		//	}
+		//	return null;
+		//}
+		
+		public static void AddEvent(string methodName, string message)
 		{
-			if (Active)
-			{
-				var x = new DebugEvent()
-				{
-					EventOrderingNumber = eventOrderingNumber,
-					MethodName = methodName,
-					EventTime = eventTime ?? DateTime.Now,
-					Message = message
-				};
-				Events.Add(x);
-				return x;
-			}
-			return null;
+			ZLEventSource.Log.AddEvent(methodName, message);
 		}
+		
+		///// <summary>
+		///// Adds a Debug Event
+		///// </summary>
+		///// <param name="methodName">Name of the method where this event is being added</param>
+		///// <param name="message">A message to describe the event</param>
+		///// <param name="eventTime">A different time for the event can be specifiied (different than the time when the event is logged)</param>
+		///// <returns>Returns the event that was just added</returns>
+		//public static DebugEvent AddEvent(string methodName, string message, DateTime? eventTime = null)
+		//{
+		//	try
+		//	{
+		//		if (Active)
+		//		{
+		//			if (!(!TriggerOutput && methodName.Contains("Trigger.")) &&
+		//				(!StarredOnly || methodName.Contains("*")))
+		//			{
+		//				var x = new DebugEvent()
+		//				{
+		//					EventOrderingNumber = Events.Count() + 1,
+		//					MethodName = methodName,
+		//					EventTime = eventTime ?? DateTime.Now,
+		//					Message = message
+		//				};
+		//				Events.Add(x);
+		//				return x;
+		//			}
+		//		}
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		throw new WarningException("Error while trying to add a Debug Event.");
+		//	}
 
-		/// <summary>
-		/// Adds a Debug Event
-		/// </summary>
-		/// <param name="methodName">Name of the method where this event is being added</param>
-		/// <param name="message">A message to describe the event</param>
-		/// <param name="eventTime">A different time for the event can be specifiied (different than the time when the event is logged)</param>
-		/// <returns>Returns the event that was just added</returns>
-		public static DebugEvent AddEvent(string methodName, string message, DateTime? eventTime = null)
-		{
-			try
-			{
-				if (Active)
-				{
-					if (!(!TriggerOutput && methodName.Contains("Trigger.")) &&
-						(!StarredOnly || methodName.Contains("*")))
-					{
-						var x = new DebugEvent()
-						{
-							EventOrderingNumber = Events.Count() + 1,
-							MethodName = methodName,
-							EventTime = eventTime ?? DateTime.Now,
-							Message = message
-						};
-						Events.Add(x);
-						return x;
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				throw new WarningException("Error while trying to add a Debug Event.");
-			}
-
-			return null;
-		}
+		//	return null;
+		//}
 
 		public static void BuildOutput(this DebugEvent debugEvent)
 		{
@@ -156,19 +161,19 @@ namespace ZoneLighting
 					File.WriteAllText(OutputFile, string.Empty); //clear output file
 
 					DebugEvent lastDebugEvent = null;
-					
+
 					foreach (var debugEvent in Events.Where(x => x != null).OrderBy(x => x.EventOrderingNumber))
 					{
 						if (timeSpans && lastDebugEvent != null)
 						{
-							var totalMillisecondDifference = ((int) ((debugEvent.EventTime - lastDebugEvent.EventTime).TotalMilliseconds));
+							var totalMillisecondDifference = ((int)((debugEvent.EventTime - lastDebugEvent.EventTime).TotalMilliseconds));
 
 							BuildOutput("");
 							BuildOutput("   " + totalMillisecondDifference.ToString() +
-							         (printLabel ? " ms" : "") +
-							         (totalMillisecondDifference > longDurationThreshold
-								         ? "                            !---------LONG--------!"
-								         : ""));
+									 (printLabel ? " ms" : "") +
+									 (totalMillisecondDifference > longDurationThreshold
+										 ? "                            !---------LONG--------!"
+										 : ""));
 							BuildOutput("");
 						}
 						debugEvent.BuildOutput();
@@ -181,7 +186,7 @@ namespace ZoneLighting
 						BuildOutput("----------------------------------------------");
 						BuildOutput("");
 						BuildOutput("Total Time: " + (Events.Last().EventTime - Events.First().EventTime).TotalMilliseconds +
-						         (printLabel ? " ms" : ""));
+								 (printLabel ? " ms" : ""));
 						BuildOutput("");
 					}
 
@@ -208,7 +213,7 @@ namespace ZoneLighting
 			_output.AppendLine(text);
 		}
 
-		private static void PrintOutput(bool console = true, bool debug = false, bool clearOutput = true)
+		private static void PrintOutput(bool console = false, bool debug = true, bool clearOutput = true)
 		{
 			if (console)
 				Console.Write(_output.ToString());

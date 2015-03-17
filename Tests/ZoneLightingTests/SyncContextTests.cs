@@ -14,7 +14,7 @@ namespace ZoneLightingTests
 	{
 		[TestCase(1000)]
 		[Timeout(30000)]
-		public void Sync_OneStepperSyncingWithThree_Works(int numberOfChecks)
+		public static void Sync_OneStepperSyncingWithThree_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "START");
 
@@ -66,7 +66,7 @@ namespace ZoneLightingTests
 
 		[TestCase(1000)]
 		[Timeout(30000)]
-		public void Sync_ThreeStepperSyncingWithOne_Consecutive_Works(int numberOfChecks)
+		public static void Sync_ThreeStepperSyncingWithOne_Consecutive_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "START");
 
@@ -127,7 +127,7 @@ namespace ZoneLightingTests
 
 		[TestCase(1000)]
 		[Timeout(30000)]
-		public void Sync_TwoStepperSyncingWithTwo_Works(int numberOfChecks)
+		public static void Sync_TwoStepperSyncingWithTwo_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_TwoStepperSyncingWithTwo_Works", "START");
 
@@ -176,7 +176,7 @@ namespace ZoneLightingTests
 
 		[TestCase(1000)]
 		[Timeout(30000)]
-		public void Sync_TwoSteppersInternalLoop_Consecutive_Works(int numberOfChecks)
+		public static void Sync_TwoSteppersInternalLoop_Consecutive_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_TwoSteppers_Works", "START");
 
@@ -221,7 +221,7 @@ namespace ZoneLightingTests
 
 		[TestCase(1000)]
 		[Timeout(30000)]
-		public void Sync_FourSteppers_Simultaneous_Works(int numberOfChecks)
+		public static void Sync_FourSteppers_Simultaneous_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_FourSteppers_Works", "START");
 
@@ -264,7 +264,7 @@ namespace ZoneLightingTests
 
 		[TestCase(1000)]
 		[Timeout(30000)]
-		public void Sync_TwoSteppers_Simultaneous_Works(int numberOfChecks)
+		public static void Sync_TwoSteppers_Simultaneous_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_TwoSteppers_Works", "START");
 
@@ -303,7 +303,7 @@ namespace ZoneLightingTests
 
 		[TestCase(100)]
 		[Timeout(30000)]
-		public void ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works(int numberOfChecks)
+		public static void ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works", "START");
 
@@ -355,7 +355,7 @@ namespace ZoneLightingTests
 
 		[TestCase(100)]
 		[Timeout(30000)]
-		public void ZoneProgram_StartWithSync_StepperConstructorSyncContext_OneStepperSyncingWithThree_Works(int numberOfChecks)
+		public static void ZoneProgram_StartWithSync_StepperConstructorSyncContext_OneStepperSyncingWithThree_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "START");
 
@@ -407,7 +407,7 @@ namespace ZoneLightingTests
 		
 		[TestCase(100)]
 		[Timeout(30000)]
-		public void Sync_OneStepper_Works(int numberOfChecks)
+		public static void Sync_OneStepper_Works(int numberOfChecks)
 		{
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "START");
 
@@ -445,7 +445,7 @@ namespace ZoneLightingTests
 
 		[TestCase(100)]
 		[Timeout(30000)]
-		public void Sync_SimultaneousSync_ThreeStepperSyncingWithOne_Simultaneous_Works(int numberOfChecks)
+		public static void Sync_SimultaneousSync_ThreeStepperSyncingWithOne_Simultaneous_Works(int numberOfChecks)
 		{
 			//create a sync context to conduct the test with
 			var testContext = new SyncContext();
@@ -634,9 +634,9 @@ namespace ZoneLightingTests
 		[TearDown]
 		public void TearDown()
 		{
-			if (TestContext.CurrentContext.Result.Status != TestStatus.Failed) return;
-			DebugTools.AddEvent("TearDown", "DebugTools.Print");
-			DebugTools.Print(clearEvents: true);
+			//if (TestContext.CurrentContext.Result.Status != TestStatus.Failed) return;
+			//DebugTools.AddEvent("TearDown", "DebugTools.Print");
+			//DebugTools.Print(clearEvents: true);
 		}
 
 	}

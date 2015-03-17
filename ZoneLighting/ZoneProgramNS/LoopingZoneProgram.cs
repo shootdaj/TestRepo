@@ -85,15 +85,15 @@ namespace ZoneLighting.ZoneProgramNS
 						if (SyncContext != null)
 						{
 							SyncContext.NextMove(this);
-							SyncContext.WaitForAllPrograms.WaitForFire();
+							DebugTools.AddEvent("LoopingZoneProgram.SetupRunProgramTask", "Waiting for all other programs: " + Name);
+							WaitForAllPrograms.WaitForFire();
+							DebugTools.AddEvent("LoopingZoneProgram.SetupRunProgramTask", "Continuing after sync instruction: " + Name);
 						}
 
-						//DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Starting Loop: " + this.Name);
-
+						DebugTools.AddEvent("LoopingZoneProgram.SetupRunProgramTask", "Starting Loop: " + Name);
 						//start loop
 						Loop();
-
-						//DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Finished Loop: " + this.Name);
+						DebugTools.AddEvent("LoopingZoneProgram.SetupRunProgramTask", "Finished Loop: " + Name);
 
 						//if cancellation is requested, break out of loop after setting notification parameters for the consumer
 						if (LoopCTS.IsCancellationRequested)
@@ -119,6 +119,11 @@ namespace ZoneLighting.ZoneProgramNS
 					DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method", "Unexpected exception in LoopingTask: " + ex.Message + " | StackTrace: " + ex.StackTrace);
 				}
 			}, LoopCTS.Token);
+		}
+
+		public void SetRunning(bool value)
+		{
+			Running = value;
 		}
 
 		public Trigger LeftSyncTrigger { get; set; } = new Trigger("LeftSyncTrigger");

@@ -186,25 +186,30 @@ namespace ZoneLighting.ZoneNS
 			{
 				DebugTools.AddEvent("SyncContext.NextMove", "SyncStateRequestedLock acquired: " + program.Name);
 				WaitingPrograms.Add(program);
+				DebugTools.AddEvent("SyncContext.NextMove", "Program waiting: " + program.Name);
 				if (ZonePrograms.All(zp => WaitingPrograms.Contains(zp)))
 				{
+					DebugTools.AddEvent("SyncContext.NextMove", "All programs are waiting: " + program.Name);
+
 					if (ProgramsToSync.Any())
 					{
-						DebugTools.AddEvent("SyncContext.NextMove", "Set context, add barrier, add to ZonePrograms: " + program.Name);
+						DebugTools.AddEvent("SyncContext.NextMove", "There are programs to be synced");
 
 						ProgramsToSync.ToList().ForEach(zoneProgram =>
 						{
 							lock (Barrier)
 							{
+								DebugTools.AddEvent("SyncContext.NextMove", "Add barrier to new Program to sync: " + zoneProgram.Name);
 								Barrier.AddParticipant();
 							}
 						});
 
 						ProgramsToSync.Clear();
+						DebugTools.AddEvent("SyncContext.NextMove", "Cleared ProgramsToSync");
 					}
 
 					WaitingPrograms.Clear();
-					ZonePrograms.ForEach(zp => WaitForAllPrograms.Fire(this, null));
+					ZonePrograms.ForEach(zp => zp.WaitForAllPrograms.Fire(this, null));
 					SyncFinished.Fire(this, null);
 				}
 			}
@@ -216,8 +221,6 @@ namespace ZoneLighting.ZoneNS
 		private List<ZoneProgram> ProgramsToSync { get; set; } = new List<ZoneProgram>();
 
 		public Trigger SyncFinished { get; set; } = new Trigger("SyncContext.SyncFinished");
-
-		public Trigger WaitForAllPrograms { get; set; } = new Trigger("SyncContext.WaitForSync");
 
 		private List<ZoneProgram> WaitingPrograms { get; set; } = new List<ZoneProgram>();
 

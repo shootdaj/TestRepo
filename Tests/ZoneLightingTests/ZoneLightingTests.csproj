@@ -10,9 +10,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ZoneLightingTests</RootNamespace>
     <AssemblyName>ZoneLightingTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>46574ccf</NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -104,10 +105,6 @@
     <None Include="Resources\InitializeFromZoneConfiguration_Works_TestFile.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Console\Console.csproj">
-      <Project>{BE535C9B-F450-4F66-ABB3-A157B8D30D42}</Project>
-      <Name>Console</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\ZoneLighting\ZoneLighting.csproj">
       <Project>{FE00DB62-6C3C-4D04-9F03-23DA814298B6}</Project>
       <Name>ZoneLighting</Name>
