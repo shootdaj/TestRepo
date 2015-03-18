@@ -81,15 +81,15 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public void Sync(IEnumerable<ZoneProgram> zonePrograms)
 		{
-			var zoneProgramsEnumerated = zonePrograms as IList<ZoneProgram> ?? zonePrograms.ToList();
+			var incomingZonePrograms = zonePrograms as IList<ZoneProgram> ?? zonePrograms.ToList();
 
 			//incoming program must be stopped
-			if (zoneProgramsEnumerated.Any(zp => zp.State != ProgramState.Stopped))
+			if (incomingZonePrograms.Any(zp => zp.State != ProgramState.Stopped))
 				throw new Exception("Given program must be stopped before a live sync is executed.");
 
-			if (zoneProgramsEnumerated.All(zp => zp is ReactiveZoneProgram))
+			if (incomingZonePrograms.All(zp => zp is ReactiveZoneProgram))
 			{
-				zoneProgramsEnumerated.ToList().ForEach(zoneProgram =>
+				incomingZonePrograms.ToList().ForEach(zoneProgram =>
 				{
 					lock (Barrier)
 					{
@@ -102,7 +102,7 @@ namespace ZoneLighting.ZoneNS
 					}
 				});
 			}
-			else if (zoneProgramsEnumerated.All(zp => zp is LoopingZoneProgram) && ZonePrograms.All(zp => zp is LoopingZoneProgram))
+			else if (incomingZonePrograms.All(zp => zp is LoopingZoneProgram) && ZonePrograms.All(zp => zp is LoopingZoneProgram))
 			{
 				lock (SyncLock)
 				{
@@ -111,13 +111,13 @@ namespace ZoneLighting.ZoneNS
 					{
 						zp.RequestSyncState();
 					});
-					zoneProgramsEnumerated.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
+					incomingZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
 					{
 						zp.RequestSyncState();
 					});
 
 					//start all incoming programs
-					zoneProgramsEnumerated.ToList().ForEach(zoneProgram =>
+					incomingZonePrograms.ToList().ForEach(zoneProgram =>
 					{
 						zoneProgram.SetSyncContext(this);
 						ZonePrograms.Add(zoneProgram);
@@ -131,10 +131,12 @@ namespace ZoneLighting.ZoneNS
 					});
 
 					//sync all incoming programs
-					zoneProgramsEnumerated.ToList().ForEach(zoneProgram =>
+					incomingZonePrograms.ToList().ForEach(zoneProgram =>
 					{
 						Barrier.AddParticipant();
 					});
+
+					ResetBarrier();
 
 					//release all programs from sync-state
 					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
@@ -155,6 +157,15 @@ namespace ZoneLighting.ZoneNS
 			{
 				throw new Exception(
 					"All programs must be of the same type and must be included in the if statement that precedes this exception.");
+			}
+		}
+
+		private void ResetBarrier()
+		{
+			lock (Barrier)
+			{
+				while (Barrier.ParticipantsRemaining < ZonePrograms.Count && Barrier.ParticipantsRemaining < ZonePrograms.Count)
+					Barrier.SignalAndWait(1);
 			}
 		}
 
