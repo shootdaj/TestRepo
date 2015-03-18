@@ -14,7 +14,7 @@ namespace ZoneLightingTests
 		[Test]
 		public void InputStartingValues_SetParameter_CreatesNewDictionaryEntry()
 		{
-			dynamic isv = new InputStartingValues();
+			dynamic isv = new ISV();
 			isv.Speed = 1;
 			isv.Color = Color.Red;
 			isv.Name = "Test";
@@ -27,7 +27,7 @@ namespace ZoneLightingTests
 		[Test]
 		public void InputStartingValues_AddParameter_IsAccessibleUsingDotNotation()
 		{
-			dynamic isv = new InputStartingValues();
+			dynamic isv = new ISV();
 			isv.Add("Speed", 1);
 			isv.Add("Color", Color.Red);
 			isv.Add("Name", "Test");

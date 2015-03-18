@@ -15,10 +15,10 @@ namespace ZoneLighting.StockPrograms
 	public class Rainbow : LoopingZoneProgram
 	{
 		public int DelayTime { get; set; } = 1;
-		public int Speed { get; set; } = 2;
+		public int Speed { get; set; } = 1;
 		public override SyncLevel SyncLevel { get; set; } = RainbowSyncLevel.Fade;
 
-		public Rainbow(SyncContext syncContext = null) : base(syncContext: syncContext)
+		public Rainbow() : base()
 		{
 		}
 

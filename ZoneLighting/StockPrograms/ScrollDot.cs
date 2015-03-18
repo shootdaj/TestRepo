@@ -15,7 +15,7 @@ namespace ZoneLighting.StockPrograms
 	[ExportMetadata("Name", "ScrollDot")]
 	public class ScrollDot : LoopingZoneProgram
 	{
-		public int DelayTime { get; set; } = 100;
+		public int DelayTime { get; set; } = 50;
 		public Color? DotColor { get; set; }
 		public override SyncLevel SyncLevel { get; set; } = ScrollDotSyncLevel.Dot;
 
@@ -48,7 +48,7 @@ namespace ZoneLighting.StockPrograms
 				SendColors(sendColors);		//send frame
 				ProgramCommon.Delay(DelayTime);											//pause before next iteration
 
-				SyncContext?.SignalAndWait();
+				SyncContext?.SignalAndWait(100);
 			}
 
 			///DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");

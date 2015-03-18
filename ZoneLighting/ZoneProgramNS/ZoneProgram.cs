@@ -96,15 +96,18 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <summary>
 		/// Starts the zone program.
 		/// </summary>
-		/// <param name="inputStartingValues">Starting values for the program.</param>
+		/// <param name="isv">Starting values for the program.</param>
 		/// <param name="sync">Whether or not to start the program in sync with a SyncContext.</param>
 		/// <param name="syncContext">If this parameter is supplied when sync=true, this method will use the supplied SyncContext to
 		/// sync this program with. If sync=true and this parameter is not supplied, this method will use the already assigned
 		/// SyncContext to sync this program with.</param>
-		public void Start(InputStartingValues inputStartingValues = null, bool sync = false, SyncContext syncContext = null)
+		public void Start(ISV isv = null, bool sync = false, SyncContext syncContext = null)
 		{
 			if (State == ProgramState.Stopped)
 			{
+				//set starting values
+				SetStartingValues(isv);
+
 				if (sync || syncContext != null)
 				{
 					if (syncContext != null)
@@ -120,11 +123,9 @@ namespace ZoneLighting.ZoneProgramNS
 				}
 				else
 				{
+
 					//subclass processing
 					StartCore(); //isSyncRequested);
-
-					//set starting values
-					SetStartingValues(inputStartingValues);
 
 					//set program state
 					State = ProgramState.Started;
@@ -208,10 +209,10 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Helpers
 
-		private void SetStartingValues(InputStartingValues inputStartingValues)
+		private void SetStartingValues(ISV isv)
 		{
-			if (inputStartingValues != null)
-				SetInputs(inputStartingValues);
+			if (isv != null)
+				SetInputs(isv);
 		}
 
 		/// <summary>
@@ -266,9 +267,9 @@ namespace ZoneLighting.ZoneProgramNS
 		/// Returns a key-value pair of the current values of this program's inputs.
 		/// </summary>
 		/// <returns></returns>
-		public InputStartingValues GetInputValues()
+		public ISV GetInputValues()
 		{
-			var inputStartingValues = new InputStartingValues();
+			var inputStartingValues = new ISV();
 			Inputs.ToList().ForEach(input => inputStartingValues.Add(input.Name, input.Value));
 			return inputStartingValues;
 		}
@@ -386,10 +387,10 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <summary>
 		/// Batch set inputs.
 		/// </summary>
-		/// <param name="inputStartingValues"></param>
-		public void SetInputs(InputStartingValues inputStartingValues)
+		/// <param name="isv"></param>
+		public void SetInputs(ISV isv)
 		{
-			inputStartingValues.Keys.ToList().ForEach(key => SetInput(key, inputStartingValues[key]));
+			isv.Keys.ToList().ForEach(key => SetInput(key, isv[key]));
 		}
 
 		#endregion

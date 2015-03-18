@@ -65,7 +65,7 @@ namespace ZoneLightingTests
 			var leftWing = new FadeCandyZone("TestZone");
 			leftWing.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 
-			dynamic scrollDotDictionary = new InputStartingValues();
+			dynamic scrollDotDictionary = new ISV();
 			scrollDotDictionary.DelayTime = 30;
 			scrollDotDictionary.DotColor = (Color?) Color.Red;
 

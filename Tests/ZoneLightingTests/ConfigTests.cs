@@ -33,7 +33,7 @@ namespace ZoneLightingTests
 
 			zones.Add(new FadeCandyZone("TestZone1"));
 			((FadeCandyZone)zones[0]).AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, fcChannel);
-			dynamic startingValuesOldTz1 = new InputStartingValues();
+			dynamic startingValuesOldTz1 = new ISV();
 			startingValuesOldTz1.DelayTime = 1;
 			startingValuesOldTz1.Speed = 1;
 
@@ -41,7 +41,7 @@ namespace ZoneLightingTests
 
 			zones.Add(new FadeCandyZone("TestZone2"));
 			((FadeCandyZone)zones[1]).AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 12, fcChannel);
-			dynamic startingValuesOldTz2 = new InputStartingValues();
+			dynamic startingValuesOldTz2 = new ISV();
 			startingValuesOldTz2.DelayTime = 1;
 			startingValuesOldTz2.DotColor = Color.BlueViolet;
 

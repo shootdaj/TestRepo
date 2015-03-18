@@ -54,7 +54,7 @@
     <Compile Include="Shimmer.cs" />
     <Compile Include="Rainbow.cs" />
     <Compile Include="ScrollDot.cs" />
-    <Compile Include="BlinkColor.cs" />
+    <Compile Include="BlinkColorReactive.cs" />
     <Compile Include="StaticColor.cs" />
   </ItemGroup>
   <ItemGroup>

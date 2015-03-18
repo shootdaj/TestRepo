@@ -157,17 +157,17 @@ namespace ZoneLighting.ZoneNS
 
 		#endregion
 
-		public void Initialize(ZoneProgram zoneProgram, InputStartingValues inputStartingValues = null, bool isSyncRequested = false, SyncContext syncContext = null, bool dontStart = false)
+		public void Initialize(ZoneProgram zoneProgram, ISV isv = null, bool isSyncRequested = false, SyncContext syncContext = null, bool dontStart = false)
 		{
 			if (!Initialized)
 			{
 				SetupInterruptProcessing();
-				SetupZoneProgram(zoneProgram, inputStartingValues, isSyncRequested, syncContext, dontStart);
+				SetupZoneProgram(zoneProgram, isv, isSyncRequested, syncContext, dontStart);
 				Initialized = true;
 			}
 		}
 
-		private void SetupZoneProgram(ZoneProgram zoneProgram, InputStartingValues inputStartingValues, bool isSyncRequested,
+		private void SetupZoneProgram(ZoneProgram zoneProgram, ISV isv, bool isSyncRequested,
 			SyncContext syncContext, bool dontStart)
 		{
 			SetProgram(zoneProgram);
@@ -175,7 +175,7 @@ namespace ZoneLighting.ZoneNS
 			ZoneProgram.SetSyncContext(syncContext);
 			ZoneProgram.SetInterruptQueue(InterruptQueue);
 			if (!dontStart)
-				ZoneProgram.Start(inputStartingValues, isSyncRequested);
+				ZoneProgram.Start(isv, isSyncRequested);
 		}
 
 		public bool Initialized { get; private set; }
@@ -351,7 +351,7 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// Adds an interrupting program to the zone.
 		/// </summary>
-		public void SetupInterruptingProgram(ReactiveZoneProgram interruptingProgram, InputStartingValues inputStartingValues = null, SyncContext syncContext = null)
+		public void SetupInterruptingProgram(ReactiveZoneProgram interruptingProgram, ISV isv = null, SyncContext syncContext = null)
 		{
 			interruptingProgram.SetSyncContext(syncContext);
 			interruptingProgram.SetInterruptQueue(InterruptQueue);

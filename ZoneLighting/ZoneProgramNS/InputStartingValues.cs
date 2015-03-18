@@ -5,10 +5,13 @@ using System.Runtime.Serialization;
 
 namespace ZoneLighting.ZoneProgramNS
 {
+	/// <summary>
+	/// Input Starting Values = ISV
+	/// </summary>
 	[Serializable]
-	public class InputStartingValues : DynamicObject
+	public class ISV : DynamicObject
 	{
-		public InputStartingValues()
+		public ISV()
 		{ }
 
 		private Dictionary<string, object> _dictionary = new Dictionary<string, object>();

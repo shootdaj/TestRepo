@@ -10,8 +10,8 @@ namespace ExternalPrograms
 	/// Outputs a static color to the zone.
 	/// </summary>
 	[Export(typeof(ZoneProgram))]
-	[ExportMetadata("Name", "BlinkColor")]
-	public class BlinkColor : ReactiveZoneProgram
+	[ExportMetadata("Name", "BlinkColorReactive")]
+	public class BlinkColorReactive : ReactiveZoneProgram
 	{
 		protected override void SetupInterruptingInputs()
 		{

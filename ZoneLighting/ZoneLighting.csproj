@@ -71,7 +71,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="StockPrograms\BlinkColor.cs" />
+    <Compile Include="StockPrograms\BlinkColorLoop.cs" />
+    <Compile Include="StockPrograms\BlinkColorReactive.cs" />
     <Compile Include="StockPrograms\Rainbow.cs" />
     <Compile Include="StockPrograms\RedEqualizer.cs" />
     <Compile Include="StockPrograms\ScrollDot.cs" />

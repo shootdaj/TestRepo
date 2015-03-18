@@ -6,10 +6,12 @@ using System.ComponentModel.Composition.Primitives;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using ZoneLighting.Communication;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneNS;
+using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLighting
@@ -376,10 +378,10 @@ namespace ZoneLighting
 			var baiClock = AddFadeCandyZone("BaiClock", PixelType.FadeCandyWS2812Pixel, 24, 4);
 
 			//initialize zones
-			leftWing.Initialize(new Rainbow(), null);//, true, syncContext, true);
-			center.Initialize(new Rainbow(), null);//, true, syncContext, true);
-			rightWing.Initialize(new Rainbow(), null);//, true, syncContext, true);
-			baiClock.Initialize(new Rainbow(), null);//, true, syncContext, true);
+			leftWing.Initialize(new ScrollDot(), null);//, true, syncContext, true);
+			center.Initialize(new ScrollDot(), null);//, true, syncContext, true);
+			rightWing.Initialize(new ScrollDot(), null);//, true, syncContext, true);
+			baiClock.Initialize(new ScrollDot(), null);//, true, syncContext, true);
 
 			//synchronize and start zone programs
 			//syncContext.SyncAndStart(leftWing.ZoneProgram, 
@@ -393,10 +395,10 @@ namespace ZoneLighting
 			//baiClock.ZoneProgram.Start();
 
 			//setup interrupting inputs
-			leftWing.SetupInterruptingProgram(new BlinkColor(), null);//, notificationSyncContext);
-			rightWing.SetupInterruptingProgram(new BlinkColor(), null);//, notificationSyncContext);
-			center.SetupInterruptingProgram(new BlinkColor(), null);//, notificationSyncContext);
-			baiClock.SetupInterruptingProgram(new BlinkColor(), null);//, notificationSyncContext);
+			leftWing.SetupInterruptingProgram(new BlinkColorReactive(), null);//, notificationSyncContext);
+			rightWing.SetupInterruptingProgram(new BlinkColorReactive(), null);//, notificationSyncContext);
+			center.SetupInterruptingProgram(new BlinkColorReactive(), null);//, notificationSyncContext);
+			baiClock.SetupInterruptingProgram(new BlinkColorReactive(), null);//, notificationSyncContext);
 
 			//synchronize and start interrupting programs
 			//notificationSyncContext.SyncAndStart(leftWing.InterruptingPrograms[0],
@@ -423,16 +425,18 @@ namespace ZoneLighting
 			var baiClock = AddFadeCandyZone("BaiClock", PixelType.FadeCandyWS2812Pixel, 24, 4);
 
 			//initialize zones
-			leftWing.Initialize(new ScrollDot(), null, true, syncContext, true);
-			center.Initialize(new ScrollDot(), null, true, syncContext, true);
-			rightWing.Initialize(new ScrollDot(), null, true, syncContext, true);
-			baiClock.Initialize(new ScrollDot(), null, true, syncContext, true);
+			leftWing.Initialize(new Rainbow(), null, true, syncContext, true);
+			center.Initialize(new Rainbow(), null, true, syncContext, true);
+			rightWing.Initialize(new Rainbow(), null, true, syncContext, true);
+			baiClock.Initialize(new Rainbow(), null, true, syncContext, true);
 
 			//synchronize and start zone programs
-			leftWing.ZoneProgram.Start(syncContext: syncContext);
-			center.ZoneProgram.Start(syncContext: syncContext);
-			rightWing.ZoneProgram.Start(syncContext: syncContext);
-			baiClock.ZoneProgram.Start(syncContext: syncContext);
+			dynamic isv = new ISV();
+			isv.DelayTime = 35;
+			leftWing.ZoneProgram.Start(syncContext: syncContext, isv: isv);
+			center.ZoneProgram.Start(syncContext: syncContext, isv: isv);
+			rightWing.ZoneProgram.Start(syncContext: syncContext, isv: isv);
+			baiClock.ZoneProgram.Start(syncContext: syncContext, isv: isv);
 
 			//syncContext.Sync(leftWing.ZoneProgram,
 			//						center.ZoneProgram,
@@ -440,10 +444,10 @@ namespace ZoneLighting
 			//						baiClock.ZoneProgram);
 			
 			//setup interrupting inputs
-			leftWing.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
-			rightWing.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
-			center.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
-			baiClock.SetupInterruptingProgram(new BlinkColor(), null, notificationSyncContext);
+			leftWing.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+			rightWing.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+			center.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+			baiClock.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
 
 			//synchronize and start interrupting programs
 			notificationSyncContext.Sync(leftWing.InterruptingPrograms[0],

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
@@ -17,7 +18,8 @@ namespace ZoneLighting.ZoneProgramNS
 		public static void Delay(int milliseconds)
 		{
 			if (milliseconds > 0)
-				Task.WaitAll(Task.Delay(milliseconds));
+				Thread.Sleep(milliseconds);
+				//Task.WaitAll(Task.Delay(milliseconds));
 		}
 
 		/// <summary>
@@ -82,14 +84,21 @@ namespace ZoneLighting.ZoneProgramNS
 		/// Blinks a set of colors holding the color for the given amount of milliseconds.
 		/// </summary>
 		/// <param name="colorsAndHoldTimes">List of tuples of colors and their hold times</param>
-		/// <param name="outputMethod">Method to use to output the blinks</param>
-		public static void Blink(List<Tuple<Color, int>> colorsAndHoldTimes, Action<Color> outputMethod, SyncContext syncContext = null)
+		/// <param name="outputMethod">Method to use to output the blinks.</param>
+		/// <param name="syncContext">SyncContext to sync the blinking through.</param>
+		/// <param name="tightness">Range: [1, 3]. Determines how tightly the blink is sycned.</param>
+		public static void Blink(List<Tuple<Color, int>> colorsAndHoldTimes, Action<Color> outputMethod, SyncContext syncContext = null, int tightness = 1)
 		{
 			colorsAndHoldTimes.ForEach(tuple =>
 			{
-				syncContext?.SignalAndWait();
+				if (tightness < 2)
+					syncContext?.SignalAndWait();
 				outputMethod(tuple.Item1);
+				if (tightness == 2)
+					syncContext?.SignalAndWait();
 				Delay(tuple.Item2);
+				if (tightness >= 3)
+					syncContext?.SignalAndWait();
 			});
 		}
 
