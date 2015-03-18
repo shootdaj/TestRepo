@@ -686,6 +686,8 @@ namespace ZoneLightingTests
 	{
 		#region CORE + C + I
 
+		protected override int MaxSyncTimeout { get; } = 100;
+
 		public override SyncLevel SyncLevel { get; set; } = StepperSyncLevel.Step;
 
 		public int StartStep { get; } = 1;

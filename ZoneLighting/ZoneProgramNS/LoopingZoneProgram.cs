@@ -39,7 +39,7 @@ namespace ZoneLighting.ZoneProgramNS
 		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
 		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
 		private object SyncStateRequestLock { get; } = new object();
-
+		protected virtual int MaxSyncTimeout { get; }
 
 		private bool Running { get; set; }
 

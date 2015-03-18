@@ -38,7 +38,6 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		private List<ZoneProgram> ZonePrograms { get; } = new List<ZoneProgram>();
 
-		private object ZoneProgramsLock { get; } = new object();
 		public object SyncLock { get; } = new object();
 
 		public Trigger SyncFinished { get; set; } = new Trigger("SyncContext.SyncFinished");
@@ -96,7 +95,7 @@ namespace ZoneLighting.ZoneNS
 						Barrier.AddParticipant();  //add participant for each program
 					}
 
-					lock (ZoneProgramsLock)
+					lock (ZonePrograms)
 					{
 						ZonePrograms.Add(zoneProgram);
 					}
@@ -174,7 +173,7 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public void Unsync(ZoneProgram program)
 		{
-			lock (ZoneProgramsLock)
+			lock (ZonePrograms)
 			{
 				if (!ZonePrograms.Contains(program)) return;
 			}
@@ -182,7 +181,7 @@ namespace ZoneLighting.ZoneNS
 			{
 				Barrier.RemoveParticipant();
 			}
-			lock (ZoneProgramsLock)
+			lock (ZonePrograms)
 			{
 				ZonePrograms.Remove(program);
 			}

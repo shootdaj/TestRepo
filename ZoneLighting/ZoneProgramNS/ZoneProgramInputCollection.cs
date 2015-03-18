@@ -20,7 +20,7 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 			catch
 			{
-				DebugTools.Print();
+				// ignored
 			}
 		}
 	}
