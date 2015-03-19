@@ -83,9 +83,17 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 
 		#region API
 
-		internal ZoneProgram CreateZoneProgram(string programName, IList<ExportFactory<ZoneProgram, IZoneProgramMetadata>> zoneProgramFactoriesList)
+		public bool DoesProgramExist(string programName)
 		{
-			return zoneProgramFactoriesList.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value;
+			return ZoneProgramFactories.Select(x => x.Metadata.Name).Contains(programName);
+		}
+
+		internal ZoneProgram CreateZoneProgram(string programName)
+		{
+			if (DoesProgramExist(programName))
+				return ZoneProgramFactories.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value;
+			else
+				throw new Exception(string.Format("No program by the name '{0}' exists.", programName));
 		}
 
 		/// <summary>
@@ -93,15 +101,12 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		/// </summary>
 		public void InitializeZone(Zone zone, string programName, ISV isv = null, bool isSyncRequested = false, SyncContext syncContext = null, bool dontStart = false)
 		{
-			var zoneProgramFactoriesList = ZoneProgramFactories.ToList();
-			zone.Initialize(CreateZoneProgram(programName, zoneProgramFactoriesList), isv, isSyncRequested, syncContext, dontStart);
-
+			zone.Initialize(CreateZoneProgram(programName), isv, isSyncRequested, syncContext, dontStart);
 		}
 
 		public void SetupInterruptingProgram(Zone zone, string programName, ISV isv = null, SyncContext syncContext = null)
 		{
-			var zoneProgramFactoriesList = ZoneProgramFactories.ToList();
-			var zoneProgram = CreateZoneProgram(programName, zoneProgramFactoriesList);
+			var zoneProgram = CreateZoneProgram(programName);
 
 			if (zoneProgram is ReactiveZoneProgram)
 				zone.SetupInterruptingProgram((ReactiveZoneProgram)zoneProgram, isv, syncContext);
