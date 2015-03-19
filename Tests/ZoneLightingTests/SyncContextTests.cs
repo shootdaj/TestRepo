@@ -122,7 +122,7 @@ namespace ZoneLightingTests
 				var failStringBuilder = BuildFailString(invalidStepIndex, steppers, stepperSteps);
 				Assert.Fail(failStringBuilder.ToString());
 			}
-			
+
 		}
 
 		[TestCase(1000)]
@@ -259,7 +259,7 @@ namespace ZoneLightingTests
 			{
 				var failStringBuilder = BuildFailString(invalidStepIndex, steppers, stepperSteps);
 				Assert.Fail(failStringBuilder.ToString());
-			}	
+			}
 		}
 
 		[TestCase(1000)]
@@ -274,7 +274,7 @@ namespace ZoneLightingTests
 			//create two programs to be synced
 			var stepperA = new Stepper("A");
 			var stepperB = new Stepper("B");
-			Stepper[] steppers = {stepperA, stepperB};
+			Stepper[] steppers = { stepperA, stepperB };
 
 			//sync and start
 			testContext.Sync(stepperA, stepperB);
@@ -324,7 +324,7 @@ namespace ZoneLightingTests
 
 			//start D as a sync with testContext when steppers ABC is back to the beginning
 			DebugTools.AddEvent("ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works", "Syncing Stepper D");
-			stepperD.Start(sync: true, syncContext:testContext);
+			stepperD.Start(sync: true, syncContext: testContext);
 			testContext.SyncFinished.WaitForFire();
 
 			int[,] stepperSteps;
@@ -404,7 +404,7 @@ namespace ZoneLightingTests
 				Assert.Fail(failStringBuilder.ToString());
 			}
 		}
-		
+
 		[TestCase(100)]
 		[Timeout(30000)]
 		public static void Sync_OneStepper_Works(int numberOfChecks)
@@ -422,7 +422,7 @@ namespace ZoneLightingTests
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
 			testContext.Sync(stepperA);
 			testContext.SyncFinished.WaitForFire();
-			
+
 			int[,] stepperSteps;
 			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
 			var result = invalidStepIndex.Length == 0 && stepperSteps.Length != 0;
@@ -610,10 +610,14 @@ namespace ZoneLightingTests
 						if (Math.Abs(stepperSteps[i, comparisonSource] - stepperSteps[i, comparisonTarget]) > 1 &&
 							!(stepperSteps[i, comparisonSource] == steppers[comparisonSource].EndStep &&
 							  stepperSteps[i, comparisonTarget] == steppers[comparisonTarget].StartStep) &&
+							!(stepperSteps[i, comparisonSource] == steppers[comparisonSource].EndStep &&
+							  stepperSteps[i, comparisonTarget] == steppers[comparisonTarget].StartStep + 1) &&
 							!(stepperSteps[i, comparisonSource] == steppers[comparisonSource].StartStep &&
+							  stepperSteps[i, comparisonTarget] == steppers[comparisonTarget].EndStep) &&
+							!(stepperSteps[i, comparisonSource] == steppers[comparisonSource].StartStep + 1 &&
 							  stepperSteps[i, comparisonTarget] == steppers[comparisonTarget].EndStep))
 						{
-							if(!invalidStepIndex.Contains(i))
+							if (!invalidStepIndex.Contains(i))
 								invalidStepIndex.Add(i);
 						}
 					}
@@ -647,7 +651,7 @@ namespace ZoneLightingTests
 		{
 
 		}
-		
+
 		public override void Loop()
 		{
 			DebugTools.AddEvent("StepperInternalLoop.Loop", "Loop Start. Signalling and waiting on " + (SyncContext?.GetNumberOfRemainingParticipants() - 1) + ". Total participants = " + SyncContext?.GetNumberOfTotalParticipants() + " : " + this.Name);
@@ -665,7 +669,7 @@ namespace ZoneLightingTests
 				{
 					CurrentStep++;
 				}
-				
+
 				while (PauseForTest)
 				{
 					Thread.Sleep(1);
@@ -758,7 +762,7 @@ namespace ZoneLightingTests
 			}
 			else
 			{
-				CurrentStep++;	
+				CurrentStep++;
 			}
 
 			while (PauseForTest)
