@@ -14,16 +14,18 @@ namespace Console
 	{
 		public static void Main(string[] args)
 		{
-			RunTest(() => SyncContextTests.Sync_OneStepperSyncingWithThree_Works(1000));
-			RunTest(() => SyncContextTests.Sync_ThreeStepperSyncingWithOne_Consecutive_Works(1000));
-			RunTest(() => SyncContextTests.Sync_TwoStepperSyncingWithTwo_Works(1000));
-			RunTest(() => SyncContextTests.Sync_TwoSteppersInternalLoop_Consecutive_Works(1000));
-			RunTest(() => SyncContextTests.Sync_FourSteppers_Simultaneous_Works(1000));
-			RunTest(() => SyncContextTests.Sync_TwoSteppers_Simultaneous_Works(1000));
-			RunTest(() => SyncContextTests.ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works(1000));
-			RunTest(() => SyncContextTests.ZoneProgram_StartWithSync_StepperConstructorSyncContext_OneStepperSyncingWithThree_Works(1000));
-			RunTest(() => SyncContextTests.Sync_OneStepper_Works(1000));
-			RunTest(() => SyncContextTests.Sync_SimultaneousSync_ThreeStepperSyncingWithOne_Simultaneous_Works(1000));
+			RunTest(ZoneProgramTests.CooperativeStop_Works);
+
+			//RunTest(() => SyncContextTests.Sync_OneStepperSyncingWithThree_Works(1000));
+			//RunTest(() => SyncContextTests.Sync_ThreeStepperSyncingWithOne_Consecutive_Works(1000));
+			//RunTest(() => SyncContextTests.Sync_TwoStepperSyncingWithTwo_Works(1000));
+			//RunTest(() => SyncContextTests.Sync_TwoSteppersInternalLoop_Consecutive_Works(1000));
+			//RunTest(() => SyncContextTests.Sync_FourSteppers_Simultaneous_Works(1000));
+			//RunTest(() => SyncContextTests.Sync_TwoSteppers_Simultaneous_Works(1000));
+			//RunTest(() => SyncContextTests.ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works(1000));
+			//RunTest(() => SyncContextTests.ZoneProgram_StartWithSync_StepperConstructorSyncContext_OneStepperSyncingWithThree_Works(1000));
+			//RunTest(() => SyncContextTests.Sync_OneStepper_Works(1000));
+			//RunTest(() => SyncContextTests.Sync_SimultaneousSync_ThreeStepperSyncingWithOne_Simultaneous_Works(1000));
 
 			//ZoneLightingManager.Instance.Initialize(false, false);
 
