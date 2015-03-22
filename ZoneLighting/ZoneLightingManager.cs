@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 using ZoneLighting.Communication;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneNS;
@@ -62,8 +63,8 @@ namespace ZoneLighting
 			if (!Initialized)
 			{
 				InitLightingControllers();
-				if (loadExternalZones)
-					ComposeWithExternalModules();
+				if (loadExternalZones && ExternalZoneContainer != null)
+                    ComposeWithExternalModules();
 				if (initZoneScaffolder)
 					InitZoneScaffolder();
 				InitializeAllZones();
@@ -184,10 +185,8 @@ namespace ZoneLighting
 			if (Initialized)
 			{
 				UninitializeAllZones();
-				UninitZoneScaffolder();
 				UninitLightingControllers();
 				Initialized = false;
-				ExternalZoneContainer = null;
 			}
 		}
 
@@ -196,12 +195,18 @@ namespace ZoneLighting
 		/// </summary>
 		public void UninitializeAllZones()
 		{
-			Zones.ToList().ForEach(z => z.Uninitialize());
+			Parallel.ForEach(Zones, zone =>
+			{
+				zone.Uninitialize();
+			});
 		}
 
 		public void Dispose()
 		{
 			Uninitialize();
+			UninitZoneScaffolder();
+			ExternalZoneContainer?.Dispose();
+			ExternalZoneContainer = null;
 			Zones.Clear();
 			Zones = null;
 		}
@@ -378,15 +383,15 @@ namespace ZoneLighting
 			var baiClock = AddFadeCandyZone("BaiClock", PixelType.FadeCandyWS2812Pixel, 24, 4);
 
 			//initialize zones
-			leftWing.Initialize(new ScrollDot(), null);//, true, syncContext, true);
-			center.Initialize(new ScrollDot(), null);//, true, syncContext, true);
-			rightWing.Initialize(new ScrollDot(), null);//, true, syncContext, true);
-			baiClock.Initialize(new ScrollDot(), null);//, true, syncContext, true);
+			leftWing.Initialize(new Cylon(), null);//, true, syncContext, true);
+			center.Initialize(new Cylon(), null);//, true, syncContext, true);
+			rightWing.Initialize(new Cylon(), null);//, true, syncContext, true);
+			baiClock.Initialize(new Cylon(), null);//, true, syncContext, true);
 
-			//synchronize and start zone programs
-			//syncContext.SyncAndStart(leftWing.ZoneProgram, 
-			//						center.ZoneProgram, 
-			//						rightWing.ZoneProgram, 
+			////synchronize and start zone programs
+			//syncContext.Sync(leftWing.ZoneProgram,
+			//						center.ZoneProgram,
+			//						rightWing.ZoneProgram,
 			//						baiClock.ZoneProgram);
 
 			//leftWing.ZoneProgram.Start();
@@ -426,23 +431,30 @@ namespace ZoneLighting
 
 			//initialize zones
 			leftWing.Initialize(new Rainbow(), null, true, syncContext, true);
-			center.Initialize(new Rainbow(), null, true, syncContext, true);
+			baiClock.Initialize(new ScrollTrail(), null);
 			rightWing.Initialize(new Rainbow(), null, true, syncContext, true);
-			baiClock.Initialize(new Rainbow(), null, true, syncContext, true);
+			center.Initialize(new Rainbow(), null, true, syncContext, true);
 
 			//synchronize and start zone programs
-			dynamic isv = new ISV();
-			isv.DelayTime = 35;
-			leftWing.ZoneProgram.Start(syncContext: syncContext, isv: isv);
-			center.ZoneProgram.Start(syncContext: syncContext, isv: isv);
-			rightWing.ZoneProgram.Start(syncContext: syncContext, isv: isv);
-			baiClock.ZoneProgram.Start(syncContext: syncContext, isv: isv);
+			//dynamic isv = new ISV();
+			//isv.DelayTime = 35;
+			//leftWing.ZoneProgram.Start(syncContext: syncContext, isv: isv);
+			//center.ZoneProgram.Start(syncContext: syncContext, isv: isv);
+			//rightWing.ZoneProgram.Start(syncContext: syncContext, isv: isv);
+			//baiClock.ZoneProgram.Start(syncContext: syncContext, isv: isv);
+
+			syncContext.Sync(leftWing.ZoneProgram, center.ZoneProgram, rightWing.ZoneProgram);
+
+			//leftWing.ZoneProgram.Start(syncContext: syncContext);
+			//center.ZoneProgram.Start(syncContext: syncContext);
+			//rightWing.ZoneProgram.Start(syncContext: syncContext);
+			//baiClock.ZoneProgram.Start(syncContext: syncContext);
 
 			//syncContext.Sync(leftWing.ZoneProgram,
 			//						center.ZoneProgram,
 			//						rightWing.ZoneProgram,
 			//						baiClock.ZoneProgram);
-			
+
 			//setup interrupting inputs
 			leftWing.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
 			rightWing.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);

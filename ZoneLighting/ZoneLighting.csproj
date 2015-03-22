@@ -73,8 +73,12 @@
   <ItemGroup>
     <Compile Include="StockPrograms\BlinkColorLoop.cs" />
     <Compile Include="StockPrograms\BlinkColorReactive.cs" />
+    <Compile Include="StockPrograms\AndroidTrail.cs" />
     <Compile Include="StockPrograms\Rainbow.cs" />
     <Compile Include="StockPrograms\RedEqualizer.cs" />
+    <Compile Include="StockPrograms\Cylon.cs" />
+    <Compile Include="StockPrograms\Scroll2Dots.cs" />
+    <Compile Include="StockPrograms\ScrollTrail.cs" />
     <Compile Include="StockPrograms\ScrollDot.cs" />
     <Compile Include="ZLEventSource.cs" />
     <Compile Include="ZoneNS\SyncContext.cs" />
@@ -101,6 +105,7 @@
     <Compile Include="ZoneNS\ZoneAssemblyAttribute.cs" />
     <Compile Include="ZoneNS\ZonesJsonConverter.cs" />
     <Compile Include="LED.cs" />
+    <Compile Include="ZoneProgramNS\HSLColor.cs" />
     <Compile Include="ZoneProgramNS\LightingPattern.cs" />
     <Compile Include="ZoneProgramNS\Factories\ZoneScaffolder.cs" />
     <Compile Include="ZoneProgramNS\InputStartingValues.cs" />

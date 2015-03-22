@@ -112,6 +112,25 @@ namespace ZoneLighting.ZoneProgramNS
 				syncContext?.SignalAndWait();
 			});
 		}
+
+		public static Color GetRandomColor()
+		{
+			return Color.FromArgb(RandomIntBetween(0, 255), RandomIntBetween(0, 255), RandomIntBetween(0, 255));
+		}
+		
+		private static Random Random { get; } = new Random();
+		public static int RandomIntBetween(int low, int high)
+		{
+			
+			return Random.Next(low, high);
+		}
+
+		public static Dictionary<int, Color> BlankColors(Zone zone)
+		{
+			var colors = new Dictionary<int, Color>();
+			zone.SortedLights.Keys.ToList().ForEach(lightIndex => colors.Add(lightIndex, Color.Black));
+			return colors;
+		}
 	}
 
 	public static class ProgramExtensions
@@ -145,6 +164,19 @@ namespace ZoneLighting.ZoneProgramNS
 
 			return input > low && input < high;
 		}
+
+		//public static Color ReduceBrightness(this Color color, int drop)
+		//{
+		//	return Color.FromArgb(Math.Max(color.R - drop, 0), Math.Max(color.G - drop, 0), Math.Max(color.B - drop, 0));
+		//}
+
+		public static Color Darken(this Color color, double darkenAmount)
+		{
+			HSLColor hslColor = new HSLColor(color);
+			hslColor.Luminosity *= darkenAmount; // 0 to 1
+			return hslColor;
+		}
+
 	}
 
 	public static class TupleListExtensions

@@ -9,17 +9,18 @@ using ZoneLighting.ZoneProgramNS;
 namespace ZoneLighting.StockPrograms
 {
 	/// <summary>
-	/// Scrolls a dot across the entire length of Lights
+	/// Scrolls a trail across the entire length of Lights
 	/// </summary>
 	[Export(typeof(ZoneProgram))]
-	[ExportMetadata("Name", "ScrollDot")]
-	public class ScrollDot : LoopingZoneProgram
+	[ExportMetadata("Name", "ScrollTrail")]
+	public class ScrollTrail : LoopingZoneProgram
 	{
-		public int DelayTime { get; set; } = 50;
-		public Color? DotColor { get; set; }
+		public int DelayTime { get; set; } = 65;
+		public Color? DotColor { get; set; } = Color.Blue;
 		public override SyncLevel SyncLevel { get; set; } = ScrollDotSyncLevel.Dot;
 
-
+		private int _trailLength = 3;
+		private double _darkenFactor = 0.8;
 
 		public override void Setup()
 		{
@@ -29,21 +30,21 @@ namespace ZoneLighting.StockPrograms
 
 		public override void Loop()
 		{
-			//DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
 			for (int i = 0; i < LightCount; i++)
 			{
 				//prepare frame
-				var sendColors = new Dictionary<int, Color>();
-				Zone.SortedLights.Keys.ToList().ForEach(lightIndex => sendColors.Add(lightIndex, Color.Black));
+				var sendColors = new Dictionary<int, Color>();//ProgramCommon.BlankColors(Zone);
+				for (int j = 0; j < LightCount; j++)
+				{
+					sendColors[j] = GetColor(j).Darken(_darkenFactor);
+				}
 				sendColors[i] = DotColor ?? ProgramCommon.GetRandomColor();
-
+				
 				SendColors(sendColors);		//send frame
 				ProgramCommon.Delay(DelayTime);											//pause before next iteration
 
 				SyncContext?.SignalAndWait(100);
 			}
-
-			///DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
 		}
 
 		public static class ScrollDotSyncLevel

@@ -97,6 +97,8 @@ namespace ZoneLighting
 
 		public static void AddEvent(string methodName, string message)
 		{
+			return;
+
 			if (TraceOption == TraceOption.ETW)
 				ZLEventSource.Log.AddEvent(methodName, message);
 			else if (TraceOption == TraceOption.Builtin)

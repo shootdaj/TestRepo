@@ -50,6 +50,8 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		{
 			if (Initialized)
 			{
+				ExternalProgramContainer?.Dispose();
+				ExternalProgramContainer = null;
 				ZoneProgramFactories = null;
 				Initialized = false;
 			}
@@ -76,7 +78,6 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 			var aggregateCatalog = new AggregateCatalog(fileCatalogs);
 			ExternalProgramContainer = new CompositionContainer(aggregateCatalog);
 			ExternalProgramContainer.ComposeParts(this);
-			
 		}
 
 		#endregion

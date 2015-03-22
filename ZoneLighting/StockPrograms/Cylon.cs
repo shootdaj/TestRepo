@@ -12,14 +12,12 @@ namespace ZoneLighting.StockPrograms
 	/// Scrolls a dot across the entire length of Lights
 	/// </summary>
 	[Export(typeof(ZoneProgram))]
-	[ExportMetadata("Name", "ScrollDot")]
-	public class ScrollDot : LoopingZoneProgram
+	[ExportMetadata("Name", "Cylon")]
+	public class Cylon : LoopingZoneProgram
 	{
 		public int DelayTime { get; set; } = 50;
-		public Color? DotColor { get; set; }
+		public Color? DotColor { get; set; } = Color.Blue;
 		public override SyncLevel SyncLevel { get; set; } = ScrollDotSyncLevel.Dot;
-
-
 
 		public override void Setup()
 		{
@@ -30,12 +28,36 @@ namespace ZoneLighting.StockPrograms
 		public override void Loop()
 		{
 			//DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
+
+			var colors = new List<Color>();
+			colors.Add(Color.Red);
+			colors.Add(Color.Blue);
+			colors.Add(Color.Yellow);
+			colors.Add(Color.Green);
+			colors.Add(Color.Purple);
+			colors.Add(Color.RoyalBlue);
+			colors.Add(Color.MediumSeaGreen);
+
 			for (int i = 0; i < LightCount; i++)
 			{
 				//prepare frame
 				var sendColors = new Dictionary<int, Color>();
 				Zone.SortedLights.Keys.ToList().ForEach(lightIndex => sendColors.Add(lightIndex, Color.Black));
-				sendColors[i] = DotColor ?? ProgramCommon.GetRandomColor();
+				sendColors[i] = DotColor != null ? (Color) DotColor : colors[new Random().Next(0, colors.Count - 1)];
+				if (i+1 < LightCount) sendColors[i+1] = DotColor != null ? (Color)DotColor : colors[new Random().Next(0, colors.Count - 1)];
+
+				SendColors(sendColors);		//send frame
+				ProgramCommon.Delay(DelayTime);											//pause before next iteration
+
+				SyncContext?.SignalAndWait(100);
+			}
+			for (int i = LightCount-1; i >= 0; i--)
+			{
+				//prepare frame
+				var sendColors = new Dictionary<int, Color>();
+				Zone.SortedLights.Keys.ToList().ForEach(lightIndex => sendColors.Add(lightIndex, Color.Black));
+				sendColors[i] = DotColor != null ? (Color)DotColor : colors[new Random().Next(0, colors.Count - 1)];
+				if (i + 1 < LightCount) sendColors[i + 1] = DotColor != null ? (Color)DotColor : colors[new Random().Next(0, colors.Count - 1)];
 
 				SendColors(sendColors);		//send frame
 				ProgramCommon.Delay(DelayTime);											//pause before next iteration
