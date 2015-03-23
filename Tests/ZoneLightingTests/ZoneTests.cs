@@ -13,18 +13,6 @@ namespace ZoneLightingTests
 {
 	public class ZoneTests
 	{
-		//[Test]
-		//public void SetProgram_SetsZoneProgramOfZoneAndSetsZoneOfZoneProgram()
-		//{
-		//	var zone = A.Fake<Zone>();
-		//	var zoneProgram = A.Fake<ZoneProgram>();
-
-		//	zone.SetProgram(zoneProgram);
-
-		//	Assert.AreEqual(zone.ZoneProgram, zoneProgram);
-		//	Assert.AreEqual(zoneProgram.Zone, zone);
-		//}
-
 		[Test]
 		public void SetAllLightsColor_Works()
 		{
@@ -50,6 +38,18 @@ namespace ZoneLightingTests
 		}
 
 		[Test]
+		public void InitializeZone_WithSync_Works()
+		{
+			var zone = new FadeCandyZone("TestZone");
+			var program = new Rainbow();
+			var syncContext = new SyncContext();
+			zone.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
+			Assert.DoesNotThrow(() => zone.Initialize(program, null, true, syncContext));
+			Assert.True(zone.Initialized);
+			Assert.True(program.State == ProgramState.Started);
+		}
+
+		[Test]
 		public void UninitializeZone_Works()
 		{
 			var lightingController = A.Fake<LightingController>();
@@ -62,5 +62,7 @@ namespace ZoneLightingTests
 			Assert.False(zone.Initialized);
 			Assert.True(program.State == ProgramState.Stopped);
 		}
+
+
 	}
 }

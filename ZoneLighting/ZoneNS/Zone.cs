@@ -167,8 +167,7 @@ namespace ZoneLighting.ZoneNS
 			}
 		}
 
-		private void SetupZoneProgram(ZoneProgram zoneProgram, ISV isv, bool isSyncRequested,
-			SyncContext syncContext, bool dontStart)
+		private void SetupZoneProgram(ZoneProgram zoneProgram, ISV isv, bool isSyncRequested, SyncContext syncContext, bool dontStart)
 		{
 			SetProgram(zoneProgram);
 			ZoneProgram.LightingController = LightingController;
