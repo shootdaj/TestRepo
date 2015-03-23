@@ -8,7 +8,7 @@ using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLighting.ZoneProgramNS
 {
-	public class ProgramSet
+	public class ProgramSet : IDisposable
 	{
 		public string Name { get; private set; }
 		public SyncContext SyncContext { get; } = new SyncContext();
@@ -29,6 +29,11 @@ namespace ZoneLighting.ZoneProgramNS
 				//zone.Uninitialize();	//todo: test this
 				ZoneScaffolder.Instance.InitializeZone(zone, programName, isv, sync, SyncContext);
 			});
+		}
+
+		public void Dispose()
+		{
+			
 		}
 	}
 }

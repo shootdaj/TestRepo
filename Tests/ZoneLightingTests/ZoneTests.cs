@@ -62,7 +62,5 @@ namespace ZoneLightingTests
 			Assert.False(zone.Initialized);
 			Assert.True(program.State == ProgramState.Stopped);
 		}
-
-
 	}
 }

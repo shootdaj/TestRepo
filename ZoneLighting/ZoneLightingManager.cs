@@ -185,6 +185,7 @@ namespace ZoneLighting
 			if (Initialized)
 			{
 				UninitializeAllZones();
+				
 				UninitLightingControllers();
 				Initialized = false;
 			}
@@ -199,6 +200,10 @@ namespace ZoneLighting
 			{
 				zone.Uninitialize();
 			});
+
+			//todo: remove this later
+			Zones.ToList().ForEach(zone => zone.Dispose());
+			Zones.Clear();
 		}
 
 		public void Dispose()
