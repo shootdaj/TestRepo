@@ -7,7 +7,9 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using ZoneLighting.Communication;
 using ZoneLighting.ConfigNS;
+using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
 
 namespace ZoneLighting.ZoneProgramNS.Factories
@@ -126,6 +128,15 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		public IEnumerable<string> AvailableProgramNames
 		{
 			get { return ZoneProgramFactories.Select(x => x.Metadata.Name); }
+		}
+
+		public Zone AddFadeCandyZone(BetterList<Zone> zones, string name, PixelType pixelType, int numberOfLights, int channel)
+		{
+			//create new zone
+			var zone = new FadeCandyZone(name);
+			//add lights and add zone to collection
+			((FadeCandyZone)zones.Add(zone)).AddFadeCandyLights(pixelType, numberOfLights, (byte)channel);
+			return zone;
 		}
 
 		#endregion

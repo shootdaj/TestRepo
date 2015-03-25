@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading;
 using NUnit.Framework;
 using ZoneLighting;
+using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
+using ZoneLightingTests.Resources.Programs;
 
 namespace ZoneLightingTests
 {
@@ -26,7 +28,7 @@ namespace ZoneLightingTests
 			var stepperB = new StepperInternalLoop("B");
 			var stepperC = new StepperInternalLoop("C");
 			var stepperD = new StepperInternalLoop("D");
-			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
+			IStepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start ABC
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
@@ -78,7 +80,7 @@ namespace ZoneLightingTests
 			var stepperB = new StepperInternalLoop("B");
 			var stepperC = new StepperInternalLoop("C");
 			var stepperD = new StepperInternalLoop("D");
-			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
+			IStepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start A
 			DebugTools.AddEvent("Sync_ThreeStepperSyncingWithOne_Works", "Sync-Starting Stepper A");
@@ -139,7 +141,7 @@ namespace ZoneLightingTests
 			var stepperB = new StepperInternalLoop("b");
 			var stepperC = new StepperInternalLoop("c");
 			var stepperD = new StepperInternalLoop("d");
-			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
+			IStepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start AB
 			testContext.Sync(stepperA, stepperB);
@@ -186,7 +188,7 @@ namespace ZoneLightingTests
 			//create two programs to be synced
 			var stepperA = new StepperInternalLoop("A");
 			var stepperB = new StepperInternalLoop("B");
-			Stepper[] steppers = { stepperA, stepperB };
+			IStepper[] steppers = { stepperA, stepperB };
 
 			//sync and start A
 			DebugTools.AddEvent("Sync_TwoSteppers_Works", "Sync-Starting Stepper A");
@@ -233,7 +235,7 @@ namespace ZoneLightingTests
 			var stepperB = new Stepper("B");
 			var stepperC = new Stepper("C");
 			var stepperD = new Stepper("D");
-			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
+			IStepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start
 			testContext.Sync(stepperA, stepperB, stepperC, stepperD);
@@ -274,7 +276,7 @@ namespace ZoneLightingTests
 			//create two programs to be synced
 			var stepperA = new Stepper("A");
 			var stepperB = new Stepper("B");
-			Stepper[] steppers = { stepperA, stepperB };
+			IStepper[] steppers = { stepperA, stepperB };
 
 			//sync and start
 			testContext.Sync(stepperA, stepperB);
@@ -315,7 +317,7 @@ namespace ZoneLightingTests
 			var stepperB = new StepperInternalLoop("B");
 			var stepperC = new StepperInternalLoop("C");
 			var stepperD = new StepperInternalLoop("D");
-			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
+			IStepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start ABC
 			DebugTools.AddEvent("ZoneProgram_StartWithSync_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
@@ -367,7 +369,7 @@ namespace ZoneLightingTests
 			var stepperB = new StepperInternalLoop("B");
 			var stepperC = new StepperInternalLoop("C");
 			var stepperD = new StepperInternalLoop("D", testContext);
-			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
+			IStepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start ABC
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
@@ -416,7 +418,7 @@ namespace ZoneLightingTests
 
 			//create two programs to be synced
 			var stepperA = new StepperInternalLoop("A");
-			Stepper[] steppers = { stepperA };
+			IStepper[] steppers = { stepperA };
 
 			//sync and start ABC
 			DebugTools.AddEvent("Sync_OneStepperSyncingWithThree_Works", "Sync-Starting Stepper A, B, C");
@@ -455,7 +457,7 @@ namespace ZoneLightingTests
 			var stepperB = new StepperInternalLoop("B");
 			var stepperC = new StepperInternalLoop("C");
 			var stepperD = new StepperInternalLoop("D");
-			Stepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
+			IStepper[] steppers = { stepperA, stepperB, stepperC, stepperD };
 
 			//sync and start A
 			testContext.Sync(stepperA);
@@ -495,7 +497,7 @@ namespace ZoneLightingTests
 
 		#region Helpers
 
-		private static StringBuilder BuildFailString(int[] invalidStepIndex, Stepper[] steppers, int[,] stepperSteps)
+		private static StringBuilder BuildFailString(int[] invalidStepIndex, IStepper[] steppers, int[,] stepperSteps)
 		{
 			var failStringBuilder = new StringBuilder();
 			failStringBuilder.Append("The programs are not within one step of each other:");
@@ -504,7 +506,7 @@ namespace ZoneLightingTests
 			{
 				for (var j = 0; j < steppers.Length; j++)
 				{
-					failStringBuilder.Append(steppers[j].Name + "stepperSteps[" + invalidStepIndex[i] + "," + j + "]" + "=" +
+					failStringBuilder.Append(((ZoneProgram)steppers[j]).Name + "stepperSteps[" + invalidStepIndex[i] + "," + j + "]" + "=" +
 											 stepperSteps[invalidStepIndex[i], j]);
 					if (j + 1 != steppers.Length)
 						failStringBuilder.Append(" | ");
@@ -514,7 +516,7 @@ namespace ZoneLightingTests
 			return failStringBuilder;
 		}
 
-		private static void PrintStepperSteps(Stepper[] steppers, int[,] stepperSteps)
+		private static void PrintStepperSteps(IStepper[] steppers, int[,] stepperSteps)
 		{
 			//output stepperSteps
 			StringBuilder stringBuilder = new StringBuilder();
@@ -525,7 +527,7 @@ namespace ZoneLightingTests
 			foreach (var stepper in steppers)
 			{
 				stringBuilder.Append("   ");
-				stringBuilder.Append(stepper.Name);
+				stringBuilder.Append(((ZoneProgram)stepper).Name);
 				stringBuilder.Append("   ");
 				stringBuilder.Append("|");
 			}
@@ -560,7 +562,7 @@ namespace ZoneLightingTests
 		/// <summary>
 		/// Checks to make sure that the steppers provided are in within 1 step of each other.
 		/// </summary>
-		private static int[] ValidateStepperSyncPhase(Stepper[] steppers, out int[,] stepperSteps, int numberOfChecks = 30, int msToWaitBeforeStart = 10, int msToWaitBetweenChecks = 1)
+		public static int[] ValidateStepperSyncPhase(IStepper[] steppers, out int[,] stepperSteps, int numberOfChecks = 30, int msToWaitBeforeStart = 10, int msToWaitBetweenChecks = 1)
 		{
 			//sleep cuz we want the programs to get going 
 			Thread.Sleep(msToWaitBeforeStart);
@@ -633,6 +635,7 @@ namespace ZoneLightingTests
 			return invalidStepIndex.ToArray();
 		}
 
+
 		#endregion
 
 		[TearDown]
@@ -643,141 +646,5 @@ namespace ZoneLightingTests
 			//DebugTools.Print(clearEvents: true);
 		}
 
-	}
-
-	public class StepperInternalLoop : Stepper
-	{
-		public StepperInternalLoop(string name, SyncContext syncContext = null) : base(name, syncContext)
-		{
-
-		}
-
-		public override void Loop()
-		{
-			DebugTools.AddEvent("StepperInternalLoop.Loop", "Loop Start. Signalling and waiting on " + (SyncContext?.GetNumberOfRemainingParticipants() - 1) + ". Total participants = " + SyncContext?.GetNumberOfTotalParticipants() + " : " + this.Name);
-			SyncContext?.SignalAndWait();
-			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Loop Start. Signal received. Continuing: " + this.Name);
-
-			while (true)
-			{
-				if (CurrentStep + 1 > EndStep)
-				{
-					CurrentStep = StartStep;
-					break;
-				}
-				else
-				{
-					CurrentStep++;
-				}
-
-				while (PauseForTest)
-				{
-					Thread.Sleep(1);
-				}
-
-				DebugTools.AddEvent("StepperInternalLoop.Loop", "In While. Signalling and waiting on " + (SyncContext?.GetNumberOfRemainingParticipants() - 1) + ". Total participants = " + SyncContext?.GetNumberOfTotalParticipants() + " : " + this.Name);
-				SyncContext?.SignalAndWait();
-				//DebugTools.AddEvent("StepperInternalLoop.Loop", "In While. Signal received. Continuing: " + this.Name);
-			}
-
-			DebugTools.AddEvent("StepperInternalLoop.Loop", "Loop End. Signalling and waiting on " + (SyncContext?.GetNumberOfRemainingParticipants() - 1) + ". Total participants = " + SyncContext?.GetNumberOfTotalParticipants() + " : " + this.Name);
-			SyncContext?.SignalAndWait();
-			//DebugTools.AddEvent("StepperInternalLoop.Loop", "Loop End. Signal received. Continuing: " + this.Name);
-		}
-	}
-
-	public class Stepper : LoopingZoneProgram
-	{
-		#region CORE + C + I
-
-		protected override int MaxSyncTimeout { get; } = 100;
-
-		public override SyncLevel SyncLevel { get; set; } = StepperSyncLevel.Step;
-
-		public int StartStep { get; } = 1;
-		public int EndStep { get; set; } = 9;
-
-		private object _currentStepLock = new object();
-		public int CurrentStep
-		{
-			get
-			{
-				lock (_currentStepLock)
-				{
-					return _currentStep;
-				}
-			}
-			set
-			{
-				lock (_currentStepLock)
-				{
-					_currentStep = value;
-				}
-			}
-		}
-
-		private object _pauseForTestLock = new object();
-		private bool _pauseForTest;
-		private int _currentStep;
-
-		public bool PauseForTest
-		{
-			get
-			{
-				lock (_pauseForTestLock)
-				{
-					return _pauseForTest;
-				}
-			}
-			set
-			{
-				lock (_pauseForTestLock)
-				{
-					_pauseForTest = value;
-				}
-			}
-		}
-
-		public Stepper(string name, SyncContext syncContext = null) : base(name, syncContext)
-		{
-			Name = name;
-		}
-
-		public override void Setup()
-		{
-			CurrentStep = StartStep;
-		}
-
-		#endregion
-
-		public override void Loop()
-		{
-			DebugTools.AddEvent("StepperInternalLoop.Loop", "Signalling and waiting on " + (SyncContext?.GetNumberOfRemainingParticipants() - 1) + ". Total participants = " + SyncContext?.GetNumberOfTotalParticipants() + " : " + this.Name);
-			SyncContext?.SignalAndWait();
-			DebugTools.AddEvent("StepperInternalLoop.Loop", "Signal received. Continuing: " + this.Name);
-
-			if (CurrentStep + 1 > EndStep)
-			{
-				CurrentStep = StartStep;
-			}
-			else
-			{
-				CurrentStep++;
-			}
-
-			while (PauseForTest)
-			{
-				Thread.Sleep(1);
-			}
-
-			DebugTools.AddEvent("StepperInternalLoop.Loop", "Signalling and waiting on " + (SyncContext?.GetNumberOfRemainingParticipants() - 1) + ". Total participants = " + SyncContext?.GetNumberOfTotalParticipants() + " : " + this.Name);
-			SyncContext?.SignalAndWait();
-			DebugTools.AddEvent("StepperInternalLoop.Loop", "Signal received. Continuing: " + this.Name);
-		}
-
-		public static class StepperSyncLevel
-		{
-			public static SyncLevel Step = new SyncLevel("Step");
-		}
 	}
 }

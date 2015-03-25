@@ -74,13 +74,18 @@
     <Compile Include="StockPrograms\BlinkColorLoop.cs" />
     <Compile Include="StockPrograms\BlinkColorReactive.cs" />
     <Compile Include="StockPrograms\AndroidTrail.cs" />
+    <Compile Include="StockPrograms\IStepper.cs" />
     <Compile Include="StockPrograms\Rainbow.cs" />
     <Compile Include="StockPrograms\RedEqualizer.cs" />
     <Compile Include="StockPrograms\Cylon.cs" />
     <Compile Include="StockPrograms\Scroll2Dots.cs" />
     <Compile Include="StockPrograms\ScrollTrail.cs" />
     <Compile Include="StockPrograms\ScrollDot.cs" />
+    <Compile Include="Usables\BetterList.cs" />
+    <Compile Include="Usables\IInitializable.cs" />
+    <Compile Include="Usables\TestInterfaces\ITestProgramSet.cs" />
     <Compile Include="ZLEventSource.cs" />
+    <Compile Include="Usables\IBetterListType.cs" />
     <Compile Include="ZoneNS\SyncContext.cs" />
     <Compile Include="Communication\FadeCandyController.cs" />
     <Compile Include="Communication\FadeCandyPixel.cs" />
@@ -94,7 +99,6 @@
     <Compile Include="ConfigNS\ZoneConfig.cs" />
     <Compile Include="Communication\IFadeCandyPixel.cs" />
     <Compile Include="DebugTools.cs" />
-    <Compile Include="IInitializable.cs" />
     <Compile Include="TriggerDependencyNS\Dependency.cs" />
     <Compile Include="TriggerDependencyNS\Interfaces.cs" />
     <Compile Include="TriggerDependencyNS\Trigger.cs" />

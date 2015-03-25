@@ -87,11 +87,15 @@
     <Compile Include="Resources\Programs\Rainbow.cs" />
     <Compile Include="Resources\Programs\ScrollDot.cs" />
     <Compile Include="Resources\Programs\StaticColor.cs" />
+    <Compile Include="Resources\Programs\Stepper.cs" />
+    <Compile Include="Resources\Programs\StepperInternalLoop.cs" />
+    <Compile Include="TestHelpers.cs" />
     <Compile Include="UnderlyingTypeConverterTests.cs" />
     <Compile Include="ZoneLightingManagerTests.cs" />
     <Compile Include="ZoneProgramInputTests.cs" />
     <Compile Include="SyncContextTests.cs" />
     <Compile Include="ZoneProgramTests.cs" />
+    <Compile Include="ProgramSetTests.cs" />
     <Compile Include="ZoneTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Logs\Deadlock4Steppers.txt" />
+    <Content Include="Resources\Programs\ExternalPrograms.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

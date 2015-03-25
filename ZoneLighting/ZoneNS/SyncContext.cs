@@ -72,6 +72,11 @@ namespace ZoneLighting.ZoneNS
 			Sync(zonePrograms.ToList());
 		}
 
+		public void Sync(IEnumerable<Zone> zones)
+		{
+			Sync(zones.Select(zone => zone.ZoneProgram));
+		}
+
 		/// <summary>
 		/// Synchronizes the given programs with the programs that are already attached to this context.
 		/// This can be called while the other programs are running, but will wait until they can get into

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks.Dataflow;
 using ZoneLighting.Communication;
+using ZoneLighting.Usables;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.ZoneNS
@@ -14,7 +15,7 @@ namespace ZoneLighting.ZoneNS
 	/// from the ZoneLightingManager's point of view.
 	/// </summary>
 	[DataContract]
-	public class Zone : IDisposable
+	public class Zone : IDisposable, IBetterListType
 	{
 		#region CORE
 
@@ -22,7 +23,7 @@ namespace ZoneLighting.ZoneNS
 		/// Name of the zone.
 		/// </summary>
 		[DataMember]
-		public string Name;
+		public string Name { get; private set; }
 
 		/// <summary>
 		/// All lights in the zone.

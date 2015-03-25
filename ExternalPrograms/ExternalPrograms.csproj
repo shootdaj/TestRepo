@@ -56,6 +56,8 @@
     <Compile Include="ScrollDot.cs" />
     <Compile Include="BlinkColorReactive.cs" />
     <Compile Include="StaticColor.cs" />
+    <Compile Include="Stepper.cs" />
+    <Compile Include="StepperInternalLoop.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

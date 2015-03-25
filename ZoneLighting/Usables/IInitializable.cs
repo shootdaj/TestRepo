@@ -1,4 +1,4 @@
-﻿namespace ZoneLighting
+﻿namespace ZoneLighting.Usables
 {
 	public interface IInitializable
 	{

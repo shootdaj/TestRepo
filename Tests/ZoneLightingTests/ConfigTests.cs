@@ -7,6 +7,7 @@ using NUnit.Framework;
 using ZoneLighting;
 using ZoneLighting.Communication;
 using ZoneLighting.ConfigNS;
+using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 using ZoneLightingTests.Resources.Programs;
@@ -28,19 +29,17 @@ namespace ZoneLightingTests
 			//arrange
 			byte fcChannel = 1;
 			var filename = @"ZoneConfiguration.config";
-			var zones = new List<Zone>();
+			var zones = new BetterList<Zone>();
 			FadeCandyController.Instance.Initialize();
+			((FadeCandyZone) zones.Add(new FadeCandyZone("TestZone1"))).AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, fcChannel);
 
-			zones.Add(new FadeCandyZone("TestZone1"));
-			((FadeCandyZone)zones[0]).AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, fcChannel);
 			dynamic startingValuesOldTz1 = new ISV();
 			startingValuesOldTz1.DelayTime = 1;
 			startingValuesOldTz1.Speed = 1;
 
 			zones[0].Initialize(new Rainbow(), startingValuesOldTz1);
 
-			zones.Add(new FadeCandyZone("TestZone2"));
-			((FadeCandyZone)zones[1]).AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 12, fcChannel);
+			((FadeCandyZone)zones.Add(new FadeCandyZone("TestZone2"))).AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 12, fcChannel);
 			dynamic startingValuesOldTz2 = new ISV();
 			startingValuesOldTz2.DelayTime = 1;
 			startingValuesOldTz2.DotColor = Color.BlueViolet;

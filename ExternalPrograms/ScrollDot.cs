@@ -16,9 +16,11 @@ namespace ExternalPrograms
 	[ExportMetadata("Name", "ScrollDot")]
 	public class ScrollDot : LoopingZoneProgram
 	{
-		public int DelayTime { get; set; } = 30;
-		public Color? DotColor { get; set; } = Color.Red;
+		public int DelayTime { get; set; } = 50;
+		public Color? DotColor { get; set; }
 		public override SyncLevel SyncLevel { get; set; } = ScrollDotSyncLevel.Dot;
+
+
 
 		public override void Setup()
 		{
@@ -29,30 +31,20 @@ namespace ExternalPrograms
 		public override void Loop()
 		{
 			//DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
-
-			var colors = new List<Color>();
-			colors.Add(Color.Red);
-			colors.Add(Color.Blue);
-			colors.Add(Color.Yellow);
-			colors.Add(Color.Green);
-			colors.Add(Color.Purple);
-			colors.Add(Color.RoyalBlue);
-			colors.Add(Color.MediumSeaGreen);
-
 			for (int i = 0; i < LightCount; i++)
 			{
 				//prepare frame
 				var sendColors = new Dictionary<int, Color>();
 				Zone.SortedLights.Keys.ToList().ForEach(lightIndex => sendColors.Add(lightIndex, Color.Black));
-				sendColors[i] = DotColor != null ? (Color)DotColor : colors[new Random().Next(0, colors.Count - 1)];
+				sendColors[i] = DotColor ?? ProgramCommon.GetRandomColor();
 
 				SendColors(sendColors);		//send frame
 				ProgramCommon.Delay(DelayTime);											//pause before next iteration
 
-				SyncContext?.SignalAndWait();
+				SyncContext?.SignalAndWait(100);
 			}
 
-			//DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
+			///DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
 		}
 
 		public static class ScrollDotSyncLevel
