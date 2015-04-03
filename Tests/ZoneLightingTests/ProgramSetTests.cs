@@ -20,6 +20,7 @@ namespace ZoneLightingTests
 			//arrange
 			TestHelpers.InitializeZoneScaffolder();
 
+			//create zones
 			var zones = new BetterList<Zone>();
 			FadeCandyController.Instance.Initialize();
 			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "LeftWing", PixelType.FadeCandyWS2812Pixel, 6, 1);

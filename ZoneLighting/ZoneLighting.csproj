@@ -71,6 +71,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions.cs" />
     <Compile Include="StockPrograms\BlinkColorLoop.cs" />
     <Compile Include="StockPrograms\BlinkColorReactive.cs" />
     <Compile Include="StockPrograms\AndroidTrail.cs" />
@@ -129,7 +130,7 @@
     <Compile Include="ZoneNS\Zone.cs" />
     <Compile Include="ILogicalRGBLight.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ZoneLightingManager.cs" />
+    <Compile Include="ZLM.cs" />
     <Compile Include="ZoneProgramNS\ProgramCommon.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgram.cs" />
   </ItemGroup>

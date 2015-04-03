@@ -6,16 +6,16 @@ namespace WebController.Controllers
 {
 	public class ZLMViewModel
 	{
-		public ZoneLightingManager ZLM => ZoneLightingManager.Instance;
+		//public ZoneLightingManager ZLM => ZoneLightingManager.Instance;
 
 		public ZLMViewModel()
 		{
-			AvailableZones = new SelectList(ZoneLightingManager.Zones, "Name");
+			AvailableZones = new SelectList(ZLM.Zones, "Name");
 		}
 
-		public ZoneLightingManager ZoneLightingManager
+		public ZLM ZLM
 		{
-			get { return ZoneLightingManager.Instance; }
+			get { return ZLM.I; }
 		}
 
 		public Zone Zone { get; set; }

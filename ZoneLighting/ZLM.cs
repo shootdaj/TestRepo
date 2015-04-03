@@ -21,13 +21,16 @@ namespace ZoneLighting
 	/// <summary>
 	/// This class will be responsible for managing the higher level tasks for the zones.
 	/// </summary>
-	public sealed class ZoneLightingManager : IDisposable
+	public sealed class ZLM : IDisposable
 	{
 		#region Singleton
 
-		private static ZoneLightingManager _instance;
+		private static ZLM _instance;
 
-		public static ZoneLightingManager Instance => _instance ?? (_instance = new ZoneLightingManager());
+		/// <summary>
+		/// I is short for Instance.
+		/// </summary>
+		public static ZLM I => _instance ?? (_instance = new ZLM());
 
 		#endregion
 
@@ -37,7 +40,13 @@ namespace ZoneLighting
 		/// All zones that can be managed by this class.
 		/// </summary>
 		[ImportMany(typeof(Zone), AllowRecomposition = true)]
-		public BetterList<Zone> Zones { get; set; } = new BetterList<Zone>();
+		public BetterList<Zone> Zones { get; private set; } = new BetterList<Zone>();
+
+		/// <summary>
+		/// Returns the zones that are not being used by any program sets.
+		/// </summary>
+		public BetterList<Zone> AvailableZones
+			=> Zones.Where(z => !ProgramSets.Any(p => p.Zones.Contains(z))).ToBetterList();
 
 		/// <summary>
 		/// Container for the external modules.
@@ -45,17 +54,15 @@ namespace ZoneLighting
 		private CompositionContainer ExternalZoneContainer { get; set; }
 
 		/// <summary>
-		/// Synchronization contexts (clocks) for synchronizing the programs running in different zones.
+		/// List of ProgramSets that are being managed by this class.
 		/// </summary>
-		//public IList<SyncContext> SyncContexts { get; set; } = new List<SyncContext>();
-
-		public BetterList<ProgramSet> ProgramSets { get; set; } = new BetterList<ProgramSet>();
+		public BetterList<ProgramSet> ProgramSets { get; } = new BetterList<ProgramSet>();
 
 		#endregion
 
 		#region C+I
 
-		public ZoneLightingManager()
+		public ZLM()
 		{
 		}
 
@@ -70,7 +77,7 @@ namespace ZoneLighting
                     ComposeWithExternalModules();
 				if (initZoneScaffolder)
 					InitZoneScaffolder();
-				InitializeAllZones();
+				InitializeAllZones(false);
 				Initialized = true;
 			}
 		}
@@ -148,7 +155,7 @@ namespace ZoneLighting
 		/// <summary>
 		/// Loads programs in all zones and starts them. This should be converted to be read from a config file instead of hard-coded here.
 		/// </summary>
-		private void InitializeAllZones()
+		private void InitializeAllZones(bool test = true)
 		{
 			//var configFilePath = ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"];
 
@@ -158,7 +165,8 @@ namespace ZoneLighting
 			//}
 
 			//AddBasementZonesAndPrograms();
-			AddBasementZonesAndProgramsWithSync();
+			if (test)
+				AddBasementZonesAndProgramsWithSync();
 
 
 
@@ -259,123 +267,23 @@ namespace ZoneLighting
 			return summary;
 		}
 
-		///// <summary>
-		///// This method synchronizes the program running on one zone to the program running in another zone
-		///// </summary>
-		///// <param name="syncSource"></param>
-		///// <param name="syncTarget"></param>
-		//public void Synchronize(Zone syncSource, Zone syncTarget)
-		//{
-		//	if (!(syncTarget.IsProgramLooping) || !(syncSource.IsProgramLooping))
-		//		throw new Exception("Both zones passed in must have a looping zone program running on them.");
+		/// <summary>
+		/// Creates a ProgramSet
+		/// </summary>
+		/// <param name="programSetName">Name of program set</param>
+		/// <param name="programName">Name of program</param>
+		/// <param name="sync"></param>
+		/// <param name="isv"></param>
+		/// <param name="zones"></param>
+		public ProgramSet CreateProgramSet(string programSetName, string programName, bool sync, ISV isv, IEnumerable<Zone> zones)
+		{
+			var zonesList = zones as IList<Zone> ?? zones.ToList();
+			if (zonesList.Any(z => !AvailableZones.Contains(z))) throw new Exception("Some of the provided zones are not available.");
 
-		//	//request and wait for synchronizable state of source and target programs
-		//	syncSource.RequestSyncState();
-		//	syncSource.IsSynchronizable.WaitForFire();
-		//	syncTarget.RequestSyncState();
-		//	syncTarget.IsSynchronizable.WaitForFire();
-
-		//	//start synchronization
-
-		//	//remove target from all sync contexts
-		//	if (IsInAnySyncContext(syncTarget))
-		//	{
-		//		RemoveFromAllSyncContexts(syncTarget);
-		//	}
-
-		//	//if there are any contexts in which the source is, use it.
-		//	if (SyncContexts.Any(c => c.ContainsZone(syncSource)))
-		//	{
-		//		syncTarget.SetupSyncContext(SyncContexts.First(c => c.ContainsZone(syncSource)));
-		//	}
-		//	//else create a new context and use that.
-		//	else
-		//	{
-		//		var syncContext = new SyncContext(syncSource.Name + "SyncContext");
-		//		syncSource.SetupSyncContext(syncContext);
-		//		syncTarget.SetupSyncContext(syncContext);
-		//		SyncContexts.Add(syncContext);
-		//	}
-
-		//	//end synchronization
-
-		//	//resume the programs that were waiting after they are synced
-		//	syncSource.WaitForSync.Fire(this, null);
-		//	syncTarget.WaitForSync.Fire(this, null);
-		//}
-
-		///// <summary>
-		///// Synchronizes multiple zones with a given zone.
-		///// </summary>
-		///// <param name="syncSource"></param>
-		///// <param name="syncTargets"></param>
-		//public void Synchronize(Zone syncSource, List<Zone> syncTargets)
-		//{
-		//	if ((syncTargets.Any(zone => !(zone.IsProgramLooping) ||
-		//	                             !(syncSource.IsProgramLooping))))
-		//		throw new Exception("Both zones passed in must have a looping zone program running on them.");
-
-		//	//request and wait for synchronizable state of source and target programs
-		//	syncSource.RequestSyncState();
-		//	syncSource.IsSynchronizable.WaitForFire();
-		//	syncTargets.ForEach(syncTarget =>
-		//	{
-		//		syncTarget.RequestSyncState();
-		//		syncTarget.IsSynchronizable.WaitForFire();
-		//	});
-
-
-		//	//start synchronization
-
-		//	//remove targets from all sync contexts
-		//	syncTargets.ForEach(syncTarget =>
-		//	{
-		//		if (IsInAnySyncContext(syncTarget))
-		//		{
-		//			RemoveFromAllSyncContexts(syncTarget);
-		//		}
-		//	});
-
-		//	//if there are any contexts in which the source is, use it.
-		//	if (SyncContexts.Any(c => c.ContainsZone(syncSource)))
-		//	{
-		//		syncTargets.ForEach(syncTarget =>
-		//		{
-		//			syncTarget.SetupSyncContext(SyncContexts.First(c => c.ContainsZone(syncSource)));
-		//		});
-		//	}
-
-		//	//else create a new context and use that.
-		//	else
-		//	{
-		//		var syncContext = new SyncContext(syncSource.Name + "SyncContext");
-
-		//		syncTargets.ForEach(syncTarget =>
-		//		{
-		//			syncTarget.SetupSyncContext(syncContext);
-		//		});
-
-		//		SyncContexts.Add(syncContext);
-		//	}
-
-		//	//end synchronization
-
-		//	//resume the programs that were waiting after they are synced
-		//	syncSource.WaitForSync.Fire(this, null);
-		//	syncTargets.ForEach(syncTarget =>
-		//	{
-		//		syncTarget.WaitForSync.Fire(this, null);
-		//	});
-		//}
-
-		//public void Unsynchronize(Zone unSyncTarget)
-		//{
-		//	//remove target from all sync contexts
-		//	if (IsInAnySyncContext(unSyncTarget))
-		//	{
-		//		RemoveFromAllSyncContexts(unSyncTarget);
-		//	}
-		//}
+			var programSet = new ProgramSet(programName, zonesList, sync, null, programSetName);
+			ProgramSets.Add(programSet);
+			return programSet;
+		}
 
 		#endregion
 
@@ -439,8 +347,7 @@ namespace ZoneLighting
 			var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(Zones, "RightWing", PixelType.FadeCandyWS2812Pixel, 12, 3);
 			var baiClock = ZoneScaffolder.Instance.AddFadeCandyZone(Zones, "BaiClock", PixelType.FadeCandyWS2812Pixel, 24, 4);
 
-			var rainbowSet = new ProgramSet("Rainbow", Zones, true, null, "RainbowSet");
-			ProgramSets.Add(rainbowSet);
+			CreateProgramSet("RainbowSet", "Rainbow", true, null, Zones);
 
 			//setup interrupting inputs
 			leftWing.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
@@ -459,41 +366,6 @@ namespace ZoneLighting
 			center.InterruptingPrograms[0].Start();
 			baiClock.InterruptingPrograms[0].Start();
 		}
-
-
-
-		//public FadeCandyZone AddFadeCandyZone(string name, string programName, PixelType pixelType, int numLights, byte channel, SyncContext syncContext = null)
-		//{
-		//	var zone = new FadeCandyZone(name);
-		//	zone.AddFadeCandyLights(pixelType, numLights, channel);
-		//	Zones.Add(zone);
-		//	ZoneScaffolder.Instance.InitializeZone(zone, programName, syncContext: syncContext);
-
-		//	return zone;
-		//}
-
-		//public FadeCandyZone AddFadeCandyZone(string name, PixelType pixelType, int numLights, byte channel)
-		//{
-		//	//create new zone
-		//	var zone = new FadeCandyZone(name);
-		//	//add lights
-		//	zone.AddFadeCandyLights(pixelType, numLights, channel);
-		//	//add to main collection
-		//	Zones.Add(zone);
-
-		//	return zone;
-		//}
-
-		//public void StartInterruptingProgramOnZone(Zone zone, string interruptingProgramName, SyncContext syncContext = null, bool isSyncRequested = false)
-		//{
-		//	ZoneScaffolder.Instance.StartInterruptingProgram(zone, interruptingProgramName, syncContext: syncContext, isSyncRequested: isSyncRequested);
-		//}
-
-		//public void StartInterruptingProgramOnZone(Zone zone, ReactiveZoneProgram program, SyncContext syncContext = null, bool isSyncRequested = false)
-		//{
-		//	ZoneScaffolder.Instance.StartInterruptingProgram(zone, program, syncContext: syncContext, isSyncRequested: isSyncRequested);
-		//}
-
 
 		#region Helpers
 

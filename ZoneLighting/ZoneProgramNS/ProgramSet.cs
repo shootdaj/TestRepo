@@ -10,6 +10,10 @@ using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLighting.ZoneProgramNS
 {
+	/// <summary>
+	/// A logical grouping of programs that will be run on the zones passed into the constructor. All programs can either
+	/// be started with or without sync. 
+	/// </summary>
 	public class ProgramSet : IDisposable, IBetterListType, ITestProgramSet
 	{
 		public string Name { get; private set; }

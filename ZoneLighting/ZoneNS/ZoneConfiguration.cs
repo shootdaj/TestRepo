@@ -12,7 +12,7 @@ namespace ZoneLighting.ZoneNS
 		
 
 
-		public static void CreateFromZLM(ZoneLightingManager zlm)
+		public static void CreateFromZLM(ZLM zlm)
 		{
 			
 		}

@@ -91,7 +91,8 @@
     <Compile Include="Resources\Programs\StepperInternalLoop.cs" />
     <Compile Include="TestHelpers.cs" />
     <Compile Include="UnderlyingTypeConverterTests.cs" />
-    <Compile Include="ZoneLightingManagerTests.cs" />
+    <Compile Include="ZLMTests.cs" />
+    <Compile Include="ZoneScaffolderTests.cs" />
     <Compile Include="ZoneProgramInputTests.cs" />
     <Compile Include="SyncContextTests.cs" />
     <Compile Include="ZoneProgramTests.cs" />

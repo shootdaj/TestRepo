@@ -8,7 +8,7 @@ namespace WebController.Controllers
 		[HttpPost]
 		public ActionResult Zones()
 		{
-			var zones = ZoneLightingManager.Instance.Zones;
+			var zones = ZLM.I.Zones;
 			return Json(new SelectList(zones, "Name", "Name"));
 		}
     }

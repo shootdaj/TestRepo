@@ -16,21 +16,21 @@ namespace WebController.Controllers
 		[HttpPost]
 	    public ActionResult UninitializeZLM()
 	    {
-		    ZoneLightingManager.Instance.Uninitialize();
+		    ZLM.I.Uninitialize();
 			return View("Index", new ZLMViewModel());
 		}
 
 		[HttpPost]
 		public ActionResult InitializeZLM()
 		{
-			ZoneLightingManager.Instance.Initialize(loadExternalZones: false);
+			ZLM.I.Initialize(loadExternalZones: false);
 			return View("Index", new ZLMViewModel());
 		}
 
 		[HttpPost]
 	    public ActionResult StopZone(string zoneName)
 	    {
-		    ZoneLightingManager.Instance.Zones.First(z => z.Name == zoneName).Uninitialize(true);
+		    ZLM.I.Zones.First(z => z.Name == zoneName).Uninitialize(true);
 			return View("Index", new ZLMViewModel());
 	    }
 
@@ -44,17 +44,17 @@ namespace WebController.Controllers
 			if (command == "Start")
 			{
 				if (zoneString == "All")
-					ZoneLightingManager.Instance.ProgramSets["RainbowSet"].StartAllPrograms();
+					ZLM.I.ProgramSets["RainbowSet"].StartAllPrograms();
 					//ZoneLightingManager.Instance.Zones.ToList().ForEach(zone => zone.ZoneProgram.Start(sync: true));
 				else
-					ZoneLightingManager.Instance.Zones.First(z => z.Name == zoneString).ZoneProgram.Start(sync: true);
+					ZLM.I.Zones.First(z => z.Name == zoneString).ZoneProgram.Start(sync: true);
 			}
 			else if (command == "Stop")
 			{
 				if (zoneString == "All")
-					ZoneLightingManager.Instance.ProgramSets["RainbowSet"].StopAllPrograms();
+					ZLM.I.ProgramSets["RainbowSet"].StopAllPrograms();
 				else
-					ZoneLightingManager.Instance.Zones.First(z => z.Name == zoneString).ZoneProgram.Stop(true);
+					ZLM.I.Zones.First(z => z.Name == zoneString).ZoneProgram.Stop(true);
 			}
 			
 			return View("Index", new ZLMViewModel());
@@ -72,7 +72,7 @@ namespace WebController.Controllers
 
 			    for (int i = 0; i < cycles; i++)
 			    {
-					ZoneLightingManager.Instance.Zones.ToList().ForEach(z => z.InterruptingPrograms[0].SetInput("Blink", parameters));
+					ZLM.I.Zones.ToList().ForEach(z => z.InterruptingPrograms[0].SetInput("Blink", parameters));
 				}
 		    }
 

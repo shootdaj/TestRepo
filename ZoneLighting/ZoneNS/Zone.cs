@@ -83,6 +83,11 @@ namespace ZoneLighting.ZoneNS
 			Brightness = brightness ?? 1.0;
 		}
 
+		public Zone(string name)
+		{
+			Name = name;
+		}
+
 		#region Interrupt Processing
 
 		private void SetupInterruptProcessing()

@@ -12,6 +12,12 @@ namespace ZoneLighting.Usables
 		{
 			get { return this.First(t => t.Name == name); }
 		}
+	
+		/// <summary>
+		/// Adds and returns the object passed in for fluent interfacing.
+		/// </summary>
+		/// <param name="t"></param>
+		/// <returns></returns>
 		public new T Add(T t)
 		{
 			base.Add(t);
