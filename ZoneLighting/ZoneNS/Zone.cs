@@ -77,7 +77,7 @@ namespace ZoneLighting.ZoneNS
 		/// <param name="brightness">Brightness for this zone.</param>
 		public Zone(ILightingController lightingController, string name = "", double? brightness = 1.0)
 		{
-			Lights = new List<ILogicalRGBLight>();
+			Construct();
 			LightingController = lightingController;
 			Name = name;
 			Brightness = brightness ?? 1.0;
@@ -85,7 +85,13 @@ namespace ZoneLighting.ZoneNS
 
 		public Zone(string name)
 		{
+			Construct();
 			Name = name;
+		}
+
+		public void Construct()
+		{
+			Lights = new List<ILogicalRGBLight>();
 		}
 
 		#region Interrupt Processing

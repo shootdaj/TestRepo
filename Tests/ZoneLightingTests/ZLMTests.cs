@@ -1,24 +1,33 @@
-﻿using System.Collections.Generic;
-using System.Configuration;
-using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using ZoneLighting;
-using ZoneLighting.Communication;
-using ZoneLighting.ConfigNS;
+using ZoneLighting.StockPrograms;
+using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
-using ZoneLighting.ZoneProgramNS;
-using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLightingTests
 {
+	[TestFixture]
+	[Category("Integration")]
 	public class ZLMTests
 	{
-		[Test]
-		public void AvailableZones_Works()
+		[SetUp]
+		public static void Setup()
 		{
-			//initialize
 			ZLM.I.Initialize(false, true);
+		}
 
+		[TearDown]
+		public static void TearDown()
+		{
+			ZLM.I.Uninitialize();
+		}
+
+		[Test]
+		public void AvailableZones_ReturnsZonesOnWhichNoProgramSetWasCreated()
+		{
 			var leftWing = ZLM.I.Zones.Add(new Zone("LeftWing"));
 			var center = ZLM.I.Zones.Add(new Zone("Center"));
 			var rightWing = ZLM.I.Zones.Add(new Zone("RightWing"));
@@ -33,21 +42,95 @@ namespace ZoneLightingTests
 				center
 			});
 
-			//that one zone on which no program set was created should be the only one available
+			//the zone on which no program set was created should be the only one available
 			Assert.True(ZLM.I.AvailableZones.Count == 1);
 			Assert.True(ZLM.I.AvailableZones[0] == rightWing);
 		}
 
-		//[Test]
-		public void CreateProgramSet_Works()
+		[Test]
+		public void CreateProgramSet_CreatesAndRunsProgramOnZones()
 		{
-			//todo: finish
+			var leftWing = ZLM.I.Zones.Add(new Zone("LeftWing"));
+			var center = ZLM.I.Zones.Add(new Zone("Center"));
+			var rightWing = ZLM.I.Zones.Add(new Zone("RightWing"));
+
+			//create program set
+			ZLM.I.CreateProgramSet("", "Stepper", true, null, new List<Zone>()
+			{
+				leftWing,
+				center,
+				rightWing
+			});
+
+			//check that steppers are running
+			Assert.True(TestHelpers.ValidateSteppersRunning(ZLM.I.Zones.Select(z => z.ZoneProgram).Cast<IStepper>(), 100));
 		}
 
-		//[Test]
+		[Test]
+		public void CreateProgramSet_TwoZonesOutOfThree_TwoZonesRunning_OneZoneNotRunning()
+		{
+			var leftWing = ZLM.I.Zones.Add(new Zone("LeftWing"));
+			var center = ZLM.I.Zones.Add(new Zone("Center"));
+			var rightWing = ZLM.I.Zones.Add(new Zone("RightWing"));
+
+			//create program set
+			ZLM.I.CreateProgramSet("", "Stepper", true, null, new List<Zone>()
+			{
+				leftWing,
+				center,
+			});
+
+			//check that steppers are running
+			Assert.True(
+				TestHelpers.ValidateSteppersRunning(
+					new BetterList<Zone> {leftWing, center}.Select(z => z.ZoneProgram).Cast<IStepper>(), 100));
+			Assert.False(rightWing.Initialized);
+		}
+
+		[Test]
 		public void CreateProgramSet_PassInUnavailableZone_ThrowsException()
 		{
-			//todo: finish
+			var leftWing = ZLM.I.Zones.Add(new Zone("LeftWing"));
+			var center = ZLM.I.Zones.Add(new Zone("Center"));
+
+			//create program set
+			ZLM.I.CreateProgramSet("", "Stepper", true, null, new List<Zone>()
+			{
+				leftWing,
+				center,
+			});
+
+			Assert.Throws<Exception>(() =>
+				ZLM.I.CreateProgramSet("", "Stepper", true, null, new List<Zone>()
+				{
+					leftWing
+				}));
+		}
+
+		[Test]
+		public void CreateTwoProgramSets_WorksWithSync()
+		{
+			var leftWing = ZLM.I.Zones.Add(new Zone("LeftWing"));
+			var center = ZLM.I.Zones.Add(new Zone("Center"));
+			var rightWing = ZLM.I.Zones.Add(new Zone("RightWing"));
+
+			//create program set
+			ZLM.I.CreateProgramSet("", "Stepper", true, null, new List<Zone>()
+			{
+				leftWing,
+				center,
+			});
+
+			//create program set
+			ZLM.I.CreateProgramSet("", "Stepper", true, null, new List<Zone>()
+			{
+				rightWing
+			});
+
+			TestHelpers.ValidateSteppersSync(
+				new BetterList<Zone> {leftWing, center}.Select(z => z.ZoneProgram).Cast<IStepper>(), 100);
+			TestHelpers.ValidateSteppersRunning(
+				new BetterList<Zone> { rightWing }.Select(z => z.ZoneProgram).Cast<IStepper>(), 10);
 		}
 	}
 }

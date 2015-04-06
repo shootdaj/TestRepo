@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Drawing;
+using System.Threading;
 using NUnit.Framework;
 using ZoneLighting;
 using ZoneLighting.Communication;
@@ -63,6 +64,10 @@ namespace ZoneLightingTests
 			FadeCandyController.Instance.Initialize();	//needs to be faked somehow
 
 			leftWing.Initialize(new ScrollDot(), scrollDotDictionary);
+
+			//this is to fix the race condition that sometimes causes this test to fail - since this test 
+			//is not designed to test race conditions, just whether cooperative stop works in normal conditions
+			Thread.Sleep(100);
 
 			//act -- cooperative stop
 			leftWing.ZoneProgram.Stop(false);

@@ -12,6 +12,7 @@ using ZoneLightingTests.Resources.Programs;
 
 namespace ZoneLightingTests
 {
+	[Category("Integration")]
 	public class SyncContextTests
 	{
 		[TestCase(1000)]
