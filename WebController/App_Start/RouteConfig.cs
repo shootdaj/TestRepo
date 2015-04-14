@@ -12,7 +12,7 @@ namespace WebController
 			routes.MapRoute(
 				name: "Default",
 				url: "{controller}/{action}/{id}",
-				defaults: new { controller = "ZLM", action = "Index", id = UrlParameter.Optional }
+				defaults: new { controller = "ZLMNew", action = "Index", id = UrlParameter.Optional }
 			);
 		}
 	}

@@ -1,0 +1,103 @@
+﻿{
+	"name": "ZoneLightingManager",
+	"children": [
+		{
+			"name": "RainbowSet",
+			"children": [
+				{
+					"name": "Stop",
+					"isCommandNode": "true",
+					"command":  "Stop"
+				},
+				{
+					"name": "ZoneA",
+					"draggable": "true",
+					"children": [
+						{
+							"name": "Stop"
+						},
+						{
+							"name": "Rainbow",
+
+							"children": [
+								{
+									"name": "Start"
+								},
+								{
+									"name": "Stop"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "ZoneB",
+					"draggable": "true",
+					"children": [
+						{
+							"name": "Stop"
+						},
+						{
+							"name": "Rainbow",
+
+							"children": [
+								{
+									"name": "Start"
+
+								},
+								{
+									"name": "Stop"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "CylonSet",
+			"children": [
+				{
+					"name": "Stop",
+					"isCommandNode": "true"
+				},
+				{
+					"name": "ZoneC",
+					"draggable": "true",
+					"children": [
+						{
+							"name": "Cylon",
+
+							"children": [
+								{
+									"name": "Start"
+								},
+								{
+									"name": "Stop"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "ZoneD",
+					"draggable": "true",
+					"children": [
+						{
+							"name": "Cylon",
+
+							"children": [
+								{
+									"name": "Start"
+								},
+								{
+									"name": "Stop"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}
