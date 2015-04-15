@@ -1,28 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNet.Mvc;
-using ZLClientTest.Models;
+using ZoneLighting.ZoneProgramNS;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace ZLClientTest.API.Controllers
+namespace WebRemote.API.Controllers
 {
-	[Route("api/[controller]")]
-    public class ProgramSetsController : Controller
+    [Route("api/[controller]")]
+    public class ZLMController : Controller
     {
-        // GET: api/values
-        [HttpGet]
-        public IEnumerable<ProgramSet> Get()
-        {
-            return new ProgramSet[]
-            {
-	            new ProgramSet() { Name = "RainbowSet"},
-				new ProgramSet() { Name = "CylonSet"},
-				new ProgramSet() { Name = "N00bSet"},
-			};
-        }
+        //// GET: api/values
+        //[HttpGet]
+        //public IEnumerable<string> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
 
-        // GET api/values/5
-        [HttpGet("{id}")]
+		// GET: api/values
+		[HttpGet]
+		public IEnumerable<ProgramSet> Get()
+		{
+			return null;
+		}
+
+		// GET api/values/5
+		[HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";
@@ -46,5 +50,4 @@ namespace ZLClientTest.API.Controllers
         {
         }
     }
-
 }
