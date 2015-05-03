@@ -77,7 +77,7 @@ namespace ZoneLighting
                     ComposeWithExternalModules();
 				if (initZoneScaffolder)
 					InitZoneScaffolder();
-				InitializeAllZones(false);
+				InitializeAllZones();
 				Initialized = true;
 			}
 		}
