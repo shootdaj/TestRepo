@@ -23,6 +23,73 @@ namespace ZoneLighting
 	/// </summary>
 	public sealed class ZLM : IDisposable
 	{
+		#region API
+
+		public string GetZoneSummary()
+		{
+			var newline = Environment.NewLine;
+			string summary = string.Format("Currently {0} zones are loaded." + newline, Zones.Count);
+			summary += "===================" + newline;
+			Zones.ToList().ForEach(zone =>
+			{
+				summary += "Zone: " + zone.Name + newline;
+				summary += "Program: ";
+
+				if (zone.ZoneProgram != null)
+				{
+					summary += zone.ZoneProgram.Name + newline;
+
+					//TODO: Add current input values output
+					//if (zone.ZoneProgram is ParameterizedZoneProgram)
+					//{
+					//	var parameterDictionary = ((ParameterizedZoneProgram)zone.ZoneProgram).ProgramParameter.ToKeyValueDictionary();
+
+					//	parameterDictionary.Keys.ToList().ForEach(key =>
+					//	{
+					//		summary += string.Format("    {0}: {1}", key, parameterDictionary[key].ToString()) + newline;
+					//	});
+					//}
+				}
+				else
+				{
+					summary += "None" + newline;
+				}
+				summary += "-------------------" + newline;
+
+			});
+
+			return summary;
+		}
+
+		/// <summary>
+		/// Creates a ProgramSet
+		/// </summary>
+		/// <param name="programSetName">Name of program set</param>
+		/// <param name="programName">Name of program</param>
+		/// <param name="sync"></param>
+		/// <param name="isv"></param>
+		/// <param name="zones"></param>
+		public ProgramSet CreateProgramSet(string programSetName, string programName, bool sync, ISV isv, IEnumerable<Zone> zones)
+		{
+			var zonesList = zones as IList<Zone> ?? zones.ToList();
+			if (zonesList.Any(z => !AvailableZones.Contains(z))) throw new Exception("Some of the provided zones are not available.");
+
+			var programSet = new ProgramSet(programName, zonesList, sync, null, programSetName);
+			ProgramSets.Add(programSet);
+			return programSet;
+		}
+
+		public void MoveZone(Zone zone, ProgramSet targetProgramSet)
+		{
+			if (ProgramSets.Any(ps => ps.Zones.Contains(zone)))
+			{
+				
+			}
+		}
+
+		#endregion
+
+
 		#region Singleton
 
 		private static ZLM _instance;
@@ -68,16 +135,16 @@ namespace ZoneLighting
 
 		public bool Initialized { get; private set; }
 
-		public void Initialize(bool loadExternalZones = true, bool initZoneScaffolder = true)
+		[Alias()]
+		public void Initialize(bool loadExternalZones = false, Action testAction = null)
 		{
 			if (!Initialized)
 			{
 				InitLightingControllers();
 				if (loadExternalZones && ExternalZoneContainer != null)
                     ComposeWithExternalModules();
-				if (initZoneScaffolder)
-					InitZoneScaffolder();
-				InitializeAllZones();
+				InitZoneScaffolder();
+				InitializeAllZones(testAction);
 				Initialized = true;
 			}
 		}
@@ -155,7 +222,7 @@ namespace ZoneLighting
 		/// <summary>
 		/// Loads programs in all zones and starts them. This should be converted to be read from a config file instead of hard-coded here.
 		/// </summary>
-		private void InitializeAllZones(bool test = true)
+		private void InitializeAllZones(Action testAction)
 		{
 			//var configFilePath = ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"];
 
@@ -165,8 +232,8 @@ namespace ZoneLighting
 			//}
 
 			//AddBasementZonesAndPrograms();
-			if (test)
-				AddBasementZonesAndProgramsWithSync();
+			testAction?.Invoke();
+			//AddBasementZonesAndProgramsWithSync();
 
 
 
@@ -190,7 +257,7 @@ namespace ZoneLighting
 
 			//ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones);
 		}
-		
+
 		public void Uninitialize()
 		{     
 			if (Initialized)
@@ -229,63 +296,7 @@ namespace ZoneLighting
 
 		#endregion
 
-		#region API
-
-		public string GetZoneSummary()
-		{
-			var newline = Environment.NewLine;
-			string summary = string.Format("Currently {0} zones are loaded." + newline, Zones.Count);
-			summary += "===================" + newline;
-			Zones.ToList().ForEach(zone =>
-			{
-				summary += "Zone: " + zone.Name + newline;
-				summary += "Program: ";
-
-				if (zone.ZoneProgram != null)
-				{
-					summary += zone.ZoneProgram.Name + newline;
-
-					//TODO: Add current input values output
-					//if (zone.ZoneProgram is ParameterizedZoneProgram)
-					//{
-					//	var parameterDictionary = ((ParameterizedZoneProgram)zone.ZoneProgram).ProgramParameter.ToKeyValueDictionary();
-
-					//	parameterDictionary.Keys.ToList().ForEach(key =>
-					//	{
-					//		summary += string.Format("    {0}: {1}", key, parameterDictionary[key].ToString()) + newline;
-					//	});
-					//}
-				}
-				else
-				{
-					summary += "None" + newline;
-				}
-				summary += "-------------------" + newline;
-
-			});
-
-			return summary;
-		}
-
-		/// <summary>
-		/// Creates a ProgramSet
-		/// </summary>
-		/// <param name="programSetName">Name of program set</param>
-		/// <param name="programName">Name of program</param>
-		/// <param name="sync"></param>
-		/// <param name="isv"></param>
-		/// <param name="zones"></param>
-		public ProgramSet CreateProgramSet(string programSetName, string programName, bool sync, ISV isv, IEnumerable<Zone> zones)
-		{
-			var zonesList = zones as IList<Zone> ?? zones.ToList();
-			if (zonesList.Any(z => !AvailableZones.Contains(z))) throw new Exception("Some of the provided zones are not available.");
-
-			var programSet = new ProgramSet(programName, zonesList, sync, null, programSetName);
-			ProgramSets.Add(programSet);
-			return programSet;
-		}
-
-		#endregion
+		
 
 		private void AddBasementZonesAndPrograms()
 		{
@@ -337,39 +348,39 @@ namespace ZoneLighting
 			//baiClock.InterruptingPrograms[0].Start();
 		}
 
-		private void AddBasementZonesAndProgramsWithSync()
-		{
-			var notificationSyncContext = new SyncContext("NotificationContext");
+		//private void AddBasementZonesAndProgramsWithSync()
+		//{
+		//	var notificationSyncContext = new SyncContext("NotificationContext");
 			
-			//add zones
-			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(Zones, "LeftWing", PixelType.FadeCandyWS2812Pixel, 6, 1);
-			var center = ZoneScaffolder.Instance.AddFadeCandyZone(Zones, "Center", PixelType.FadeCandyWS2811Pixel, 21, 2);
-			var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(Zones, "RightWing", PixelType.FadeCandyWS2812Pixel, 12, 3);
-			var baiClock = ZoneScaffolder.Instance.AddFadeCandyZone(Zones, "BaiClock", PixelType.FadeCandyWS2812Pixel, 24, 4);
+		//	//add zones
+		//	var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(Zones, "LeftWing", PixelType.FadeCandyWS2812Pixel, 6, 1);
+		//	var center = ZoneScaffolder.Instance.AddFadeCandyZone(Zones, "Center", PixelType.FadeCandyWS2811Pixel, 21, 2);
+		//	var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(Zones, "RightWing", PixelType.FadeCandyWS2812Pixel, 12, 3);
+		//	var baiClock = ZoneScaffolder.Instance.AddFadeCandyZone(Zones, "BaiClock", PixelType.FadeCandyWS2812Pixel, 24, 4);
 
-			CreateProgramSet("RainbowSet", "Rainbow", true, null, Zones);
+		//	CreateProgramSet("RainbowSet", "Rainbow", true, null, Zones);
 
-			//setup interrupting inputs
-			leftWing.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-			rightWing.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-			center.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-			baiClock.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+		//	//setup interrupting inputs
+		//	leftWing.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+		//	rightWing.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+		//	center.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+		//	baiClock.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
 
-			//synchronize and start interrupting programs
-			notificationSyncContext.Sync(leftWing.InterruptingPrograms[0],
-												rightWing.InterruptingPrograms[0],
-												center.InterruptingPrograms[0],
-												baiClock.InterruptingPrograms[0]);
+		//	//synchronize and start interrupting programs
+		//	notificationSyncContext.Sync(leftWing.InterruptingPrograms[0],
+		//										rightWing.InterruptingPrograms[0],
+		//										center.InterruptingPrograms[0],
+		//										baiClock.InterruptingPrograms[0]);
 
-			leftWing.InterruptingPrograms[0].Start();
-			rightWing.InterruptingPrograms[0].Start();
-			center.InterruptingPrograms[0].Start();
-			baiClock.InterruptingPrograms[0].Start();
-		}
+		//	leftWing.InterruptingPrograms[0].Start();
+		//	rightWing.InterruptingPrograms[0].Start();
+		//	center.InterruptingPrograms[0].Start();
+		//	baiClock.InterruptingPrograms[0].Start();
+		//}
 
-		#region Helpers
+		//#region Helpers
 
 		
-		#endregion
+		//#endregion
 	}
 }

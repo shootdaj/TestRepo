@@ -14,7 +14,7 @@ namespace ZoneLightingTests
 {
 	public class ZoneScaffolderTests
 	{
-		[Ignore]
+		[Ignore("Needs fixing")]
 		[Test]
 		//TODO: Fix
 		public void InitializeFromZoneConfiguration_Works()

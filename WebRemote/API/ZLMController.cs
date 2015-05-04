@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNet.Mvc;
+using ZoneLighting;
+using ZoneLighting.Usables;
 using ZoneLighting.ZoneProgramNS;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -31,6 +33,33 @@ namespace WebRemote.API.Controllers
         {
             return "value";
         }
+
+		public string Get(string command)
+		{
+			if (command == "initialize")
+			{
+				ZLM.I.Initialize(false, RunnerHelpers.AddBasementZonesAndProgramsWithSync());
+				return "Success";
+			}
+			if (command == "uninitialize")
+			{
+				ZLM.I.Uninitialize();
+				return "Success";
+			}
+
+			return "Failure";
+
+			//if (command == "initialize")
+			//{
+			//	ZLM.I.Initialize(loadExternalZones: false);
+			//	return "Success";
+			//}
+			//if (command == "initialize")
+			//{
+			//	ZLM.I.Initialize(loadExternalZones: false);
+			//	return "Success";
+			//}
+		}
 
         // POST api/values
         [HttpPost]

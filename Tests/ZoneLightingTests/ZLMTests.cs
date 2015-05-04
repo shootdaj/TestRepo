@@ -16,7 +16,7 @@ namespace ZoneLightingTests
 		[SetUp]
 		public static void Setup()
 		{
-			ZLM.I.Initialize(false, true);
+			ZLM.I.Initialize();
 		}
 
 		[TearDown]
@@ -131,6 +131,14 @@ namespace ZoneLightingTests
 				new BetterList<Zone> {leftWing, center}.Select(z => z.ZoneProgram).Cast<IStepper>(), 100);
 			TestHelpers.ValidateSteppersRunning(
 				new BetterList<Zone> { rightWing }.Select(z => z.ZoneProgram).Cast<IStepper>(), 10);
+		}
+
+		//TODO
+		[Test]
+		[Ignore("TODO")]
+		public void MoveZone_MovesZoneFromOneProgramSetToAnother()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

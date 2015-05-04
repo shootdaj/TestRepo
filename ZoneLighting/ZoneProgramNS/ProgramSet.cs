@@ -26,6 +26,9 @@ namespace ZoneLighting.ZoneProgramNS
 			get { return Zones.Select(zone => zone.ZoneProgram).ToList(); }
 		}
 
+		/// <summary>
+		/// For testing only
+		/// </summary>
 		IEnumerable<ZoneProgram> ITestProgramSet.ZoneProgramsTest => ZonePrograms;
 
 		public ProgramSet(string programName, IEnumerable<Zone> zones, bool sync, ISV isv, string setName)
@@ -41,7 +44,7 @@ namespace ZoneLighting.ZoneProgramNS
 			{
 				Zones.ForEach(zone =>
 				{
-					zone.Uninitialize();
+					zone.Uninitialize(true);
 					ZoneScaffolder.Instance.InitializeZone(zone, programName, isv, true, SyncContext, true);
 				});
 				
@@ -51,10 +54,16 @@ namespace ZoneLighting.ZoneProgramNS
 			{
 				Zones.ForEach(zone =>
 				{
-					zone.Uninitialize();
+					zone.Uninitialize(true);
 					ZoneScaffolder.Instance.InitializeZone(zone, programName, isv);
 				});
 			}
+		}
+
+		public void RemoveZone(Zone zone, bool force = true)
+		{
+			zone.Uninitialize(force);
+			Zones.Remove(zone);
 		}
 
 		public void Dispose()

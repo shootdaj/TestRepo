@@ -3,6 +3,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Web.Mvc;
 using ZoneLighting;
+using ZoneLighting.Usables;
 
 namespace WebController.Controllers
 {
@@ -23,7 +24,7 @@ namespace WebController.Controllers
 		[HttpPost]
 		public ActionResult InitializeZLM()
 		{
-			ZLM.I.Initialize(loadExternalZones: false);
+			ZLM.I.Initialize(false, RunnerHelpers.AddBasementZonesAndProgramsWithSync());
 			return View("Index", new ZLMViewModel());
 		}
 

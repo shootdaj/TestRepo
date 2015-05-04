@@ -154,7 +154,7 @@ treeJSON = d3.json("programSetTyped.json", function (error, treeData) {
 	// Define the drag listeners for drag/drop behaviour of nodes.
 	dragListener = d3.behavior.drag()
         .on("dragstart", function (d) {
-        	if (d == root) {
+        	if (d === root) {
         		return;
         	}
         	if (d.draggable) {
