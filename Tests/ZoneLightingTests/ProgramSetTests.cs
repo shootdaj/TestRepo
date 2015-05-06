@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using ZoneLighting;
 using ZoneLighting.Communication;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.Usables;
@@ -30,7 +31,7 @@ namespace ZoneLightingTests
 			var programSet = new ProgramSet("Stepper", zones.ToList(), true, null, "StepperSet");
 
 			//assert
-			TestHelpers.ValidateSteppersSync(((ITestProgramSet)programSet).ZoneProgramsTest.Cast<IStepper>(), 100);
+			TestHelpers.ValidateSteppersInSync(((ITestProgramSet)programSet).ZoneProgramsTest.Cast<IStepper>(), 100);
 			Assert.That(leftWing.Initialized, Is.True);
 			Assert.That(rightWing.Initialized, Is.True);
 			Assert.That(leftWing.ZoneProgram.State == ProgramState.Started, Is.True);
@@ -70,7 +71,7 @@ namespace ZoneLightingTests
 		}
 
 		[Test]
-		public void RemoveZone_ZoneIsUnintializedAndNotInZonesCollection()
+		public void RemoveZone_ZoneNotInZonesCollectionAndZoneProgramOutOfSync()
 		{
 			//arrange
 			TestHelpers.InitializeZoneScaffolder();
@@ -86,9 +87,11 @@ namespace ZoneLightingTests
 			programSet.RemoveZone(rightWing);
 
 			//assert
-			TestHelpers.ValidateSteppersRunning(((ITestProgramSet)programSet).ZoneProgramsTest.Cast<IStepper>(), 100);
-			Assert.That(leftWing.Initialized, Is.True);
-			Assert.That(rightWing.Initialized, Is.False);
+			var listToValidate = new List<IStepper>();
+			listToValidate.AddRange(((ITestProgramSet)programSet).ZoneProgramsTest.Cast<IStepper>());
+			listToValidate.Add((IStepper)rightWing.ZoneProgram);
+
+			TestHelpers.ValidateSteppersOutOfSync(listToValidate.ToList(), 100);
 			Assert.That(leftWing.ZoneProgram.State == ProgramState.Started, Is.True);
 			Assert.That(programSet.Zones.Contains(rightWing), Is.False);
 
@@ -121,8 +124,8 @@ namespace ZoneLightingTests
 			var stepperSet2 = new ProgramSet("Stepper", new List<Zone>() { center, baiClock }, true, null, "StepperSet2");
 
 			//assert
-			TestHelpers.ValidateSteppersSync(((ITestProgramSet)stepperSet1).ZoneProgramsTest.Cast<IStepper>(), 100);
-			TestHelpers.ValidateSteppersSync(((ITestProgramSet)stepperSet2).ZoneProgramsTest.Cast<IStepper>(), 100);
+			TestHelpers.ValidateSteppersInSync(((ITestProgramSet)stepperSet1).ZoneProgramsTest.Cast<IStepper>(), 100);
+			TestHelpers.ValidateSteppersInSync(((ITestProgramSet)stepperSet2).ZoneProgramsTest.Cast<IStepper>(), 100);
 			Assert.That(leftWing.Initialized, Is.True);
 			Assert.That(rightWing.Initialized, Is.True);
 			Assert.That(center.Initialized, Is.True);

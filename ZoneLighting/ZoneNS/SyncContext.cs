@@ -72,7 +72,12 @@ namespace ZoneLighting.ZoneNS
 			Sync(zonePrograms.ToList());
 		}
 
-		public void Sync(IEnumerable<Zone> zones)
+		public void Sync(IEnumerable<Zone> zones, bool forceStop = false)
+		{
+            Sync(zones.Select(zone => zone.ZoneProgram), forceStop);
+		}
+
+		public void Sync(params Zone[] zones)
 		{
 			Sync(zones.Select(zone => zone.ZoneProgram));
 		}
@@ -83,11 +88,15 @@ namespace ZoneLighting.ZoneNS
 		/// their synchronizable states before executing the synchronization. If no programs are already attached,
 		/// then this method attaches the given program(s) to this context and starts them.
 		/// </summary>
-		public void Sync(IEnumerable<ZoneProgram> zonePrograms)
+		public void Sync(IEnumerable<ZoneProgram> zonePrograms, bool forceStop = false)
 		{
 			var incomingZonePrograms = zonePrograms as IList<ZoneProgram> ?? zonePrograms.ToList();
 
-			//incoming program must be stopped
+			//stop programs if specified to do so
+			if (forceStop)
+				incomingZonePrograms.ToList().ForEach(zoneProgram => zoneProgram.Stop(true));
+
+			//incoming program must be stopped if forceStop is not true
 			if (incomingZonePrograms.Any(zp => zp.State != ProgramState.Stopped))
 				throw new Exception("Given program must be stopped before a live sync is executed.");
 
@@ -193,6 +202,14 @@ namespace ZoneLighting.ZoneNS
 		}
 
 		/// <summary>
+		/// Unsyncs a zone's ZoneProgram from this SyncContext.
+		/// </summary>
+		public void Unsync(Zone zone)
+		{
+			Unsync(zone.ZoneProgram);
+		}
+
+		/// <summary>
 		/// Signals the barrier and waits for the other programs to catch up or if it's the last program,
 		/// then propels all the programs. To be used by programs to signal the other programs that signalling
 		/// program is now waiting on the rest.
@@ -208,5 +225,6 @@ namespace ZoneLighting.ZoneNS
 		public int GetNumberOfTotalParticipants() => Barrier.ParticipantCount;
 
 		#endregion
+
 	}
 }

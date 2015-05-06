@@ -17,7 +17,7 @@ namespace ZoneLighting.ZoneProgramNS
 	public class ProgramSet : IDisposable, IBetterListType, ITestProgramSet
 	{
 		public string Name { get; private set; }
-		public SyncContext SyncContext { get; } = new SyncContext();
+		public SyncContext SyncContext { get; }
 		public List<Zone> Zones { get; private set; }
 		public string ProgramName { get; private set; }
 
@@ -47,7 +47,8 @@ namespace ZoneLighting.ZoneProgramNS
 					zone.Uninitialize(true);
 					ZoneScaffolder.Instance.InitializeZone(zone, programName, isv, true, SyncContext, true);
 				});
-				
+
+				SyncContext = new SyncContext();
 				SyncContext.Sync(Zones);
 			}
 			else
@@ -62,7 +63,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public void RemoveZone(Zone zone, bool force = true)
 		{
-			zone.Uninitialize(force);
+			SyncContext?.Unsync(zone);
 			Zones.Remove(zone);
 		}
 
@@ -90,6 +91,17 @@ namespace ZoneLighting.ZoneProgramNS
 		public void StopAllPrograms(bool force = false)
 		{
 			ZonePrograms.ForEach(zp => zp.Stop(force));
+		}
+
+		public bool ContainsZone(Zone zone)
+		{
+			return Zones.Contains(zone);
+		}
+
+		public Zone AddZone(Zone zone)
+		{
+			SyncContext?.Sync(zone.Listify(), true);
+			return zone;
 		}
 	}
 }

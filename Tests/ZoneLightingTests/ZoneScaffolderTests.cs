@@ -52,7 +52,7 @@ namespace ZoneLightingTests
 		}
 
 		/// <summary>
-		/// This is jsut there to generate the test file for this test in case the code changes something
+		/// This is just there to generate the test file for this test in case the code changes something
 		/// fundamental that is reflected in the saved configuration.
 		/// </summary>
 		/// <param name="filename"></param>

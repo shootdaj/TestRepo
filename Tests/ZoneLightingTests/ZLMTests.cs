@@ -63,7 +63,7 @@ namespace ZoneLightingTests
 			});
 
 			//check that steppers are running
-			Assert.True(TestHelpers.ValidateSteppersRunning(ZLM.I.Zones.Select(z => z.ZoneProgram).Cast<IStepper>(), 100));
+			TestHelpers.ValidateSteppersRunning(ZLM.I.Zones.Select(z => z.ZoneProgram).Cast<IStepper>(), 100);
 		}
 
 		[Test]
@@ -81,10 +81,8 @@ namespace ZoneLightingTests
 			});
 
 			//check that steppers are running
-			Assert.True(
-				TestHelpers.ValidateSteppersRunning(
-					new BetterList<Zone> {leftWing, center}.Select(z => z.ZoneProgram).Cast<IStepper>(), 100));
 			Assert.False(rightWing.Initialized);
+			TestHelpers.ValidateSteppersRunning(new BetterList<Zone> {leftWing, center}.Select(z => z.ZoneProgram).Cast<IStepper>(), 100);
 		}
 
 		[Test]
@@ -127,18 +125,61 @@ namespace ZoneLightingTests
 				rightWing
 			});
 
-			TestHelpers.ValidateSteppersSync(
-				new BetterList<Zone> {leftWing, center}.Select(z => z.ZoneProgram).Cast<IStepper>(), 100);
+			TestHelpers.ValidateSteppersInSync(
+				new BetterList<Zone> { leftWing, center }.Select(z => z.ZoneProgram).Cast<IStepper>(), 100);
 			TestHelpers.ValidateSteppersRunning(
 				new BetterList<Zone> { rightWing }.Select(z => z.ZoneProgram).Cast<IStepper>(), 10);
 		}
 
-		//TODO
 		[Test]
-		[Ignore("TODO")]
 		public void MoveZone_MovesZoneFromOneProgramSetToAnother()
 		{
-			throw new NotImplementedException();
+			//arrange
+			var leftWing = ZLM.I.Zones.Add(new Zone("LeftWing"));
+			var rightWing = ZLM.I.Zones.Add(new Zone("RightWing"));
+
+			//create program set
+			var stepperSet1 = ZLM.I.CreateProgramSet("StepperSet1", "Stepper", true, null, new List<Zone>()
+			{
+				leftWing
+			});
+
+			//create program set
+			var stepperSet2 = ZLM.I.CreateProgramSet("StepperSet2", "Stepper", true, null, new List<Zone>()
+			{
+				rightWing
+			});
+
+			//act
+			ZLM.I.MoveZone(rightWing, stepperSet1);
+
+			//assert
+			Assert.That(stepperSet2.Zones, Is.Empty);
+			TestHelpers.ValidateSteppersInSync(
+				new BetterList<Zone> { leftWing, rightWing }.Select(z => z.ZoneProgram).Cast<IStepper>(), 100);
+		}
+
+		[Test]
+		public void MoveZone_SameProgramSet_ThrowException()
+		{
+			//arrange
+			var leftWing = ZLM.I.Zones.Add(new Zone("LeftWing"));
+			var rightWing = ZLM.I.Zones.Add(new Zone("RightWing"));
+
+			//create program set
+			var stepperSet1 = ZLM.I.CreateProgramSet("StepperSet1", "Stepper", true, null, new List<Zone>()
+			{
+				leftWing
+			});
+
+			//create program set
+			var stepperSet2 = ZLM.I.CreateProgramSet("StepperSet2", "Stepper", true, null, new List<Zone>()
+			{
+				rightWing
+			});
+
+			//act and assert
+			Assert.Throws<Exception>(() => ZLM.I.MoveZone(rightWing, stepperSet2));
 		}
 	}
 }

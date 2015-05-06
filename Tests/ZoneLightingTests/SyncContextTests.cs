@@ -496,6 +496,56 @@ namespace ZoneLightingTests
 			}
 		}
 
+		[TestCase(100, 5)]
+		[Timeout(30000)]
+		public void Unsync_TwoSteppers_Works(int numberOfChecks, int maxOutOfSyncDueToThreadTestBlip)
+		{
+			//create a sync context to conduct the test with
+			var testContext = new SyncContext();
+
+			//create two programs to be synced
+			var stepperA = new Stepper("A");
+			var stepperB = new Stepper("B");
+			IStepper[] steppers = { stepperA, stepperB };
+
+			//sync and start
+			testContext.Sync(stepperA, stepperB);
+			testContext.SyncFinished.WaitForFire();
+
+			//act
+			testContext.Unsync(stepperB);
+
+			//gather data
+			int[,] stepperSteps;
+			var invalidStepIndex = ValidateStepperSyncPhase(steppers, out stepperSteps, numberOfChecks);
+			var result = invalidStepIndex.Length > maxOutOfSyncDueToThreadTestBlip;
+
+			PrintStepperSteps(steppers, stepperSteps);
+
+			//cleanup
+			stepperA.Dispose(true);
+			stepperB.Dispose(true);
+			testContext.Dispose();
+
+			//assert
+			if (result)
+				Assert.Pass();
+			else
+			{
+				var failStringBuilder = BuildFailString(invalidStepIndex, steppers, stepperSteps);
+				Assert.Fail(failStringBuilder.ToString());
+			}
+		}
+
+		[Test]
+		[Ignore("TODO")]
+		public void Sync_ForceStopEqualsTrue_StopsProgramBeforeSyncingItInsteadOfThrowingException()
+		{
+			//test Sync(zonePrograms, true);
+
+			Assert.Fail("Implement Test Template");
+		}
+
 		#region Helpers
 
 		private static StringBuilder BuildFailString(int[] invalidStepIndex, IStepper[] steppers, int[,] stepperSteps)
@@ -563,6 +613,7 @@ namespace ZoneLightingTests
 		/// <summary>
 		/// Checks to make sure that the steppers provided are in within 1 step of each other.
 		/// </summary>
+		/// <returns>Array of steps that were out of sync.</returns>
 		public static int[] ValidateStepperSyncPhase(IStepper[] steppers, out int[,] stepperSteps, int numberOfChecks = 30, int msToWaitBeforeStart = 10, int msToWaitBetweenChecks = 1)
 		{
 			//sleep cuz we want the programs to get going 
@@ -588,9 +639,9 @@ namespace ZoneLightingTests
 			//does not imply that the programs are out of sync. if the programs do go out of sync, 
 			//with enough repetitions they will go out of sync even more, which means their steps
 			//will eventually differ by more than 1, which is what this for loop is testing. therefore, 
-			//the higher the number of checks, the higher the chance of failure, IF the sync algorithm has
-			//a race condition or some other kind of flaw.
-			for (int i = 0; i < numberOfChecks; i++)
+			//the higher the number of checks, the higher the chance of failure if the programs are out of sync, OR 
+			//if the sync algorithm has a race condition or some other kind of flaw.
+			for (var i = 0; i < numberOfChecks; i++)
 			{
 				foreach (var stepper in steppers)
 				{
@@ -646,6 +697,5 @@ namespace ZoneLightingTests
 			//DebugTools.AddEvent("TearDown", "DebugTools.Print");
 			//DebugTools.Print(clearEvents: true);
 		}
-
 	}
 }

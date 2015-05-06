@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using ZoneLighting.Communication;
 using ZoneLighting.StockPrograms;
@@ -81,9 +82,21 @@ namespace ZoneLighting
 
 		public void MoveZone(Zone zone, ProgramSet targetProgramSet)
 		{
-			if (ProgramSets.Any(ps => ps.Zones.Contains(zone)))
+			if (targetProgramSet.ContainsZone(zone))
+				throw new Exception("Cannot move zone to the same program set as where it is currently.");
+
+			if (ProgramSets.Any(ps => ps.ContainsZone(zone)))
 			{
-				
+				var sourceProgramSet = ProgramSets.First(ps => ps.ContainsZone(zone));
+				sourceProgramSet.RemoveZone(zone);
+				//TODO: Remove this
+				Thread.Sleep(3000);
+
+				targetProgramSet.AddZone(zone);
+			}
+			else
+			{
+				targetProgramSet.AddZone(zone);
 			}
 		}
 

@@ -108,16 +108,23 @@ namespace ZoneLighting.ZoneProgramNS
 				//set starting values
 				SetStartingValues(isv);
 
+				//if sync or synccontext is null
 				if (sync || syncContext != null)
 				{
+					//if synccontext is null
 					if (syncContext != null)
 					{
+						//sync with provided synccontext
 						syncContext.Sync(this);
 					}
+					//else there should already be a synccontext attached (from a previous sync)
 					else
 					{
+						//throw error if that(^^^^^^^)'s not the case
 						if (SyncContext == null)
 							throw new Exception("If Start is called with LiveSync, either a Sync Context must be passed in with it or one must be set before calling Start.");
+
+						//otherwise, sync with provided synccontext
 						SyncContext.Sync(this);
 					}
 				}

@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneProgramNS.Factories;
 using ZoneLightingTests.Resources.Programs;
@@ -17,18 +18,26 @@ namespace ZoneLightingTests
 			ZoneScaffolder.Instance.Initialize(ConfigurationManager.AppSettings["TestProgramModuleDirectory"]);
 		}
 
-		public static bool ValidateSteppersSync(IEnumerable<IStepper> steppers, int numberOfChecks, int msToWaitBeforeStart = 10, int msToWaitBetweenChecks = 1)
+		public static void ValidateSteppersInSync(IEnumerable<IStepper> steppers, int numberOfChecks, int msToWaitBeforeStart = 10, int msToWaitBetweenChecks = 1)
 		{
 			int[,] stepperSteps;
 			var invalidStepIndex = SyncContextTests.ValidateStepperSyncPhase(steppers.ToArray(), out stepperSteps, numberOfChecks);
-			return invalidStepIndex.Length == 0 && stepperSteps.Length != 0;
+			Assert.True(invalidStepIndex.Length == 0 && stepperSteps.Length != 0);
 		}
 
-		public static bool ValidateSteppersRunning(IEnumerable<IStepper> steppers, int numberOfChecks, int msToWaitBeforeStart = 10, int msToWaitBetweenChecks = 1)
+		public static void ValidateSteppersRunning(IEnumerable<IStepper> steppers, int numberOfChecks, int msToWaitBeforeStart = 10, int msToWaitBetweenChecks = 1)
 		{
 			int[,] stepperSteps;
 			SyncContextTests.ValidateStepperSyncPhase(steppers.ToArray(), out stepperSteps, numberOfChecks);
-			return stepperSteps.Length != 0;
+			Assert.True(stepperSteps.Length != 0);
+		}
+
+		public static void ValidateSteppersOutOfSync(IEnumerable<IStepper> steppers, int numberOfChecks,
+			int msToWaitBeforeStart = 10, int msToWaitBetweenChecks = 1, int minOutOfSyncStepsThreshold = 0)
+		{
+			int[,] stepperSteps;
+			var invalidStepIndex = SyncContextTests.ValidateStepperSyncPhase(steppers.ToArray(), out stepperSteps, numberOfChecks);
+			Assert.True(invalidStepIndex.Length > minOutOfSyncStepsThreshold);
 		}
 	}
 }
