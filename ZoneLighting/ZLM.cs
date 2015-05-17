@@ -6,12 +6,10 @@ using System.ComponentModel.Composition.Primitives;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using ZoneLighting.Communication;
-using ZoneLighting.StockPrograms;
 using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
@@ -80,25 +78,31 @@ namespace ZoneLighting
 			return programSet;
 		}
 
-		public void MoveZone(Zone zone, ProgramSet targetProgramSet)
-		{
-			if (targetProgramSet.ContainsZone(zone))
-				throw new Exception("Cannot move zone to the same program set as where it is currently.");
+        //TODO: Leaving this to finish at a later point in time. 
+        //TODO: Possible move this and its test to a different branch, and it can be merged back later when 
+        //TODO: it's ready to be worked on.
+  //      /// <summary>
+  //      /// Moves a zone from its current program set to another given program set.
+  //      /// </summary>
+		//public void MoveZone(Zone zone, ProgramSet targetProgramSet)
+		//{
+		//	if (targetProgramSet.ContainsZone(zone))
+		//		throw new Exception("Cannot move zone to the same program set as where it is currently.");
 
-			if (ProgramSets.Any(ps => ps.ContainsZone(zone)))
-			{
-				var sourceProgramSet = ProgramSets.First(ps => ps.ContainsZone(zone));
-				sourceProgramSet.RemoveZone(zone);
-				//TODO: Remove this
-				Thread.Sleep(3000);
+		//	if (ProgramSets.Any(ps => ps.ContainsZone(zone)))
+		//	{
+		//		var sourceProgramSet = ProgramSets.First(ps => ps.ContainsZone(zone));
+		//		sourceProgramSet.RemoveZone(zone);
+		//		//TODO: Remove this
+		//		Thread.Sleep(3000);
 
-				targetProgramSet.AddZone(zone);
-			}
-			else
-			{
-				targetProgramSet.AddZone(zone);
-			}
-		}
+		//		targetProgramSet.AddZone(zone);
+		//	}
+		//	else
+		//	{
+		//		targetProgramSet.AddZone(zone);
+		//	}
+		//}
 
 		#endregion
 

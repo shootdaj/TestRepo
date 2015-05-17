@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace WebRemote
+﻿namespace WebRemoteNew
 {
     public class Startup
     {

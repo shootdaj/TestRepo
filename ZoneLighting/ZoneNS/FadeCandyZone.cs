@@ -1,5 +1,4 @@
 ﻿using ZoneLighting.Communication;
-using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.ZoneNS
 {

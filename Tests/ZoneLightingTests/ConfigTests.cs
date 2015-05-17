@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using ZoneLighting;
 using ZoneLighting.Communication;
 using ZoneLighting.ConfigNS;
 using ZoneLighting.Usables;

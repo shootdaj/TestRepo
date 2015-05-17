@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
-using ZoneLighting;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 

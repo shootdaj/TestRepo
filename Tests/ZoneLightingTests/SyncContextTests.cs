@@ -496,6 +496,10 @@ namespace ZoneLightingTests
 			}
 		}
 
+        /// <summary>
+        /// There's a Heisenbug in the sync validation algorithm that very rarely causes 
+        /// a few false positives, which can be corrected for by using the maxOutOfSyncDueToThreadTestBlip parameter.
+        /// </summary>
 		[TestCase(100, 5)]
 		[Timeout(30000)]
 		public void Unsync_TwoSteppers_Works(int numberOfChecks, int maxOutOfSyncDueToThreadTestBlip)
@@ -567,7 +571,7 @@ namespace ZoneLightingTests
 			return failStringBuilder;
 		}
 
-		private static void PrintStepperSteps(IStepper[] steppers, int[,] stepperSteps)
+		public static void PrintStepperSteps(IStepper[] steppers, int[,] stepperSteps)
 		{
 			//output stepperSteps
 			StringBuilder stringBuilder = new StringBuilder();

@@ -1,0 +1,693 @@
+{
+  "locked": false,
+  "version": -9998,
+  "projectFileDependencyGroups": {
+    "": [
+      "Microsoft.AspNet.Server.IIS >= 1.0.0-beta4",
+      "Microsoft.AspNet.Mvc >= 6.0.0-beta4",
+      "Microsoft.AspNet.StaticFiles >= 1.0.0-beta4"
+    ],
+    "Asp.Net,Version=v5.0": [
+      "ZoneLighting >= 1.0.0-*"
+    ]
+  },
+  "libraries": {
+    "EventSourceProxy/3.0.3": {
+      "serviceable": false,
+      "sha": "w7lrFz1D+vJChKqgvxMVv0iR81MYv0GZEbs81XY3Zw2WmkdyhTAM1MUOFrsL5Kf+TpA7EnY8evKMeuzMO5UTYg==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {
+            "Newtonsoft.Json": null
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/EventSourceProxy.dll"
+          ],
+          "compileAssemblies": [
+            "lib/EventSourceProxy.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.6": {
+          "dependencies": {
+            "Newtonsoft.Json": null
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/EventSourceProxy.dll"
+          ],
+          "compileAssemblies": [
+            "lib/EventSourceProxy.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.5": {
+          "dependencies": {
+            "Newtonsoft.Json": null
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/EventSourceProxy.dll"
+          ],
+          "compileAssemblies": [
+            "lib/EventSourceProxy.dll"
+          ]
+        }
+      },
+      "files": [
+        "EventSourceProxy.3.0.3.nupkg",
+        "EventSourceProxy.3.0.3.nupkg.sha512",
+        "EventSourceProxy.nuspec",
+        "lib/EventSourceProxy.dll",
+        "lib/EventSourceProxy.XML",
+        "tools/EventSourceProxy.dll",
+        "tools/GenerateProxyManifest.exe"
+      ]
+    },
+    "Microsoft.AspNet.Loader.IIS/1.0.0-beta4": {
+      "serviceable": false,
+      "sha": "yuhp/0exkFrwOBLAhX29lXoA1D+ouoq/TZ8aeRNcVILqwJ5hTU6Gf5muGQVGK/PqRQKQDUaHTzRLx/TrhWa91A==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        },
+        ".NETFramework,Version=v4.6": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        },
+        ".NETFramework,Version=v4.5": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        }
+      },
+      "files": [
+        "Microsoft.AspNet.Loader.IIS.1.0.0-beta4.nupkg",
+        "Microsoft.AspNet.Loader.IIS.1.0.0-beta4.nupkg.sha512",
+        "Microsoft.AspNet.Loader.IIS.nuspec",
+        "lib/dnx451/Microsoft.AspNet.Loader.IIS.dll",
+        "lib/dnx451/Microsoft.AspNet.Loader.IIS.xml",
+        "lib/dnxcore50/Microsoft.AspNet.Loader.IIS.dll",
+        "lib/dnxcore50/Microsoft.AspNet.Loader.IIS.xml"
+      ]
+    },
+    "Microsoft.AspNet.Loader.IIS.Interop/1.0.0-beta4": {
+      "serviceable": false,
+      "sha": "50FEL0+abeAABvCoPs1A0Vcl65PyBKyzg06aL0H+Y+WZMoLI+Bvd1M9WKDj8nfm6K5Jh033oI7fQbOfscd8wqw==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        },
+        ".NETFramework,Version=v4.6": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        },
+        ".NETFramework,Version=v4.5": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        }
+      },
+      "files": [
+        "Microsoft.AspNet.Loader.IIS.Interop.1.0.0-beta4.nupkg",
+        "Microsoft.AspNet.Loader.IIS.Interop.1.0.0-beta4.nupkg.sha512",
+        "Microsoft.AspNet.Loader.IIS.Interop.nuspec",
+        "InteropAssemblies/amd64/Microsoft.AspNet.Loader.IIS.Interop.dll",
+        "InteropAssemblies/x86/Microsoft.AspNet.Loader.IIS.Interop.dll",
+        "tools/AspNet.Loader.dll"
+      ]
+    },
+    "Microsoft.AspNet.Mvc/6.0.0-beta4": {
+      "serviceable": false,
+      "sha": "zff+4iCo+KYQo7RGa4fDXyi/xDQFW4CssRYqEiBjX26XWB3tNDSYBY5pETZ3aUina9ocR++09Yun8wsRpL37DA==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        },
+        ".NETFramework,Version=v4.6": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        },
+        ".NETFramework,Version=v4.5": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        }
+      },
+      "files": [
+        "Microsoft.AspNet.Mvc.6.0.0-beta4.nupkg",
+        "Microsoft.AspNet.Mvc.6.0.0-beta4.nupkg.sha512",
+        "Microsoft.AspNet.Mvc.nuspec",
+        "lib/dnx451/Microsoft.AspNet.Mvc.dll",
+        "lib/dnx451/Microsoft.AspNet.Mvc.xml",
+        "lib/dnxcore50/Microsoft.AspNet.Mvc.dll",
+        "lib/dnxcore50/Microsoft.AspNet.Mvc.xml"
+      ]
+    },
+    "Microsoft.AspNet.Server.IIS/1.0.0-beta4": {
+      "serviceable": false,
+      "sha": "zPKpt9wna/Jw+PxywvKQDSVL5ZlzkE4arxpCcgrrJv2r1bwkWSAWiy6b9sp79aAzYSO9/qlt2FJPD6edeh29bg==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {
+            "Microsoft.AspNet.Loader.IIS.Interop": "1.0.0-beta4",
+            "Microsoft.AspNet.Loader.IIS": "1.0.0-beta4"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        },
+        ".NETFramework,Version=v4.6": {
+          "dependencies": {
+            "Microsoft.AspNet.Loader.IIS.Interop": "1.0.0-beta4",
+            "Microsoft.AspNet.Loader.IIS": "1.0.0-beta4"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        },
+        ".NETFramework,Version=v4.5": {
+          "dependencies": {
+            "Microsoft.AspNet.Loader.IIS.Interop": "1.0.0-beta4",
+            "Microsoft.AspNet.Loader.IIS": "1.0.0-beta4"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        }
+      },
+      "files": [
+        "Microsoft.AspNet.Server.IIS.1.0.0-beta4.nupkg",
+        "Microsoft.AspNet.Server.IIS.1.0.0-beta4.nupkg.sha512",
+        "Microsoft.AspNet.Server.IIS.nuspec"
+      ]
+    },
+    "Microsoft.AspNet.StaticFiles/1.0.0-beta4": {
+      "serviceable": false,
+      "sha": "jWxWQB8uTGOyVddlxP0kloTYtaQqnzUg+kMgUcNir4l58FbSTymbVTczOqjuy3Kdt3xy9nh/+kKGWpkCc3xf8g==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        },
+        ".NETFramework,Version=v4.6": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        },
+        ".NETFramework,Version=v4.5": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        }
+      },
+      "files": [
+        "Microsoft.AspNet.StaticFiles.1.0.0-beta4.nupkg",
+        "Microsoft.AspNet.StaticFiles.1.0.0-beta4.nupkg.sha512",
+        "Microsoft.AspNet.StaticFiles.nuspec",
+        "lib/dnx451/Microsoft.AspNet.StaticFiles.dll",
+        "lib/dnx451/Microsoft.AspNet.StaticFiles.xml",
+        "lib/dnxcore50/Microsoft.AspNet.StaticFiles.dll",
+        "lib/dnxcore50/Microsoft.AspNet.StaticFiles.xml"
+      ]
+    },
+    "Microsoft.Tpl.Dataflow/4.5.24": {
+      "serviceable": true,
+      "sha": "6BE4Vu74+dkv5AkJd+UxW1sFMepMZOVlUoMZDUKqhc4Bf7pe7yySzCj6QrowUZbCqcDPwOiQsAgz3nXiLQSyMw==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/portable-net45+win8+wpa81/System.Threading.Tasks.Dataflow.dll"
+          ],
+          "compileAssemblies": [
+            "lib/portable-net45+win8+wpa81/System.Threading.Tasks.Dataflow.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.6": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/portable-net45+win8+wpa81/System.Threading.Tasks.Dataflow.dll"
+          ],
+          "compileAssemblies": [
+            "lib/portable-net45+win8+wpa81/System.Threading.Tasks.Dataflow.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.5": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/portable-net45+win8+wpa81/System.Threading.Tasks.Dataflow.dll"
+          ],
+          "compileAssemblies": [
+            "lib/portable-net45+win8+wpa81/System.Threading.Tasks.Dataflow.dll"
+          ]
+        }
+      },
+      "files": [
+        "License-Stable.rtf",
+        "Microsoft.Tpl.Dataflow.4.5.24.nupkg",
+        "Microsoft.Tpl.Dataflow.4.5.24.nupkg.sha512",
+        "Microsoft.Tpl.Dataflow.nuspec",
+        "lib/portable-net45+win8+wp8+wpa81/System.Threading.Tasks.Dataflow.dll",
+        "lib/portable-net45+win8+wp8+wpa81/system.threading.tasks.dataflow.xml",
+        "lib/portable-net45+win8+wpa81/System.Threading.Tasks.Dataflow.dll",
+        "lib/portable-net45+win8+wpa81/system.threading.tasks.dataflow.xml"
+      ]
+    },
+    "Newtonsoft.Json/6.0.6": {
+      "serviceable": false,
+      "sha": "w26uZNyCG5VeoKiEOJ4+9/o8koSofLKwHl7WLreIcp0U6r57L7WiRXmjp8MTKFw6dYNZ9AE0lw69WYbIhUsU9Q==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/Newtonsoft.Json.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/Newtonsoft.Json.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.6": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/Newtonsoft.Json.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/Newtonsoft.Json.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.5": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/Newtonsoft.Json.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/Newtonsoft.Json.dll"
+          ]
+        }
+      },
+      "files": [
+        "Newtonsoft.Json.6.0.6.nupkg",
+        "Newtonsoft.Json.6.0.6.nupkg.sha512",
+        "Newtonsoft.Json.nuspec",
+        "lib/net20/Newtonsoft.Json.dll",
+        "lib/net20/Newtonsoft.Json.xml",
+        "lib/net35/Newtonsoft.Json.dll",
+        "lib/net35/Newtonsoft.Json.xml",
+        "lib/net40/Newtonsoft.Json.dll",
+        "lib/net40/Newtonsoft.Json.xml",
+        "lib/net45/Newtonsoft.Json.dll",
+        "lib/net45/Newtonsoft.Json.xml",
+        "lib/netcore45/Newtonsoft.Json.dll",
+        "lib/netcore45/Newtonsoft.Json.xml",
+        "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.dll",
+        "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.xml",
+        "lib/portable-net45+wp80+win8+wpa81+aspnetcore50/Newtonsoft.Json.dll",
+        "lib/portable-net45+wp80+win8+wpa81+aspnetcore50/Newtonsoft.Json.xml",
+        "tools/install.ps1"
+      ]
+    },
+    "Rx-Core/2.2.5": {
+      "serviceable": false,
+      "sha": "DfWVTfW6tvRkkqpnRHKxPIvaRZyDJGADuqrE6J2nwejOQbLRWi0rNUwXkViDWz++25BGDy3iRE5OE6Dv8mJxYQ==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {
+            "Rx-Interfaces": "2.2.5"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/System.Reactive.Core.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/System.Reactive.Core.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.6": {
+          "dependencies": {
+            "Rx-Interfaces": "2.2.5"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/System.Reactive.Core.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/System.Reactive.Core.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.5": {
+          "dependencies": {
+            "Rx-Interfaces": "2.2.5"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/System.Reactive.Core.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/System.Reactive.Core.dll"
+          ]
+        }
+      },
+      "files": [
+        "Rx-Core.2.2.5.nupkg",
+        "Rx-Core.2.2.5.nupkg.sha512",
+        "Rx-Core.nuspec",
+        "lib/net40/System.Reactive.Core.dll",
+        "lib/net40/System.Reactive.Core.XML",
+        "lib/net45/System.Reactive.Core.dll",
+        "lib/net45/System.Reactive.Core.XML",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.Core.dll",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.Core.XML",
+        "lib/portable-net45+winrt45+wp8+wpa81/System.Reactive.Core.dll",
+        "lib/portable-net45+winrt45+wp8+wpa81/System.Reactive.Core.XML",
+        "lib/portable-win81+wpa81/System.Reactive.Core.dll",
+        "lib/portable-win81+wpa81/System.Reactive.Core.XML",
+        "lib/portable-windows8+net45+wp8/System.Reactive.Core.dll",
+        "lib/portable-windows8+net45+wp8/System.Reactive.Core.XML",
+        "lib/sl5/System.Reactive.Core.dll",
+        "lib/sl5/System.Reactive.Core.XML",
+        "lib/windows8/System.Reactive.Core.dll",
+        "lib/windows8/System.Reactive.Core.XML",
+        "lib/windowsphone71/System.Reactive.Core.dll",
+        "lib/windowsphone71/System.Reactive.Core.XML",
+        "lib/windowsphone8/System.Reactive.Core.dll",
+        "lib/windowsphone8/System.Reactive.Core.XML"
+      ]
+    },
+    "Rx-Interfaces/2.2.5": {
+      "serviceable": false,
+      "sha": "FKtG2QfMIeUcfB7r3a89VoAiszX3DTvYETkpC6U0FzWpxRK/mcHyzYOsniDfag+NsDG0P1k1c8yNSefXKp3t2A==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/System.Reactive.Interfaces.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/System.Reactive.Interfaces.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.6": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/System.Reactive.Interfaces.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/System.Reactive.Interfaces.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.5": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/System.Reactive.Interfaces.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/System.Reactive.Interfaces.dll"
+          ]
+        }
+      },
+      "files": [
+        "Rx-Interfaces.2.2.5.nupkg",
+        "Rx-Interfaces.2.2.5.nupkg.sha512",
+        "Rx-Interfaces.nuspec",
+        "lib/net40/System.Reactive.Interfaces.dll",
+        "lib/net40/System.Reactive.Interfaces.XML",
+        "lib/net45/System.Reactive.Interfaces.dll",
+        "lib/net45/System.Reactive.Interfaces.XML",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.Interfaces.dll",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.Interfaces.XML",
+        "lib/portable-net45+winrt45+wp8+wpa81/System.Reactive.Interfaces.dll",
+        "lib/portable-net45+winrt45+wp8+wpa81/System.Reactive.Interfaces.XML",
+        "lib/portable-win81+wpa81/System.Reactive.Interfaces.dll",
+        "lib/portable-win81+wpa81/System.Reactive.Interfaces.XML",
+        "lib/portable-windows8+net45+wp8/System.Reactive.Interfaces.dll",
+        "lib/portable-windows8+net45+wp8/System.Reactive.Interfaces.XML",
+        "lib/sl5/System.Reactive.Interfaces.dll",
+        "lib/sl5/System.Reactive.Interfaces.XML",
+        "lib/windows8/System.Reactive.Interfaces.dll",
+        "lib/windows8/System.Reactive.Interfaces.XML",
+        "lib/windowsphone71/System.Reactive.Interfaces.dll",
+        "lib/windowsphone71/System.Reactive.Interfaces.XML",
+        "lib/windowsphone8/System.Reactive.Interfaces.dll",
+        "lib/windowsphone8/System.Reactive.Interfaces.XML"
+      ]
+    },
+    "Rx-Linq/2.2.5": {
+      "serviceable": false,
+      "sha": "UTeCIu3cWPExxmTzdiVq7SalqTBhUaomBTaAC9LpYPoAopjlFwA3hjVWXoLkGlDc/44wqJemJuEwFP00KphiFg==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {
+            "Rx-Interfaces": "2.2.5",
+            "Rx-Core": "2.2.5"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/System.Reactive.Linq.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/System.Reactive.Linq.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.6": {
+          "dependencies": {
+            "Rx-Interfaces": "2.2.5",
+            "Rx-Core": "2.2.5"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/System.Reactive.Linq.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/System.Reactive.Linq.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.5": {
+          "dependencies": {
+            "Rx-Interfaces": "2.2.5",
+            "Rx-Core": "2.2.5"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/System.Reactive.Linq.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/System.Reactive.Linq.dll"
+          ]
+        }
+      },
+      "files": [
+        "Rx-Linq.2.2.5.nupkg",
+        "Rx-Linq.2.2.5.nupkg.sha512",
+        "Rx-Linq.nuspec",
+        "lib/net40/System.Reactive.Linq.dll",
+        "lib/net40/System.Reactive.Linq.XML",
+        "lib/net45/System.Reactive.Linq.dll",
+        "lib/net45/System.Reactive.Linq.XML",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.Linq.dll",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.Linq.XML",
+        "lib/portable-net45+winrt45+wp8+wpa81/System.Reactive.Linq.dll",
+        "lib/portable-net45+winrt45+wp8+wpa81/System.Reactive.Linq.XML",
+        "lib/portable-win81+wpa81/System.Reactive.Linq.dll",
+        "lib/portable-win81+wpa81/System.Reactive.Linq.XML",
+        "lib/portable-windows8+net45+wp8/System.Reactive.Linq.dll",
+        "lib/portable-windows8+net45+wp8/System.Reactive.Linq.XML",
+        "lib/sl5/System.Reactive.Linq.dll",
+        "lib/sl5/System.Reactive.Linq.XML",
+        "lib/windows8/System.Reactive.Linq.dll",
+        "lib/windows8/System.Reactive.Linq.XML",
+        "lib/windowsphone71/System.Reactive.Linq.dll",
+        "lib/windowsphone71/System.Reactive.Linq.XML",
+        "lib/windowsphone8/System.Reactive.Linq.dll",
+        "lib/windowsphone8/System.Reactive.Linq.XML"
+      ]
+    },
+    "Rx-Main/2.2.5": {
+      "serviceable": false,
+      "sha": "qdQ6qENEiLsp/LRdzZlLlodihWN8VDjwNfWa8c2ELjEHZgTdKzt1V4i61gkHVtFKZXe8Px6KupbMP3pZ+1tusQ==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {
+            "Rx-Interfaces": "2.2.5",
+            "Rx-Core": "2.2.5",
+            "Rx-Linq": "2.2.5",
+            "Rx-PlatformServices": "2.2.5"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        },
+        ".NETFramework,Version=v4.6": {
+          "dependencies": {
+            "Rx-Interfaces": "2.2.5",
+            "Rx-Core": "2.2.5",
+            "Rx-Linq": "2.2.5",
+            "Rx-PlatformServices": "2.2.5"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        },
+        ".NETFramework,Version=v4.5": {
+          "dependencies": {
+            "Rx-Interfaces": "2.2.5",
+            "Rx-Core": "2.2.5",
+            "Rx-Linq": "2.2.5",
+            "Rx-PlatformServices": "2.2.5"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        }
+      },
+      "files": [
+        "Rx-Main.2.2.5.nupkg",
+        "Rx-Main.2.2.5.nupkg.sha512",
+        "Rx-Main.nuspec"
+      ]
+    },
+    "Rx-PlatformServices/2.2.5": {
+      "serviceable": false,
+      "sha": "pMnNEvJVjT+wuDib+W/bi5hhIYcre7dW5yxvKrJxnR4iKJ1VLA/dY2FTtjDriHGx7OeGn12lQewXlH2oHiWFPA==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {
+            "Rx-Interfaces": "2.2.5",
+            "Rx-Core": "2.2.5"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/System.Reactive.PlatformServices.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/System.Reactive.PlatformServices.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.6": {
+          "dependencies": {
+            "Rx-Interfaces": "2.2.5",
+            "Rx-Core": "2.2.5"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/System.Reactive.PlatformServices.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/System.Reactive.PlatformServices.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.5": {
+          "dependencies": {
+            "Rx-Interfaces": "2.2.5",
+            "Rx-Core": "2.2.5"
+          },
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/System.Reactive.PlatformServices.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/System.Reactive.PlatformServices.dll"
+          ]
+        }
+      },
+      "files": [
+        "Rx-PlatformServices.2.2.5.nupkg",
+        "Rx-PlatformServices.2.2.5.nupkg.sha512",
+        "Rx-PlatformServices.nuspec",
+        "lib/net40/System.Reactive.PlatformServices.dll",
+        "lib/net40/System.Reactive.PlatformServices.XML",
+        "lib/net45/System.Reactive.PlatformServices.dll",
+        "lib/net45/System.Reactive.PlatformServices.XML",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.PlatformServices.dll",
+        "lib/portable-net40+sl5+win8+wp8/System.Reactive.PlatformServices.XML",
+        "lib/portable-net45+winrt45+wp8+wpa81/System.Reactive.PlatformServices.dll",
+        "lib/portable-net45+winrt45+wp8+wpa81/System.Reactive.PlatformServices.XML",
+        "lib/portable-win81+wpa81/System.Reactive.PlatformServices.dll",
+        "lib/portable-win81+wpa81/System.Reactive.PlatformServices.XML",
+        "lib/portable-windows8+net45+wp8/System.Reactive.PlatformServices.dll",
+        "lib/portable-windows8+net45+wp8/System.Reactive.PlatformServices.XML",
+        "lib/sl5/System.Reactive.PlatformServices.dll",
+        "lib/sl5/System.Reactive.PlatformServices.XML",
+        "lib/windows8/System.Reactive.PlatformServices.dll",
+        "lib/windows8/System.Reactive.PlatformServices.XML",
+        "lib/windowsphone71/System.Reactive.PlatformServices.dll",
+        "lib/windowsphone71/System.Reactive.PlatformServices.XML",
+        "lib/windowsphone8/System.Reactive.PlatformServices.dll",
+        "lib/windowsphone8/System.Reactive.PlatformServices.XML"
+      ]
+    },
+    "WebSocketSharp/1.0.3-rc4": {
+      "serviceable": false,
+      "sha": "4WZilsS8j+GxUa3QDQIzOdcaE9+jRodHwYigc2pYR97r6JOVr+nty1uvHmSilCCHkk2UvEX6PgRyCntl895akA==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/websocket-sharp.dll"
+          ],
+          "compileAssemblies": [
+            "lib/websocket-sharp.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.6": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/websocket-sharp.dll"
+          ],
+          "compileAssemblies": [
+            "lib/websocket-sharp.dll"
+          ]
+        },
+        ".NETFramework,Version=v4.5": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/websocket-sharp.dll"
+          ],
+          "compileAssemblies": [
+            "lib/websocket-sharp.dll"
+          ]
+        }
+      },
+      "files": [
+        "WebSocketSharp.1.0.3-rc4.nupkg",
+        "WebSocketSharp.1.0.3-rc4.nupkg.sha512",
+        "WebSocketSharp.nuspec",
+        "lib/websocket-sharp.dll",
+        "lib/websocket-sharp.xml"
+      ]
+    }
+  }
+}

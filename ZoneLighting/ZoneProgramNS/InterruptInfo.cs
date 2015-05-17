@@ -1,5 +1,4 @@
 ﻿using System.Reactive.Subjects;
-using ZoneLighting.TriggerDependencyNS;
 
 namespace ZoneLighting.ZoneProgramNS
 {

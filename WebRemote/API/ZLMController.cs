@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNet.Mvc;
-using ZoneLighting;
-using ZoneLighting.Usables;
-using ZoneLighting.ZoneProgramNS;
+﻿using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 

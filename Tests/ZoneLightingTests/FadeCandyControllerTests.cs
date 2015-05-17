@@ -1,9 +1,8 @@
 ﻿using System.Configuration;
-using System.Net.WebSockets;
 using FakeItEasy;
 using NUnit.Framework;
+using WebSocketSharp;
 using ZoneLighting.Communication;
-using WebSocketState = WebSocketSharp.WebSocketState;
 
 namespace ZoneLightingTests
 {

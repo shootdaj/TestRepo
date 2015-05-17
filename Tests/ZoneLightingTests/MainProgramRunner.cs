@@ -1,5 +1,4 @@
 ﻿//using Console;
-using NUnit.Framework;
 
 namespace ZoneLightingTests
 {

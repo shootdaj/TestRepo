@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using System.Runtime.Serialization;
 
 namespace ZoneLighting.ZoneProgramNS
 {
@@ -18,7 +17,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public object this[string key] => _dictionary[key];
 
-		public Dictionary<string,object>.KeyCollection Keys => _dictionary.Keys;
+		public Dictionary<string, object>.KeyCollection Keys => _dictionary.Keys;
 
 		public void Add(string name, object value)
 		{

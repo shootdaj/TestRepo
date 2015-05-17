@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneProgramNS;
 
@@ -93,12 +91,28 @@ namespace ZoneLighting.ZoneNS
 			var incomingZonePrograms = zonePrograms as IList<ZoneProgram> ?? zonePrograms.ToList();
 
 			//stop programs if specified to do so
-			if (forceStop)
-				incomingZonePrograms.ToList().ForEach(zoneProgram => zoneProgram.Stop(true));
+		    if (forceStop)
+		        incomingZonePrograms.ToList().ForEach(zoneProgram =>
+		        {
+		            if (zoneProgram.State == ProgramState.Started)
+		            {
+		                zoneProgram.Stop(true);
+		            }
+		        });
+		    else
+		    {
+		        incomingZonePrograms.ToList().ForEach(zoneProgram =>
+		        {
+		            if (zoneProgram.State == ProgramState.Started)
+		            {
+		                zoneProgram.Stop();
+		            }
+		        });
+		    }
 
-			//incoming program must be stopped if forceStop is not true
-			if (incomingZonePrograms.Any(zp => zp.State != ProgramState.Stopped))
-				throw new Exception("Given program must be stopped before a live sync is executed.");
+		    ////incoming program must be stopped if forceStop is not true
+			//if (incomingZonePrograms.Any(zp => zp.State != ProgramState.Stopped))
+			//	throw new Exception("Given program must be stopped before a live sync is executed.");
 
 			if (incomingZonePrograms.All(zp => zp is ReactiveZoneProgram))
 			{
@@ -216,8 +230,11 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public void SignalAndWait(int? timeout = null)
 		{
-			if (Barrier.ParticipantCount <= 0) return;
-			Barrier.SignalAndWait(timeout ?? UniversalTimeout);
+		    lock (Barrier)
+		    {
+		        if (Barrier.ParticipantCount <= 0) return;
+		        Barrier.SignalAndWait(timeout ?? UniversalTimeout);
+		    }
 		}
 
 		public int GetNumberOfRemainingParticipants() => Barrier.ParticipantsRemaining;

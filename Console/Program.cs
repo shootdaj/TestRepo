@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Drawing;
-using System.Dynamic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using ZoneLighting;
 using ZoneLightingTests;

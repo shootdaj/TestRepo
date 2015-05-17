@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneProgramNS.Factories;
-using ZoneLightingTests.Resources.Programs;
 
 namespace ZoneLightingTests
 {
@@ -18,10 +14,12 @@ namespace ZoneLightingTests
 			ZoneScaffolder.Instance.Initialize(ConfigurationManager.AppSettings["TestProgramModuleDirectory"]);
 		}
 
-		public static void ValidateSteppersInSync(IEnumerable<IStepper> steppers, int numberOfChecks, int msToWaitBeforeStart = 10, int msToWaitBetweenChecks = 1)
+		public static void ValidateSteppersInSync(IEnumerable<IStepper> steppers, int numberOfChecks, int msToWaitBeforeStart = 10, int msToWaitBetweenChecks = 1, bool print = false)
 		{
 			int[,] stepperSteps;
-			var invalidStepIndex = SyncContextTests.ValidateStepperSyncPhase(steppers.ToArray(), out stepperSteps, numberOfChecks);
+		    var stepperArray = steppers as IStepper[] ?? steppers.ToArray();
+		    var invalidStepIndex = SyncContextTests.ValidateStepperSyncPhase(stepperArray.ToArray(), out stepperSteps, numberOfChecks);
+            if (print) SyncContextTests.PrintStepperSteps(stepperArray.ToArray(), stepperSteps);
 			Assert.True(invalidStepIndex.Length == 0 && stepperSteps.Length != 0);
 		}
 

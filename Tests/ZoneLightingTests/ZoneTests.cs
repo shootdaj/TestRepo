@@ -2,7 +2,6 @@
 using System.Drawing;
 using FakeItEasy;
 using FakeItEasy.ExtensionSyntax.Full;
-using Moq;
 using NUnit.Framework;
 using ZoneLighting.Communication;
 using ZoneLighting.StockPrograms;

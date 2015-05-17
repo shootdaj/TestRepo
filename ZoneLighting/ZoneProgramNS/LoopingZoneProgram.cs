@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneNS;
 
@@ -71,8 +70,12 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			LoopCTS.Dispose();
 			LoopCTS = new CancellationTokenSource();
-			LoopingTask?.Dispose();
-			LoopingTask = new Task(() =>
+            try
+            {
+                LoopingTask?.Dispose();
+        } catch(Exception ex)
+            { }
+    LoopingTask = new Task(() =>
 			{
 				try
 				{

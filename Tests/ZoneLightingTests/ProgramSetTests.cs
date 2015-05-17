@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using ZoneLighting;
 using ZoneLighting.Communication;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.Usables;

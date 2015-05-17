@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ZoneLighting.Usables;
 using ZoneLighting.Usables.TestInterfaces;
 using ZoneLighting.ZoneNS;
@@ -100,7 +98,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public Zone AddZone(Zone zone)
 		{
-			SyncContext?.Sync(zone.Listify(), true);
+			SyncContext?.Sync(zone.Listify());
 			return zone;
 		}
 	}

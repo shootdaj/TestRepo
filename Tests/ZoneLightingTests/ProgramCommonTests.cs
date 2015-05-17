@@ -1,12 +1,5 @@
-﻿using System.Configuration;
-using System.Drawing;
-using NUnit.Framework;
-using NUnit.Framework.Constraints;
-using ZoneLighting.Communication;
-using ZoneLighting.ZoneNS;
+﻿using NUnit.Framework;
 using ZoneLighting.ZoneProgramNS;
-using ZoneLighting.ZoneProgramNS.Factories;
-using ZoneLightingTests.Resources.Programs;
 
 namespace ZoneLightingTests
 {
