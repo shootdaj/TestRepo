@@ -1,4 +1,3 @@
-git init
-git remote add configrepo http://github.com/shootdaj/ZoneLightingTestConfig
-git fetch configrepo
-git checkout -b master --track configrepo/master
+git clone http://github.com/shootdaj/ZoneLightingTestConfig temp
+mv temp/.git code/.git
+rm -rf temp
