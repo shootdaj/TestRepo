@@ -1,2 +1,2 @@
-mkdir C:\Temp
-copy Tests\ZoneLightingTests\bin\Debug\NUnit.VisualStudio.TestAdapter.dll c:\Temp\NUnit.VisualStudio.TestAdapter.dll
+New-Item -ItemType Directory -Force -Path C:\Temp
+Copy-Item Tests\ZoneLightingTests\bin\Debug C:\Temp
