@@ -1,4 +1,4 @@
-git clone https://github.com/shootdaj/ZoneLightingTestConfig temp
-mv temp/Tests/ZoneLightingTests/app.config Tests/ZoneLightingTests/app.config
-mv temp/Console/app.config Console/app.config
+git clone %1 temp
+mv temp/%2 %2
+mv temp/%3 %3
 rm -rf temp
