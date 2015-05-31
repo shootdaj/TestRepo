@@ -14,6 +14,8 @@ namespace ZoneLighting.Usables
 			{
 				var notificationSyncContext = new SyncContext("NotificationContext");
 
+
+
 				//add zones
 				var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(ZLM.I.Zones, "LeftWing", PixelType.FadeCandyWS2812Pixel, 6,
 					1);
@@ -25,11 +27,11 @@ namespace ZoneLighting.Usables
 
 				ZLM.I.CreateProgramSet("RainbowSet", "Rainbow", true, null, ZLM.I.Zones);
 
-				//setup interrupting inputs
-				leftWing.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-				rightWing.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-				center.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-				baiClock.SetupInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+				//setup interrupting inputs - in the real code this method should not be used. The ZoneScaffolder.AddInterruptingProgram should be used.
+				leftWing.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+				rightWing.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+				center.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+				baiClock.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
 
 				//synchronize and start interrupting programs
 				notificationSyncContext.Sync(leftWing.InterruptingPrograms[0],

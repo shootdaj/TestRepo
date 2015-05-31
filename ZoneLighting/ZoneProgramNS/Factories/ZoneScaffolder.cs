@@ -14,6 +14,11 @@ using ZoneLighting.ZoneNS;
 
 namespace ZoneLighting.ZoneProgramNS.Factories
 {
+    /// <summary>
+    /// Responsible for managing heavy tasks related to zones, especially those that 
+    /// need interaction with external modules such as creating programs in zones. Part of 
+    /// that responsibility also inclues interacting with MEF to load the external programs.
+    /// </summary>
 	public class ZoneScaffolder
 	{
 		#region Singleton
@@ -104,24 +109,20 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		/// </summary>
 		public void InitializeZone(Zone zone, string programName, ISV isv = null, bool isSyncRequested = false, SyncContext syncContext = null, bool dontStart = false)
 		{
-			zone.Initialize(CreateZoneProgram(programName), isv, isSyncRequested, syncContext, dontStart);
+			zone.Run(CreateZoneProgram(programName), isv, isSyncRequested, syncContext, dontStart);
 		}
 
-		public void SetupInterruptingProgram(Zone zone, string programName, ISV isv = null, SyncContext syncContext = null)
+
+		public void AddInterruptingProgram(Zone zone, string programName, ISV isv = null, SyncContext syncContext = null)
 		{
 			var zoneProgram = CreateZoneProgram(programName);
 
 			if (zoneProgram is ReactiveZoneProgram)
-				zone.SetupInterruptingProgram((ReactiveZoneProgram)zoneProgram, isv, syncContext);
+				zone.AddInterruptingProgram((ReactiveZoneProgram)zoneProgram, isv, syncContext);
 			else
 				throw new Exception("Given program is not a reactive program.");
 		}
-
-		//public void StartInterruptingProgram(Zone zone, ReactiveZoneProgram program, InputStartingValues inputStartingValues = null, SyncContext syncContext = null, bool isSyncRequested = false)
-		//{
-		//	zone.SetupAndStartInterruptingProgram(program, inputStartingValues, syncContext, isSyncRequested);
-		//}
-
+        
 		/// <summary>
 		/// Gets the names of all available programs.
 		/// </summary>
@@ -143,6 +144,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 
 		#region Macro API
 
+        //TODO: Convert this method to CreateProgramSetsFromConfig or something like that. And another test called CreateZonesFromConfiguration.
 		/// <summary>
 		/// Initializes the given zones with information about the zone configuration saved in the zone configuration file.
 		/// Note that this method does not create any zones. It simply loads up the configuration and matches up the loaded configuration

@@ -8,8 +8,6 @@ using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Factories;
 
-//using Xunit;
-
 namespace ZoneLightingTests
 {
 	public class ZoneScaffolderTests

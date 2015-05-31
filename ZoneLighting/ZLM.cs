@@ -78,6 +78,23 @@ namespace ZoneLighting
 			return programSet;
 		}
 
+        /// <summary>
+        /// Adds a fade candy zone to the manager.
+        /// </summary>
+        /// <param name="name">Name of the zone</param>
+        /// <param name="pixelType">Type of pixel for the zone</param>
+        /// <param name="numberOfLights">Number of lights in the zone</param>
+        /// <param name="channel">FadeCandy channel on which this zone is connected</param>
+        /// <returns></returns>
+	    public Zone AddFadeCandyZone(string name, PixelType pixelType, int numberOfLights, int channel)
+	    {
+	        return ZoneScaffolder.Instance.AddFadeCandyZone(Zones, name, pixelType, numberOfLights, channel);
+	    }
+
+
+
+
+
         //TODO: Leaving this to finish at a later point in time. 
         //TODO: Possible move this and its test to a different branch, and it can be merged back later when 
         //TODO: it's ready to be worked on.

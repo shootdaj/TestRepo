@@ -108,7 +108,6 @@
     <Compile Include="TriggerDependencyNS\Interfaces.cs" />
     <Compile Include="TriggerDependencyNS\Trigger.cs" />
     <Compile Include="ZoneNS\SyncLevel.cs" />
-    <Compile Include="ZoneNS\ZoneConfiguration.cs" />
     <Compile Include="ZoneNS\ZoneExtensions.cs" />
     <Compile Include="ZoneNS\FadeCandyZone.cs" />
     <Compile Include="ZoneNS\ZoneAssemblyAttribute.cs" />

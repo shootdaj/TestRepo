@@ -46,13 +46,11 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// The program that is active on this zone.
 		/// </summary>
-		[DataMember]
 		public ZoneProgram ZoneProgram { get; private set; }
 
 		/// <summary>
 		/// Programs that can interrupt the main program for things such as notification.
 		/// </summary>
-		[DataMember]
 		public IList<ReactiveZoneProgram> InterruptingPrograms { get; private set; } = new List<ReactiveZoneProgram>();
 
 		/// <summary>
@@ -139,8 +137,7 @@ namespace ZoneLighting.ZoneNS
 			interruptInfo.InputSubject.OnNext(interruptInfo.Data);	 //start the routine that was requested
 
 			//DebugTools.AddEvent("InterruptQueue.Method", "END Interrupting Action");
-
-			//DebugTools.AddEvent("InterruptQueue.Method", "END Interrupt request processing");
+            //DebugTools.AddEvent("InterruptQueue.Method", "END Interrupt request processing");
 
 			//TODO: Add capability to have a timeout in case the interrupting program never calls the StopSubject
 		}
@@ -169,7 +166,7 @@ namespace ZoneLighting.ZoneNS
 
 		#endregion
 
-		public void Initialize(ZoneProgram zoneProgram, ISV isv = null, bool isSyncRequested = false, SyncContext syncContext = null, bool dontStart = false)
+        public void Run(ZoneProgram zoneProgram, ISV isv = null, bool isSyncRequested = false, SyncContext syncContext = null, bool dontStart = false)
 		{
 			if (!Initialized)
 			{
@@ -352,22 +349,17 @@ namespace ZoneLighting.ZoneNS
 		#endregion
 
 		#region Interrupting Program
-
-		private void SetInterruptingProgram(ReactiveZoneProgram interruptingProgram)
-		{
-			InterruptingPrograms.Add(interruptingProgram);
-			interruptingProgram.Zone = this;
-		}
-
+        
 		/// <summary>
 		/// Adds an interrupting program to the zone.
 		/// </summary>
-		public void SetupInterruptingProgram(ReactiveZoneProgram interruptingProgram, ISV isv = null, SyncContext syncContext = null)
+		public void AddInterruptingProgram(ReactiveZoneProgram interruptingProgram, ISV isv = null, SyncContext syncContext = null)
 		{
 			interruptingProgram.SetSyncContext(syncContext);
 			interruptingProgram.SetInterruptQueue(InterruptQueue);
-			SetInterruptingProgram(interruptingProgram);
-		}
+            InterruptingPrograms.Add(interruptingProgram);
+            interruptingProgram.Zone = this;
+        }
 
 		public void DisposeInterruptingProgram(string name, bool force = false)
 		{

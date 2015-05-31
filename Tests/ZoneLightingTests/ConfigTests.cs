@@ -19,13 +19,10 @@ namespace ZoneLightingTests
 		/// Sets up a zone configuration, saves it, and makes sure that it deserializes with the same
 		/// properties (only some properties are checked).
 		/// </summary>
-		//[Fact]
-		[Ignore]
 		[Test]
-		//TODO: FIX
 		public void SaveZone_SavesZoneInCorrectFormat()
 		{
-			//arrange
+            //arrange
 			byte fcChannel = 1;
 			var filename = @"ZoneConfiguration.config";
 			var zones = new BetterList<Zone>();
@@ -36,14 +33,14 @@ namespace ZoneLightingTests
 			startingValuesOldTz1.DelayTime = 1;
 			startingValuesOldTz1.Speed = 1;
 
-			zones[0].Initialize(new Rainbow(), startingValuesOldTz1);
+			zones[0].Run(new Rainbow(), startingValuesOldTz1);
 
 			((FadeCandyZone)zones.Add(new FadeCandyZone("TestZone2"))).AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 12, fcChannel);
 			dynamic startingValuesOldTz2 = new ISV();
 			startingValuesOldTz2.DelayTime = 1;
 			startingValuesOldTz2.DotColor = Color.BlueViolet;
 
-			zones[1].Initialize(new ScrollDot(), startingValuesOldTz2);
+			zones[1].Run(new ScrollDot(), startingValuesOldTz2);
 
 			//act
 			ZoneConfig.SaveZones(zones, filename);
@@ -61,9 +58,6 @@ namespace ZoneLightingTests
 			for (var i = 0; i < zones.Count; i++)
 			{
 				Assert.AreEqual(zones[i].Name, deserializedZones[i].Name);
-				Assert.AreEqual(zones[i].ZoneProgram.Name, deserializedZones[i].ZoneProgram.Name);
-				//Assert.Equal(zones[i].ZoneProgram.ProgramParameter, deserializedZones[i].ZoneProgram.ProgramParameter);
-				//TODO: Assert equality of starting input values
 			}
 
 			foreach (var zone in zones)
