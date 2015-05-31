@@ -20,6 +20,7 @@ namespace ZoneLightingTests
 		/// properties (only some properties are checked).
 		/// </summary>
 		[Test]
+        [Ignore]
 		public void SaveZone_SavesZoneInCorrectFormat()
 		{
             //arrange
