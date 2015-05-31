@@ -21,11 +21,10 @@ namespace ZoneLightingTests
 		/// </summary>
 		[Test]
         [Ignore]
-		public void SaveZone_SavesZoneInCorrectFormat()
+		public void SerializeZones_SerializesZonesInCorrectFormat()
 		{
             //arrange
 			byte fcChannel = 1;
-			var filename = @"ZoneConfiguration.config";
 			var zones = new BetterList<Zone>();
 			FadeCandyController.Instance.Initialize();
 			((FadeCandyZone) zones.Add(new FadeCandyZone("TestZone1"))).AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, fcChannel);
@@ -44,10 +43,10 @@ namespace ZoneLightingTests
 			zones[1].Run(new ScrollDot(), startingValuesOldTz2);
 
 			//act
-			ZoneConfig.SaveZones(zones, filename);
+			var serializedZones = ZoneConfig.SerializeZones(zones);
 
 			//assert
-			var deserializedZones = JsonConvert.DeserializeObject<IEnumerable<Zone>>(File.ReadAllText(filename), new JsonSerializerSettings
+			var deserializedZones = JsonConvert.DeserializeObject<IEnumerable<Zone>>(serializedZones, new JsonSerializerSettings
 			{
 				//PreserveReferencesHandling = PreserveReferencesHandling.All,
 				TypeNameHandling = TypeNameHandling.All,

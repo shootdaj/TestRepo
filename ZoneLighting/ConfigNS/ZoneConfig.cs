@@ -24,11 +24,16 @@ namespace ZoneLighting.ConfigNS
 
 		public static void SaveZones(IEnumerable<Zone> zones, string filename)
 		{
-			var json = JsonConvert.SerializeObject(zones, SaveZonesSerializerSettings);
+			var json = SerializeZones(zones);
 			File.WriteAllText(filename, json);
 		}
 
-		public static IEnumerable<Zone> LoadZones(string filename = "", string zoneConfiguration = "")
+	    public static string SerializeZones(IEnumerable<Zone> zones)
+	    {
+	        return JsonConvert.SerializeObject(zones, SaveZonesSerializerSettings);
+	    }
+
+	    public static IEnumerable<Zone> LoadZones(string filename = "", string zoneConfiguration = "")
 		{
 			var deserializedZones =
 				JsonConvert.DeserializeObject(
