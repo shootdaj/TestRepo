@@ -91,9 +91,8 @@ namespace ZoneLighting.Communication
 				RedirectStandardOutput = true,
 				CreateNoWindow = !createWindow
 			};
-			FadeCandyServerProcess = new Process();
-			FadeCandyServerProcess.StartInfo = cmdInfo;
-			//FadeCandyServerProcess.OutputDataReceived += (s, e1) =>
+		    FadeCandyServerProcess = new Process {StartInfo = cmdInfo};
+		    //FadeCandyServerProcess.OutputDataReceived += (s, e1) =>
 			//{
 			//	if (!string.IsNullOrEmpty(e1.Data))
 			//	{

@@ -20,7 +20,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		private ActionBlock<InterruptInfo> InterruptQueue { get; set; }
 
-		private ZoneProgram ZoneProgram { get; set; }
+		private ZoneProgram ZoneProgram { get; }
 
 		/// <summary>
 		/// Sets the interrupt queue to be post interrupts to when the input is set.

@@ -97,7 +97,7 @@ namespace ZoneLighting.ZoneNS
 		private void SetupInterruptProcessing()
 		{
 			//configure interrupt processing
-			InterruptQueue = new ActionBlock<InterruptInfo>((interruptInfo) =>
+			InterruptQueue = new ActionBlock<InterruptInfo>(interruptInfo =>
 			{
 				ProcessBeginInterrupt(interruptInfo);
 			}, new ExecutionDataflowBlockOptions()

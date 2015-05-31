@@ -52,7 +52,7 @@ namespace ZoneLighting.StockPrograms
 				SyncContext?.SignalAndWait(100);
 			}
 
-			///DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
+			//DebugTools.AddEvent("ScrollDot.Loop", "START Looping ScrollDot");
 		}
 
 		public static class ScrollDotSyncLevel

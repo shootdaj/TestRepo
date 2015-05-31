@@ -73,7 +73,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		protected ZoneProgram(SyncContext syncContext = null, ActionBlock<InterruptInfo> interruptQueue = null)
 		{
-			Type thisType = this.GetType();
+			var thisType = GetType();
 			//set the name of the program based on attribute, if any
 			if (thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false).Any())
 				Name =

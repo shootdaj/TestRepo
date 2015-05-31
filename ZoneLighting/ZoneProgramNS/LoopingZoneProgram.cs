@@ -96,7 +96,7 @@ namespace ZoneLighting.ZoneProgramNS
 									WaitForSync.WaitForFire();
 									DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Leaving Sync-State: " + Name);
 									IsSyncStateRequested = false;
-									DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "IsSyncStateRequested = false: " + this.Name);
+									DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "IsSyncStateRequested = false: " + Name);
 								}
 							}
 						}
@@ -104,10 +104,10 @@ namespace ZoneLighting.ZoneProgramNS
 						//this is currently not doing anything
 						LeftSyncTrigger.Fire(this, null);
 
-						DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Starting Loop: " + this.Name);
+						DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Starting Loop: " + Name);
 						//start loop
 						Loop();
-						DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Finished Loop: " + this.Name);
+						DebugTools.AddEvent("LoopingZoneProgram.LoopingTask", "Finished Loop: " + Name);
 
 						//if cancellation is requested, break out of loop after setting notification parameters for the consumer
 						if (LoopCTS.IsCancellationRequested)
@@ -184,7 +184,7 @@ namespace ZoneLighting.ZoneProgramNS
 			lock (SyncStateRequestLock)
 			{
 				IsSyncStateRequested = true;
-				DebugTools.AddEvent("LoopingZoneProgram.RequestSyncState", "IsSyncStateRequested = true: " + this.Name);
+				DebugTools.AddEvent("LoopingZoneProgram.RequestSyncState", "IsSyncStateRequested = true: " + Name);
 			}
 		}
 

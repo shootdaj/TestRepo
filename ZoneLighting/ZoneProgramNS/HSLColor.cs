@@ -113,9 +113,9 @@ namespace ZoneLighting.ZoneProgramNS
 		public void SetRGB(int red, int green, int blue)
 		{
 			HSLColor hslColor = (HSLColor)Color.FromArgb(red, green, blue);
-			this.hue = hslColor.hue;
-			this.saturation = hslColor.saturation;
-			this.luminosity = hslColor.luminosity;
+			hue = hslColor.hue;
+			saturation = hslColor.saturation;
+			luminosity = hslColor.luminosity;
 		}
 
 		public HSLColor() { }
@@ -129,9 +129,9 @@ namespace ZoneLighting.ZoneProgramNS
 		}
 		public HSLColor(double hue, double saturation, double luminosity)
 		{
-			this.Hue = hue;
-			this.Saturation = saturation;
-			this.Luminosity = luminosity;
+			Hue = hue;
+			Saturation = saturation;
+			Luminosity = luminosity;
 		}
 
 	}
