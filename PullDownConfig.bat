@@ -1,5 +1,3 @@
 git clone %1 temp
-cd temp
-move /y * ../
-cd ..
+xcopy temp\* . /s /i
 rm -rf temp
