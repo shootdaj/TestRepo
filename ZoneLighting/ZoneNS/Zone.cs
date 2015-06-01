@@ -17,6 +17,134 @@ namespace ZoneLighting.ZoneNS
 	[DataContract]
 	public class Zone : IDisposable, IBetterListType
 	{
+		#region API
+
+		public void SetLightingController(ILightingController lightingController)
+		{
+			LightingController = lightingController;
+		}
+
+		#region Transport Controls
+
+		/// <summary>
+		/// Sets this zone's program to the given program.
+		/// </summary>
+		/// <param name="program"></param>
+		private void SetProgram(ZoneProgram program)
+		{
+			ZoneProgram = program;
+			ZoneProgram.Zone = this;
+		}
+
+		/// <summary>
+		/// Unhooks the zone program from this zone.
+		/// </summary>
+		public void UnsetProgram()
+		{
+			//Zone.Program = null happens during the dispose of program
+			ZoneProgram = null;
+		}
+
+		//public void SetupSyncContext(SyncContext syncContext)
+		//{
+		//	SyncContext = syncContext;
+		//	ZoneProgram.SyncContext = syncContext;
+		//	syncContext?.MakeZoneParticipant(this);
+		//}
+
+		//public void UnsetupSyncContext()
+		//{
+		//	SyncContext?.RemoveZoneParticipant(this);
+		//	SyncContext = null;
+		//}
+
+		#endregion
+
+		#region Colors/Light Controls
+
+		/// <summary>
+		/// Sets all lights in zone to a given color.
+		/// </summary>
+		/// <param name="color"></param>
+		public void SetAllLightsColor(Color color)
+		{
+			Lights.ToList().ForEach(x => x.SetColor(color));
+		}
+
+		/// <summary>
+		/// Adds a new light to this zone.
+		/// </summary>
+		/// <param name="light"></param>
+		public void AddLight(ILogicalRGBLight light)
+		{
+			Lights.Add(light);
+		}
+
+		/// <summary>
+		/// Gets the number of lights in this zone.
+		/// </summary>
+		public int LightCount => Lights.Count;
+
+		/// <summary>
+		/// Gets the color of the light at the given index.
+		/// </summary>
+		public Color GetColor(int index)
+		{
+			return Lights[index].GetColor();
+		}
+
+		public void SetColor(Color color, int? index)
+		{
+			//TODO: This equation is not correct. Check the following links
+			//1. http://www.nbdtech.com/Blog/archive/2008/04/27/Calculating-the-Perceived-Brightness-of-a-Color.aspx
+			//2. http://stackoverflow.com/questions/596216/formula-to-determine-brightness-of-rgb-color
+			var brightnessAdjustedColor = color; //TODO: Change //Color.FromArgb((int) (255*Brightness), color.R, color.G, color.B);
+
+			if (index == null)
+				Lights.SetColor(brightnessAdjustedColor);
+			else
+			{
+				Lights[(int)index].SetColor(brightnessAdjustedColor);
+			}
+
+		}
+
+		public void SendLights(ILightingController lightingController)
+		{
+			Lights.Send(lightingController);
+		}
+
+		#endregion
+
+		#region Interrupting Program
+
+		/// <summary>
+		/// Adds an interrupting program to the zone.
+		/// </summary>
+		public void AddInterruptingProgram(ReactiveZoneProgram interruptingProgram, ISV isv = null, SyncContext syncContext = null)
+		{
+			interruptingProgram.SetSyncContext(syncContext);
+			interruptingProgram.SetInterruptQueue(InterruptQueue);
+			InterruptingPrograms.Add(interruptingProgram);
+			interruptingProgram.Zone = this;
+		}
+
+		public void DisposeInterruptingProgram(string name, bool force = false)
+		{
+			var interruptingProgram = InterruptingPrograms.First(program => program.Name == name);
+			interruptingProgram.Dispose();
+			InterruptingPrograms.Remove(interruptingProgram);
+		}
+
+		public void DisposeAllInterruptingPrograms()
+		{
+			InterruptingPrograms.ToList().ForEach(program => DisposeInterruptingProgram(program.Name));
+		}
+		
+		#endregion
+
+		#endregion
+
 		#region CORE
 
 		/// <summary>
@@ -28,6 +156,7 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// All lights in the zone.
 		/// </summary>
+		[DataMember]
 		private IList<ILogicalRGBLight> Lights { get; set; }
 		
 		/// <summary>
@@ -41,6 +170,7 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// The Lighting Controller used to control this Zone.
 		/// </summary>
+		[DataMember]
 		public ILightingController LightingController { get; private set; }
 
 		/// <summary>
@@ -61,6 +191,7 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// Brightness of this zone.
 		/// </summary>
+		[DataMember]
 		public double Brightness { get; set; }
 
 		#endregion
@@ -168,11 +299,11 @@ namespace ZoneLighting.ZoneNS
 
         public void Run(ZoneProgram zoneProgram, ISV isv = null, bool isSyncRequested = false, SyncContext syncContext = null, bool dontStart = false)
 		{
-			if (!Initialized)
+			if (!Running)
 			{
 				SetupInterruptProcessing();
 				SetupZoneProgram(zoneProgram, isv, isSyncRequested, syncContext, dontStart);
-				Initialized = true;
+				Running = true;
 			}
 		}
 
@@ -186,18 +317,18 @@ namespace ZoneLighting.ZoneNS
 				ZoneProgram.Start(isv, isSyncRequested);
 		}
 
-		public bool Initialized { get; private set; }
+		public bool Running { get; private set; }
 
 		public void Uninitialize(bool force = false)
 		{
-			if (Initialized)
+			if (Running)
 			{
 				ZoneProgram.Dispose(force);
 				UnsetProgram();
 				UnsetupInterruptProcessing();
 				DisposeAllInterruptingPrograms();
 				InterruptingPrograms.Clear();
-				Initialized = false;
+				Running = false;
 			}
 		}
 
@@ -228,170 +359,19 @@ namespace ZoneLighting.ZoneNS
 			Dispose(false);
 		}
 
-		#endregion
+        #endregion
 
-		#region MISC
+        #region MISC
 
-		public override string ToString()
+        public bool IsProgramLooping => ZoneProgram is LoopingZoneProgram;
+
+        public override string ToString()
 		{
 			return Name;
 		}
 
 		#endregion
 
-		#region API
-
-		#region ZoneProgram
-
-		public bool IsProgramLooping => ZoneProgram is LoopingZoneProgram;
 		
-		public SyncLevel SyncLevel
-		{
-			get { return ((LoopingZoneProgram) ZoneProgram).SyncLevel; }
-			set { ((LoopingZoneProgram) ZoneProgram).SyncLevel = value; }
-		}
-
-		#endregion
-
-		#region Transport Controls
-
-		/// <summary>
-		/// Sets this zone's program to the given program.
-		/// </summary>
-		/// <param name="program"></param>
-		private void SetProgram(ZoneProgram program)
-		{
-			ZoneProgram = program;
-			ZoneProgram.Zone = this;
-		}
-
-		/// <summary>
-		/// Unhooks the zone program from this zone.
-		/// </summary>
-		public void UnsetProgram()
-		{
-			//Zone.Program = null happens during the dispose of program
-			ZoneProgram = null;
-		}
-
-		//public void SetupSyncContext(SyncContext syncContext)
-		//{
-		//	SyncContext = syncContext;
-		//	ZoneProgram.SyncContext = syncContext;
-		//	syncContext?.MakeZoneParticipant(this);
-		//}
-
-		//public void UnsetupSyncContext()
-		//{
-		//	SyncContext?.RemoveZoneParticipant(this);
-		//	SyncContext = null;
-		//}
-
-		#endregion
-
-		#region Colors/Light Controls
-
-		/// <summary>
-		/// Sets all lights in zone to a given color.
-		/// </summary>
-		/// <param name="color"></param>
-		public void SetAllLightsColor(Color color)
-		{
-			Lights.ToList().ForEach(x => x.SetColor(color));
-		}
-
-		/// <summary>
-		/// Adds a new light to this zone.
-		/// </summary>
-		/// <param name="light"></param>
-		public void AddLight(ILogicalRGBLight light)
-		{
-			Lights.Add(light);
-		}
-
-		/// <summary>
-		/// Gets the number of lights in this zone.
-		/// </summary>
-		public int LightCount => Lights.Count;
-
-		/// <summary>
-		/// Gets the color of the light at the given index.
-		/// </summary>
-		public Color GetColor(int index)
-		{
-			return Lights[index].GetColor();
-		}
-
-		public void SetColor(Color color, int? index)
-		{
-			//TODO: This equation is not correct. Check the following links
-			//1. http://www.nbdtech.com/Blog/archive/2008/04/27/Calculating-the-Perceived-Brightness-of-a-Color.aspx
-			//2. http://stackoverflow.com/questions/596216/formula-to-determine-brightness-of-rgb-color
-			var brightnessAdjustedColor = color; //TODO: Change //Color.FromArgb((int) (255*Brightness), color.R, color.G, color.B);
-
-			if (index == null)
-				Lights.SetColor(brightnessAdjustedColor);
-			else
-			{
-				Lights[(int)index].SetColor(brightnessAdjustedColor);
-			}
-
-		}
-
-		public void SendLights(ILightingController lightingController, IList<ILogicalRGBLight> lights = null)
-		{
-			if (lights == null)
-				Lights.Send(lightingController);
-			else
-				lights.Send(lightingController);
-		}
-
-		#endregion
-
-		#region Interrupting Program
-        
-		/// <summary>
-		/// Adds an interrupting program to the zone.
-		/// </summary>
-		public void AddInterruptingProgram(ReactiveZoneProgram interruptingProgram, ISV isv = null, SyncContext syncContext = null)
-		{
-			interruptingProgram.SetSyncContext(syncContext);
-			interruptingProgram.SetInterruptQueue(InterruptQueue);
-            InterruptingPrograms.Add(interruptingProgram);
-            interruptingProgram.Zone = this;
-        }
-
-		public void DisposeInterruptingProgram(string name, bool force = false)
-		{
-			var interruptingProgram = InterruptingPrograms.First(program => program.Name == name);
-			interruptingProgram.Dispose();
-			InterruptingPrograms.Remove(interruptingProgram);
-		}
-
-		public void DisposeAllInterruptingPrograms()
-		{
-			InterruptingPrograms.ToList().ForEach(program => DisposeInterruptingProgram(program.Name));
-		}
-
-		//public void SetupInterruptingProgramSyncContext(SyncContext syncContext, ReactiveZoneProgram zoneProgram)
-		//{
-		//	InterruptingProgramSyncContext = syncContext;
-		//	//zoneProgram.SyncContext.
-		//	zoneProgram.SyncContext = syncContext;
-		//	InterruptingProgramSyncContext?.MakeZoneParticipant(this);
-		//}
-		
-		//private void UnsetupInterruptingProgramSyncContext(ZoneProgram zoneProgram)
-		//{
-		//	InterruptingProgramSyncContext?.RemoveZoneParticipant(this);
-			
-		//	InterruptingProgramSyncContext = null;
-		//}
-
-
-
-		#endregion
-
-		#endregion
 	}
 }

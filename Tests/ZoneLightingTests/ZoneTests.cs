@@ -32,7 +32,7 @@ namespace ZoneLightingTests
 			var program = new Rainbow();
 			zone.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 			Assert.DoesNotThrow(() => zone.Run(program));
-			Assert.True(zone.Initialized);
+			Assert.True(zone.Running);
 			Assert.True(program.State == ProgramState.Started);
 		}
 
@@ -44,7 +44,7 @@ namespace ZoneLightingTests
 			var syncContext = new SyncContext();
 			zone.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 			Assert.DoesNotThrow(() => zone.Run(program, null, true, syncContext));
-			Assert.True(zone.Initialized);
+			Assert.True(zone.Running);
 			Assert.True(program.State == ProgramState.Started);
 		}
 
@@ -58,7 +58,7 @@ namespace ZoneLightingTests
 			zone.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 			zone.Run(program);
 			Assert.DoesNotThrow(() => zone.Uninitialize(true));
-			Assert.False(zone.Initialized);
+			Assert.False(zone.Running);
 			Assert.True(program.State == ProgramState.Stopped);
 		}
 	}

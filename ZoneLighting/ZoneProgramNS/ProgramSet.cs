@@ -43,7 +43,7 @@ namespace ZoneLighting.ZoneProgramNS
 				Zones.ForEach(zone =>
 				{
 					zone.Uninitialize(true);
-					ZoneScaffolder.Instance.InitializeZone(zone, programName, isv, true, SyncContext, true);
+					ZoneScaffolder.Instance.RunZone(zone, programName, isv, true, SyncContext, true);
 				});
 
 				SyncContext = new SyncContext();
@@ -54,7 +54,7 @@ namespace ZoneLighting.ZoneProgramNS
 				Zones.ForEach(zone =>
 				{
 					zone.Uninitialize(true);
-					ZoneScaffolder.Instance.InitializeZone(zone, programName, isv);
+					ZoneScaffolder.Instance.RunZone(zone, programName, isv);
 				});
 			}
 		}

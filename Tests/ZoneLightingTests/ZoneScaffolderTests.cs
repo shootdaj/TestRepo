@@ -68,7 +68,7 @@ namespace ZoneLightingTests
 			scrollDotDictionary.DelayTime = 30;
 			scrollDotDictionary.DotColor = (Color?) Color.Red;
 
-			zoneScaffolder.InitializeZone(leftWing, "ScrollDot", scrollDotDictionary);
+			zoneScaffolder.RunZone(leftWing, "ScrollDot", scrollDotDictionary);
 
 			ZoneConfig.SaveZones(new List<Zone>() {leftWing}, filename);
 		}

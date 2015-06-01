@@ -81,7 +81,7 @@ namespace ZoneLightingTests
 			});
 
 			//check that steppers are running
-			Assert.False(rightWing.Initialized);
+			Assert.False(rightWing.Running);
 			TestHelpers.ValidateSteppersRunning(new BetterList<Zone> {leftWing, center}.Select(z => z.ZoneProgram).Cast<IStepper>(), 100);
 		}
 

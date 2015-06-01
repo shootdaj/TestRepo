@@ -7,7 +7,6 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using ZoneLighting.Communication;
 using ZoneLighting.Usables;
@@ -78,29 +77,29 @@ namespace ZoneLighting
 			return programSet;
 		}
 
-        /// <summary>
-        /// Adds a fade candy zone to the manager.
-        /// </summary>
-        /// <param name="name">Name of the zone</param>
-        /// <param name="pixelType">Type of pixel for the zone</param>
-        /// <param name="numberOfLights">Number of lights in the zone</param>
-        /// <param name="channel">FadeCandy channel on which this zone is connected</param>
-        /// <returns></returns>
-	    public Zone AddFadeCandyZone(string name, PixelType pixelType, int numberOfLights, int channel)
-	    {
-	        return ZoneScaffolder.Instance.AddFadeCandyZone(Zones, name, pixelType, numberOfLights, channel);
-	    }
+		/// <summary>
+		/// Adds a fade candy zone to the manager.
+		/// </summary>
+		/// <param name="name">Name of the zone</param>
+		/// <param name="pixelType">Type of pixel for the zone</param>
+		/// <param name="numberOfLights">Number of lights in the zone</param>
+		/// <param name="channel">FadeCandy channel on which this zone is connected</param>
+		/// <returns></returns>
+		public Zone AddFadeCandyZone(string name, PixelType pixelType, int numberOfLights, int channel)
+		{
+			return ZoneScaffolder.Instance.AddFadeCandyZone(Zones, name, pixelType, numberOfLights, channel);
+		}
 
 
 
 
 
-        //TODO: Leaving this to finish at a later point in time. 
-        //TODO: Possible move this and its test to a different branch, and it can be merged back later when 
-        //TODO: it's ready to be worked on.
-  //      /// <summary>
-  //      /// Moves a zone from its current program set to another given program set.
-  //      /// </summary>
+		//TODO: Leaving this to finish at a later point in time. 
+		//TODO: Possible move this and its test to a different branch, and it can be merged back later when 
+		//TODO: it's ready to be worked on.
+		//      /// <summary>
+		//      /// Moves a zone from its current program set to another given program set.
+		//      /// </summary>
 		//public void MoveZone(Zone zone, ProgramSet targetProgramSet)
 		//{
 		//	if (targetProgramSet.ContainsZone(zone))
@@ -170,19 +169,23 @@ namespace ZoneLighting
 		public bool Initialized { get; private set; }
 
 		[Alias()]
-		public void Initialize(bool loadExternalZones = false, Action testAction = null)
+		public void Initialize(bool loadZoneModules = false, bool loadZonesFromConfig = false, Action initAction = null)
 		{
 			if (!Initialized)
 			{
 				InitLightingControllers();
-				if (loadExternalZones && ExternalZoneContainer != null)
-                    ComposeWithExternalModules();
 				InitZoneScaffolder();
-				InitializeAllZones(testAction);
+				if (loadZoneModules && ExternalZoneContainer != null)
+					ComposeWithExternalModules();
+				if (loadZonesFromConfig)
+					LoadZonesFromConfig();
+
+				initAction?.Invoke();
+				//InitializeAllZones();
 				Initialized = true;
 			}
 		}
-		
+
 		/// <summary>
 		/// Add code here to initialize any other lighting controllers.
 		/// </summary>
@@ -216,7 +219,7 @@ namespace ZoneLighting
 		}
 
 		#region MEF
-		
+
 		/// <summary>
 		/// Composes this class with external zones and programs. 
 		/// This method populates the Zones and their respective ZoneProgram properties.
@@ -237,7 +240,7 @@ namespace ZoneLighting
 				}
 			}
 
-			var aggregateCatalog = new AggregateCatalog(fileCatalogs);	
+			var aggregateCatalog = new AggregateCatalog(fileCatalogs);
 			ExternalZoneContainer = new CompositionContainer(aggregateCatalog);
 			ExternalZoneContainer.ComposeParts(this);
 		}
@@ -253,11 +256,26 @@ namespace ZoneLighting
 
 		#endregion
 
+
+		private void LoadZonesFromConfig()
+		{
+			var configFilePath = ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"];
+
+			if (string.IsNullOrEmpty(configFilePath))
+				throw new Exception("Zone configuration save file not found.");
+
+			ZoneScaffolder.Instance.CreateZonesFromConfiguration(File.ReadAllText(configFilePath));
+
+			ZoneScaffolder.Instance.InitializeFromZoneConfiguration(Zones, configFilePath);
+		}
+
 		/// <summary>
 		/// Loads programs in all zones and starts them. This should be converted to be read from a config file instead of hard-coded here.
 		/// </summary>
 		private void InitializeAllZones(Action testAction)
 		{
+
+
 			//var configFilePath = ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"];
 
 			//if (!string.IsNullOrEmpty(configFilePath))
@@ -293,11 +311,11 @@ namespace ZoneLighting
 		}
 
 		public void Uninitialize()
-		{     
+		{
 			if (Initialized)
 			{
 				UninitializeAllZones();
-				
+
 				UninitLightingControllers();
 				Initialized = false;
 			}

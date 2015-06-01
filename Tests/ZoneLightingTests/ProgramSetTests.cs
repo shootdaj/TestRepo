@@ -31,8 +31,8 @@ namespace ZoneLightingTests
 
 			//assert
 			TestHelpers.ValidateSteppersInSync(((ITestProgramSet)programSet).ZoneProgramsTest.Cast<IStepper>(), 100);
-			Assert.That(leftWing.Initialized, Is.True);
-			Assert.That(rightWing.Initialized, Is.True);
+			Assert.That(leftWing.Running, Is.True);
+			Assert.That(rightWing.Running, Is.True);
 			Assert.That(leftWing.ZoneProgram.State == ProgramState.Started, Is.True);
 			Assert.That(rightWing.ZoneProgram.State == ProgramState.Started, Is.True);
 
@@ -58,8 +58,8 @@ namespace ZoneLightingTests
 
 			//assert
 			TestHelpers.ValidateSteppersRunning(((ITestProgramSet)programSet).ZoneProgramsTest.Cast<IStepper>(), 100);
-			Assert.That(leftWing.Initialized, Is.True);
-			Assert.That(rightWing.Initialized, Is.True);
+			Assert.That(leftWing.Running, Is.True);
+			Assert.That(rightWing.Running, Is.True);
 			Assert.That(leftWing.ZoneProgram.State == ProgramState.Started, Is.True);
 			Assert.That(rightWing.ZoneProgram.State == ProgramState.Started, Is.True);
 
@@ -125,10 +125,10 @@ namespace ZoneLightingTests
 			//assert
 			TestHelpers.ValidateSteppersInSync(((ITestProgramSet)stepperSet1).ZoneProgramsTest.Cast<IStepper>(), 100);
 			TestHelpers.ValidateSteppersInSync(((ITestProgramSet)stepperSet2).ZoneProgramsTest.Cast<IStepper>(), 100);
-			Assert.That(leftWing.Initialized, Is.True);
-			Assert.That(rightWing.Initialized, Is.True);
-			Assert.That(center.Initialized, Is.True);
-			Assert.That(baiClock.Initialized, Is.True);
+			Assert.That(leftWing.Running, Is.True);
+			Assert.That(rightWing.Running, Is.True);
+			Assert.That(center.Running, Is.True);
+			Assert.That(baiClock.Running, Is.True);
 			Assert.That(leftWing.ZoneProgram.State == ProgramState.Started, Is.True);
 			Assert.That(rightWing.ZoneProgram.State == ProgramState.Started, Is.True);
 			Assert.That(center.ZoneProgram.State == ProgramState.Started, Is.True);

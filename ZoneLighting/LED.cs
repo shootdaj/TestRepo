@@ -1,17 +1,20 @@
 ﻿using System.Drawing;
+using System.Runtime.Serialization;
 using ZoneLighting.Communication;
 
 namespace ZoneLighting
 {
-	/// <summary>
-	/// Represents an LED. This class must implement the ILightingControllerPixel for each type of lighting controller
-	/// that it needs to be output on.
-	/// </summary>
-	public class LED : ILogicalRGBLight, IFadeCandyPixelContainer
+    /// <summary>
+    /// Represents an LED. This class must implement the ILightingControllerPixel for each type of lighting controller
+    /// that it needs to be output on.
+    /// </summary>
+    [DataContract]
+    public class LED : ILogicalRGBLight, IFadeCandyPixelContainer
 	{
 		#region CORE
 
-		public Color Color { get; set; }
+        public Color Color { get; set; }
+        [DataMember]
 		public FadeCandyPixel FadeCandyPixel { get; set; }
 
 		#region Color Parts
@@ -62,6 +65,7 @@ namespace ZoneLighting
 
 		#region ILogicalRGBLight
 
+        [DataMember]
 		public int LogicalIndex { get; set; }
 
 		#endregion

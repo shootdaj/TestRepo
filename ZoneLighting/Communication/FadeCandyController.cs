@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using WebSocketSharp;
 using ZoneLighting.Usables;
 
@@ -144,9 +145,6 @@ namespace ZoneLighting.Communication
 		private void StopFCServer()
 		{
 			if (!FCServerRunning) return;
-			//FadeCandyServerProcess.CancelOutputRead();
-			//FadeCandyServerProcess.Close();
-			//FadeCandyServerProcess.CloseMainWindow();
 			if (FadeCandyServerProcess.HasExited) return;
 			FadeCandyServerProcess.Kill();
 			FadeCandyServerProcess.Dispose();
@@ -170,7 +168,7 @@ namespace ZoneLighting.Communication
 		public override void SendPixelFrame(IPixelFrame opcPixelFrame)
 		{
 			var byteArray = ((OPCPixelFrame)opcPixelFrame).ToByteArray();
-			string byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
+			var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
 			byteArray.ToList().ForEach(x => byteArrayString += x + ",");
 			byteArrayString += "}";
 			Debug.Print(byteArrayString);

@@ -13,9 +13,7 @@ namespace ZoneLighting.Usables
 			return () =>
 			{
 				var notificationSyncContext = new SyncContext("NotificationContext");
-
-
-
+                
 				//add zones
 				var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(ZLM.I.Zones, "LeftWing", PixelType.FadeCandyWS2812Pixel, 6,
 					1);

@@ -1,8 +1,11 @@
+using System.Runtime.Serialization;
+
 namespace ZoneLighting.Communication
 {
 	/// <summary>
 	/// Represents a pixel that can be controlled by FadeCandy.
 	/// </summary>
+	[DataContract]
 	public abstract class FadeCandyPixel : PhysicalRGBLight
 	{
 		protected FadeCandyPixel()
@@ -16,10 +19,14 @@ namespace ZoneLighting.Communication
 			PhysicalIndex = physicalIndex;
 		}
 
+        [DataMember]
 		public byte Channel { get; set; }
-		public abstract int RedIndex { get; }
-		public abstract int GreenIndex { get; }
-		public abstract int BlueIndex { get; }
+        [DataMember]
+        public abstract int RedIndex { get; }
+        [DataMember]
+        public abstract int GreenIndex { get; }
+        [DataMember]
+        public abstract int BlueIndex { get; }
 	}
 
 	public class FadeCandyWS2812Pixel : FadeCandyPixel

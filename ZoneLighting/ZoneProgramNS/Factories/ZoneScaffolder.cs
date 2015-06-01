@@ -105,9 +105,9 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		}
 
 		/// <summary>
-		/// Initializes a zone with the given program name and starting values of the inputs as a name-value dictionary.
+		/// Runs a zone with the given program name and starting values of the inputs as a name-value dictionary.
 		/// </summary>
-		public void InitializeZone(Zone zone, string programName, ISV isv = null, bool isSyncRequested = false, SyncContext syncContext = null, bool dontStart = false)
+		public void RunZone(Zone zone, string programName, ISV isv = null, bool isSyncRequested = false, SyncContext syncContext = null, bool dontStart = false)
 		{
 			zone.Run(CreateZoneProgram(programName), isv, isSyncRequested, syncContext, dontStart);
 		}
@@ -144,6 +144,16 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 
 		#region Macro API
 
+        public void CreateProgramSetsFromConfig()
+        {
+            
+        }
+
+        public void CreateZonesFromConfiguration(string config)
+        {
+            
+        }
+
         //TODO: Convert this method to CreateProgramSetsFromConfig or something like that. And another test called CreateZonesFromConfiguration.
 		/// <summary>
 		/// Initializes the given zones with information about the zone configuration saved in the zone configuration file.
@@ -167,7 +177,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 				//used to initialize zonesToLoadInto. Note that this temporary list of zones is scoped to this method
 				//It is used only to get the important values like the program and input starting values and initialize
 				//zonesToLoadInto from those values.
-				var zonesToLoadFrom = ZoneConfig.LoadZones(configFile);
+				var zonesToLoadFrom = ZoneConfig.DeserializeZones(File.ReadAllText(configFile));
 				
 				zonesToLoadFrom.ToList().ForEach(zoneToLoadFrom =>
 				{
@@ -178,7 +188,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 						ISV startingValues = zoneToLoadFrom.ZoneProgram.GetInputValues();
 
 						//start the main program
-						InitializeZone(zoneToLoadInto, zoneProgramName, startingValues);
+						RunZone(zoneToLoadInto, zoneProgramName, startingValues);
 
 						//TODO: start the interrupting programs
 						//old shit
