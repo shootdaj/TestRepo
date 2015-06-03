@@ -16,7 +16,7 @@ namespace ZoneLightingTests
 		[SetUp]
 		public static void Setup()
 		{
-			ZLM.I.Initialize();
+			ZLM.I.Initialize(loadZonesFromConfig:false, loadProgramSetsFromConfig:false);
 		}
 
 		[TearDown]

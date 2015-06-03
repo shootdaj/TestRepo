@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using ZoneLighting.Usables;
 using ZoneLighting.Usables.TestInterfaces;
 using ZoneLighting.ZoneNS;
@@ -12,17 +13,27 @@ namespace ZoneLighting.ZoneProgramNS
 	/// A logical grouping of programs that will be run on the zones passed into the constructor. All programs can either
 	/// be started with or without sync. 
 	/// </summary>
+	[DataContract]
 	public class ProgramSet : IDisposable, IBetterListType, ITestProgramSet
 	{
+        [DataMember]
 		public string Name { get; private set; }
+
 		public SyncContext SyncContext { get; }
+
+        [DataMember]
 		public List<Zone> Zones { get; private set; }
+
+        [DataMember]
 		public string ProgramName { get; private set; }
 
 		private List<ZoneProgram> ZonePrograms
 		{
 			get { return Zones.Select(zone => zone.ZoneProgram).ToList(); }
 		}
+
+        [DataMember]
+	    public bool Sync { get; private set; }
 
 		/// <summary>
 		/// For testing only
@@ -37,8 +48,9 @@ namespace ZoneLighting.ZoneProgramNS
 			Name = setName;
 			Zones = zones.ToList();
 			ProgramName = programName;
+		    Sync = sync;
 
-			if (sync)
+			if (Sync)
 			{
 				Zones.ForEach(zone =>
 				{

@@ -149,63 +149,62 @@ namespace ZoneLighting.ZoneProgramNS.Factories
             
         }
 
-        public void CreateZonesFromConfiguration(string config)
+        
+
+        public void CreateProgramSetsFromConfig(string config)
         {
             
         }
 
-        //TODO: Convert this method to CreateProgramSetsFromConfig or something like that. And another test called CreateZonesFromConfiguration.
-		/// <summary>
-		/// Initializes the given zones with information about the zone configuration saved in the zone configuration file.
-		/// Note that this method does not create any zones. It simply loads up the configuration and matches up the loaded configuration
-		/// with zones that already exist in zonesToLoadInto using the name. If there exist zones with the same name,
-		/// it will "map" the loaded zones to its respective complement in zonesToLoadInto.
-		/// </summary>
-		/// <param name="zonesToLoadInto">Zones to initialize new zones into</param>
-		/// <param name="configFile">If provided, use this configuration file to load zones from</param>
-		public bool InitializeFromZoneConfiguration(IList<Zone> zonesToLoadInto, string configFile = "")
-		{
-			if (string.IsNullOrEmpty(configFile))
-				configFile = ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"];
+  //      //TODO: Convert this method to CreateProgramSetsFromConfig or something like that. And another test called CreateZonesFromConfiguration.
+		///// <summary>
+		///// Initializes the given zones with information about the zone configuration saved in the zone configuration file.
+		///// Note that this method does not create any zones. It simply loads up the configuration and matches up the loaded configuration
+		///// with zones that already exist in zonesToLoadInto using the name. If there exist zones with the same name,
+		///// it will "map" the loaded zones to its respective complement in zonesToLoadInto.
+		///// </summary>
+		///// <param name="zonesToLoadInto">Zones to initialize new zones into</param>
+		///// <param name="configFile">If provided, use this configuration file to load zones from</param>
+		//public bool InitializeFromZoneConfiguration(IList<Zone> zonesToLoadInto, string configFile)
+		//{
+		//	if (string.IsNullOrEmpty(configFile) || !File.Exists(configFile))
+		//		return false;
 
-			if (string.IsNullOrEmpty(configFile) || !File.Exists(configFile))
-				return false;
-
-			try
-			{
-				//strategy is to load a temporary list of zones from the configuration which will then be 
-				//used to initialize zonesToLoadInto. Note that this temporary list of zones is scoped to this method
-				//It is used only to get the important values like the program and input starting values and initialize
-				//zonesToLoadInto from those values.
-				var zonesToLoadFrom = ZoneConfig.DeserializeZones(File.ReadAllText(configFile));
+		//	try
+		//	{
+		//		//strategy is to load a temporary list of zones from the configuration which will then be 
+		//		//used to initialize zonesToLoadInto. Note that this temporary list of zones is scoped to this method
+		//		//It is used only to get the important values like the program and input starting values and initialize
+		//		//zonesToLoadInto from those values.
+		//		var zonesToLoadFrom = ZoneConfig.DeserializeZones(File.ReadAllText(configFile));
 				
-				zonesToLoadFrom.ToList().ForEach(zoneToLoadFrom =>
-				{
-					if (zonesToLoadInto.Select(zone => zone.Name).Contains(zoneToLoadFrom.Name) && zoneToLoadFrom.ZoneProgram != null)
-					{
-						var zoneToLoadInto = zonesToLoadInto.First(z => zoneToLoadFrom.Name == z.Name);
-						var zoneProgramName = zoneToLoadFrom.ZoneProgram.Name;
-						ISV startingValues = zoneToLoadFrom.ZoneProgram.GetInputValues();
+		//		zonesToLoadFrom.ToList().ForEach(zoneToLoadFrom =>
+		//		{
+		//			if (zonesToLoadInto.Select(zone => zone.Name).Contains(zoneToLoadFrom.Name) && zoneToLoadFrom.ZoneProgram != null)
+		//			{
+		//				var zoneToLoadInto = zonesToLoadInto.First(z => zoneToLoadFrom.Name == z.Name);
+		//				var zoneProgramName = zoneToLoadFrom.ZoneProgram.Name;
+		//				ISV startingValues = zoneToLoadFrom.ZoneProgram.GetInputValues();
 
-						//start the main program
-						RunZone(zoneToLoadInto, zoneProgramName, startingValues);
+		//				//start the main program
+		//				RunZone(zoneToLoadInto, zoneProgramName, startingValues);
 
-						//TODO: start the interrupting programs
-						//old shit
-						//zoneToLoadFrom.InterruptingPrograms.ToList().ForEach(program =>
-						//{
-						//	zoneToLoadInto.AddInterruptingProgram(program, true, program.GetInputValues());
-						//});
-					}
-				});
-			}
-			catch (Exception ex)
-			{
-				return false;
-			}
+		//				//TODO: start the interrupting programs
+		//				//old shit
+		//				//zoneToLoadFrom.InterruptingPrograms.ToList().ForEach(program =>
+		//				//{
+		//				//	zoneToLoadInto.AddInterruptingProgram(program, true, program.GetInputValues());
+		//				//});
+		//			}
+		//		});
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return false;
+		//	}
 
-			return true;
-		}
+		//	return true;
+		//}
 
 		#endregion
 	}

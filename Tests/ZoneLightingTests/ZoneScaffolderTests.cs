@@ -12,42 +12,42 @@ namespace ZoneLightingTests
 {
 	public class ZoneScaffolderTests
 	{
-		[Ignore("Needs fixing")]
-		[Test]
-		//TODO: Fix
-		public void InitializeFromZoneConfiguration_Works()
-		{
-			//arrange
-			var zones = new List<Zone>();
-			var zone = new FadeCandyZone("TestZone");
+		//[Ignore("Needs fixing")]
+		//[Test]
+		////TODO: Fix
+		//public void InitializeFromZoneConfiguration_Works()
+		//{
+		//	//arrange
+		//	var zones = new List<Zone>();
+		//	var zone = new FadeCandyZone("TestZone");
 
-			zones.Add(zone);
-			zone.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
+		//	zones.Add(zone);
+		//	zone.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 
-			var zoneScaffolder = new ZoneScaffolder();
-			zoneScaffolder.Initialize(ConfigurationManager.AppSettings["TestProgramModuleDirectory"]);
+		//	var zoneScaffolder = new ZoneScaffolder();
+		//	zoneScaffolder.Initialize(ConfigurationManager.AppSettings["TestProgramModuleDirectory"]);
 
-			//act
-			zoneScaffolder.InitializeFromZoneConfiguration(zones, ConfigurationManager.AppSettings["InitializeFromZoneConfiguration_Works_TestFile"]);
+		//	//act
+		//	zoneScaffolder.InitializeFromZoneConfiguration(zones, ConfigurationManager.AppSettings["InitializeFromZoneConfiguration_Works_TestFile"]);
 
-			//assert
-			Assert.AreEqual(zone.Name, "TestZone");
-			Assert.AreEqual(zone.ZoneProgram.Name, "ScrollDot");
+		//	//assert
+		//	Assert.AreEqual(zone.Name, "TestZone");
+		//	Assert.AreEqual(zone.ZoneProgram.Name, "ScrollDot");
 
-			var inputNames = zone.ZoneProgram.GetInputNames();
+		//	var inputNames = zone.ZoneProgram.GetInputNames();
 
-			foreach (var inputName in inputNames)
-			{
-				if (inputName == "DelayTime")
-				{
-					Assert.AreEqual(zone.ZoneProgram.GetInputValue(inputName), 30);
-				}
-				else if (inputName == "DotColor")
-				{
-					Assert.AreEqual(zone.ZoneProgram.GetInputValue(inputName), Color.Red);
-				}
-			}
-		}
+		//	foreach (var inputName in inputNames)
+		//	{
+		//		if (inputName == "DelayTime")
+		//		{
+		//			Assert.AreEqual(zone.ZoneProgram.GetInputValue(inputName), 30);
+		//		}
+		//		else if (inputName == "DotColor")
+		//		{
+		//			Assert.AreEqual(zone.ZoneProgram.GetInputValue(inputName), Color.Red);
+		//		}
+		//	}
+		//}
 
 		/// <summary>
 		/// This is just there to generate the test file for this test in case the code changes something
@@ -70,7 +70,7 @@ namespace ZoneLightingTests
 
 			zoneScaffolder.RunZone(leftWing, "ScrollDot", scrollDotDictionary);
 
-			ZoneConfig.SaveZones(new List<Zone>() {leftWing}, filename);
+			Config.SaveZones(new List<Zone>() {leftWing}, filename);
 		}
 	}
 }
