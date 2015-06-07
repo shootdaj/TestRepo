@@ -77,22 +77,18 @@ namespace ZoneLighting.ConfigNS
             });
             return reinstantiatedProgramSets;
         }
-
-
-        public static void SaveZones(IEnumerable<Zone> zones, string filename)
+		public static void SaveZones(IEnumerable<Zone> zones, string filename)
 		{
 			var json = SerializeZones(zones);
 			File.WriteAllText(filename, json);
 		}
-        
-        public static void SaveProgramSets(IEnumerable<ProgramSet> programSets, string filename)
-        {
-            var json = SerializeProgramSets(programSets);
-            File.WriteAllText(filename, json);
-        }
 
-
-        private static void AssignLightingController(Zone zone)
+		public static void SaveProgramSets(IEnumerable<ProgramSet> programSets, string filename)
+		{
+			var json = SerializeProgramSets(programSets);
+			File.WriteAllText(filename, json);
+		}
+		private static void AssignLightingController(Zone zone)
 		{
 			if (zone.LightingController is FadeCandyController)
 			{

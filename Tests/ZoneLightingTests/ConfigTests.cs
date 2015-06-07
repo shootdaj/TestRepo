@@ -135,11 +135,13 @@ namespace ZoneLightingTests
             FadeCandyController.Instance.Initialize();
             ((FadeCandyZone)zones.Add(new FadeCandyZone("TestZone1"))).AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, fcChannel);
             ((FadeCandyZone)zones.Add(new FadeCandyZone("TestZone2"))).AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 12, fcChannel);
+            ((FadeCandyZone)zones.Add(new FadeCandyZone("TestZone3"))).AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 12, fcChannel);
+            ((FadeCandyZone)zones.Add(new FadeCandyZone("TestZone4"))).AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 12, fcChannel);
 
             var programSets = new BetterList<ProgramSet>
             {
-                new ProgramSet("Stepper", zones["TestZone1"].Listify(), true, null, "StepperSet1"),
-                new ProgramSet("Stepper", zones["TestZone2"].Listify(), true, null, "StepperSet2")
+                new ProgramSet("Stepper", zones["TestZone1"].Listify().Union(zones["TestZone3"].Listify()), true, null, "StepperSet1"),
+                new ProgramSet("Stepper", zones["TestZone2"].Listify().Union(zones["TestZone4"].Listify()), true, null, "StepperSet2")
             };
             
             var serializedProgramSets = Config.SerializeProgramSets(programSets);

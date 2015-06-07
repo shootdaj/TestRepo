@@ -24,9 +24,17 @@ namespace WebController.Controllers
 		[HttpPost]
 		public ActionResult InitializeZLM()
 		{
-			ZLM.I.Initialize(false, initAction:RunnerHelpers.AddBasementZonesAndProgramsWithSync());
+			ZLM.I.Initialize();
+			//ZLM.I.Initialize(false, false, false, initAction:RunnerHelpers.AddBasementZonesAndProgramsWithSync());
 			return View("Index", new ZLMViewModel());
 		}
+
+	    public ActionResult Save()
+	    {
+		    ZLM.I.SaveZones();
+			ZLM.I.SaveProgramSets();
+		    return View("Index", new ZLMViewModel());
+	    }
 
 		[HttpPost]
 	    public ActionResult StopZone(string zoneName)

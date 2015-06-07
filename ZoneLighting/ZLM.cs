@@ -259,33 +259,32 @@ namespace ZoneLighting
 
         private void LoadZonesFromConfig()
         {
-            Zones.AddRange(Config.DeserializeZones(GetConfig("ZoneConfigurationSaveFile",
-                    "Zone configuration save file not found.")));
+            Zones.AddRange(Config.DeserializeZones(File.ReadAllText(GetConfig("ZoneConfigurationSaveFile",
+                    "Zone configuration save file not found."))));
         }
 
         private void LoadProgramSetsFromConfig()
         {
-            ProgramSets.AddRange(Config.DeserializeProgramSets(GetConfig("ProgramSetConfigurationSaveFile",
-                    "Program Set configuration save file not found."), Zones));
+            ProgramSets.AddRange(Config.DeserializeProgramSets(File.ReadAllText(GetConfig("ProgramSetConfigurationSaveFile",
+                    "Program Set configuration save file not found.")), Zones));
         }
 
-        private void SaveProgramSetsToConfig()
+        public void SaveProgramSets()
         {
-            Config.SaveProgramSets(ProgramSets,
-                ConfigurationManager.AppSettings["ProgramSetConfigurationSaveFile"]);
+			Config.SaveProgramSets(ProgramSets, GetConfig("ProgramSetConfigurationSaveFile"));
         }
 
-        private void SaveZonesToConfig()
+        public void SaveZones()
         {
-            Config.SaveZones(Zones, ConfigurationManager.AppSettings["ZoneConfigurationSaveFile"]);
+	        Config.SaveZones(Zones, GetConfig("ZoneConfigurationSaveFile"));
         }
 
-        private string GetConfig(string settingName, string exceptionMessage)
+        private string GetConfig(string settingName, string exceptionMessage = null)
         {
-            var configFilePath = ConfigurationManager.AppSettings[settingName];
-            if (string.IsNullOrEmpty(configFilePath))
+            var configValue = ConfigurationManager.AppSettings[settingName];
+			if (exceptionMessage != null && string.IsNullOrEmpty(configValue))
              throw new Exception(exceptionMessage);
-            return File.ReadAllText(configFilePath);
+	        return configValue;
         }
 
         public void Uninitialize()
