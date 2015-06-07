@@ -71,7 +71,7 @@ namespace ZoneLighting
 		#endregion
 
 		#region API
-
+        
 		public static FadeCandyPixel GetFadeCandyPixelInstance(PixelType pixelType)
 		{
 			switch (pixelType)

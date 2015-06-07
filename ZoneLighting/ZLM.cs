@@ -259,33 +259,28 @@ namespace ZoneLighting
 
         private void LoadZonesFromConfig()
         {
-            Zones.AddRange(Config.DeserializeZones(File.ReadAllText(GetConfig("ZoneConfigurationSaveFile",
+            Zones.AddRange(Config.DeserializeZones(File.ReadAllText(Config.Get("ZoneConfigurationSaveFile",
                     "Zone configuration save file not found."))));
         }
 
         private void LoadProgramSetsFromConfig()
         {
-            ProgramSets.AddRange(Config.DeserializeProgramSets(File.ReadAllText(GetConfig("ProgramSetConfigurationSaveFile",
+            ProgramSets.AddRange(Config.DeserializeProgramSets(File.ReadAllText(Config.Get("ProgramSetConfigurationSaveFile",
                     "Program Set configuration save file not found.")), Zones));
         }
 
         public void SaveProgramSets()
         {
-			Config.SaveProgramSets(ProgramSets, GetConfig("ProgramSetConfigurationSaveFile"));
+            Config.SaveProgramSets(ProgramSets,
+                Config.Get("ProgramSetConfigurationSaveFile", "Program Set configuration save file not found."));
         }
 
         public void SaveZones()
         {
-	        Config.SaveZones(Zones, GetConfig("ZoneConfigurationSaveFile"));
+            Config.SaveZones(Zones, Config.Get("ZoneConfigurationSaveFile", "Zone configuration save file not found."));
         }
 
-        private string GetConfig(string settingName, string exceptionMessage = null)
-        {
-            var configValue = ConfigurationManager.AppSettings[settingName];
-			if (exceptionMessage != null && string.IsNullOrEmpty(configValue))
-             throw new Exception(exceptionMessage);
-	        return configValue;
-        }
+        
 
         public void Uninitialize()
         {

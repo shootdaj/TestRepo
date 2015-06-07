@@ -24,8 +24,8 @@ namespace WebController.Controllers
 		[HttpPost]
 		public ActionResult InitializeZLM()
 		{
-			ZLM.I.Initialize();
-			//ZLM.I.Initialize(false, false, false, initAction:RunnerHelpers.AddBasementZonesAndProgramsWithSync());
+			//ZLM.I.Initialize();
+			ZLM.I.Initialize(false, false, false, initAction:RunnerHelpers.AddBasementZonesAndProgramsWithSync());
 			return View("Index", new ZLMViewModel());
 		}
 

@@ -249,3 +249,5 @@ packages*/
 !*packages.config
 ZoneLighting/FadeCandy/Local/*
 !ZoneLighting/FadeCandy/*.exe
+WebController/ProgramSetConfiguration.json
+WebController/ZoneConfiguration.json

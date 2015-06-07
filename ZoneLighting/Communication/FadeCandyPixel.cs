@@ -21,11 +21,11 @@ namespace ZoneLighting.Communication
 
         [DataMember]
 		public byte Channel { get; set; }
-        [DataMember]
+        //[DataMember]
         public abstract int RedIndex { get; }
-        [DataMember]
+        //[DataMember]
         public abstract int GreenIndex { get; }
-        [DataMember]
+        //[DataMember]
         public abstract int BlueIndex { get; }
 	}
 
