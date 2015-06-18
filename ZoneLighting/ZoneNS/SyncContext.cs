@@ -230,11 +230,11 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public void SignalAndWait(int? timeout = null)
 		{
-		    lock (Barrier)
-		    {
+		    //lock (Barrier)
+		    //{
 		        if (Barrier.ParticipantCount <= 0) return;
 		        Barrier.SignalAndWait(timeout ?? UniversalTimeout);
-		    }
+		    //}
 		}
 
 		public int GetNumberOfRemainingParticipants() => Barrier.ParticipantsRemaining;

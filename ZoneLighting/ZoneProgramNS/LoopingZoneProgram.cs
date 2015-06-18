@@ -16,7 +16,7 @@ namespace ZoneLighting.ZoneProgramNS
 		//}
 
 		[SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-		protected LoopingZoneProgram(string name = null, SyncContext syncContext = null) : base (name, syncContext)
+		protected LoopingZoneProgram(string name = null, SyncContext syncContext = null) : base(name, syncContext)
 		{
 			Setup();
 			LoopCTS = new CancellationTokenSource();
@@ -55,7 +55,7 @@ namespace ZoneLighting.ZoneProgramNS
 				//DebugTools.AddEvent("LoopingZoneProgram.StartLoop", "Running = FALSE");
 				//DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method", "Setting Running = TRUE");
 				Running = true;
-				
+
 				//DebugTools.AddEvent("LoopingZoneProgram.StartLoop", "START StartLoop()");
 				LoopingTask.Start();
 				//DebugTools.AddEvent("LoopingZoneProgram.StartLoop", "END StartLoop()");
@@ -70,12 +70,13 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			LoopCTS.Dispose();
 			LoopCTS = new CancellationTokenSource();
-            try
-            {
-                LoopingTask?.Dispose();
-        } catch(Exception ex)
-            { }
-    LoopingTask = new Task(() =>
+			try
+			{
+				LoopingTask?.Dispose();
+			}
+			catch (Exception ex)
+			{ }
+			LoopingTask = new Task(() =>
 			{
 				try
 				{
@@ -130,10 +131,10 @@ namespace ZoneLighting.ZoneProgramNS
 				{
 					Running = false;
 					StopTrigger.Fire(this, null);
-					DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method", "Unexpected exception in LoopingTask: " + ex.Message + " | StackTrace: " + ex.StackTrace);
+					DebugTools.AddEvent("LoopingZoneProgram.LoopingTask.Method",
+						"Unexpected exception in LoopingTask: " + ex.Message + " | StackTrace: " + ex.StackTrace);
 				}
-			}
-			, LoopCTS.Token);
+			}, LoopCTS.Token);
 		}
 
 		public Trigger LeftSyncTrigger { get; set; } = new Trigger("LeftSyncTrigger");
@@ -165,7 +166,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// </summary>
 		public virtual void Unsetup()
 		{
-			
+
 		}
 
 		#endregion

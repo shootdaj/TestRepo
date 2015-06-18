@@ -102,16 +102,5 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			ZonePrograms.ForEach(zp => zp.Stop(force));
 		}
-
-		public bool ContainsZone(Zone zone)
-		{
-			return Zones.Contains(zone);
-		}
-
-		public Zone AddZone(Zone zone)
-		{
-			SyncContext?.Sync(zone.Listify());
-			return zone;
-		}
 	}
 }
