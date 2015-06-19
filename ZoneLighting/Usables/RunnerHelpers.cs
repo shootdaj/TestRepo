@@ -44,7 +44,41 @@ namespace ZoneLighting.Usables
 			};
 		}
 
-	    private static Action AddBasementZonesAndPrograms()
+		public static Action AddNeopixelZonesAndProgramsWithSync()
+		{
+			return () =>
+			{
+				var notificationSyncContext = new SyncContext("NotificationContext");
+
+				//add zones
+				var row12 = ZoneScaffolder.Instance.AddFadeCandyZone(ZLM.I.Zones, "Row12", PixelType.FadeCandyWS2812Pixel, 16, 1);
+				var row34 = ZoneScaffolder.Instance.AddFadeCandyZone(ZLM.I.Zones, "Row34", PixelType.FadeCandyWS2812Pixel, 16, 2);
+				var row56 = ZoneScaffolder.Instance.AddFadeCandyZone(ZLM.I.Zones, "Row56", PixelType.FadeCandyWS2812Pixel, 16, 3);
+				var row78 = ZoneScaffolder.Instance.AddFadeCandyZone(ZLM.I.Zones, "Row78", PixelType.FadeCandyWS2812Pixel, 16, 4);
+
+				ZLM.I.CreateProgramSet("RainbowSet", "Rainbow", true, null, ZLM.I.Zones);
+
+				//setup interrupting inputs - in the real code this method should not be used. The ZoneScaffolder.AddInterruptingProgram should be used.
+				row12.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+				row56.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+				row34.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+				row78.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+
+				//synchronize and start interrupting programs
+				notificationSyncContext.Sync(row12.InterruptingPrograms[0],
+					row56.InterruptingPrograms[0],
+					row34.InterruptingPrograms[0],
+					row78.InterruptingPrograms[0]);
+
+				row12.InterruptingPrograms[0].Start();
+				row56.InterruptingPrograms[0].Start();
+				row34.InterruptingPrograms[0].Start();
+				row78.InterruptingPrograms[0].Start();
+			};
+		}
+
+
+		private static Action AddBasementZonesAndPrograms()
 	    {
 	        return () =>
 	        {
