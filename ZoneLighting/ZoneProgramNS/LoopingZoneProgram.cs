@@ -27,9 +27,12 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			Unsetup();
 			base.Dispose(force);
-			LoopCTS.Dispose();
-			IsSynchronizable.Dispose();
-			WaitForSync.Dispose();
+			LoopCTS?.Dispose();
+			LoopCTS = null;
+			IsSynchronizable?.Dispose();
+			IsSynchronizable = null;
+			WaitForSync?.Dispose();
+			WaitForSync = null;
 		}
 
 		#region Looping Stuff

@@ -319,7 +319,7 @@ namespace ZoneLighting.ZoneNS
 
 		public bool Running { get; private set; }
 
-		public void Uninitialize(bool force = false)
+		public void Stop(bool force = false)
 		{
 			if (Running)
 			{
@@ -344,7 +344,7 @@ namespace ZoneLighting.ZoneNS
 
 		public void Dispose(bool force)
 		{
-			Uninitialize(force);
+			Stop(force);
 			Lights.Clear();
 			Lights = null;
 			ZoneProgram = null;

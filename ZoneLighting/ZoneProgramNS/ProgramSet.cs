@@ -19,7 +19,7 @@ namespace ZoneLighting.ZoneProgramNS
         [DataMember]
 		public string Name { get; private set; }
 
-		public SyncContext SyncContext { get; }
+		public SyncContext SyncContext { get; private set; }
 
         [DataMember]
 		public List<Zone> Zones { get; private set; }
@@ -54,7 +54,7 @@ namespace ZoneLighting.ZoneProgramNS
 			{
 				Zones.ForEach(zone =>
 				{
-					zone.Uninitialize(true);
+					zone.Stop(true);
 					ZoneScaffolder.Instance.RunZone(zone, programName, isv, true, SyncContext, true);
 				});
 
@@ -65,7 +65,7 @@ namespace ZoneLighting.ZoneProgramNS
 			{
 				Zones.ForEach(zone =>
 				{
-					zone.Uninitialize(true);
+					zone.Stop(true);
 					ZoneScaffolder.Instance.RunZone(zone, programName, isv);
 				});
 			}
@@ -85,9 +85,11 @@ namespace ZoneLighting.ZoneProgramNS
 		public void Dispose(bool force)
 		{
 			Name = null;
-			Zones.ForEach(zone => zone.Uninitialize(force));
+			Zones.ForEach(zone => zone.Stop(force));
 			Zones = null;
 			ProgramName = null;
+			SyncContext?.Dispose();
+			SyncContext = null;
 		}
 
 		public void StartAllPrograms()

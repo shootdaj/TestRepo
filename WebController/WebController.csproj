@@ -177,7 +177,6 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ZLMNewController.cs" />
     <Compile Include="Controllers\ZLMController.cs" />
     <Compile Include="Controllers\ZLMViewModel.cs" />
     <Compile Include="Controllers\ZonesController.cs" />

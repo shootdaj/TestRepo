@@ -1,5 +1,7 @@
 ﻿using System.Web.Mvc;
 using ZoneLighting;
+using ZoneLighting.Usables;
+using ZoneLighting.ZoneNS;
 
 namespace WebController.Controllers
 {
@@ -8,7 +10,8 @@ namespace WebController.Controllers
 		[HttpPost]
 		public ActionResult Zones()
 		{
-			var zones = ZLM.I.Zones;
+			BetterList<Zone> zones = new BetterList<Zone>();
+			ZLMController.ZLMAction(zlm => zones = zlm.Zones);
 			return Json(new SelectList(zones, "Name", "Name"));
 		}
     }

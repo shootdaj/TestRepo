@@ -108,6 +108,7 @@
     <Compile Include="Resources\Programs\StepperInternalLoop.cs" />
     <Compile Include="TestHelpers.cs" />
     <Compile Include="UnderlyingTypeConverterTests.cs" />
+    <Compile Include="ZLMStateTests.cs" />
     <Compile Include="ZLMTests.cs" />
     <Compile Include="ZoneScaffolderTests.cs" />
     <Compile Include="ZoneProgramInputTests.cs" />

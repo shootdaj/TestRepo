@@ -31,7 +31,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		#region CORE + MEF
 
 		[ImportMany(typeof (ZoneProgram), AllowRecomposition = true)]
-		public IList<ExportFactory<ZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; } = new List<ExportFactory<ZoneProgram, IZoneProgramMetadata>>();
+		public IList<ExportFactory<ZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; }
 
 		/// <summary>
 		/// Container for the external programs.
@@ -84,6 +84,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 
 			var aggregateCatalog = new AggregateCatalog(fileCatalogs);
 			ExternalProgramContainer = new CompositionContainer(aggregateCatalog);
+			ZoneProgramFactories = new List<ExportFactory<ZoneProgram, IZoneProgramMetadata>>();
 			ExternalProgramContainer.ComposeParts(this);
 		}
 

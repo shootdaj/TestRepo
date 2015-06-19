@@ -8,22 +8,22 @@ namespace ZoneLighting.Usables
 {
 	public class RunnerHelpers
 	{
-		public static Action AddBasementZonesAndProgramsWithSync()
+		public static Action AddBasementZonesAndProgramsWithSync(ZLM zlm)
 		{
 			return () =>
 			{
 				var notificationSyncContext = new SyncContext("NotificationContext");
                 
 				//add zones
-				var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(ZLM.I.Zones, "LeftWing", PixelType.FadeCandyWS2812Pixel, 6,
+				var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing", PixelType.FadeCandyWS2812Pixel, 6,
 					1);
-				var center = ZoneScaffolder.Instance.AddFadeCandyZone(ZLM.I.Zones, "Center", PixelType.FadeCandyWS2811Pixel, 21, 2);
-				var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(ZLM.I.Zones, "RightWing", PixelType.FadeCandyWS2812Pixel,
+				var center = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Center", PixelType.FadeCandyWS2811Pixel, 21, 2);
+				var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing", PixelType.FadeCandyWS2812Pixel,
 					12, 3);
-				var baiClock = ZoneScaffolder.Instance.AddFadeCandyZone(ZLM.I.Zones, "BaiClock", PixelType.FadeCandyWS2812Pixel, 24,
+				var baiClock = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "BaiClock", PixelType.FadeCandyWS2812Pixel, 24,
 					4);
 
-				ZLM.I.CreateProgramSet("RainbowSet", "Rainbow", true, null, ZLM.I.Zones);
+				zlm.CreateProgramSet("RainbowSet", "Rainbow", true, null, zlm.Zones);
 
 				//setup interrupting inputs - in the real code this method should not be used. The ZoneScaffolder.AddInterruptingProgram should be used.
 				leftWing.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
@@ -44,35 +44,35 @@ namespace ZoneLighting.Usables
 			};
 		}
 
-		public static Action AddNeopixelZonesAndProgramsWithSync()
+		public static Action AddNeopixelZonesAndProgramsWithSync(ZLM zlm)
 		{
 			return () =>
 			{
 				var notificationSyncContext = new SyncContext("NotificationContext");
 
 				//add zones
-				var row12 = ZoneScaffolder.Instance.AddFadeCandyZone(ZLM.I.Zones, "Row12", PixelType.FadeCandyWS2812Pixel, 16, 1);
-				var row34 = ZoneScaffolder.Instance.AddFadeCandyZone(ZLM.I.Zones, "Row34", PixelType.FadeCandyWS2812Pixel, 16, 2);
-				var row56 = ZoneScaffolder.Instance.AddFadeCandyZone(ZLM.I.Zones, "Row56", PixelType.FadeCandyWS2812Pixel, 16, 3);
-				var row78 = ZoneScaffolder.Instance.AddFadeCandyZone(ZLM.I.Zones, "Row78", PixelType.FadeCandyWS2812Pixel, 16, 4);
+				var row12 = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Row12", PixelType.FadeCandyWS2812Pixel, 16, 1);
+				var row34 = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Row34", PixelType.FadeCandyWS2812Pixel, 16, 2);
+				var row56 = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Row56", PixelType.FadeCandyWS2812Pixel, 16, 3);
+				var row78 = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Row78", PixelType.FadeCandyWS2812Pixel, 16, 4);
 
-				ZLM.I.CreateProgramSet("RainbowSet", "Rainbow", true, null, ZLM.I.Zones);
+				zlm.CreateProgramSet("RainbowSet", "Rainbow", true, null, zlm.Zones);
 
 				//setup interrupting inputs - in the real code this method should not be used. The ZoneScaffolder.AddInterruptingProgram should be used.
 				row12.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-				row56.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
 				row34.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+				row56.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
 				row78.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
 
 				//synchronize and start interrupting programs
 				notificationSyncContext.Sync(row12.InterruptingPrograms[0],
-					row56.InterruptingPrograms[0],
 					row34.InterruptingPrograms[0],
+					row56.InterruptingPrograms[0],
 					row78.InterruptingPrograms[0]);
 
 				row12.InterruptingPrograms[0].Start();
-				row56.InterruptingPrograms[0].Start();
 				row34.InterruptingPrograms[0].Start();
+				row56.InterruptingPrograms[0].Start();
 				row78.InterruptingPrograms[0].Start();
 			};
 		}

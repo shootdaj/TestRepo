@@ -49,7 +49,7 @@ namespace ZoneLighting.ZoneProgramNS
 		[DataMember]
 		public ZoneProgramInputCollection Inputs { get; private set; } = new ZoneProgramInputCollection();
 
-		public Trigger StopTestingTrigger { get; } = new Trigger("ZoneProgram.StopTestingTrigger");
+		public Trigger StopTestingTrigger { get; private set; } = new Trigger("ZoneProgram.StopTestingTrigger");
 
 		public ProgramState State { get; private set; } = ProgramState.Stopped;
 
@@ -57,7 +57,7 @@ namespace ZoneLighting.ZoneProgramNS
 		
 		#region Triggers
 
-		public Trigger StartTrigger { get; } = new Trigger("StartTrigger");
+		public Trigger StartTrigger { get; private set; } = new Trigger("StartTrigger");
 		
 		#endregion
 
@@ -170,9 +170,12 @@ namespace ZoneLighting.ZoneProgramNS
 			RemoveAllInputs();
 			Name = null;
 			Zone = null;
-			StopTrigger.Dispose();
-			StopTestingTrigger.Dispose();
-			StartTrigger.Dispose();
+			StopTrigger?.Dispose();
+			StopTrigger = null;
+			StopTestingTrigger?.Dispose();
+			StopTestingTrigger = null;
+			StartTrigger?.Dispose();
+			StartTrigger = null;
 		}
 
 		public virtual void SetSyncContext(SyncContext syncContext)

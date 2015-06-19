@@ -90,7 +90,7 @@ namespace ZoneLightingTests
 			listToValidate.AddRange(((ITestProgramSet)programSet).ZoneProgramsTest.Cast<IStepper>());
 			listToValidate.Add((IStepper)rightWing.ZoneProgram);
 
-			TestHelpers.ValidateSteppersOutOfSync(listToValidate.ToList(), 100);
+			TestHelpers.ValidateSteppersOutOfSync(listToValidate.ToList(), 100); //validate the the removed program is out of sync
 			Assert.That(leftWing.ZoneProgram.State == ProgramState.Started, Is.True);
 			Assert.That(programSet.Zones.Contains(rightWing), Is.False);
 

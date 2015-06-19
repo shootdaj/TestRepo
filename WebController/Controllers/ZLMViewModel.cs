@@ -10,13 +10,13 @@ namespace WebController.Controllers
 
 		public ZLMViewModel()
 		{
-			AvailableZones = new SelectList(ZLM.Zones, "Name");
+			ZLMController.ZLMAction(zlm => AvailableZones = new SelectList(zlm.Zones, "Name"));
 		}
 
-		public ZLM ZLM
-		{
-			get { return ZLM.I; }
-		}
+		//public ZLM ZLM
+		//{
+		//	get { return ZLM.I; }
+		//}
 
 		public Zone Zone { get; set; }
 		//public IZoneProgram ZoneProgram { get; set; }
