@@ -91,50 +91,8 @@ namespace ZoneLighting
 			return ZoneScaffolder.Instance.AddFadeCandyZone(Zones, name, pixelType, numberOfLights, channel);
 		}
 
-
-
-
-
-		//TODO: Leaving this to finish at a later point in time. 
-		//TODO: Possible move this and its test to a different branch, and it can be merged back later when 
-		//TODO: it's ready to be worked on.
-		//      /// <summary>
-		//      /// Moves a zone from its current program set to another given program set.
-		//      /// </summary>
-		//public void MoveZone(Zone zone, ProgramSet targetProgramSet)
-		//{
-		//	if (targetProgramSet.ContainsZone(zone))
-		//		throw new Exception("Cannot move zone to the same program set as where it is currently.");
-
-		//	if (ProgramSets.Any(ps => ps.ContainsZone(zone)))
-		//	{
-		//		var sourceProgramSet = ProgramSets.First(ps => ps.ContainsZone(zone));
-		//		sourceProgramSet.RemoveZone(zone);
-		//		//TODO: Remove this
-		//		Thread.Sleep(3000);
-
-		//		targetProgramSet.AddZone(zone);
-		//	}
-		//	else
-		//	{
-		//		targetProgramSet.AddZone(zone);
-		//	}
-		//}
-
 		#endregion
-
-
-		//#region Singleton
-
-		//private static ZLM _instance;
-
-		///// <summary>
-		///// I is short for Instance.
-		///// </summary>
-		//public static ZLM I => _instance ?? (_instance = new ZLM());
-
-		//#endregion
-
+		
 		#region CORE
 
 		/// <summary>
@@ -219,6 +177,77 @@ namespace ZoneLighting
 			ZoneScaffolder.Instance.Uninitialize();
 		}
 
+		public void Uninitialize()
+		{
+			if (Initialized)
+			{
+				UninitializeProgramSets();
+				UninitializeZones();
+				UninitLightingControllers();
+				Initialized = false;
+			}
+		}
+		
+		private void UninitializeZones()
+		{
+			Parallel.ForEach(Zones, zone =>
+			{
+				zone.Stop();
+			});
+		}
+
+		private void UninitializeProgramSets()
+		{
+			ProgramSets.ForEach(programSet => programSet.Dispose());
+			ProgramSets.Clear();
+		}
+
+		public void Dispose()
+		{
+			Uninitialize();
+			DisposeZones();
+			UninitZoneScaffolder();
+			ExternalZoneContainer?.Dispose();
+			ExternalZoneContainer = null;
+			Zones.Clear();
+			Zones = null;
+		}
+
+		private void DisposeZones()
+		{
+			Zones.ToList().ForEach(zone => zone.Dispose());
+			Zones.Clear();
+		}
+
+		#endregion
+
+		#region Save/Load
+
+		private void LoadZonesFromConfig(string filename = null)
+		{
+			Zones.AddRange(Config.DeserializeZones(File.ReadAllText(filename ?? Config.Get("ZoneConfigurationSaveFile",
+					"Zone configuration save file not found."))));
+		}
+
+		private void LoadProgramSetsFromConfig(string filename = null)
+		{
+			ProgramSets.AddRange(Config.DeserializeProgramSets(File.ReadAllText(filename ?? Config.Get("ProgramSetConfigurationSaveFile",
+					"Program Set configuration save file not found.")), Zones));
+		}
+
+		public void SaveProgramSets(string filename = null)
+		{
+			Config.SaveProgramSets(ProgramSets,
+				filename ?? Config.Get("ProgramSetConfigurationSaveFile", "Program Set configuration save file not found."));
+		}
+
+		public void SaveZones(string filename = null)
+		{
+			Config.SaveZones(Zones, filename ?? Config.Get("ZoneConfigurationSaveFile", "Zone configuration save file not found."));
+		}
+
+		#endregion
+
 		#region MEF
 
 		/// <summary>
@@ -257,76 +286,8 @@ namespace ZoneLighting
 
 		#endregion
 
-		private void LoadZonesFromConfig()
-		{
-			Zones.AddRange(Config.DeserializeZones(File.ReadAllText(Config.Get("ZoneConfigurationSaveFile",
-					"Zone configuration save file not found."))));
-		}
+		
 
-		private void LoadProgramSetsFromConfig()
-		{
-			ProgramSets.AddRange(Config.DeserializeProgramSets(File.ReadAllText(Config.Get("ProgramSetConfigurationSaveFile",
-					"Program Set configuration save file not found.")), Zones));
-		}
-
-		public void SaveProgramSets()
-		{
-			Config.SaveProgramSets(ProgramSets,
-				Config.Get("ProgramSetConfigurationSaveFile", "Program Set configuration save file not found."));
-		}
-
-		public void SaveZones()
-		{
-			Config.SaveZones(Zones, Config.Get("ZoneConfigurationSaveFile", "Zone configuration save file not found."));
-		}
-
-		public void Uninitialize()
-		{
-			if (Initialized)
-			{
-				UninitializeProgramSets();
-				UninitializeZones();
-				UninitLightingControllers();
-				Initialized = false;
-			}
-		}
-
-		/// <summary>
-		/// Unintializes all zones.
-		/// </summary>
-		private void UninitializeZones()
-		{
-			UninitializeProgramSets();
-			Parallel.ForEach(Zones, zone =>
-			{
-				zone.Stop();
-			});
-		}
-
-		private void UninitializeProgramSets()
-		{
-			ProgramSets.ForEach(programSet => programSet.Dispose());
-			ProgramSets.Clear();
-		}
-
-		public void Dispose()
-		{
-			Uninitialize();
-			DisposeZones();
-			UninitZoneScaffolder();
-			ExternalZoneContainer?.Dispose();
-			ExternalZoneContainer = null;
-			Zones.Clear();
-			Zones = null;
-		}
-
-		private void DisposeZones()
-		{
-			//todo: remove this later
-			Zones.ToList().ForEach(zone => zone.Dispose());
-			Zones.Clear();
-		}
-
-		#endregion
+		
 	}
 }

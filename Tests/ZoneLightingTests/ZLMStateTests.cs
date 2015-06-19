@@ -15,18 +15,6 @@ namespace ZoneLightingTests
 	[Category("Integration")]
 	public class ZLMStateTests
 	{
-		//[SetUp]
-		//public static void Setup()
-		//{
-		//	ZLM.I.Initialize(loadZoneModules: false, loadZonesFromConfig:false, loadProgramSetsFromConfig:false);
-		//}
-
-		//[TearDown]
-		//public static void TearDown()
-		//{
-		//	ZLM.I.Uninitialize();
-		//}
-
 		[Test]
 		public void Initialize_JustInitActionProvided_Works()
 		{
@@ -37,10 +25,8 @@ namespace ZoneLightingTests
 			zlm.Initialize(false, false, false, TestHelpers.AddFourZonesAndStepperProgramSetWithSyncToZLM(zlm));
 
 			//assert
-			zlm.ProgramSets.ForEach(programSet =>
-			{
-				TestHelpers.ValidateSteppersInSync(((ITestProgramSet) programSet).ZoneProgramsTest.Cast<IStepper>(), 100);
-			});
+			TestHelpers.ValidateSteppersInSync(
+				zlm.ProgramSets.SelectMany(ps => ((ITestProgramSet) ps).ZoneProgramsTest).Cast<IStepper>(), 100);
 
 			zlm.Zones.ForEach(zone =>
 			{
@@ -52,5 +38,27 @@ namespace ZoneLightingTests
 			zlm.Dispose();
 		}
 
+		[Test]
+		public void Uninitialize_Works()
+		{
+			//arrange
+			var zlm = new ZLM();
+			zlm.Initialize(false, false, false, TestHelpers.AddFourZonesAndStepperProgramSetWithSyncToZLM(zlm));
+
+			//act
+			zlm.Uninitialize();
+
+			//assert
+			Assert.That(zlm.ProgramSets, Is.Empty);
+
+			zlm.Zones.ForEach(zone =>
+			{
+				Assert.That(zone.Running, Is.False);
+				Assert.That(zone.ZoneProgram, Is.Null);
+			});
+
+			//cleanup
+			zlm.Dispose();
+		}
 	}
 }

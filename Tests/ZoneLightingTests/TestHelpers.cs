@@ -35,6 +35,13 @@ namespace ZoneLightingTests
 			Assert.True(stepperSteps.Length != 0);
 		}
 
+		public static void ValidateSteppersNotRunning(IEnumerable<IStepper> steppers, int numberOfChecks, int msToWaitBeforeStart = 10, int msToWaitBetweenChecks = 1)
+		{
+			int[,] stepperSteps;
+			SyncContextTests.ValidateStepperSyncPhase(steppers.ToArray(), out stepperSteps, numberOfChecks);
+			Assert.True(stepperSteps.Length == 0);
+		}
+
 		public static void ValidateSteppersOutOfSync(IEnumerable<IStepper> steppers, int numberOfChecks,
 			int msToWaitBeforeStart = 10, int msToWaitBetweenChecks = 1, int minOutOfSyncStepsThreshold = 0)
 		{
