@@ -50,36 +50,41 @@ namespace ZoneLightingTests
 			Assert.True(invalidStepIndex.Length > minOutOfSyncStepsThreshold);
 		}
 
-		public static Action AddFourZonesAndStepperProgramSetWithSyncToZLM(ZLM zlm)
+		public static void AddFourZonesAndStepperProgramSetWithSyncToZLM(ZLM zlm)
+		{
+			var notificationSyncContext = new SyncContext("NotificationContext");
+
+			//add zones
+			var zoneA = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneA", PixelType.FadeCandyWS2812Pixel, 16, 1);
+			var zoneB = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneB", PixelType.FadeCandyWS2812Pixel, 16, 2);
+			var zoneC = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneC", PixelType.FadeCandyWS2812Pixel, 16, 3);
+			var zoneD = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneD", PixelType.FadeCandyWS2812Pixel, 16, 4);
+
+			zlm.CreateProgramSet("StepperSet", "Stepper", true, null, zlm.Zones);
+
+			//setup interrupting inputs - in the real code this method should not be used. The ZoneScaffolder.AddInterruptingProgram should be used.
+			zoneA.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+			zoneB.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+			zoneC.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+			zoneD.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+
+			//synchronize and start interrupting programs
+			notificationSyncContext.Sync(zoneA.InterruptingPrograms[0],
+				zoneB.InterruptingPrograms[0],
+				zoneC.InterruptingPrograms[0],
+				zoneD.InterruptingPrograms[0]);
+
+			zoneA.InterruptingPrograms[0].Start();
+			zoneB.InterruptingPrograms[0].Start();
+			zoneC.InterruptingPrograms[0].Start();
+			zoneD.InterruptingPrograms[0].Start();
+		}
+
+		public static Action AddFourZonesAndStepperProgramSetWithSyncToZLMAction(ZLM zlm)
 		{
 			return () =>
 			{
-				var notificationSyncContext = new SyncContext("NotificationContext");
-
-				//add zones
-				var zoneA = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneA", PixelType.FadeCandyWS2812Pixel, 16, 1);
-				var zoneB = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneB", PixelType.FadeCandyWS2812Pixel, 16, 2);
-				var zoneC = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneC", PixelType.FadeCandyWS2812Pixel, 16, 3);
-				var zoneD = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneD", PixelType.FadeCandyWS2812Pixel, 16, 4);
-
-				zlm.CreateProgramSet("StepperSet", "Stepper", true, null, zlm.Zones);
-
-				//setup interrupting inputs - in the real code this method should not be used. The ZoneScaffolder.AddInterruptingProgram should be used.
-				zoneA.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-				zoneB.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-				zoneC.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-				zoneD.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-
-				//synchronize and start interrupting programs
-				notificationSyncContext.Sync(zoneA.InterruptingPrograms[0],
-					zoneB.InterruptingPrograms[0],
-					zoneC.InterruptingPrograms[0],
-					zoneD.InterruptingPrograms[0]);
-
-				zoneA.InterruptingPrograms[0].Start();
-				zoneB.InterruptingPrograms[0].Start();
-				zoneC.InterruptingPrograms[0].Start();
-				zoneD.InterruptingPrograms[0].Start();
+				AddFourZonesAndStepperProgramSetWithSyncToZLM(zlm);
 			};
 		}
 	}

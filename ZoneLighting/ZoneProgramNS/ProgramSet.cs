@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using ZoneLighting.Usables;
 using ZoneLighting.Usables.TestInterfaces;
 using ZoneLighting.ZoneNS;
@@ -85,7 +86,8 @@ namespace ZoneLighting.ZoneProgramNS
 		public void Dispose(bool force)
 		{
 			Name = null;
-			Zones.ForEach(zone => zone.Stop(force));
+			Parallel.ForEach(Zones, zone => zone.Stop(force));
+			//Zones.ForEach(zone => zone.Stop(force));
 			Zones = null;
 			ProgramName = null;
 			SyncContext?.Dispose();

@@ -2,8 +2,10 @@
 using System.Drawing;
 using System.Dynamic;
 using System.Linq;
+using System.Reflection;
 using System.Web.Mvc;
 using ZoneLighting;
+using ZoneLighting.ConfigNS;
 using ZoneLighting.Usables;
 
 namespace WebController.Controllers
@@ -23,22 +25,48 @@ namespace WebController.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult UninitializeZLM()
+		public ActionResult DisposeProgramSets()
 		{
-			ZLMAction(zlm => zlm.Uninitialize());
+			ZLMAction(zlm => zlm.DisposeProgramSets());
 			//MvcApplication.ZLM.Uninitialize();
 			return View("Index", new ZLMViewModel());
 		}
 
 		[HttpPost]
-		public ActionResult InitializeZLM()
+		public ActionResult CreateZLM()
 		{
-			ZLMAction(zlm =>
+			bool firstRun;
+			if (!bool.TryParse(Config.Get("FirstRun"), out firstRun))
+				firstRun = true;
+
+			bool loadZoneModules;
+			if (!bool.TryParse(Config.Get("LoadZoneModules"), out loadZoneModules))
+				loadZoneModules = false;
+
+			Action<ZLM> initAction = null;
+			if (typeof(RunnerHelpers).GetMethods().Select(method => method.Name).Contains(Config.Get("InitAction")))
 			{
-				zlm.Initialize();
-			});
+				var initActionInfo = typeof(RunnerHelpers).GetMethods().First(method => method.Name == Config.Get("InitAction"));
+				initAction = (Action<ZLM>)Delegate.CreateDelegate(typeof(Action<ZLM>), initActionInfo);
+			}
+
+			System.Web.HttpContext.Current.Application.Lock();
+
+			System.Web.HttpContext.Current.Application["ZLM"] = new ZLM(loadZonesFromConfig: !firstRun,
+				loadProgramSetsFromConfig: !firstRun,
+				loadZoneModules: loadZoneModules, initAction: initAction);
+
+			System.Web.HttpContext.Current.Application.UnLock();
 			
-			//ZLM.I.Initialize(false, false, false, initAction:RunnerHelpers.AddNeopixelZonesAndProgramsWithSync());
+			return View("Index", new ZLMViewModel());
+		}
+
+		public ActionResult DisposeZLM()
+		{
+			System.Web.HttpContext.Current.Application.Lock();
+			((ZLM)System.Web.HttpContext.Current.Application["ZLM"]).Dispose();
+			System.Web.HttpContext.Current.Application.UnLock();
+
 			return View("Index", new ZLMViewModel());
 		}
 

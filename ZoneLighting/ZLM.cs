@@ -18,7 +18,7 @@ using ZoneLighting.ZoneProgramNS.Factories;
 namespace ZoneLighting
 {
 	/// <summary>
-	/// This class will be responsible for managing the higher level tasks for the zones.
+	/// This class is responsible for managing the higher level tasks for zones and program sets.
 	/// </summary>
 	public sealed class ZLM : IDisposable
 	{
@@ -92,7 +92,7 @@ namespace ZoneLighting
 		}
 
 		#endregion
-		
+
 		#region CORE
 
 		/// <summary>
@@ -121,29 +121,37 @@ namespace ZoneLighting
 
 		#region C+I
 
-		public ZLM()
+		public ZLM(bool loadZoneModules = false, bool loadZonesFromConfig = true, bool loadProgramSetsFromConfig = true, Action<ZLM> initAction = null)
 		{
+			InitLightingControllers();
+			InitZoneScaffolder();
+			if (loadZoneModules && ExternalZoneContainer != null)
+				ComposeWithExternalModules();
+			if (loadZonesFromConfig)
+				LoadZonesFromConfig();
+			if (loadProgramSetsFromConfig)
+				LoadProgramSetsFromConfig();
+			initAction?.Invoke(this);
 		}
 
-		public bool Initialized { get; private set; }
+		//public bool Initialized { get; private set; }
 
-		public void Initialize(bool loadZoneModules = false, bool loadZonesFromConfig = true, bool loadProgramSetsFromConfig = true, Action initAction = null)
-		{
-			if (!Initialized)
-			{
-				InitLightingControllers();
-				InitZoneScaffolder();
-				if (loadZoneModules && ExternalZoneContainer != null)
-					ComposeWithExternalModules();
-				if (loadZonesFromConfig)
-					LoadZonesFromConfig();
-				if (loadProgramSetsFromConfig)
-					LoadProgramSetsFromConfig();
-				initAction?.Invoke();
-				Initialized = true;
-			}
-		}
-
+		//public void Initialize(bool loadZoneModules = false, bool loadZonesFromConfig = true, bool loadProgramSetsFromConfig = true, Action<ZLM> initAction = null)
+		//{
+		//	if (!Initialized)
+		//	{
+		//		InitLightingControllers();
+		//		InitZoneScaffolder();
+		//		if (loadZoneModules && ExternalZoneContainer != null)
+		//			ComposeWithExternalModules();
+		//		if (loadZonesFromConfig)
+		//			LoadZonesFromConfig();
+		//		if (loadProgramSetsFromConfig)
+		//			LoadProgramSetsFromConfig();
+		//		initAction?.Invoke(this);
+		//		Initialized = true;
+		//	}
+		//}
 
 		/// <summary>
 		/// Add code here to initialize any other lighting controllers.
@@ -176,19 +184,8 @@ namespace ZoneLighting
 		{
 			ZoneScaffolder.Instance.Uninitialize();
 		}
-
-		public void Uninitialize()
-		{
-			if (Initialized)
-			{
-				UninitializeProgramSets();
-				UninitializeZones();
-				UninitLightingControllers();
-				Initialized = false;
-			}
-		}
 		
-		private void UninitializeZones()
+		private void StopZones()
 		{
 			Parallel.ForEach(Zones, zone =>
 			{
@@ -196,7 +193,7 @@ namespace ZoneLighting
 			});
 		}
 
-		private void UninitializeProgramSets()
+		public void DisposeProgramSets()
 		{
 			ProgramSets.ForEach(programSet => programSet.Dispose());
 			ProgramSets.Clear();
@@ -204,8 +201,9 @@ namespace ZoneLighting
 
 		public void Dispose()
 		{
-			Uninitialize();
+			DisposeProgramSets();
 			DisposeZones();
+			UninitLightingControllers();
 			UninitZoneScaffolder();
 			ExternalZoneContainer?.Dispose();
 			ExternalZoneContainer = null;
@@ -215,7 +213,10 @@ namespace ZoneLighting
 
 		private void DisposeZones()
 		{
-			Zones.ToList().ForEach(zone => zone.Dispose());
+			Parallel.ForEach(Zones, zone =>
+			{
+				zone.Dispose();
+			});
 			Zones.Clear();
 		}
 
@@ -286,8 +287,8 @@ namespace ZoneLighting
 
 		#endregion
 
-		
 
-		
+
+
 	}
 }

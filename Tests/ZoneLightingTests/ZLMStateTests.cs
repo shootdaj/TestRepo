@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using ZoneLighting;
 using ZoneLighting.StockPrograms;
-using ZoneLighting.Usables;
 using ZoneLighting.Usables.TestInterfaces;
-using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
+using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLightingTests
 {
@@ -16,13 +13,10 @@ namespace ZoneLightingTests
 	public class ZLMStateTests
 	{
 		[Test]
-		public void Initialize_JustInitActionProvided_Works()
+		public void Constructor_JustInitActionProvided_Works()
 		{
-			//arrange
-			var zlm = new ZLM();
-
 			//act
-			zlm.Initialize(false, false, false, TestHelpers.AddFourZonesAndStepperProgramSetWithSyncToZLM(zlm));
+			var zlm = new ZLM(false, false, false, TestHelpers.AddFourZonesAndStepperProgramSetWithSyncToZLM);
 
 			//assert
 			TestHelpers.ValidateSteppersInSync(
@@ -39,26 +33,19 @@ namespace ZoneLightingTests
 		}
 
 		[Test]
-		public void Uninitialize_Works()
+		public void Dispose_Works()
 		{
 			//arrange
-			var zlm = new ZLM();
-			zlm.Initialize(false, false, false, TestHelpers.AddFourZonesAndStepperProgramSetWithSyncToZLM(zlm));
+			var zlm = new ZLM(false, false, false, TestHelpers.AddFourZonesAndStepperProgramSetWithSyncToZLM);
 
 			//act
-			zlm.Uninitialize();
+			zlm.Dispose();
 
 			//assert
 			Assert.That(zlm.ProgramSets, Is.Empty);
-
-			zlm.Zones.ForEach(zone =>
-			{
-				Assert.That(zone.Running, Is.False);
-				Assert.That(zone.ZoneProgram, Is.Null);
-			});
-
-			//cleanup
-			zlm.Dispose();
+			Assert.That(zlm.Zones, Is.Empty);
+			//TODO: Assert that all lighting controllers are unintialized
+			Assert.That(ZoneScaffolder.Instance.Initialized, Is.False);
 		}
 	}
 }

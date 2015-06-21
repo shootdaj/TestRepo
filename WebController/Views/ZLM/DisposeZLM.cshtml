@@ -1,0 +1,5 @@
+﻿@model ZoneLighting.ZLM
+@using (Ajax.BeginForm("DisposeZLM", "ZLM", new AjaxOptions { UpdateTargetId = "ZonesControl" }))
+{
+	<input type="submit" id="btnDispose" value="Dispose ZLM" class="btn btn-primary" />
+}

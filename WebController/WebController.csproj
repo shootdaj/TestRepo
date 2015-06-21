@@ -254,13 +254,13 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\ZLM\Index.cshtml" />
     <Content Include="Views\ZLM\ZonesControl.cshtml" />
-    <Content Include="Views\ZLM\ZLMInit.cshtml" />
+    <Content Include="Views\ZLM\CreateZLM.cshtml" />
     <Content Include="Views\ZLM\ZoneCommands.cshtml" />
     <Content Include="Views\ZLM\DisplayTemplates\Zones.cshtml" />
     <Content Include="Views\ZLM\Notification.cshtml" />
-    <Content Include="Views\ZLM\ZLMUninit.cshtml" />
-    <Content Include="Views\ZLM\ZLMSave.cshtml" />
+    <Content Include="Views\ZLM\Save.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\ZLM\DisposeZLM.cshtml" />
     <None Include="Web.config.template" />
     <None Include="Web.config.Debug.template">
       <DependentUpon>Web.config.template</DependentUpon>

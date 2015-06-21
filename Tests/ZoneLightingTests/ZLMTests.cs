@@ -28,8 +28,7 @@ namespace ZoneLightingTests
 		[Test]
 		public void AvailableZones_ReturnsZonesOnWhichNoProgramSetWasCreated()
 		{
-			var zlm = new ZLM();
-			zlm.Initialize(loadZoneModules: false, loadZonesFromConfig: false, loadProgramSetsFromConfig: false);
+			var zlm = new ZLM(loadZoneModules: false, loadZonesFromConfig: false, loadProgramSetsFromConfig: false);
 
 			var leftWing = zlm.Zones.Add(new Zone("LeftWing"));
 			var center = zlm.Zones.Add(new Zone("Center"));
@@ -56,8 +55,7 @@ namespace ZoneLightingTests
 		[Test]
 		public void CreateProgramSet_CreatesAndRunsProgramOnZones()
 		{
-			var zlm = new ZLM();
-			zlm.Initialize(loadZoneModules: false, loadZonesFromConfig: false, loadProgramSetsFromConfig: false);
+			var zlm = new ZLM(loadZoneModules: false, loadZonesFromConfig: false, loadProgramSetsFromConfig: false);
 
 			var leftWing = zlm.Zones.Add(new Zone("LeftWing"));
 			var center = zlm.Zones.Add(new Zone("Center"));
@@ -81,8 +79,7 @@ namespace ZoneLightingTests
 		[Test]
 		public void CreateProgramSet_TwoZonesOutOfThree_TwoZonesRunning_OneZoneNotRunning()
 		{
-			var zlm = new ZLM();
-			zlm.Initialize(loadZoneModules: false, loadZonesFromConfig: false, loadProgramSetsFromConfig: false);
+			var zlm = new ZLM(loadZoneModules: false, loadZonesFromConfig: false, loadProgramSetsFromConfig: false);
 
 			var leftWing = zlm.Zones.Add(new Zone("LeftWing"));
 			var center = zlm.Zones.Add(new Zone("Center"));
@@ -106,8 +103,7 @@ namespace ZoneLightingTests
 		[Test]
 		public void CreateProgramSet_PassInUnavailableZone_ThrowsException()
 		{
-			var zlm = new ZLM();
-			zlm.Initialize(loadZoneModules: false, loadZonesFromConfig: false, loadProgramSetsFromConfig: false);
+			var zlm = new ZLM(loadZoneModules: false, loadZonesFromConfig: false, loadProgramSetsFromConfig: false);
 
 			var leftWing = zlm.Zones.Add(new Zone("LeftWing"));
 			var center = zlm.Zones.Add(new Zone("Center"));
@@ -132,8 +128,7 @@ namespace ZoneLightingTests
 		[Test]
 		public void CreateTwoProgramSets_WorksWithSync()
 		{
-			var zlm = new ZLM();
-			zlm.Initialize(loadZoneModules: false, loadZonesFromConfig: false, loadProgramSetsFromConfig: false);
+			var zlm = new ZLM(loadZoneModules: false, loadZonesFromConfig: false, loadProgramSetsFromConfig: false);
 
 			var leftWing = zlm.Zones.Add(new Zone("LeftWing"));
 			var center = zlm.Zones.Add(new Zone("Center"));

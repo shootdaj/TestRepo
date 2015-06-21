@@ -60,16 +60,16 @@
 				@Html.Partial("ZonesControl", Model.ZLM)
 			</div>
 			<div class="form-group">
-				@Html.Label("Initialize")
-				@Html.Partial("ZLMInit", Model.ZLM)
+				@Html.Label("Create ZLM")
+				@Html.Partial("CreateZLM", Model.ZLM)
 			</div>
 			<div class="form-group">
-				@Html.Label("Uninitialize")
-				@Html.Partial("ZLMUninit", Model.ZLM)
+				@Html.Label("Dispose ZLM")
+				@Html.Partial("DisposeZLM", Model.ZLM)
 			</div>
 			<div class="form-group">
 				@Html.Label("Save")
-				@Html.Partial("ZLMSave", Model.ZLM)
+				@Html.Partial("Save", Model.ZLM)
 			</div>
 			@Html.Partial("Notification", Model.ZLM)
 		</div>
