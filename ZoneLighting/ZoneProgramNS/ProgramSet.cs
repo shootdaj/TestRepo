@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using ZoneLighting.Usables;
 using ZoneLighting.Usables.TestInterfaces;
 using ZoneLighting.ZoneNS;
@@ -54,6 +55,7 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
+		[JsonConstructor]
 		public ProgramSet(string programName, IEnumerable<Zone> zones, bool sync, ISV isv, string setName)
 		{
 			if (!ZoneScaffolder.Instance.DoesProgramExist(programName))
