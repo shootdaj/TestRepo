@@ -11,7 +11,7 @@
 		{
 			Name = name;
 		}
-	}
 
-	
+		public static SyncLevel None = new SyncLevel("None");
+	}
 }

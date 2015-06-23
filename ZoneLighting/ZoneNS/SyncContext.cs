@@ -70,9 +70,9 @@ namespace ZoneLighting.ZoneNS
 			Sync(zonePrograms.ToList());
 		}
 
-		public void Sync(IEnumerable<Zone> zones, bool forceStop = false)
+		public void Sync(IEnumerable<Zone> zones, bool forceStop = false, ISV isv = null)
 		{
-            Sync(zones.Select(zone => zone.ZoneProgram), forceStop);
+            Sync(zones.Select(zone => zone.ZoneProgram), forceStop, isv);
 		}
 
 		public void Sync(params Zone[] zones)
@@ -86,7 +86,7 @@ namespace ZoneLighting.ZoneNS
 		/// their synchronizable states before executing the synchronization. If no programs are already attached,
 		/// then this method attaches the given program(s) to this context and starts them.
 		/// </summary>
-		public void Sync(IEnumerable<ZoneProgram> zonePrograms, bool forceStop = false)
+		public void Sync(IEnumerable<ZoneProgram> zonePrograms, bool forceStop = false, ISV isv = null)
 		{
 			var incomingZonePrograms = zonePrograms as IList<ZoneProgram> ?? zonePrograms.ToList();
 
@@ -148,7 +148,7 @@ namespace ZoneLighting.ZoneNS
 					{
 						zoneProgram.SetSyncContext(this);
 						ZonePrograms.Add(zoneProgram);
-						zoneProgram.Start(sync: false);
+						zoneProgram.Start(sync: false, isv: isv);
 					});
 
 					//wait for sync-state from all programs (incoming and existing)

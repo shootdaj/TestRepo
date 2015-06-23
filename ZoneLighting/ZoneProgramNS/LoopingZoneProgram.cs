@@ -45,7 +45,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		private bool Running { get; set; }
 
-		public CancellationTokenSource LoopCTS;
+		protected CancellationTokenSource LoopCTS;
 		private Task LoopingTask { get; set; }
 		private Thread RunProgramThread { get; set; }
 

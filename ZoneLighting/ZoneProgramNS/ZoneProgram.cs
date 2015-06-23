@@ -456,7 +456,6 @@ namespace ZoneLighting.ZoneProgramNS
 
 	public enum ProgramState
 	{
-		None,
 		Started,
 		Stopped
 	}

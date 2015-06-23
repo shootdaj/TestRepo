@@ -80,6 +80,15 @@ namespace ZoneLighting.ZoneProgramNS
 		}
 
 		/// <summary>
+		/// Fades a given color to black.
+		/// </summary>
+		public static void FadeToBlack(Color color, int speed, int sleepTime, bool loop, Action<Color> outputMethod,
+			out Color? endingColor, SyncContext syncContext = null, bool reverse = false)
+		{
+			Fade(color, Color.Black, speed, sleepTime, loop, outputMethod, out endingColor, syncContext, reverse);
+		}
+
+		/// <summary>
 		/// Blinks a set of colors holding the color for the given amount of milliseconds.
 		/// </summary>
 		/// <param name="colorsAndHoldTimes">List of tuples of colors and their hold times</param>
@@ -120,7 +129,6 @@ namespace ZoneLighting.ZoneProgramNS
 		private static Random Random { get; } = new Random();
 		public static int RandomIntBetween(int low, int high)
 		{
-			
 			return Random.Next(low, high);
 		}
 
@@ -148,7 +156,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <param name="lowInclusive">Whether or not to include the low bound in calculation. True by default.</param>
 		/// <param name="highInclusive">Whether or not to include the high bound in calculation. True by default.</param>
 		/// <returns></returns>
-		public static bool IsInRange(this int input, int low, int high, bool lowInclusive = true, bool highInclusive = true)
+		public static bool IsInRange(this double input, double low, double high, bool lowInclusive = true, bool highInclusive = true)
 		{
 			if (lowInclusive)
 			{
@@ -162,6 +170,12 @@ namespace ZoneLighting.ZoneProgramNS
 				return input > low && input <= high;
 
 			return input > low && input < high;
+		}
+
+		public static bool IsInRange(this int input, int low, int high, bool lowInclusive = true,
+			bool highInclusive = true)
+		{
+			return ((double)input).IsInRange(low, high, lowInclusive, highInclusive);
 		}
 
 		//public static Color ReduceBrightness(this Color color, int drop)

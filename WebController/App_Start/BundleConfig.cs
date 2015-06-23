@@ -23,8 +23,9 @@ namespace WebController
 					  "~/Scripts/respond.js"));
 
 			bundles.Add(new StyleBundle("~/Content/css").Include(
-					  "~/Content/bootstrap-darkadmin.min.css"
-					  //,"~/Content/site.css"
+					  "~/Content/bootstrap-darkadmin.min.css",
+					  "~/Content/local.css"
+					  ,"~/Content/Site.css"
 					  ));
 
 			// Set EnableOptimizations to false for debugging. For more information,

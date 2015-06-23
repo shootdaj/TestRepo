@@ -42,8 +42,8 @@ namespace ZoneLightingTests
 			zlm.Dispose();
 
 			//assert
-			Assert.That(zlm.ProgramSets, Is.Empty);
-			Assert.That(zlm.Zones, Is.Empty);
+			Assert.That(zlm.ProgramSets, Is.Null);
+			Assert.That(zlm.Zones, Is.Null);
 			//TODO: Assert that all lighting controllers are unintialized
 			Assert.That(ZoneScaffolder.Instance.Initialized, Is.False);
 		}

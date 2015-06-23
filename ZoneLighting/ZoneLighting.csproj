@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="Helpers.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="StockPrograms\Shimmer.cs" />
     <Compile Include="Usables\RunnerHelpers.cs" />
     <Compile Include="StockPrograms\BlinkColorLoop.cs" />
     <Compile Include="StockPrograms\BlinkColorReactive.cs" />

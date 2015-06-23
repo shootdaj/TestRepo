@@ -23,6 +23,13 @@ namespace ZoneLighting.StockPrograms
 		{
 			AddMappedInput<int>(this, "DelayTime");
 			AddMappedInput<Color?>(this, "DotColor");
+
+			var randomGen = new Random();
+			var names = (KnownColor[])Enum.GetValues(typeof(KnownColor));
+			var randomColorName = names[randomGen.Next(names.Length)];
+			var randomColor = Color.FromKnownColor(randomColorName);
+
+			DotColor = randomColor;
 		}
 
 		public override void Loop()

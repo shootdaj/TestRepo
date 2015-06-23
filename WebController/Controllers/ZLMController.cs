@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using ZoneLighting;
 using ZoneLighting.ConfigNS;
@@ -32,7 +33,7 @@ namespace WebController.Controllers
 			return View("Index", new ZLMViewModel());
 		}
 
-		[HttpPost]
+		//[HttpPost]
 		public ActionResult CreateZLM()
 		{
 			bool firstRun;
@@ -81,7 +82,7 @@ namespace WebController.Controllers
 			return View("Index", new ZLMViewModel());
 		}
 
-		[HttpPost]
+		//[HttpPost]
 		public ActionResult StopZone(string zoneName)
 		{
 			ZLMAction(zlm =>
@@ -92,8 +93,9 @@ namespace WebController.Controllers
 			return View("Index", new ZLMViewModel());
 		}
 
-		[HttpPost]
-		public ActionResult ZoneCommand(string Command)
+
+		//[HttpPost]
+		public ActionResult ZLMCommand(string Command)
 		{
 			var split = Command.Split(' ');
 			var command = split[0];
@@ -103,29 +105,72 @@ namespace WebController.Controllers
 			{
 				if (zoneString == "All")
 					ZLMAction(zlm =>
-					{ zlm.ProgramSets["RainbowSet"].StartAllPrograms(); });
-				//ZoneLightingManager.Instance.Zones.ToList().ForEach(zone => zone.ZoneProgram.Start(sync: true));
+					{
+						Parallel.ForEach(zlm.ProgramSets, programSet =>
+						{
+							programSet.Start();
+						});
+					});
 				else
 					ZLMAction(zlm =>
 					{
-						zlm.Zones.First(z => z.Name == zoneString).ZoneProgram.Start(sync: true);
+						zlm.ProgramSets.First(z => z.Name == zoneString).Start();
 					});
 			}
 			else if (command == "Stop")
 			{
 				if (zoneString == "All")
 					ZLMAction(zlm =>
-					{ zlm.ProgramSets["RainbowSet"].StopAllPrograms(); });
+					{
+						Parallel.ForEach(zlm.ProgramSets, programSet =>
+						{
+							programSet.Stop();
+						});
+					});
 				else
 					ZLMAction(zlm =>
 					{
-						zlm.Zones.First(z => z.Name == zoneString).ZoneProgram.Stop(true);
+						zlm.ProgramSets.First(z => z.Name == zoneString).Stop();
 					});
-
 			}
 
 			return View("Index", new ZLMViewModel());
 		}
+
+		//[HttpPost]
+		//public ActionResult ZoneCommand(string Command)
+		//{
+		//	var split = Command.Split(' ');
+		//	var command = split[0];
+		//	var zoneString = split[1];
+
+		//	if (command == "Start")
+		//	{
+		//		if (zoneString == "All")
+		//			ZLMAction(zlm =>
+		//			{ zlm.ProgramSets["RainbowSet"].StartAllPrograms(); });
+		//		//ZoneLightingManager.Instance.Zones.ToList().ForEach(zone => zone.ZoneProgram.Start(sync: true));
+		//		else
+		//			ZLMAction(zlm =>
+		//			{
+		//				zlm.Zones.First(z => z.Name == zoneString).ZoneProgram.Start(sync: true);
+		//			});
+		//	}
+		//	else if (command == "Stop")
+		//	{
+		//		if (zoneString == "All")
+		//			ZLMAction(zlm =>
+		//			{ zlm.ProgramSets["RainbowSet"].StopAllPrograms(); });
+		//		else
+		//			ZLMAction(zlm =>
+		//			{
+		//				zlm.Zones.First(z => z.Name == zoneString).ZoneProgram.Stop(true);
+		//			});
+
+		//	}
+
+		//	return View("Index", new ZLMViewModel());
+		//}
 
 		public ActionResult Notify(string colorString, int? time = 60, int? cycles = 2)
 		{

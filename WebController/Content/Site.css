@@ -1,21 +1,17 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿/*.on {
+	background-color: powderblue;
+	color: darkblue;
+}*/
+
+/*highlights the rows on mouseover*/
+
+
+.table-hover > tbody > tr:hover > td, .table-hover > tbody > tr:hover > th {
+	background-color: #550055;
+	color: #eeeeee;
 }
 
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
-}
-
-.zlmContainer {
-	margin: 20px;
+.table-hover > tbody > tr > td.on {
+	background-color: mediumseagreen;
+	color: rgb(32, 54, 54);
 }

@@ -98,7 +98,8 @@ namespace ZoneLighting.ZoneNS
 			//TODO: This equation is not correct. Check the following links
 			//1. http://www.nbdtech.com/Blog/archive/2008/04/27/Calculating-the-Perceived-Brightness-of-a-Color.aspx
 			//2. http://stackoverflow.com/questions/596216/formula-to-determine-brightness-of-rgb-color
-			var brightnessAdjustedColor = color; //TODO: Change //Color.FromArgb((int) (255*Brightness), color.R, color.G, color.B);
+			//var brightnessAdjustedColor = color; //TODO: Change //Color.FromArgb((int) (255*Brightness), color.R, color.G, color.B);
+			var brightnessAdjustedColor = color.Darken(Brightness); //TODO: Change //Color.FromArgb((int) (255*Brightness), color.R, color.G, color.B);
 
 			if (index == null)
 				Lights.SetColor(brightnessAdjustedColor);

@@ -132,10 +132,10 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 			get { return ZoneProgramFactories.Select(x => x.Metadata.Name); }
 		}
 
-		public Zone AddFadeCandyZone(BetterList<Zone> zones, string name, PixelType pixelType, int numberOfLights, int channel)
+		public Zone AddFadeCandyZone(BetterList<Zone> zones, string name, PixelType pixelType, int numberOfLights, int channel, double? brightness = null)
 		{
 			//create new zone
-			var zone = new FadeCandyZone(name);
+			var zone = new FadeCandyZone(name, brightness);
 			//add lights and add zone to collection
 			((FadeCandyZone)zones.Add(zone)).AddFadeCandyLights(pixelType, numberOfLights, (byte)channel);
 			return zone;

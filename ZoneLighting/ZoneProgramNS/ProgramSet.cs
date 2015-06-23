@@ -41,6 +41,19 @@ namespace ZoneLighting.ZoneProgramNS
 		/// </summary>
 		IEnumerable<ZoneProgram> ITestProgramSet.ZoneProgramsTest => ZonePrograms;
 
+		public ProgramState State
+		{
+			get
+			{
+				var previousState = ZonePrograms.First().State;
+				if (ZonePrograms.Any(zoneProgram => zoneProgram.State != previousState))
+				{
+					throw new Exception("Program Set in inconsistent state. Some programs are started while others are not.");
+				}
+				return previousState;
+			}
+		}
+
 		public ProgramSet(string programName, IEnumerable<Zone> zones, bool sync, ISV isv, string setName)
 		{
 			if (!ZoneScaffolder.Instance.DoesProgramExist(programName))
@@ -56,11 +69,11 @@ namespace ZoneLighting.ZoneProgramNS
 				Zones.ForEach(zone =>
 				{
 					zone.Stop(true);
-					ZoneScaffolder.Instance.RunZone(zone, programName, isv, true, SyncContext, true);
+					ZoneScaffolder.Instance.RunZone(zone, programName, null, true, SyncContext, true);
 				});
 
 				SyncContext = new SyncContext();
-				SyncContext.Sync(Zones);
+				SyncContext.Sync(Zones, isv: isv);
 			}
 			else
 			{
@@ -70,6 +83,20 @@ namespace ZoneLighting.ZoneProgramNS
 					ZoneScaffolder.Instance.RunZone(zone, programName, isv);
 				});
 			}
+		}
+
+		/// <summary>
+		/// Creates a program set with a single program on a single zone.
+		/// </summary>
+		public ProgramSet(ZoneProgram program, Zone zone, ISV isv, string setName)
+		{
+			Name = setName;
+			ProgramName = program.Name;
+			Sync = false;
+
+			zone.Stop(true);
+			//ZoneScaffolder.Instance.RunZone(zone, "", isv);
+			zone.Run(program, isv);
 		}
 
 		public void RemoveZone(Zone zone, bool force = true)
@@ -86,7 +113,8 @@ namespace ZoneLighting.ZoneProgramNS
 		public void Dispose(bool force)
 		{
 			Name = null;
-			Parallel.ForEach(Zones, zone => zone.Stop(force));
+			if (Zones != null)
+				Parallel.ForEach(Zones, zone => zone.Stop(force));
 			//Zones.ForEach(zone => zone.Stop(force));
 			Zones = null;
 			ProgramName = null;
@@ -94,7 +122,7 @@ namespace ZoneLighting.ZoneProgramNS
 			SyncContext = null;
 		}
 
-		public void StartAllPrograms()
+		public void Start()
 		{
 			if (SyncContext == null)
 				ZonePrograms.ForEach(zp => zp.Start());
@@ -102,9 +130,9 @@ namespace ZoneLighting.ZoneProgramNS
 				SyncContext.Sync(ZonePrograms);
 		}
 
-		public void StopAllPrograms(bool force = false)
+		public void Stop(bool force = false)
 		{
-			ZonePrograms.ForEach(zp => zp.Stop(force));
+			Parallel.ForEach(ZonePrograms, zp => zp.Stop(force));
 		}
 	}
 }

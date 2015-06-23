@@ -73,7 +73,19 @@ namespace ZoneLighting
 			var zonesList = zones as IList<Zone> ?? zones.ToList();
 			if (zonesList.Any(z => !AvailableZones.Contains(z))) throw new Exception("Some of the provided zones are not available.");
 
-			var programSet = new ProgramSet(programName, zonesList, sync, null, programSetName);
+			var programSet = new ProgramSet(programName, zonesList, sync, isv, programSetName);
+			ProgramSets.Add(programSet);
+			return programSet;
+		}
+
+		/// <summary>
+		/// Creates a ProgramSet with a program instance
+		/// </summary>
+		public ProgramSet CreateSingleProgramSet(string programSetName, ZoneProgram program, ISV isv, Zone zone)
+		{
+			if (!AvailableZones.Contains(zone)) throw new Exception("Some of the provided zones are not available.");
+
+			var programSet = new ProgramSet(program, zone, isv, programSetName);
 			ProgramSets.Add(programSet);
 			return programSet;
 		}
@@ -115,15 +127,15 @@ namespace ZoneLighting
 		/// <summary>
 		/// List of ProgramSets that are being managed by this class.
 		/// </summary>
-		public BetterList<ProgramSet> ProgramSets { get; } = new BetterList<ProgramSet>();
+		public BetterList<ProgramSet> ProgramSets { get; private set; } = new BetterList<ProgramSet>();
 
 		#endregion
 
 		#region C+I
 
-		public ZLM(bool loadZoneModules = false, bool loadZonesFromConfig = true, bool loadProgramSetsFromConfig = true, Action<ZLM> initAction = null)
+		public ZLM(bool loadZoneModules = false, bool loadZonesFromConfig = true, bool loadProgramSetsFromConfig = true, Action<ZLM> initAction = null, string fadeCandyConfigFilePath = null)
 		{
-			InitLightingControllers();
+			InitLightingControllers(fadeCandyConfigFilePath);
 			InitZoneScaffolder();
 			if (loadZoneModules && ExternalZoneContainer != null)
 				ComposeWithExternalModules();
@@ -134,31 +146,12 @@ namespace ZoneLighting
 			initAction?.Invoke(this);
 		}
 
-		//public bool Initialized { get; private set; }
-
-		//public void Initialize(bool loadZoneModules = false, bool loadZonesFromConfig = true, bool loadProgramSetsFromConfig = true, Action<ZLM> initAction = null)
-		//{
-		//	if (!Initialized)
-		//	{
-		//		InitLightingControllers();
-		//		InitZoneScaffolder();
-		//		if (loadZoneModules && ExternalZoneContainer != null)
-		//			ComposeWithExternalModules();
-		//		if (loadZonesFromConfig)
-		//			LoadZonesFromConfig();
-		//		if (loadProgramSetsFromConfig)
-		//			LoadProgramSetsFromConfig();
-		//		initAction?.Invoke(this);
-		//		Initialized = true;
-		//	}
-		//}
-
 		/// <summary>
 		/// Add code here to initialize any other lighting controllers.
 		/// </summary>
-		private void InitLightingControllers()
+		private void InitLightingControllers(string configFilePath)
 		{
-			FadeCandyController.Instance.Initialize();
+			FadeCandyController.Instance.Initialize(configFilePath);
 		}
 
 		/// <summary>
@@ -197,6 +190,7 @@ namespace ZoneLighting
 		{
 			ProgramSets.ForEach(programSet => programSet.Dispose());
 			ProgramSets.Clear();
+			ProgramSets = null;
 		}
 
 		public void Dispose()
@@ -207,8 +201,7 @@ namespace ZoneLighting
 			UninitZoneScaffolder();
 			ExternalZoneContainer?.Dispose();
 			ExternalZoneContainer = null;
-			Zones.Clear();
-			Zones = null;
+			
 		}
 
 		private void DisposeZones()
@@ -218,6 +211,7 @@ namespace ZoneLighting
 				zone.Dispose();
 			});
 			Zones.Clear();
+			Zones = null;
 		}
 
 		#endregion

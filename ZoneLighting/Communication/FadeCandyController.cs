@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using WebSocketSharp;
+using ZoneLighting.ConfigNS;
 using ZoneLighting.Usables;
 
 namespace ZoneLighting.Communication
@@ -14,7 +15,7 @@ namespace ZoneLighting.Communication
 	/// This class is used to connect and send/receive messages to a FadeCandy
 	/// board using WebSockets.
 	/// </summary>
-	public class FadeCandyController : LightingController, IInitializable
+	public class FadeCandyController : LightingController
 	{
 		#region Singleton
 
@@ -32,7 +33,7 @@ namespace ZoneLighting.Communication
 		/// URL for the server on which FadeCandy is running.
 		/// </summary>
 		public string ServerURL { get; private set; }
-
+		
 		/// <summary>
 		/// The WebSocket that will be used to send/receive messages to/from the FadeCandy board.
 		/// </summary>
@@ -53,41 +54,41 @@ namespace ZoneLighting.Communication
 
 		public bool FCServerRunning { get; private set; } = false;
 
-		public void Initialize()
+		public void Initialize(string configFilePath = null)
 		{
 			if (!Initialized)
 			{
-				StartFCServer();
+				StartFCServer(configFilePath ?? ConfigurationManager.AppSettings["FCServerConfigFilePath"]);
 				WebSocket = new WebSocket(ServerURL);
 				Connect();
 				Initialized = true;
 			}
 		}
 
-		private void StartFCServer(bool createWindow = false)
+		private void StartFCServer(string configFilePath, bool createWindow = false)
 		{
 			//need to set this because otherwise for WebController, the file is loaded from c:\windows\system32\inetsrv probably
 			//because that's where w3wp.exe is or something.. who knows.
 			Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
 			var execExists = File.Exists(ConfigurationManager.AppSettings["FCServerExecutablePath"]);
-			var configExists = File.Exists(ConfigurationManager.AppSettings["FCServerConfigFilePath"]);
+			var configExists = File.Exists(configFilePath);
 			if (!execExists)
 				throw new Exception(
 					"fcserver.exe not found at specified location. Please update the location in the config file. BaseDirectory: " +
 					AppDomain.CurrentDomain.BaseDirectory + ". Looking for path: " +
-					Path.GetFullPath(ConfigurationManager.AppSettings["FCServerExecutablePath"]) + ". Environment Directory: " + Environment.CurrentDirectory);
+					Path.GetFullPath(Config.Get("FCServerExecutablePath")) + ". Environment Directory: " + Environment.CurrentDirectory);
 			if (!configExists)
 				throw new Exception(
 					"FCServer configuration file not found at specified location. Please update the location in the config file. BaseDirectory: " +
 					AppDomain.CurrentDomain.BaseDirectory + ". Looking for path: " +
-					Path.GetFullPath(ConfigurationManager.AppSettings["FCServerConfigFilePath"]) + ". Environment Directory: " + Environment.CurrentDirectory);
+					Path.GetFullPath(configFilePath) + ". Environment Directory: " + Environment.CurrentDirectory);
 
 			if (FCServerRunning) return;
 			var cmdInfo = new ProcessStartInfo
 			{
-				FileName = ConfigurationManager.AppSettings["FCServerExecutablePath"],
-				Arguments = ConfigurationManager.AppSettings["FCServerConfigFilePath"],
+				FileName = Config.Get("FCServerExecutablePath"),
+				Arguments = configFilePath,
 				UseShellExecute = false,
 				RedirectStandardOutput = true,
 				CreateNoWindow = !createWindow
@@ -168,10 +169,10 @@ namespace ZoneLighting.Communication
 		public override void SendPixelFrame(IPixelFrame opcPixelFrame)
 		{
 			var byteArray = ((OPCPixelFrame)opcPixelFrame).ToByteArray();
-			var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
-			byteArray.ToList().ForEach(x => byteArrayString += x + ",");
-			byteArrayString += "}";
-			Debug.Print(byteArrayString);
+			//var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
+			//byteArray.ToList().ForEach(x => byteArrayString += x + ",");
+			//byteArrayString += "}";
+			//Debug.Print(byteArrayString);
 			AssertInit();
 			if (WebSocket.ReadyState == WebSocketState.Closed)
 				Connect();
