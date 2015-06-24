@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using NUnit.Framework;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneProgramNS;
@@ -22,10 +23,10 @@ namespace ZoneLightingTests
 		}
 		
 		[Test]
-		public void AddMappedInput_InputNotInRange_DoesNotSetInput()
+		public void AddMappedInput_InputNotInRange_DoesNotSetInput_ThrowsWarningException()
 		{
 			var rainbow = new Rainbow();
-			rainbow.SetInput("Speed", 101);
+			Assert.Throws<WarningException>(() => rainbow.SetInput("Speed", 101));
 			Assert.AreNotEqual(rainbow.Speed, 101);
 		}
 

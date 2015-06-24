@@ -99,11 +99,14 @@ namespace WebController.Controllers
 		{
 			var split = Command.Split(' ');
 			var command = split[0];
-			var zoneString = split[1];
+			var arg1 = split[1];
+			var arg2 = "";
+			if (split.Length > 2 )
+				arg2 = split[2];
 
 			if (command == "Start")
 			{
-				if (zoneString == "All")
+				if (arg1 == "All")
 					ZLMAction(zlm =>
 					{
 						Parallel.ForEach(zlm.ProgramSets, programSet =>
@@ -114,12 +117,12 @@ namespace WebController.Controllers
 				else
 					ZLMAction(zlm =>
 					{
-						zlm.ProgramSets.First(z => z.Name == zoneString).Start();
+						zlm.ProgramSets.First(z => z.Name == arg1).Start();
 					});
 			}
 			else if (command == "Stop")
 			{
-				if (zoneString == "All")
+				if (arg1 == "All")
 					ZLMAction(zlm =>
 					{
 						Parallel.ForEach(zlm.ProgramSets, programSet =>
@@ -130,47 +133,27 @@ namespace WebController.Controllers
 				else
 					ZLMAction(zlm =>
 					{
-						zlm.ProgramSets.First(z => z.Name == zoneString).Stop();
+						zlm.ProgramSets.First(z => z.Name == arg1).Stop();
 					});
+			}
+			else if (command == "SetZoneColor")
+			{
+				
 			}
 
 			return View("Index", new ZLMViewModel());
 		}
 
-		//[HttpPost]
-		//public ActionResult ZoneCommand(string Command)
-		//{
-		//	var split = Command.Split(' ');
-		//	var command = split[0];
-		//	var zoneString = split[1];
+		public ActionResult SetZoneColor(string zoneName, string color)
+		{
+			ZLMAction(zlm =>
+			{
+				zlm.Zones[zoneName].SetColor(Color.FromName(color));
+				zlm.Zones[zoneName].SendLights(zlm.Zones[zoneName].LightingController);
+			});
 
-		//	if (command == "Start")
-		//	{
-		//		if (zoneString == "All")
-		//			ZLMAction(zlm =>
-		//			{ zlm.ProgramSets["RainbowSet"].StartAllPrograms(); });
-		//		//ZoneLightingManager.Instance.Zones.ToList().ForEach(zone => zone.ZoneProgram.Start(sync: true));
-		//		else
-		//			ZLMAction(zlm =>
-		//			{
-		//				zlm.Zones.First(z => z.Name == zoneString).ZoneProgram.Start(sync: true);
-		//			});
-		//	}
-		//	else if (command == "Stop")
-		//	{
-		//		if (zoneString == "All")
-		//			ZLMAction(zlm =>
-		//			{ zlm.ProgramSets["RainbowSet"].StopAllPrograms(); });
-		//		else
-		//			ZLMAction(zlm =>
-		//			{
-		//				zlm.Zones.First(z => z.Name == zoneString).ZoneProgram.Stop(true);
-		//			});
-
-		//	}
-
-		//	return View("Index", new ZLMViewModel());
-		//}
+			return View("Index", new ZLMViewModel());
+		}
 
 		public ActionResult Notify(string colorString, int? time = 60, int? cycles = 2)
 		{

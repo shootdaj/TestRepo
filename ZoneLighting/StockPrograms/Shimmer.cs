@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ZoneLighting.ZoneNS;
@@ -35,35 +33,51 @@ namespace ZoneLighting.StockPrograms
 			AddMappedInput<double>(this, "Brightness", i => i.IsInRange(0, 1));
 		}
 
-		private List<Task> Tasks = new List<Task>();
+		private readonly List<Task> Tasks = new List<Task>();
 
 		private bool[] PixelStates;
 
 		private Dictionary<int, Color> ColorsToSend { get; } = new Dictionary<int, Color>();
 
+		protected override void StartSubCore()
+		{
+			for (int i = 0; i < Density; i++)
+			{
+				Tasks.Add(new Task(SingleShimmer, TaskCreationOptions.LongRunning));
+			}
+			PixelStates = new bool[Zone.LightCount];
+			ShimmerCTS = new CancellationTokenSource();
+		}
+
 		public override void Loop()
 		{
-			if (Tasks.Count == 0)
+			if (!ShimmerCTS.IsCancellationRequested)
 			{
-				for (int i = 0; i < Density; i++)
+				for (int i = 0; i < Tasks.Count; i++)
 				{
-					Tasks.Add(new Task(SingleShimmer, TaskCreationOptions.LongRunning));
-				}
-			}
-
-			if (PixelStates == null)
-				PixelStates = new bool[Zone.LightCount];
-
-			for (int i = 0; i < Tasks.Count; i++)
-			{
-				if (Tasks[i].Status != TaskStatus.Running && Tasks[i].Status != TaskStatus.WaitingToRun)
-				{
-					Tasks[i] = new Task(SingleShimmer, TaskCreationOptions.LongRunning);
-					Tasks[i].Start();
+					if (Tasks[i].Status != TaskStatus.Running && Tasks[i].Status != TaskStatus.WaitingToRun)
+					{
+						Tasks[i] = new Task(SingleShimmer, TaskCreationOptions.LongRunning);
+						Tasks[i].Start();
+					}
 				}
 			}
 
 			SendColors(ColorsToSend);
+		}
+
+		private CancellationTokenSource ShimmerCTS { get; set; } = new CancellationTokenSource();
+
+		protected override void StopSubCore(bool force)
+		{
+			ShimmerCTS.Cancel();
+			Task.WaitAll(Tasks.ToArray());
+			Tasks.ForEach(task =>
+			{
+				task.Dispose();
+			});
+			Tasks.Clear();
+			PixelStates = null;
 		}
 
 		private void SingleShimmer()
@@ -85,7 +99,7 @@ namespace ZoneLighting.StockPrograms
 					ColorsToSend[pixelToShine] = color;
 				}
 
-			}, out endingColor);
+			}, out endingColor, cts: ShimmerCTS);
 
 			ProgramCommon.FadeToBlack(GetColor(pixelToShine), fadeSpeed, delayTime, false, color =>
 			{
@@ -94,9 +108,12 @@ namespace ZoneLighting.StockPrograms
 					ColorsToSend[pixelToShine] = color;
 				}
 
-			}, out endingColor);
+			}, out endingColor, cts: ShimmerCTS);
 
 			PixelStates[pixelToShine] = false;
+
+			if (ShimmerCTS.IsCancellationRequested)
+				return;
 		}
 	}
 }

@@ -93,7 +93,7 @@ namespace ZoneLighting.ZoneNS
 			return Lights[index].GetColor();
 		}
 
-		public void SetColor(Color color, int? index)
+		public void SetColor(Color color, int? index = null)
 		{
 			//TODO: This equation is not correct. Check the following links
 			//1. http://www.nbdtech.com/Blog/archive/2008/04/27/Calculating-the-Perceived-Brightness-of-a-Color.aspx

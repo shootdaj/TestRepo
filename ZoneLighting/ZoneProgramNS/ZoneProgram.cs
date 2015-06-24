@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
@@ -350,6 +351,10 @@ namespace ZoneLighting.ZoneProgramNS
 					if (filterPredicate((T) incomingValue) == true)
 					{
 						propertyInfo.SetValue(instance, incomingValue);
+					}
+					else
+					{
+						throw new WarningException("Incoming value out of range of valid input values.");
 					}
 				});
 			else

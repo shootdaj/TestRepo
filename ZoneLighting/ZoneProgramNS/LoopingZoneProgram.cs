@@ -25,8 +25,8 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public override void Dispose(bool force)
 		{
-			Unsetup();
 			base.Dispose(force);
+			Unsetup();
 			LoopCTS?.Dispose();
 			LoopCTS = null;
 			IsSynchronizable?.Dispose();
@@ -214,12 +214,20 @@ namespace ZoneLighting.ZoneProgramNS
 			//StartTrigger.Fire(this, null);
 			//if (isSyncRequested)
 			//	RequestSyncState();
+			StartSubCore();
 
 			StartLoop();
 		}
 
+		protected virtual void StartSubCore() { }
+
+		protected virtual void StopSubCore(bool force) { }
+
 		protected override void StopCore(bool force)
 		{
+			//subclass processing
+			StopSubCore(force);
+
 			DebugTools.AddEvent("LoopingZoneProgram.StopCore", "STOP " + Name);
 			//DebugTools.AddEvent("LoopingZoneProgram.StopCore", "Canceling Sync-State on Program " + Name);
 

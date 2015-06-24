@@ -74,8 +74,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if not exist $(TargetDir)Programs mkdir $(TargetDir)Programs
-copy $(TargetPath) $(TargetDir)Programs\$(TargetFileName)
-copy $(TargetPath) $(SolutionDir)Tests\ZoneLightingTests\Resources\Programs\$(TargetFileName)</PostBuildEvent>
+xcopy "$(TargetPath)"  "$(TargetDir)Programs\$(TargetFileName)" /Y
+xcopy "$(TargetPath)" "$(SolutionDir)Tests\ZoneLightingTests\Resources\Programs\$(TargetFileName)" /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

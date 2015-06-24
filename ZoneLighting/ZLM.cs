@@ -68,10 +68,12 @@ namespace ZoneLighting
 		/// <param name="sync"></param>
 		/// <param name="isv"></param>
 		/// <param name="zones"></param>
-		public ProgramSet CreateProgramSet(string programSetName, string programName, bool sync, ISV isv, IEnumerable<Zone> zones)
+		public ProgramSet CreateProgramSet(string programSetName, string programName, bool sync, ISV isv,
+			IEnumerable<Zone> zones)
 		{
 			var zonesList = zones as IList<Zone> ?? zones.ToList();
-			if (zonesList.Any(z => !AvailableZones.Contains(z))) throw new Exception("Some of the provided zones are not available.");
+			if (zonesList.Any(z => !AvailableZones.Contains(z)))
+				throw new Exception("Some of the provided zones are not available.");
 
 			var programSet = new ProgramSet(programName, zonesList, sync, isv, programSetName);
 			ProgramSets.Add(programSet);
@@ -110,7 +112,7 @@ namespace ZoneLighting
 		/// <summary>
 		/// All zones that can be managed by this class.
 		/// </summary>
-		[ImportMany(typeof(Zone), AllowRecomposition = true)]
+		[ImportMany(typeof (Zone), AllowRecomposition = true)]
 		public BetterList<Zone> Zones { get; private set; } = new BetterList<Zone>();
 
 		/// <summary>
@@ -133,7 +135,8 @@ namespace ZoneLighting
 
 		#region C+I
 
-		public ZLM(bool loadZoneModules = false, bool loadZonesFromConfig = true, bool loadProgramSetsFromConfig = true, Action<ZLM> initAction = null, string fadeCandyConfigFilePath = null)
+		public ZLM(bool loadZoneModules = false, bool loadZonesFromConfig = true, bool loadProgramSetsFromConfig = true,
+			Action<ZLM> initAction = null, string fadeCandyConfigFilePath = null)
 		{
 			InitLightingControllers(fadeCandyConfigFilePath);
 			InitZoneScaffolder();
@@ -177,7 +180,7 @@ namespace ZoneLighting
 		{
 			ZoneScaffolder.Instance.Uninitialize();
 		}
-		
+
 		private void StopZones()
 		{
 			Parallel.ForEach(Zones, zone =>
@@ -201,7 +204,7 @@ namespace ZoneLighting
 			UninitZoneScaffolder();
 			ExternalZoneContainer?.Dispose();
 			ExternalZoneContainer = null;
-			
+
 		}
 
 		private void DisposeZones()
@@ -221,12 +224,13 @@ namespace ZoneLighting
 		private void LoadZonesFromConfig(string filename = null)
 		{
 			Zones.AddRange(Config.DeserializeZones(File.ReadAllText(filename ?? Config.Get("ZoneConfigurationSaveFile",
-					"Zone configuration save file not found."))));
+				"Zone configuration save file not found."))));
 		}
 
 		private void LoadProgramSetsFromConfig(string filename = null)
 		{
-			ProgramSets.AddRange(Config.DeserializeProgramSets(File.ReadAllText(filename ?? Config.Get("ProgramSetConfigurationSaveFile",
+			ProgramSets.AddRange(
+				Config.DeserializeProgramSets(File.ReadAllText(filename ?? Config.Get("ProgramSetConfigurationSaveFile",
 					"Program Set configuration save file not found.")), Zones));
 		}
 
@@ -238,7 +242,8 @@ namespace ZoneLighting
 
 		public void SaveZones(string filename = null)
 		{
-			Config.SaveZones(Zones, filename ?? Config.Get("ZoneConfigurationSaveFile", "Zone configuration save file not found."));
+			Config.SaveZones(Zones,
+				filename ?? Config.Get("ZoneConfigurationSaveFile", "Zone configuration save file not found."));
 		}
 
 		#endregion
@@ -257,7 +262,7 @@ namespace ZoneLighting
 				var assembly = Assembly.LoadFrom(file);
 
 				if (assembly.GetCustomAttributesData()
-					.Any(ass => ass.AttributeType == typeof(ZoneAssemblyAttribute)))
+					.Any(ass => ass.AttributeType == typeof (ZoneAssemblyAttribute)))
 				{
 					fileCatalogs.Add(new AssemblyCatalog(assembly));
 					//this may be required to be uncommented in the future
@@ -278,11 +283,7 @@ namespace ZoneLighting
 		//	ExternalProgramCatalog.Refresh();
 		//	ExternalProgramContainer.ComposeParts(this);
 		//}
-
+		
 		#endregion
-
-
-
-
 	}
 }

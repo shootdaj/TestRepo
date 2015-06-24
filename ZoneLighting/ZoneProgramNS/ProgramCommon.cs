@@ -29,7 +29,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <param name="speed">The higher the speed, the more abruptly the colors will change. Max is 127.</param>
 		/// <param name="sleepTime">How long each color set is displayed</param>
 		/// <param name="loop">Whether or not to loop forever</param>
-		public static void Fade(Color color1, Color color2, int speed, int sleepTime, bool loop, Action<Color> outputMethod, out Color? endingColor, SyncContext syncContext = null, bool reverse = false)
+		public static void Fade(Color color1, Color color2, int speed, int sleepTime, bool loop, Action<Color> outputMethod, out Color? endingColor, SyncContext syncContext = null, bool reverse = false, CancellationTokenSource cts = null)
 		{
 			if (speed > 127)
 				throw new Exception("Speed cannot exceed 127.");
@@ -77,15 +77,18 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 
 			endingColor = currentColor;
+
+			if (cts != null && cts.IsCancellationRequested)
+				return;
 		}
 
 		/// <summary>
 		/// Fades a given color to black.
 		/// </summary>
 		public static void FadeToBlack(Color color, int speed, int sleepTime, bool loop, Action<Color> outputMethod,
-			out Color? endingColor, SyncContext syncContext = null, bool reverse = false)
+			out Color? endingColor, SyncContext syncContext = null, bool reverse = false, CancellationTokenSource cts = null)
 		{
-			Fade(color, Color.Black, speed, sleepTime, loop, outputMethod, out endingColor, syncContext, reverse);
+			Fade(color, Color.Black, speed, sleepTime, loop, outputMethod, out endingColor, syncContext, reverse, cts);
 		}
 
 		/// <summary>
