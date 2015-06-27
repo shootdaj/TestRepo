@@ -128,6 +128,11 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			return Color.FromArgb(RandomIntBetween(0, 255), RandomIntBetween(0, 255), RandomIntBetween(0, 255));
 		}
+
+		public static Color GetSchemeColor()
+		{
+			return ColorScheme.VibrantBrights.ElementAt(RandomIntBetween(0, ColorScheme.VibrantBrights.Count - 1));
+		}
 		
 		private static Random Random { get; } = new Random();
 		public static int RandomIntBetween(int low, int high)
@@ -141,6 +146,20 @@ namespace ZoneLighting.ZoneProgramNS
 			zone.SortedLights.Keys.ToList().ForEach(lightIndex => colors.Add(lightIndex, Color.Black));
 			return colors;
 		}
+	}
+
+	public class ColorScheme
+	{
+		public static List<Color> VibrantBrights => new List<Color>()
+		{
+			Color.Chartreuse,
+			Color.DarkOrchid,
+			Color.Aqua,
+			Color.Yellow,
+			Color.Fuchsia,
+			Color.LimeGreen,
+			Color.CadetBlue
+		};
 	}
 
 	public static class ProgramExtensions

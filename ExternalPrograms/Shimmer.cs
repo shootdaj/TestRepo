@@ -20,8 +20,9 @@ namespace ExternalPrograms
 		public int MaxFadeDelay { get; set; } = 1;
 		public int Density { get; set; } = 1;
 		public double Brightness { get; set; } = 1.0;
+		public bool Random { get; set; } = true;
 
-		private readonly Random Random = new Random();
+		private readonly Random RandomGen = new Random();
 
 		public override SyncLevel SyncLevel { get; set; } = SyncLevel.None;
 
@@ -29,8 +30,9 @@ namespace ExternalPrograms
 		{
 			AddMappedInput<int>(this, "MaxFadeSpeed", i => i.IsInRange(1, 127));
 			AddMappedInput<int>(this, "MaxFadeDelay", i => i.IsInRange(0, 100));
-			AddMappedInput<int>(this, "Density", i => i.IsInRange(1, Zone.LightCount * 2));
+			AddMappedInput<int>(this, "Density", i => i.IsInRange(1, Zone.LightCount));
 			AddMappedInput<double>(this, "Brightness", i => i.IsInRange(0, 1));
+			AddMappedInput<bool>(this, "Random");
 		}
 
 		private readonly List<Task> Tasks = new List<Task>();
@@ -47,6 +49,7 @@ namespace ExternalPrograms
 			}
 			PixelStates = new bool[Zone.LightCount];
 			ShimmerCTS = new CancellationTokenSource();
+			SendColor(Color.Black);
 		}
 
 		public override void Loop()
@@ -82,14 +85,16 @@ namespace ExternalPrograms
 
 		private void SingleShimmer()
 		{
-			int pixelToShine = Random.Next(Zone.LightCount);
+			int pixelToShine = RandomGen.Next(Zone.LightCount - 1);
 			while (PixelStates[pixelToShine])
 			{
-				pixelToShine = Random.Next(Zone.LightCount);
+				pixelToShine = RandomGen.Next(Zone.LightCount - 1);
 			}
 			PixelStates[pixelToShine] = true;
-			var fadeSpeed = Random.Next(MaxFadeSpeed);
-			var delayTime = Random.Next(MaxFadeDelay);
+			var fadeSpeed = Random ?
+				RandomGen.Next(MaxFadeSpeed) : MaxFadeSpeed;
+			var delayTime = Random ?
+				RandomGen.Next(MaxFadeDelay) : MaxFadeDelay;
 			Color? endingColor;
 
 			ProgramCommon.Fade(Color.Black, ProgramCommon.GetRandomColor().Darken(Brightness), fadeSpeed, delayTime, false, color =>

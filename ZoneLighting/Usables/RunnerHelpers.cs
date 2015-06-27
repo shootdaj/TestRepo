@@ -97,6 +97,8 @@ namespace ZoneLighting.Usables
 			isv.Add("MaxFadeSpeed", 1);
 			isv.Add("MaxFadeDelay", 20);
 			isv.Add("Density", 32);
+			isv.Add("Brightness", 0.5);
+			isv.Add("Random", true);
 			var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix", PixelType.FadeCandyWS2812Pixel,
 				64, 1);
 			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);

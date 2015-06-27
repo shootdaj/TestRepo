@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using ZoneLighting;
 using ZoneLighting.ConfigNS;
 using ZoneLighting.Usables;
+using ZoneLighting.ZoneProgramNS;
 
 namespace WebController.Controllers
 {
@@ -144,11 +145,11 @@ namespace WebController.Controllers
 			return View("Index", new ZLMViewModel());
 		}
 
-		public ActionResult SetZoneColor(string zoneName, string color)
+		public ActionResult SetZoneColor(string zoneName, string color, float brightness)
 		{
 			ZLMAction(zlm =>
 			{
-				zlm.Zones[zoneName].SetColor(Color.FromName(color));
+				zlm.Zones[zoneName].SetColor(Color.FromName(color).Darken(brightness));
 				zlm.Zones[zoneName].SendLights(zlm.Zones[zoneName].LightingController);
 			});
 
