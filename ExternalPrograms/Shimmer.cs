@@ -97,7 +97,7 @@ namespace ExternalPrograms
 				RandomGen.Next(MaxFadeDelay) : MaxFadeDelay;
 			Color? endingColor;
 
-			ProgramCommon.Fade(Color.Black, ProgramCommon.GetRandomColor().Darken(Brightness), fadeSpeed, delayTime, false, color =>
+			ProgramCommon.Fade(Color.Black, ProgramCommon.GetSchemeColor().Darken(Brightness), fadeSpeed, delayTime, false, color =>
 			{
 				lock (ColorsToSend)
 				{

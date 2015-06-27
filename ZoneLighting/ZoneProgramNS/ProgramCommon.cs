@@ -131,7 +131,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public static Color GetSchemeColor()
 		{
-			return ColorScheme.VibrantBrights.ElementAt(RandomIntBetween(0, ColorScheme.VibrantBrights.Count - 1));
+			return ColorScheme.Primaries.ElementAt(RandomIntBetween(0, ColorScheme.Primaries.Count));
 		}
 		
 		private static Random Random { get; } = new Random();
@@ -150,15 +150,12 @@ namespace ZoneLighting.ZoneProgramNS
 
 	public class ColorScheme
 	{
-		public static List<Color> VibrantBrights => new List<Color>()
+		public static List<Color> Primaries => new List<Color>()
 		{
-			Color.Chartreuse,
-			Color.DarkOrchid,
-			Color.Aqua,
-			Color.Yellow,
-			Color.Fuchsia,
-			Color.LimeGreen,
-			Color.CadetBlue
+			Color.Red,
+			Color.Green,
+			Color.Blue,
+			Color.Yellow
 		};
 	}
 
