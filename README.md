@@ -49,6 +49,8 @@ There are currently a few things that can be done on a zone:
 
 A Zone Program can be anything ranging from a static loop to a responsive program. A few examples are programs that scroll a dot in a loop, or output a rainbow loop, or output a notification using a light effect. Many stock programs are included with the application under the folder StockPrograms. Zone programs have the concept of Inputs, which are parameters that can be changed by the user of a program to manipulate things inside a program. A program is responsible for driving the lights in a zone. The zones and lighting controllers are static objects. A zone program runs on a zone and uses a lighting controller to output the lights in a zone. Examples are included with the project for a Rainbow program, a ScrollDot program, and a StaticColor program (among others).
 
+Program Sets are sets of programs that are logically grouped together and function as a unit. The advantage of using a Program Set over programs is that a Program Set can be run over many zones. A program set is a set of programs on a set of zones.
+
 Zone programs are loaded from external assemblies. The location of the folder where the assemblies are searched for is provided in the configuration parameter "ProgramDLLFolder". In the way the project is organized, the project ExternalPrograms houses all the programs that are available.  The WebController project loads a copy of the assembly in the folder ExternalPrograms/bin/Debug/Programs (by default). 
 
 To create a new zone program, create a new class in the ExternalPrograms project. If the program needs to loop something over and over, make the new class inherit from LoopingZoneProgram. If the program is simply doing things based on external stimuli, make the new class inherit from ReactiveZoneProgram. If in doubt, use LoopingZoneProgram. Add some inputs using the AddMappedInput method if you wish to control parameters inside the program. An input needs a delegate that will determine what happens with the input value. A mapped input simply assigns the input value to a variable. See the example programs Rainbow, ScrollDot, and StaticColor for more details.
@@ -57,49 +59,11 @@ To create a new zone program assembly, create a new C# class library project, an
 
 ###Synchronization
 
-The concept of synchronization is central to this application. The user can run programs on zones but these programs have no knowledge of each other. So what would you do if you wanted two programs to move in lock-step? That is where the concept of synchronization comes in, in the form of SyncContext. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Q: What does a zone look like? 
-A: In the most basic sense, it is an enumerable collection of lights. A light, as defined in this application, is nothing more than a contract - an interface - defined as ILogicalRGBLight. This tells us a few things about what the light is and what it can do. First, it tells us that the interface expects an RGB color to be representable by its implementation, but if a light doesn't support full RGB, the implementation can throw an exception during its API calls when the RGB values are invalid. It's important to note that this is a logical representation of a light. The implementation of this interface does not require the implementer to interact with the physical light. That is the job of the lighting controller (ILightingController). ILogicalRGBLight has three methods that it expects the subclass to define: 
-
-1. bool SetColor(Color color) - Expects the subclass to define how to set the color of the given light. Note that this does not mean how to physically set the color of the light, but how to set it in the logical view of the light. There is a logical view of the lights and a physical view. The logical view acts as a filter to filter out invalid values of color, for example (or other kinds of filtering). If the subclass of this interface is used to represent an incandescent light, which can only display lights of a certain color (yellowish to whiteish), then the SetColor method can be programmed to return false or throw an error when the requested color is not in the range of colors that can be produced on the light. In this way, we do need to know something about the physical lights that the subclass will represent, but this interface's implementation does not need to know how to physically change the color of the light. That will be done using the physical definition of the light in terms of a specific controller as we will see in a bit.
-
-2. int LogicalIndex - This property defines the address of the light in the logical view. This is useful in things like sorting the lights. This number is different from the physical index that will be defined in the concrete implementation of the light. The physical index will be specific to the lighting controller, but the logical index is not.
-
-3. Color GetColor() - Expects the subclass to define how to get the current color of the light.
-
-Now let's look at an implementation of this interface called LED. The LED class represents a single LED in a zone. The way I've programmed this, it needs to implement interfaces for each type of physical representation of a light that it can be output on. So for example, it implements IFadeCandyPixel which requires an instance of FadeCandyPixel which contains all information required by the FadeCandyController to output this light to a FadeCandy board. IFadeCandyPixel is required to output the light using FadeCandyController because IFadeCandyPixel is the PixelType of FadeCandyController. To create an instance of an LED that needs to be output on FadeCandy, it needs the physical index of the LED on the FadeCandy which is passed in through the constructor. Then the color of the LED is set using SetColor. This changes the color of the logical view which is then sent to the lighting controller using FadeCandyController.SendLEDs method.
-
-Zones need to created by the user by subclassing the Zone class based on their lighting setup. For a FadeCandy zone, subclass the FadeCandyZone class, which sets the zone's lighting controller to FadeCandyController. Your custom zone classes can be created in an external assembly by creating a new C# class library project. This assembly needs to be stored in the folder specified by the ZonesDLLFolder configuration property. This folder will be scanned during initialization and those zones will be available to the zone programs to be manipulated.
-
+The concept of synchronization is central to this application. The user can run programs on zones but these programs have no knowledge of each other. So what would you do if you wanted two programs to move in lock-step? That is where the concept of synchronization comes in, in the form of SyncContext. The user just has to provide whether or not they want the programs to be synced when creating a program set. The SyncContext is managed internally by the program set.
 
 ###ZoneLightingManager
 
-ZoneLightingManager is what you can call the "runner" class for the entire application. All high-level operations like initializing/uninitializing zone programs, zones, or lighting controllers are done using this class. It is implemented as a singleton. To access the singleton instance, use ZoneLightingManager.Instance (this is the practice followed throughout the entire application for accessing singleton instances for any given class). ZLM is also responsible for adding/removing zone data. It loads zones from other assemblies (which are user-created based on their setup) which are then available to zone programs to manipulate. These zones are added to the Zones property of ZLM, which is a list of Zones that ZLM can manage. When the Initialize() method is called on ZLM, it initializes all lighting controllers, loads zone data, and initializes all zones contained in the Zones property. Initializing zones entails selecting a zone program for each zone and starting it with some starting input values.
-
+ZoneLightingManager is what you can call the "runner" class for the entire application. All high-level operations like creating/destroying program sets are done using this class. To use ZLM, simply create an instance of it. WebController already creates one and keeps it in the ASP.NET Application State and displays it on the index page.
 
 Here is an example setup that I created. The lighting is laid out as such:
 
@@ -132,12 +96,6 @@ Left Wing and Right Wing are zones that sit on the left and right side of my com
 
 **Note**: WS2812s are are sometimes (incorrectly) referred to as "WS2811". Even though for most practical purposes the names WS2811 and WS2812 are interchangeable, it's important to realize that the WS2811 (http://www.adafruit.com/datasheets/WS2811.pdf) is the name for the driver chip that drives the RGB LED, and WS2812 (http://www.adafruit.com/datasheets/WS2812.pdf) is the name for the entire component, including the LED and the driver chip. But since the WS2811 driver chip is essentially useless without the LED, the name "WS2811" is many times used interchangeably with WS2812. Many vendors sell WS2812s as WS2811, so if searching vendor sites to buy the WS2812, try searching for WS2811 also. The Adafruit product known as NeoPixel is the same as the WS2812, rebranded for Adafruit.
 
-The code for these zones is stored in the ExternalZones project and the example programs to run on this are in the ZonePrograms project. Please see those for an example on how to implement your own setup. 
-
-
 ## FINAL NOTES AND FUTURE PLANS
 
-This is my first open-source project, and therefore there are bound to be issues, errors, and incompatibilities. This project also has almost no tests mainly because it was something I hacked up in a few days just to get the FadeCandy board working. My intention is to add tests in the functional parts of the application where things can potentially break. This is one of the main priorities. Other priorities are to add support for more hardware controllers and more kinds of lighting. It is also planned to add zone subtypes, and enforce which programs can run on which zone subtypes. This will introduce a much more predictable way programs run on zones, because that essentially would allow the person programming the zone program to specify what kind of zones a program can run on. The "type" of zone will entail things like how many pixels are available to display on, what configuration the pixels are in, and other information about the zone configuration.
-
-
-Please feel free to create issues in the Github issue tracker, and if you have any specific questions directed towards me, please feel free to email me. I will try to respond as timely as possible.
+This application is still in the early phases of architecture and therefore there are bound to be issues, errors, and incompatibilities. Please feel free to create issues in the Github issue tracker, and if you have any specific questions directed towards me, please feel free to email me. I will try to respond as timely as possible.
