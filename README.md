@@ -12,7 +12,7 @@ ZoneLighting is a .NET application to create pixel-based lighting. It abstracts 
 * **LICENSE**: MIT (See file *LICENSE*)
 
 
-## USER/PROGRAMMER GUIDE:
+## USER GUIDE:
 
 **This guide is incomplete. I will be adding to it as I get time and the project takes shape. I'm still in the experimentation phase and this project may not always be in a buildable state and it may not be usable without setting up some external things. I can help anyone set it up, so if needed, please email me or post it in the issue tracker, and I will help you get your environment setup. This is a preliminary documentation and as the project matures, it will change and become more comprehensive.**
 
