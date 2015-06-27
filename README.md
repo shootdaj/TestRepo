@@ -20,19 +20,14 @@ ZoneLighting is a .NET application to create pixel-based lighting. It abstracts 
 
 The project is organized in the following manner:
 
-ZoneLighting.sln
 
-	| - ZoneLighting.csproj - This is the main class library that does all the work.
-	
-	| - WebController.csproj - Web interface for the application
-	
-	| - Console - A simple runner used mainly for debugging and/or testing
-	
-	| - ExternalPrograms - A sample external program library provided for examples and to get started
-	
-	| - ExternalZones - A sample external zone library provided for examples
-	
-	| - ZoneLightingTests - Tests for the project ZoneLighting.csproj
+* ZoneLighting.sln - main solution file
+* ZoneLighting.csproj - This is the main class library that does all the work.
+* WebController.csproj - Web interface for the application
+* Console - A simple runner used mainly for debugging and/or testing
+* ExternalPrograms - A sample external program library provided for examples and to get started
+* ExternalZones - A sample external zone library provided for examples
+* ZoneLightingTests - Tests for the project ZoneLighting.csproj
 	
 	
 ###Basic Concepts
