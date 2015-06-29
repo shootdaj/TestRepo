@@ -18,9 +18,6 @@ namespace ZoneLighting.StockPrograms
 		public int DelayTime { get; set; } = 65;
 		//public Color? DotColor { get; set; } = Color.Blue;
 		
-		private int _trailLength = 3;
-		private double _darkenFactor = 0.8;
-
 		public override void Setup()
 		{
 			AddMappedInput<int>(this, "DelayTime");

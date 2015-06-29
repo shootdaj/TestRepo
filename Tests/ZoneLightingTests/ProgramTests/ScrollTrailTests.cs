@@ -23,7 +23,7 @@ namespace ZoneLightingTests.ProgramTests
 				var isv = new ISV();
 				isv.Add("DarkenFactor", (float)0.7);
 				isv.Add("DelayTime", 70);
-				isv.Add("BlackOutTrail", false);
+				isv.Add("ShareShape", false);
 				isv.Add("TrailShapes", new List<TrailShape>()
 				{
 					new TrailShape(new Trail(4, Color.Blue.Darken(0.5)), new Shape(0, 1, 2, 3, 11, 19, 27, 26, 25, 24, 16, 8)),
@@ -57,7 +57,7 @@ namespace ZoneLightingTests.ProgramTests
 				var isv = new ISV();
 				isv.Add("DarkenFactor", (float)darkenFactor);
 				isv.Add("DelayTime", delayTime);
-				isv.Add("BlackOutTrail", false);
+				isv.Add("ShareShape", true);
 				isv.Add("TrailShapes", new List<TrailShape>()
 				{
 					new TrailShape(new Trail(4, Color.Blue.Darken(0.5)), new Shape(0, 1, 2, 3, 11, 19, 27, 26, 25, 24, 16, 8)),
