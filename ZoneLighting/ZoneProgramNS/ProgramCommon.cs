@@ -10,6 +10,8 @@ namespace ZoneLighting.ZoneProgramNS
 {
 	public class ProgramCommon
 	{
+		#region Non-Trivial
+
 		/// <summary>
 		/// Delays the execution for the specified amount of milliseconds.
 		/// </summary>
@@ -18,7 +20,7 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			if (milliseconds > 0)
 				Thread.Sleep(milliseconds);
-				//Task.WaitAll(Task.Delay(milliseconds));
+			//Task.WaitAll(Task.Delay(milliseconds));
 		}
 
 		/// <summary>
@@ -36,7 +38,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 			bool firstLoop = true;
 			Color? currentColor = null;
-			
+
 			while (firstLoop || loop)
 			{
 				firstLoop = false;
@@ -124,6 +126,12 @@ namespace ZoneLighting.ZoneProgramNS
 			});
 		}
 
+
+
+		#endregion
+
+		#region Colors
+
 		public static Color GetRandomColor()
 		{
 			return Color.FromArgb(RandomIntBetween(0, 255), RandomIntBetween(0, 255), RandomIntBetween(0, 255));
@@ -135,17 +143,23 @@ namespace ZoneLighting.ZoneProgramNS
 		}
 		
 		private static Random Random { get; } = new Random();
+
 		public static int RandomIntBetween(int low, int high)
 		{
 			return Random.Next(low, high);
 		}
 
-		public static Dictionary<int, Color> BlankColors(Zone zone)
+		/// <summary>
+		/// Returns a Dictionary from int to Color with all colors set to Black. This dictionary gets all the ints from the zone passed in.
+		/// </summary>
+		public static Dictionary<int, Color> GetBlackedOutZone(Zone zone)
 		{
 			var colors = new Dictionary<int, Color>();
 			zone.SortedLights.Keys.ToList().ForEach(lightIndex => colors.Add(lightIndex, Color.Black));
 			return colors;
 		}
+
+		#endregion
 	}
 
 	public class ColorScheme

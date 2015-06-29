@@ -106,11 +106,12 @@
     <Compile Include="Resources\Programs\StaticColor.cs" />
     <Compile Include="Resources\Programs\Stepper.cs" />
     <Compile Include="Resources\Programs\StepperInternalLoop.cs" />
+    <Compile Include="ProgramTests\ScrollTrailTests.cs" />
     <Compile Include="TestHelpers.cs" />
     <Compile Include="UnderlyingTypeConverterTests.cs" />
     <Compile Include="ZLMStateTests.cs" />
     <Compile Include="ZLMTests.cs" />
-    <Compile Include="ShimmerTests.cs" />
+    <Compile Include="ProgramTests\ShimmerTests.cs" />
     <Compile Include="ZoneScaffolderTests.cs" />
     <Compile Include="ZoneProgramInputTests.cs" />
     <Compile Include="SyncContextTests.cs" />

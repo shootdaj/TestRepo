@@ -7,7 +7,7 @@ using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Factories;
 
-namespace ZoneLightingTests
+namespace ZoneLightingTests.ProgramTests
 {
 	public class ShimmerTests
 	{
@@ -21,13 +21,13 @@ namespace ZoneLightingTests
 			{
 				var isv = new ISV();
 				isv.Add("MaxFadeSpeed", 1);
-				isv.Add("MaxFadeDelay", 10);
+				isv.Add("MaxFadeDelay", 2);
 				isv.Add("Density", 32);
 				isv.Add("Brightness", 0.5);
 				isv.Add("Random", random);
 				var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlmInner.Zones, "NeoMatrix", PixelType.FadeCandyWS2812Pixel, 64, 1);
-				zlmInner.CreateSingleProgramSet("", new Shimmer(), isv, neomatrix);
-			}, Config.Get("Shimmer_Works"));
+				zlmInner.CreateSingularProgramSet("", new Shimmer(), isv, neomatrix);
+			}, Config.Get("NeoMatrixOneZone"));
 
 			Thread.Sleep(sleepSeconds * 1000);
 

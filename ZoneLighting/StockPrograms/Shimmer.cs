@@ -41,7 +41,7 @@ namespace ZoneLighting.StockPrograms
 
 		private Dictionary<int, Color> ColorsToSend { get; } = new Dictionary<int, Color>();
 
-		protected override void StartSubCore()
+		protected override void PreStart()
 		{
 			for (int i = 0; i < Density; i++)
 			{
@@ -71,7 +71,7 @@ namespace ZoneLighting.StockPrograms
 
 		private CancellationTokenSource ShimmerCTS { get; set; } = new CancellationTokenSource();
 
-		protected override void StopSubCore(bool force)
+		protected override void PreStop(bool force)
 		{
 			ShimmerCTS.Cancel();
 			Task.WaitAll(Tasks.ToArray());

@@ -142,7 +142,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public Trigger LeftSyncTrigger { get; set; } = new Trigger("LeftSyncTrigger");
 
-		public abstract SyncLevel SyncLevel { get; set; }
+		public virtual SyncLevel SyncLevel { get; set; }
 
 		public override void SetSyncContext(SyncContext syncContext)
 		{
@@ -214,19 +214,21 @@ namespace ZoneLighting.ZoneProgramNS
 			//StartTrigger.Fire(this, null);
 			//if (isSyncRequested)
 			//	RequestSyncState();
-			StartSubCore();
+			PreStart();
 
 			StartLoop();
 		}
 
-		protected virtual void StartSubCore() { }
+		protected virtual void PreStart() { }
 
-		protected virtual void StopSubCore(bool force) { }
+		protected virtual void PreStop(bool force) { }
+
+		protected virtual void PostStop(bool force) { }
 
 		protected override void StopCore(bool force)
 		{
 			//subclass processing
-			StopSubCore(force);
+			PreStop(force);
 
 			DebugTools.AddEvent("LoopingZoneProgram.StopCore", "STOP " + Name);
 			//DebugTools.AddEvent("LoopingZoneProgram.StopCore", "Canceling Sync-State on Program " + Name);
@@ -265,6 +267,8 @@ namespace ZoneLighting.ZoneProgramNS
 					}
 				}
 			}
+
+			PostStop(force);
 
 			//DebugTools.AddEvent("LoopingZoneProgram.Stop", "END Stopping BG Program");
 

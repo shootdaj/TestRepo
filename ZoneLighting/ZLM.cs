@@ -81,9 +81,9 @@ namespace ZoneLighting
 		}
 
 		/// <summary>
-		/// Creates a ProgramSet with a program instance
+		/// Creates a ProgramSet with one program instance
 		/// </summary>
-		public ProgramSet CreateSingleProgramSet(string programSetName, ZoneProgram program, ISV isv, Zone zone)
+		public ProgramSet CreateSingularProgramSet(string programSetName, ZoneProgram program, ISV isv, Zone zone)
 		{
 			if (!AvailableZones.Contains(zone)) throw new Exception("Some of the provided zones are not available.");
 
