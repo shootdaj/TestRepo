@@ -85,10 +85,10 @@ namespace ExternalPrograms
 
 		private void SingleShimmer()
 		{
-			int pixelToShine = RandomGen.Next(Zone.LightCount - 1);
+			int pixelToShine = RandomGen.Next(Zone.LightCount);
 			while (PixelStates[pixelToShine])
 			{
-				pixelToShine = RandomGen.Next(Zone.LightCount - 1);
+				pixelToShine = RandomGen.Next(Zone.LightCount);
 			}
 			PixelStates[pixelToShine] = true;
 			var fadeSpeed = Random ?

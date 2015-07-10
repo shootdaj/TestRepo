@@ -90,7 +90,8 @@
 															}
 														}
 													</select>
-													<input type="number" step="0.1" onchange="setColor('@zone.Name', this.previousElementSibling.value, this.value)" max="1.0" min="0.0" class="form-control" style="display: inline-flex; width: inherit;"/>
+													<input type="number" value="0.5" step="0.1" onchange=" setColor('@zone.Name', this.previousElementSibling.value, this.value) " max="1.0" min="0.0" class="form-control inTable" />
+													<input type="button" value="Set" onclick="setColor('@zone.Name', this.previousElementSibling.previousElementSibling.value, this.previousElementSibling.value)" class="form-control btn btn-primary inTable"/>
 												</div>
 											</div>
 										</td>
@@ -133,32 +134,16 @@
 										<td class="@(programSet.State == ProgramState.Started ? "on" : "")">
 											@if (programSet.State == ProgramState.Stopped)
 											{
-												@Html.ActionLink("Start", "ZLMCommand", "ZLM", new { Command = "Start " + programSet.Name }, new { @class = "btn btn-primary" })
+												@Html.ActionLink("Start", "ZLMCommand", "ZLM", new { Command = "Start " + programSet.Name }, new { @class = "form-control btn btn-primary inTable" })
 											}
 											else
 											{
-												@Html.ActionLink("Stop", "ZLMCommand", "ZLM", new { Command = "Stop " + programSet.Name }, new { @class = "btn btn-primary" })												
+												@Html.ActionLink("Stop", "ZLMCommand", "ZLM", new { Command = "Stop " + programSet.Name }, new { @class = "form-control btn btn-primary inTable" })												
 											}
 										</td>
 									</tr>
 								}
 							}
-							@*@if (Model.ProgramSets != null)
-							{
-								<tr>
-									<td>All ProgramSets</td>
-									<td>-</td>
-									<td>-</td>
-									<td>
-										@Html.ActionLink("Start", "ZLMCommand", "ZLM", new { Command = "Start All" }, new { @class = "btn btn-primary" })
-										@*<input type="submit" value="Start All" id="btnStart" name="Command" class="btn btn-primary"/>*@
-									@*</td>
-									<td>*@
-										@*@Html.ActionLink("Stop", "ZLMCommand", "ZLM", new { Command = "Stop All" }, new { @class = "btn btn-primary" })
-										@*<input type="submit" value="Stop All" id="btnStop" name="Command" class="btn btn-primary"/>*@
-									@*</td>
-								</tr>*@
-							@*}*@
 						</tbody>
 					</table>
 				</div>

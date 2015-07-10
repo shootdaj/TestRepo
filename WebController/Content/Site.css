@@ -19,3 +19,8 @@
 input {
 	color: navy;
 }
+
+.inTable {
+	display: inline-flex; 
+	width: inherit;
+}
