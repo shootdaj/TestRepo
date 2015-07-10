@@ -1,4 +1,4 @@
-#gitignore.io section
+#####gitignore.io section
 
 # Created by https://www.gitignore.io
 
@@ -12,6 +12,9 @@
 *.userosscache
 *.sln.docstates
 
+# User-specific files (MonoDevelop/Xamarin Studio)
+*.userprefs
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -24,8 +27,8 @@ bld/
 [Bb]in/
 [Oo]bj/
 
-# Roslyn cache directories
-*.ide/
+# Visual Studo 2015 cache/options directory
+.vs/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
@@ -142,7 +145,7 @@ publish/
 **/packages/*
 # except build/, which is used as an MSBuild target.
 !**/packages/build/
-# If using the old MSBuild-Integrated Package Restore, uncomment this:
+# Uncomment if necessary however generally it will be regenerated when needed
 #!**/packages/repositories.config
 
 # Windows Azure Build Output
@@ -153,7 +156,7 @@ csx/
 AppPackages/
 
 # Others
-*.Cache
+*.[Cc]ache
 ClientBin/
 [Ss]tyle[Cc]op.*
 ~$*
@@ -188,6 +191,15 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 
+# Node.js Tools for Visual Studio
+.ntvs_analysis.dat
+
+# Visual Studio 6 build log
+*.plg
+
+# Visual Studio 6 workspace options file
+*.opt
+
 
 ### Windows ###
 # Windows image file caches
@@ -208,6 +220,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+#####custom section
 
 #ignore thumbnails created by windows
 Thumbs.db
@@ -237,6 +251,7 @@ obj/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
+
 ZoneLighting.jmconfig
 ZoneLighting.jtconfig
 ProgramDLLs
@@ -252,3 +267,5 @@ ZoneLighting/FadeCandy/Local/*
 WebController/ProgramSetConfiguration.json
 WebController/ZoneConfiguration.json
 !Tests/ZoneLightingTests/App.config
+
+
