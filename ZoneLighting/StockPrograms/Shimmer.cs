@@ -19,7 +19,7 @@ namespace ZoneLighting.StockPrograms
 		public int MaxFadeSpeed { get; set; } = 127;
 		public int MaxFadeDelay { get; set; } = 1;
 		public int Density { get; set; } = 1;
-		public double Brightness { get; set; }= 1.0;
+		public double Brightness { get; set; } = 1.0;
 
 		/// <summary>
 		/// Set to true to set the delay and speed to be randomly generated with the MaxFadeDelay and MaxFadeSpeed being the maximum value.
