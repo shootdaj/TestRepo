@@ -19,10 +19,15 @@ namespace ZoneLighting.StockPrograms
 		public int MaxFadeSpeed { get; set; } = 127;
 		public int MaxFadeDelay { get; set; } = 1;
 		public int Density { get; set; } = 1;
-		public double Brightness { get; set; } = 1.0;
-		public bool Random { get; set; } = true;
+		public double Brightness { get; set; }= 1.0;
 
-		private readonly Random RandomGen = new Random();
+		/// <summary>
+		/// Set to true to set the delay and speed to be randomly generated with the MaxFadeDelay and MaxFadeSpeed being the maximum value.
+		/// </summary>
+		public bool Random { get; set; } = true;
+		public ColorScheme ColorScheme { get; set; } = ColorScheme.Primaries;
+
+		private Random RandomGen { get; } = new Random();
 
 		public override SyncLevel SyncLevel { get; set; } = SyncLevel.None;
 
@@ -33,6 +38,7 @@ namespace ZoneLighting.StockPrograms
 			AddMappedInput<int>(this, "Density", i => i.IsInRange(1, Zone.LightCount));
 			AddMappedInput<double>(this, "Brightness", i => i.IsInRange(0, 1));
 			AddMappedInput<bool>(this, "Random");
+			AddMappedInput<ColorScheme>(this, "ColorScheme");
 		}
 
 		private readonly List<Task> Tasks = new List<Task>();
@@ -97,7 +103,7 @@ namespace ZoneLighting.StockPrograms
 				RandomGen.Next(MaxFadeDelay) : MaxFadeDelay;
 			Color? endingColor;
 
-			ProgramCommon.Fade(Color.Black, ProgramCommon.GetSchemeColor().Darken(Brightness), fadeSpeed, delayTime, false, color =>
+			ProgramCommon.Fade(Color.Black, ColorScheme.GetRandomSchemeColor(ColorScheme).Darken(Brightness), fadeSpeed, delayTime, false, color =>
 			{
 				lock (ColorsToSend)
 				{

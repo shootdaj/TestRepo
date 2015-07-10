@@ -20,49 +20,52 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			if (milliseconds > 0)
 				Thread.Sleep(milliseconds);
-			//Task.WaitAll(Task.Delay(milliseconds));
 		}
 
 		/// <summary>
 		/// Fades from one color to another color.
 		/// </summary>
-		/// <param name="color1">First set of colors (array of LEDs with length 32)</param>
-		/// <param name="color2"></param>
+		/// <param name="colorStart">Color to fade from.</param>
+		/// <param name="colorEnd">Color to fade to.</param>
 		/// <param name="speed">The higher the speed, the more abruptly the colors will change. Max is 127.</param>
 		/// <param name="sleepTime">How long each color set is displayed</param>
 		/// <param name="loop">Whether or not to loop forever</param>
-		public static void Fade(Color color1, Color color2, int speed, int sleepTime, bool loop, Action<Color> outputMethod, out Color? endingColor, SyncContext syncContext = null, bool reverse = false, CancellationTokenSource cts = null)
+		/// <param name="outputMethod">Method to be used for outputting the fade.</param>
+		/// <param name="endingColor">Last color the fade sets.</param>
+		/// <param name="syncContext">Whether or not the fade should by synchronized with a SyncContext.</param>
+		/// <param name="reverse">If true, after the fade is complete, another fade will occuur in from colorEnd to colorStart</param>
+		public static void Fade(Color colorStart, Color colorEnd, int speed, int sleepTime, bool loop, Action<Color> outputMethod, out Color? endingColor, SyncContext syncContext = null, bool reverse = false, CancellationTokenSource cts = null)
 		{
 			if (speed > 127)
 				throw new Exception("Speed cannot exceed 127.");
 
-			bool firstLoop = true;
+			var firstLoop = true;
 			Color? currentColor = null;
 
 			while (firstLoop || loop)
 			{
 				firstLoop = false;
 
-				float redDiff = (color2.R - color1.R);
-				float greenDiff = (color2.G - color1.G);
-				float blueDiff = (color2.B - color1.B);
+				float redDiff = (colorEnd.R - colorStart.R);
+				float greenDiff = (colorEnd.G - colorStart.G);
+				float blueDiff = (colorEnd.B - colorStart.B);
 
-				float redJump = redDiff / (128 - speed);
-				float greenJump = greenDiff / (128 - speed);
-				float blueJump = blueDiff / (128 - speed);
+				var redJump = redDiff / (128 - speed);
+				var greenJump = greenDiff / (128 - speed);
+				var blueJump = blueDiff / (128 - speed);
 
-				float redLevel = color1.R;
-				float greenLevel = color1.G;
-				float blueLevel = color1.B;
+				float redLevel = colorStart.R;
+				float greenLevel = colorStart.G;
+				float blueLevel = colorStart.B;
 
 				//fade
-				for (int a = 0; a < (128 - speed); a++)
+				for (var a = 0; a < (128 - speed); a++)
 				{
 					redLevel += redJump;
 					greenLevel += greenJump;
 					blueLevel += blueJump;
 
-					Color colorToOutput = Color.FromArgb(255, (int)redLevel, (int)greenLevel, (int)blueLevel);
+					var colorToOutput = Color.FromArgb(255, (int)redLevel, (int)greenLevel, (int)blueLevel);
 					outputMethod(colorToOutput);
 					currentColor = colorToOutput;
 
@@ -74,7 +77,7 @@ namespace ZoneLighting.ZoneProgramNS
 				//if looping, loop back from 2nd color to 1st color before looping back
 				if (loop || reverse)
 				{
-					Fade(color2, color1, speed, sleepTime, false, outputMethod, out endingColor);
+					Fade(colorEnd, colorStart, speed, sleepTime, false, outputMethod, out endingColor);
 				}
 			}
 
@@ -126,27 +129,13 @@ namespace ZoneLighting.ZoneProgramNS
 			});
 		}
 
-
-
 		#endregion
 
 		#region Colors
 
 		public static Color GetRandomColor()
 		{
-			return Color.FromArgb(RandomIntBetween(0, 255), RandomIntBetween(0, 255), RandomIntBetween(0, 255));
-		}
-
-		public static Color GetSchemeColor()
-		{
-			return ColorScheme.Primaries.ElementAt(RandomIntBetween(0, ColorScheme.Primaries.Count));
-		}
-		
-		private static Random Random { get; } = new Random();
-
-		public static int RandomIntBetween(int low, int high)
-		{
-			return Random.Next(low, high);
+			return ColorScheme.GetRandomColor();
 		}
 
 		/// <summary>
@@ -160,17 +149,11 @@ namespace ZoneLighting.ZoneProgramNS
 		}
 
 		#endregion
-	}
-
-	public class ColorScheme
-	{
-		public static List<Color> Primaries => new List<Color>()
+		private static Random Random { get; } = new Random();
+		public static int RandomIntBetween(int low, int high)
 		{
-			Color.Red,
-			Color.Green,
-			Color.Blue,
-			Color.Yellow
-		};
+			return Random.Next(low, high);
+		}
 	}
 
 	public static class ProgramExtensions
@@ -218,7 +201,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public static Color Darken(this Color color, double darkenAmount)
 		{
-			HSLColor hslColor = new HSLColor(color);
+			var hslColor = new HSLColor(color);
 			hslColor.Luminosity *= darkenAmount; // 0 to 1
 			return hslColor;
 		}
