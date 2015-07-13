@@ -268,5 +268,5 @@ WebController/ProgramSetConfiguration.json
 WebController/ZoneConfiguration.json
 !Tests/ZoneLightingTests/App.config
 !Console/App.config
-
+!WebController/Web.config
 
