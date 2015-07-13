@@ -267,5 +267,6 @@ ZoneLighting/FadeCandy/Local/*
 WebController/ProgramSetConfiguration.json
 WebController/ZoneConfiguration.json
 !Tests/ZoneLightingTests/App.config
+!Console/App.config
 
 
