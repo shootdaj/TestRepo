@@ -9,40 +9,45 @@ namespace ZoneLighting.Usables
 {
 	public static class RunnerHelpers
 	{
-		public static Action AddBasementZonesAndProgramsWithSync(ZLM zlm)
+		public static Action AddBasementZonesAndProgramsWithSyncAction(ZLM zlm)
 		{
 			return () =>
 			{
-				var notificationSyncContext = new SyncContext("NotificationContext");
-
-				//add zones
-				var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing", PixelType.FadeCandyWS2812Pixel, 6,
-					1);
-				var center = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Center", PixelType.FadeCandyWS2811Pixel, 21, 2);
-				var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing", PixelType.FadeCandyWS2812Pixel,
-					12, 3);
-				var baiClock = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "BaiClock", PixelType.FadeCandyWS2812Pixel, 24,
-					4);
-
-				zlm.CreateProgramSet("RainbowSet", "Rainbow", true, null, zlm.Zones);
-
-				//setup interrupting inputs - in the real code this method should not be used. The ZoneScaffolder.AddInterruptingProgram should be used.
-				leftWing.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-				rightWing.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-				center.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-				baiClock.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-
-				//synchronize and start interrupting programs
-				notificationSyncContext.Sync(leftWing.InterruptingPrograms[0],
-					rightWing.InterruptingPrograms[0],
-					center.InterruptingPrograms[0],
-					baiClock.InterruptingPrograms[0]);
-
-				leftWing.InterruptingPrograms[0].Start();
-				rightWing.InterruptingPrograms[0].Start();
-				center.InterruptingPrograms[0].Start();
-				baiClock.InterruptingPrograms[0].Start();
+                AddBasementZonesAndProgramsWithSync(zlm);
 			};
+		}
+
+		public static void AddBasementZonesAndProgramsWithSync(ZLM zlm)
+		{
+			var notificationSyncContext = new SyncContext("NotificationContext");
+
+			//add zones
+			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing", PixelType.FadeCandyWS2812Pixel, 6,
+				1);
+			var center = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Center", PixelType.FadeCandyWS2811Pixel, 21, 2);
+			var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing", PixelType.FadeCandyWS2812Pixel,
+				12, 3);
+			var baiClock = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "BaiClock", PixelType.FadeCandyWS2812Pixel, 24,
+				4);
+
+			zlm.CreateProgramSet("RainbowSet", "Rainbow", true, null, zlm.Zones);
+
+			//setup interrupting inputs - in the real code this method should not be used. The ZoneScaffolder.AddInterruptingProgram should be used.
+			leftWing.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+			rightWing.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+			center.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+			baiClock.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+
+			//synchronize and start interrupting programs
+			notificationSyncContext.Sync(leftWing.InterruptingPrograms[0],
+				rightWing.InterruptingPrograms[0],
+				center.InterruptingPrograms[0],
+				baiClock.InterruptingPrograms[0]);
+
+			leftWing.InterruptingPrograms[0].Start();
+			rightWing.InterruptingPrograms[0].Start();
+			center.InterruptingPrograms[0].Start();
+			baiClock.InterruptingPrograms[0].Start();
 		}
 
 		public static void AddNeopixelZonesAndProgramsWithSyncMethod(ZLM zlm)
@@ -102,6 +107,36 @@ namespace ZoneLighting.Usables
 			var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix", PixelType.FadeCandyWS2812Pixel,
 				64, 1);
 			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);
+		}
+
+		public static void RunShimmerInBasement(ZLM zlm)
+		{
+			var isv = new ISV();
+			isv.Add("MaxFadeSpeed", 1);
+			isv.Add("MaxFadeDelay", 20);
+			isv.Add("Density", 6);
+			isv.Add("Brightness", 0.5);
+			isv.Add("Random", true);
+			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing", PixelType.FadeCandyWS2812Pixel,
+				6, 1);
+			var rightwing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing", PixelType.FadeCandyWS2812Pixel,
+				12, 3);
+			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);
+		}
+
+		public static void RunRainbowInBasement(ZLM zlm)
+		{
+			//var isv = new ISV();
+			//isv.Add("MaxFadeSpeed", 1);
+			//isv.Add("MaxFadeDelay", 20);
+			//isv.Add("Density", 6);
+			//isv.Add("Brightness", 0.5);
+			//isv.Add("Random", true);
+			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing", PixelType.FadeCandyWS2812Pixel,
+				6, 1);
+			var rightwing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing", PixelType.FadeCandyWS2812Pixel,
+				12, 3);
+			zlm.CreateProgramSet("RainbowSet", "Rainbow", true, null, zlm.Zones);
 		}
 	}
 }
