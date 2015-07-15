@@ -1,9 +1,10 @@
 #Quickstart
 
-##Parts required:
+##Hardware required:
 
 1. FadeCandy board (http://amzn.com/B00JHJJF9W) 
 2. WS2812 RGB LED Strip (http://amzn.com/B00JR0MJIU)
+3. A machine with .NET framework installed and a free USB port to plug FadeCandy into
 
 ##To get started: 
 
