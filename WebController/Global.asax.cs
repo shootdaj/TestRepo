@@ -29,6 +29,7 @@ namespace WebController
 				initAction = (Action<ZLM>)Delegate.CreateDelegate(typeof(Action<ZLM>), initActionInfo);
 			}
 
+			//put ZLM into Application state
 			System.Web.HttpContext.Current.Application.Lock();
 
 			System.Web.HttpContext.Current.Application["ZLM"] = new ZLM(loadZonesFromConfig: !firstRun,
@@ -36,8 +37,7 @@ namespace WebController
 				loadZoneModules: loadZoneModules, initAction: initAction);
 
 			System.Web.HttpContext.Current.Application.UnLock();
-
-
+			
 			AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
