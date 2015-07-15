@@ -14,7 +14,7 @@ ZoneLighting is a .NET application to create pixel-based lighting. It abstracts 
 
 ## QUICKSTART
 
-See [QUICKSTART.MD](/QUICKSTART.MD).
+See [QUICKSTART.md](/QUICKSTART.md).
 
 ## USER GUIDE
 
