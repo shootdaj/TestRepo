@@ -12,7 +12,11 @@ ZoneLighting is a .NET application to create pixel-based lighting. It abstracts 
 * **LICENSE**: MIT (See file *LICENSE*)
 
 
-## USER GUIDE:
+## QUICKSTART
+
+See QUICKSTART.MD
+
+## USER GUIDE
 
 ###Project Structure
 
@@ -73,7 +77,7 @@ ZoneLightingManager (ZLM, in short) is the "runner" class for the entire applica
 So far all information has been about the abstract concepts in this application. This section discusses the more concrete portions required to make this application useful. As mentioned earlier, ZoneLighting is built with extensibility in mind. This means that support can be added for any kind of electronics, as long as it is encapsulated by a .NET wrapper. I've mentioned FadeCandy in the previous paragraphs. FadeCandy is a microcontroller designed to control WS2812 and WS2811 RGB LED Strips. Both these LED strips are digitally addressable - each LED on the strip can be set to a different color and brightness because each LED has a dedicated chip. These RGB strips can be found online at places like Adafruit and Amazon. Another kind of light strips are analog light strips which come in a single color and all LEDs are always the same color, but the brightness can be changed by changing the voltage supplied to it. These are analog because there is no digital information being sent to them. With WS2812, digital information is being sent and therefore a microcontroller is needed. Analog just requires the voltage to be changed which can be done by a potentiometer. Currently the only microcontroller supported by ZoneLighting is FadeCandy and the corresponding .NET wrapper is FadeCandyController. I plan on adding support for using Arduino as the microcontroller. As you can probably tell, the .NET wrapper dependes very much on the implementation of the microcontroller and the connections on it. So if an Arduino is controlling WS2812 LED strip vs. an analog LED strip, the .NET wrapper may have to do different things based on how the Arduino program is built and how the connections are connected. 
 
 
-##Example
+## Example
 
 Here is an example setup that I created. The lighting is laid out as such:
 
