@@ -25,7 +25,7 @@ namespace ZoneLighting.StockPrograms
 		/// Set to true to set the delay and speed to be randomly generated with the MaxFadeDelay and MaxFadeSpeed being the maximum value.
 		/// </summary>
 		public bool Random { get; set; } = true;
-		public ColorScheme ColorScheme { get; set; } = ColorScheme.Primaries;
+		public ColorScheme ColorScheme { get; set; } = ColorScheme.All;
 
 		private Random RandomGen { get; } = new Random();
 
