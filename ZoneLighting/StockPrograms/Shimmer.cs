@@ -18,7 +18,7 @@ namespace ZoneLighting.StockPrograms
 	{
 		public int MaxFadeSpeed { get; set; } = 127;
 		public int MaxFadeDelay { get; set; } = 1;
-		public int Density { get; set; } = 1;
+		public double Density { get; set; } = 1.0;
 		public double Brightness { get; set; } = 1.0;
 
 		/// <summary>
@@ -35,7 +35,7 @@ namespace ZoneLighting.StockPrograms
 		{
 			AddMappedInput<int>(this, "MaxFadeSpeed", i => i.IsInRange(1, 127));
 			AddMappedInput<int>(this, "MaxFadeDelay", i => i.IsInRange(0, 100));
-			AddMappedInput<int>(this, "Density", i => i.IsInRange(1, Zone.LightCount));
+			AddMappedInput<double>(this, "Density", i => i.IsInRange(0, 1));
 			AddMappedInput<double>(this, "Brightness", i => i.IsInRange(0, 1));
 			AddMappedInput<bool>(this, "Random");
 			AddMappedInput<ColorScheme>(this, "ColorScheme");
@@ -49,7 +49,7 @@ namespace ZoneLighting.StockPrograms
 
 		protected override void PreStart()
 		{
-			for (int i = 0; i < Density; i++)
+			for (int i = 0; i < Math.Floor(Density * Zone.LightCount); i++)
 			{
 				Tasks.Add(new Task(SingleShimmer, TaskCreationOptions.LongRunning));
 			}

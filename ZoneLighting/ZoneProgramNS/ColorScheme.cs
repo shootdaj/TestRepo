@@ -7,7 +7,7 @@ namespace ZoneLighting.ZoneProgramNS
 {
 	public class ColorScheme : List<Color>
 	{
-		public static ColorScheme All => new ColorScheme();
+		public static ColorScheme All { get; set; } = new ColorScheme();
 
 		public static ColorScheme Primaries => new ColorScheme()
 		{

@@ -101,7 +101,7 @@ namespace ZoneLighting.Usables
 			var isv = new ISV();
 			isv.Add("MaxFadeSpeed", 1);
 			isv.Add("MaxFadeDelay", 20);
-			isv.Add("Density", 32);
+			isv.Add("Density", 0.5);
 			isv.Add("Brightness", 0.5);
 			isv.Add("Random", true);
 			var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix", PixelType.FadeCandyWS2812Pixel,
@@ -114,24 +114,21 @@ namespace ZoneLighting.Usables
 			var isv = new ISV();
 			isv.Add("MaxFadeSpeed", 1);
 			isv.Add("MaxFadeDelay", 20);
-			isv.Add("Density", 6);
-			isv.Add("Brightness", 0.5);
+			isv.Add("Density", 1.0);
+			isv.Add("Brightness", 1.0);
 			isv.Add("Random", true);
+			isv.Add("ColorScheme", ColorScheme.All);
 			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing", PixelType.FadeCandyWS2812Pixel,
 				6, 1);
 			var rightwing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing", PixelType.FadeCandyWS2812Pixel,
 				12, 3);
+			var center = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Center", PixelType.FadeCandyWS2811Pixel,
+				21, 2);
 			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);
 		}
 
 		public static void RunRainbowInBasement(ZLM zlm)
 		{
-			//var isv = new ISV();
-			//isv.Add("MaxFadeSpeed", 1);
-			//isv.Add("MaxFadeDelay", 20);
-			//isv.Add("Density", 6);
-			//isv.Add("Brightness", 0.5);
-			//isv.Add("Random", true);
 			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing", PixelType.FadeCandyWS2812Pixel,
 				6, 1);
 			var rightwing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing", PixelType.FadeCandyWS2812Pixel,
