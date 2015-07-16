@@ -2,15 +2,16 @@
 
 ##Hardware required:
 
-1. FadeCandy board (http://amzn.com/B00JHJJF9W) 
-2. WS2812 RGB LED Strip (http://amzn.com/B00JR0MJIU)
-3. A machine with .NET framework installed and a free USB port to plug FadeCandy into
+1. FadeCandy board (http://amzn.com/B00JHJJF9W or https://www.adafruit.com/products/1689) 
+2. NeoMatrix (http://www.adafruit.com/product/1487) or WS2812 RGB LED Strip (http://amzn.com/B00JR0MJIU or https://www.adafruit.com/products/1461)
+3. A machine with Visual Studio 2015 installed and a free USB port to plug FadeCandy into.
 
 ##To get started: 
 
 1. Wire up the FadeCandy board following instructions here: https://learn.adafruit.com/led-art-with-fadecandy/wiring-your-leds
-2. Clone repository and open solution in Visual Studio 2015 (only the RC is available at the time of this writing). 
-3. Hit F6 (Build).
-4. Run all tests using NUnit (if you have Resharper installed, hit Ctrl + U, L)
-5. Set WebController as the Startup project by right-clicking on it and selecting Set as Startup project.
-6. Hit F5 (Debug).
+2. Clone repository and open solution in Visual Studio 2015 (VS 2015 RC at the time of this writing). 
+3. Ensure that WebController is the startup project.
+4. Hit F5 (Debug). Visual Studio will restore all nuget packages and start the WebController project which will execute a program called Shimmer on the NeoMatrix or strip. 
+5. The Web Controller is used to control the application. Under the Program Sets panel, click the Stop button in the ShimmerSet row to stop this program set.
+6. Under the Zones panel, click the Set button in the NeoMatrix row. This will set the NeoMatrix or the strip to the color and brightness selected in the textboxes next to it.
+7. Feel free to play around.
