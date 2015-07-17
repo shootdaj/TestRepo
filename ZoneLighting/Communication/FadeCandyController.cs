@@ -54,10 +54,19 @@ namespace ZoneLighting.Communication
 
 		public bool FCServerRunning { get; private set; } = false;
 
+		public void KillFCServer()
+		{
+			foreach (var process in Process.GetProcessesByName(Config.Get("FCServerExecutablePath").Split('\\').Last().Split('.').First()))
+			{
+				process.Kill();
+			}
+		}
+
 		public void Initialize(string configFilePath = null)
 		{
 			if (!Initialized)
 			{
+				KillFCServer();
 				StartFCServer(configFilePath ?? ConfigurationManager.AppSettings["FCServerConfigFilePath"]);
 				WebSocket = new WebSocket(ServerURL);
 				Connect();
@@ -169,10 +178,10 @@ namespace ZoneLighting.Communication
 		public override void SendPixelFrame(IPixelFrame opcPixelFrame)
 		{
 			var byteArray = ((OPCPixelFrame)opcPixelFrame).ToByteArray();
-			//var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
-			//byteArray.ToList().ForEach(x => byteArrayString += x + ",");
-			//byteArrayString += "}";
-			//Debug.Print(byteArrayString);
+			var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
+			byteArray.ToList().ForEach(x => byteArrayString += x + ",");
+			byteArrayString += "}";
+			Debug.Print(byteArrayString);
 			AssertInit();
 			if (WebSocket.ReadyState == WebSocketState.Closed)
 				Connect();
