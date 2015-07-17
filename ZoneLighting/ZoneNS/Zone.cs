@@ -176,6 +176,7 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// The program that is active on this zone.
 		/// </summary>
+		[DataMember]
 		public ZoneProgram ZoneProgram { get; private set; }
 
 		/// <summary>

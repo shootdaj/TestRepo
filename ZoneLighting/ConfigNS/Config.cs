@@ -17,29 +17,35 @@ namespace ZoneLighting.ConfigNS
 
 		public static JsonSerializerSettings SaveZonesSerializerSettings => new JsonSerializerSettings()
 		{
-			//PreserveReferencesHandling = PreserveReferencesHandling.All,
+			PreserveReferencesHandling = PreserveReferencesHandling.All,
 			TypeNameHandling = TypeNameHandling.All,
-			Formatting = Formatting.Indented
+			TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Full,
+            Formatting = Formatting.Indented
 		};
 
 		public static JsonSerializerSettings LoadZonesSerializerSettings => new JsonSerializerSettings()
 		{
+			PreserveReferencesHandling = PreserveReferencesHandling.All,
 			TypeNameHandling = TypeNameHandling.All,
-			Formatting = Formatting.Indented,
+			TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Full,
+            Formatting = Formatting.Indented,
 			Converters = new JsonConverter[] { new UnderlyingTypeConverter() }
 		};
 
 		public static JsonSerializerSettings LoadProgramSetsSerializerSettings => new JsonSerializerSettings()
 		{
-			//PreserveReferencesHandling = PreserveReferencesHandling.All,
+			PreserveReferencesHandling = PreserveReferencesHandling.All,
 			TypeNameHandling = TypeNameHandling.All,
-			Formatting = Formatting.Indented
+			TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Full,
+			Formatting = Formatting.Indented,
+			Converters = new JsonConverter[] { new UnderlyingTypeConverter() }
 		};
 
 		public static JsonSerializerSettings SaveProgramSetsSerializerSettings => new JsonSerializerSettings()
 		{
-			//PreserveReferencesHandling = PreserveReferencesHandling.All,
+			PreserveReferencesHandling = PreserveReferencesHandling.All,
 			TypeNameHandling = TypeNameHandling.All,
+			TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Full,
 			Formatting = Formatting.Indented
 		};
 
@@ -79,9 +85,13 @@ namespace ZoneLighting.ConfigNS
 			var reinstantiatedProgramSets = new BetterList<ProgramSet>();
 			deserializedProgramSets.ForEach(deserializedProgramSet =>
 			{
-				var zonesToPassIn = zones.Where(z => deserializedProgramSet.Zones.Select(dz => dz.Name).Contains(z.Name));
+				var zonesEnumerated = zones as IList<Zone> ?? zones.ToList();
+				var zonesToPassIn = zonesEnumerated.Where(z => deserializedProgramSet.Zones.Select(dz => dz.Name).Contains(z.Name));
 				reinstantiatedProgramSets.Add(new ProgramSet(deserializedProgramSet.ProgramName, zonesToPassIn,
-					deserializedProgramSet.Sync, null, deserializedProgramSet.Name));
+					deserializedProgramSet.Sync, deserializedProgramSet.GetInputValuesFromFirstProgram() //TODO: This is not correct, if the programs had different input values, this scenario doesn't handle that
+																										//TODO: We need to save the inputs with each program and modify the ProgramSet constructor to be able to take in
+																										//TODO: multiple ISVs and populate them according to the zone.
+					, deserializedProgramSet.Name));
 			});
 
 			deserializedProgramSets.ForEach(programSet =>

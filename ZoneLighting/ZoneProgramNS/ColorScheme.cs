@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace ZoneLighting.ZoneProgramNS
 {
+	[DataContract]
 	public class ColorScheme : List<Color>
 	{
 		public static ColorScheme All { get; set; } = new ColorScheme();

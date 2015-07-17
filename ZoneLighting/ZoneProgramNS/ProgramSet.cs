@@ -147,5 +147,10 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			Parallel.ForEach(ZonePrograms, zp => zp.Stop(force));
 		}
+
+		public ISV GetInputValuesFromFirstProgram()
+		{
+			return ZonePrograms.First().GetInputValues();
+		}
 	}
 }
