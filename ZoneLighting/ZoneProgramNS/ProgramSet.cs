@@ -55,13 +55,12 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
-		[JsonConstructor]
-		public ProgramSet(string programName, IEnumerable<Zone> zones, bool sync, ISV isv, string setName)
+		public ProgramSet(string programName, IEnumerable<Zone> zones, bool sync, ISV isv, string name)
 		{
 			if (!ZoneScaffolder.Instance.DoesProgramExist(programName))
-				throw new Exception(string.Format("No program by the name '{0}' exists.", programName));
+				throw new Exception($"No program by the name '{programName}' exists.");
 
-			Name = setName;
+			Name = name;
 			Zones = zones.ToList();
 			ProgramName = programName;
 		    Sync = sync;
@@ -85,6 +84,18 @@ namespace ZoneLighting.ZoneProgramNS
 					ZoneScaffolder.Instance.RunZone(zone, programName, isv);
 				});
 			}
+		}
+
+		[JsonConstructor]
+		public ProgramSet(string programName, IEnumerable<Zone> zones, bool sync, string name)
+		{
+			if (!ZoneScaffolder.Instance.DoesProgramExist(programName))
+				throw new Exception($"No program by the name '{programName}' exists.");
+
+			Name = name;
+			Zones = zones.ToList();
+			ProgramName = programName;
+			Sync = sync;
 		}
 
 		/// <summary>

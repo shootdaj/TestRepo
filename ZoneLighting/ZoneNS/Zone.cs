@@ -171,7 +171,6 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// The Lighting Controller used to control this Zone.
 		/// </summary>
-		[DataMember]
 		public ILightingController LightingController { get; private set; }
 
 		/// <summary>

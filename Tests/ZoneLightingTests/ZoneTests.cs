@@ -28,7 +28,7 @@ namespace ZoneLightingTests
 		[Test]
 		public void Run_Works()
 		{
-			var zone = new FadeCandyZone("TestZone");
+			var zone = new FadeCandyZone(FadeCandyController.Instance, "TestZone");
 			var program = new Rainbow();
 			zone.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 			Assert.DoesNotThrow(() => zone.Run(program));
@@ -39,7 +39,7 @@ namespace ZoneLightingTests
 		[Test]
 		public void Run_WithSync_Works()
 		{
-			var zone = new FadeCandyZone("TestZone");
+			var zone = new FadeCandyZone(FadeCandyController.Instance, "TestZone");
 			var program = new Rainbow();
 			var syncContext = new SyncContext();
 			zone.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
@@ -53,7 +53,7 @@ namespace ZoneLightingTests
 		{
 			var lightingController = A.Fake<LightingController>();
 			lightingController.CallsTo(controller => controller.SendLEDs(A.Fake<List<ILightingControllerPixel>>())).DoesNothing();
-			var zone = new FadeCandyZone("TestZone", null, lightingController);
+			var zone = new FadeCandyZone(FadeCandyController.Instance, "TestZone");
 			var program = new Rainbow();
 			zone.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 			zone.Run(program);

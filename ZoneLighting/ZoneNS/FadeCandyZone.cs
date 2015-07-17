@@ -1,13 +1,22 @@
-﻿using ZoneLighting.Communication;
+﻿using Newtonsoft.Json;
+using ZoneLighting.Communication;
 
 namespace ZoneLighting.ZoneNS
 {
 	public class FadeCandyZone : Zone
 	{
-		public FadeCandyZone(string name = "", double? brightness = null, ILightingController lightingController = null)
-			: base(lightingController ?? FadeCandyController.Instance, name, brightness)
+		[JsonConstructor]
+		public FadeCandyZone(ILightingController lightingController = null, string name = "", double? brightness = null)
+			: base(lightingController, name, brightness)
 		{
 		}
+		
+		/// <summary>
+		/// This constructor is for use by external zones.
+		/// </summary>
+		protected FadeCandyZone(string name = "", double? brightness = null)
+			: base(FadeCandyController.Instance, name, brightness)
+		{ }
 
 		public void AddFadeCandyLights(PixelType pixelType, int numLights, byte fcChannel)
 		{

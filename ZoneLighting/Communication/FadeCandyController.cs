@@ -58,7 +58,14 @@ namespace ZoneLighting.Communication
 		{
 			foreach (var process in Process.GetProcessesByName(Config.Get("FCServerExecutablePath").Split('\\').Last().Split('.').First()))
 			{
-				process.Kill();
+				try
+				{
+					process.Kill();
+				}
+				catch (Exception)
+				{
+					// ignored
+				}
 			}
 		}
 

@@ -227,10 +227,10 @@ namespace ZoneLighting
 				"Zone configuration save file not found."))));
 		}
 
-		private void LoadProgramSetsFromConfig(string filename = null)
+		private void LoadProgramSetsFromConfig()
 		{
 			ProgramSets.AddRange(
-				Config.DeserializeProgramSets(File.ReadAllText(filename ?? Config.Get("ProgramSetConfigurationSaveFile",
+				Config.DeserializeProgramSets(File.ReadAllText(Config.Get("ProgramSetConfigurationSaveFile",
 					"Program Set configuration save file not found.")), Zones));
 		}
 

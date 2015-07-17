@@ -135,7 +135,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		public Zone AddFadeCandyZone(BetterList<Zone> zones, string name, PixelType pixelType, int numberOfLights, int channel, double? brightness = null)
 		{
 			//create new zone
-			var zone = new FadeCandyZone(name, brightness);
+			var zone = new FadeCandyZone(FadeCandyController.Instance, name, brightness);
 			//add lights and add zone to collection
 			((FadeCandyZone)zones.Add(zone)).AddFadeCandyLights(pixelType, numberOfLights, (byte)channel);
 			return zone;
