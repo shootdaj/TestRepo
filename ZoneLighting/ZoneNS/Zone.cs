@@ -41,7 +41,6 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public void UnsetProgram()
 		{
-			//Zone.Program = null happens during the dispose of program
 			ZoneProgram = null;
 		}
 
@@ -176,7 +175,6 @@ namespace ZoneLighting.ZoneNS
 		/// <summary>
 		/// The program that is active on this zone.
 		/// </summary>
-		[DataMember]
 		public ZoneProgram ZoneProgram { get; private set; }
 
 		/// <summary>
@@ -360,11 +358,26 @@ namespace ZoneLighting.ZoneNS
 			Dispose(false);
 		}
 
-        #endregion
+		#endregion
 
-        #region MISC
+		#region De/Serialization
 
-        public bool IsProgramLooping => ZoneProgram is LoopingZoneProgram;
+		public List<Tuple<string, ISV>> ZoneProgramInputs { get; set; } = new List<Tuple<string, ISV>>();
+
+		public void SetZoneProgramInputs()
+		{
+			ZoneProgramInputs.Add(new Tuple<string, ISV>(ZoneProgram.Name, ZoneProgram.GetInputValues()));
+			InterruptingPrograms.ToList().ForEach(program =>
+			{
+				ZoneProgramInputs.Add(new Tuple<string, ISV>(program.Name, program.GetInputValues()));
+			});
+		}
+
+		#endregion
+
+		#region MISC
+
+		public bool IsProgramLooping => ZoneProgram is LoopingZoneProgram;
 
         public override string ToString()
 		{
@@ -372,7 +385,6 @@ namespace ZoneLighting.ZoneNS
 		}
 
 		#endregion
-
 		
 	}
 }

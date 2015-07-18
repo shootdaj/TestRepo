@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneNS;
 
@@ -9,15 +10,9 @@ namespace ZoneLighting.ZoneProgramNS
 {
 	public abstract class LoopingZoneProgram : ZoneProgram
 	{
-		//[SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-		//protected LoopingZoneProgram()
-		//{
-
-		//}
-
-		[SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
 		protected LoopingZoneProgram(string name = null, SyncContext syncContext = null) : base(name, syncContext)
 		{
+			// ReSharper disable once DoNotCallOverridableMethodsInConstructor
 			Setup();
 			LoopCTS = new CancellationTokenSource();
 			Running = false;

@@ -58,6 +58,7 @@ namespace ZoneLighting.ConfigNS
 
 		public static string SerializeZones(IEnumerable<Zone> zones)
 		{
+			zones.ToList().ForEach(zone => zone.SetZoneProgramInputs());
 			return Serialize(zones, SaveZonesSerializerSettings);
 		}
 
@@ -88,7 +89,7 @@ namespace ZoneLighting.ConfigNS
 				var zonesEnumerated = zones as IList<Zone> ?? zones.ToList();
 				var zonesToPassIn = zonesEnumerated.Where(z => deserializedProgramSet.Zones.Select(dz => dz.Name).Contains(z.Name));
 				reinstantiatedProgramSets.Add(new ProgramSet(deserializedProgramSet.ProgramName, zonesToPassIn,
-					deserializedProgramSet.Sync, deserializedProgramSet.GetInputValuesFromFirstProgram() //TODO: This is not correct, if the programs had different input values, this scenario doesn't handle that
+					deserializedProgramSet.Sync, deserializedProgramSet.Zones.First().ZoneProgramInputs.First().Item2 //TODO: This is not correct, if the programs had different input values, this scenario doesn't handle that
 																										//TODO: We need to save the inputs with each program and modify the ProgramSet constructor to be able to take in
 																										//TODO: multiple ISVs and populate them according to the zone.
 					, deserializedProgramSet.Name));

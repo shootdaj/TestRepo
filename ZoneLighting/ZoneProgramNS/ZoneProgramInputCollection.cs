@@ -17,21 +17,21 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			if (item == null)
 				throw new Exception("Cannot insert null values into this collection.");
-			try
-			{
-				//override if it already exists
-				if (base.Contains(item.Name))
-				{
-					//index = base.First(x => x.Name == i
-					base.Remove(item.Name);
-				}
+			//try
+			//{
+				////override if it already exists
+				//if (base.Contains(item.Name))
+				//{
+				//	//index = base.First(x => x.Name == i
+				//	base.Remove(item.Name);
+				//}
 
 				base.InsertItem(index, item);
-			}
-			catch (Exception ex)
-			{
-				// ignored
-			}
+			//}
+			//catch (Exception ex)
+			//{
+			//	// ignored
+			//}
 		}
 	}
 }
