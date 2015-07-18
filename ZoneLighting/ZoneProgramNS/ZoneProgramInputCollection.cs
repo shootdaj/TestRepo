@@ -33,5 +33,16 @@ namespace ZoneLighting.ZoneProgramNS
 			//	// ignored
 			//}
 		}
+
+		public ISV ToISV()
+		{
+			var inputStartingValues = new ISV();
+			this.ToList().ForEach(input =>
+			{
+				if (input.Value != null)
+					inputStartingValues.Add(input.Name, input.Value);
+			});
+			return inputStartingValues;
+		}
 	}
 }

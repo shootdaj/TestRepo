@@ -17,24 +17,24 @@ namespace ZoneLighting.ConfigNS
 
 		public static JsonSerializerSettings SaveZonesSerializerSettings => new JsonSerializerSettings()
 		{
-			PreserveReferencesHandling = PreserveReferencesHandling.All,
+			//PreserveReferencesHandling = PreserveReferencesHandling.All,
 			TypeNameHandling = TypeNameHandling.All,
 			TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Full,
-            Formatting = Formatting.Indented
+			Formatting = Formatting.Indented
 		};
 
 		public static JsonSerializerSettings LoadZonesSerializerSettings => new JsonSerializerSettings()
 		{
-			PreserveReferencesHandling = PreserveReferencesHandling.All,
+			//PreserveReferencesHandling = PreserveReferencesHandling.All,
 			TypeNameHandling = TypeNameHandling.All,
 			TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Full,
-            Formatting = Formatting.Indented,
+			Formatting = Formatting.Indented,
 			Converters = new JsonConverter[] { new UnderlyingTypeConverter() }
 		};
 
 		public static JsonSerializerSettings LoadProgramSetsSerializerSettings => new JsonSerializerSettings()
 		{
-			PreserveReferencesHandling = PreserveReferencesHandling.All,
+			//PreserveReferencesHandling = PreserveReferencesHandling.All,
 			TypeNameHandling = TypeNameHandling.All,
 			TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Full,
 			Formatting = Formatting.Indented,
@@ -43,7 +43,7 @@ namespace ZoneLighting.ConfigNS
 
 		public static JsonSerializerSettings SaveProgramSetsSerializerSettings => new JsonSerializerSettings()
 		{
-			PreserveReferencesHandling = PreserveReferencesHandling.All,
+			//PreserveReferencesHandling = PreserveReferencesHandling.All,
 			TypeNameHandling = TypeNameHandling.All,
 			TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Full,
 			Formatting = Formatting.Indented
@@ -76,25 +76,33 @@ namespace ZoneLighting.ConfigNS
 
 		public static BetterList<ProgramSet> DeserializeProgramSets(string config, IEnumerable<Zone> zones)
 		{
-			var deserializedProgramSets = new BetterList<ProgramSet>();
+			//deserialize the program sets
+			var deserializedProgramSets = ((IEnumerable<ProgramSet>)JsonConvert.DeserializeObject(config, LoadProgramSetsSerializerSettings))
+				.ToBetterList();
 
-			deserializedProgramSets =
-					((IEnumerable<ProgramSet>)JsonConvert.DeserializeObject(config, LoadProgramSetsSerializerSettings))
-						.ToBetterList();
-
-
+			//recreate the program sets from scratch using values from the deserialized ones
 			var reinstantiatedProgramSets = new BetterList<ProgramSet>();
 			deserializedProgramSets.ForEach(deserializedProgramSet =>
 			{
 				var zonesEnumerated = zones as IList<Zone> ?? zones.ToList();
 				var zonesToPassIn = zonesEnumerated.Where(z => deserializedProgramSet.Zones.Select(dz => dz.Name).Contains(z.Name));
+				List<ISV> isvs = null;
+
+				//prepare isv from deserialized zones
+				foreach (var zone in deserializedProgramSet.Zones.Where(zone => zone.ZoneProgramInputs.ContainsKey(deserializedProgramSet.ProgramName)))
+				{
+					if (isvs == null)
+						isvs = new List<ISV>();
+
+					isvs.Add(zone.ZoneProgramInputs[deserializedProgramSet.ProgramName].ToISV());
+				}
+				
+				//create new program set with all values from the deserialized version
 				reinstantiatedProgramSets.Add(new ProgramSet(deserializedProgramSet.ProgramName, zonesToPassIn,
-					deserializedProgramSet.Sync, deserializedProgramSet.Zones.First().ZoneProgramInputs.First().Item2 //TODO: This is not correct, if the programs had different input values, this scenario doesn't handle that
-																										//TODO: We need to save the inputs with each program and modify the ProgramSet constructor to be able to take in
-																										//TODO: multiple ISVs and populate them according to the zone.
-					, deserializedProgramSet.Name));
+					deserializedProgramSet.Sync, isvs, deserializedProgramSet.Name));
 			});
 
+			//dump the deserialized program sets
 			deserializedProgramSets.ForEach(programSet =>
 			{
 				programSet.Zones.Clear();

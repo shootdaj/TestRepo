@@ -55,11 +55,11 @@ namespace ZoneLighting.ZoneProgramNS
 		public ProgramState State { get; private set; } = ProgramState.Stopped;
 
 		protected SyncContext SyncContext { get; set; }
-		
+
 		#region Triggers
 
 		public Trigger StartTrigger { get; private set; } = new Trigger("StartTrigger");
-		
+
 		#endregion
 
 		#endregion CORE
@@ -74,17 +74,29 @@ namespace ZoneLighting.ZoneProgramNS
 
 		protected ZoneProgram(SyncContext syncContext = null, ActionBlock<InterruptInfo> interruptQueue = null)
 		{
-			var thisType = GetType();
-			//set the name of the program based on attribute, if any
-			if (thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false).Any())
-				Name =
-					(string) thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false)
-						.Cast<ExportMetadataAttribute>().First(attr => attr.Name == "Name").Value;
 			Construct(syncContext, interruptQueue);
+		}
+
+		/// <summary>
+		/// Gets the name of the program based on ExportMetadata attribute, if any.
+		/// </summary>
+		/// <param name="thisType">Type to scan</param>
+		private void GetNameFromMetadata()
+		{
+			//since the name is only set during construction, we can assume that if it hasn't been set by the constructor, it will be null or empty.
+			if (string.IsNullOrEmpty(Name))
+			{
+				var thisType = GetType();
+				if (thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false).Any())
+					Name =
+						(string) thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false)
+							.Cast<ExportMetadataAttribute>().First(attr => attr.Name == "Name").Value;
+			}
 		}
 
 		private void Construct(SyncContext syncContext = null, ActionBlock<InterruptInfo> interruptQueue = null)
 		{
+			GetNameFromMetadata();
 			StopTrigger = new Trigger("StopTrigger");
 			SyncContext = syncContext;
 
@@ -167,7 +179,7 @@ namespace ZoneLighting.ZoneProgramNS
 		public virtual void Dispose(bool force)
 		{
 			Stop(force);
-			UnsetInterruptQueue();		//unset the interrupt queue
+			UnsetInterruptQueue();      //unset the interrupt queue
 			RemoveAllInputs();
 			Name = null;
 			Zone = null;
@@ -189,7 +201,7 @@ namespace ZoneLighting.ZoneProgramNS
 			SyncContext?.Unsync(this);
 
 			if (State == ProgramState.Stopped)
-				SyncContext = syncContext;	
+				SyncContext = syncContext;
 			else
 				throw new Exception("Can only set sync context while program is stopped.");
 		}
@@ -245,7 +257,7 @@ namespace ZoneLighting.ZoneProgramNS
 			{
 				Inputs.Where(input => input is InterruptingInput)
 					.ToList()
-					.ForEach(input => ((InterruptingInput) input).UnsetInterruptQueue());
+					.ForEach(input => ((InterruptingInput)input).UnsetInterruptQueue());
 			}
 		}
 
@@ -255,7 +267,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Transport Controls
 
-		
+
 
 
 
@@ -279,9 +291,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <returns></returns>
 		public ISV GetInputValues()
 		{
-			var inputStartingValues = new ISV();
-			Inputs.ToList().ForEach(input => inputStartingValues.Add(input.Name, input.Value));
-			return inputStartingValues;
+			return Inputs.ToISV();
 		}
 
 		/// <summary>
@@ -342,13 +352,13 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <returns></returns>
 		protected ZoneProgramInput AddMappedInput<T>(object instance, string propertyName, Func<T, bool> filterPredicate = null)
 		{
-			var propertyInfo = instance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
+			var propertyInfo = instance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 			var input = new ZoneProgramInput(propertyInfo.Name, propertyInfo.PropertyType);
 			Inputs.Add(input);
 			if (filterPredicate != null)
 				input.Subscribe(incomingValue =>
 				{
-					if (filterPredicate((T) incomingValue) == true)
+					if (filterPredicate((T)incomingValue) == true)
 					{
 						propertyInfo.SetValue(instance, incomingValue);
 					}
@@ -361,6 +371,10 @@ namespace ZoneLighting.ZoneProgramNS
 			{
 				input.Subscribe(incomingValue => propertyInfo.SetValue(instance, incomingValue));
 			}
+
+			//set value of input to the value of the property
+			input.SetValue(propertyInfo.GetValue(instance));
+
 			return input;
 		}
 

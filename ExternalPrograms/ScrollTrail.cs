@@ -16,16 +16,16 @@ namespace ExternalPrograms
 	{
 		#region Inputs
 
-		public int DelayTime { get; set; } = 65;
-		public float DarkenFactor { get; set; } = (float)0.8;
+		int DelayTime { get; set; } = 65;
+		float DarkenFactor { get; set; } = (float)0.8;
 
 		/// <summary>
 		/// Whether or not two or more trails share the same shape (pixels). Set this to true
 		/// if there are trails following trails.
 		/// </summary>
-		public bool ShareShape { get; set; }
+		bool ShareShape { get; set; }
 
-		public List<TrailShape> TrailShapes { get; set; } = new List<TrailShape>();
+		List<TrailShape> TrailShapes { get; set; } = new List<TrailShape>();
 
 		#endregion
 

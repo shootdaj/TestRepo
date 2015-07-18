@@ -13,8 +13,8 @@ namespace ExternalPrograms
 	[ExportMetadata("Name", "Rainbow")]
 	public class Rainbow : LoopingZoneProgram
 	{
-		public int DelayTime { get; set; } = 1;
-		public int Speed { get; set; } = 100;
+		int DelayTime { get; set; } = 1;
+		int Speed { get; set; } = 100;
 		public override SyncLevel SyncLevel { get; set; } = RainbowSyncLevel.Fade;
 
 		public override void Setup()

@@ -5,7 +5,7 @@ using System.Drawing;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
-namespace ZoneLighting.StockPrograms
+namespace ExternalPrograms
 {
 	/// <summary>
 	/// Outputs a static color to the zone.

@@ -16,8 +16,8 @@ namespace ZoneLighting.StockPrograms
 	{
 		#region Inputs
 
-		public int DelayTime { get; set; } = 65;
-		public float DarkenFactor { get; set; } = (float) 0.8;
+		int DelayTime { get; set; } = 65;
+		float DarkenFactor { get; set; } = (float) 0.8;
 
 		/// <summary>
 		/// Whether or not two or more trails share the same shape (pixels). Set this to true

@@ -55,13 +55,20 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
-		public ProgramSet(string programName, IEnumerable<Zone> zones, bool sync, ISV isv, string name)
+		public ProgramSet(string programName, IEnumerable<Zone> zones, bool sync, IEnumerable<ISV> isvs, string name)
 		{
 			if (!ZoneScaffolder.Instance.DoesProgramExist(programName))
 				throw new Exception($"No program by the name '{programName}' exists.");
 
+			var isvsListed = isvs as IList<ISV> ?? isvs?.ToList();
+			var zonesListed = zones as IList<Zone> ?? zones.ToList();
+			if (isvsListed != null && isvsListed.Count() != 1 && isvsListed.Count() != zonesListed.Count())
+			{
+				throw new Exception("Number of items in isvs should be either 1 or equal to number of zones.");
+			}
+
 			Name = name;
-			Zones = zones.ToList();
+			Zones = zonesListed.ToList();
 			ProgramName = programName;
 		    Sync = sync;
 
@@ -74,15 +81,18 @@ namespace ZoneLighting.ZoneProgramNS
 				});
 
 				SyncContext = new SyncContext();
-				SyncContext.Sync(Zones, isv: isv);
+				SyncContext.Sync(Zones, isv: isvsListed);
 			}
 			else
 			{
-				Zones.ForEach(zone =>
+				for (int i = 0; i < Zones.Count; i++)
 				{
+					var zone = Zones[i];
 					zone.Stop(true);
-					ZoneScaffolder.Instance.RunZone(zone, programName, isv);
-				});
+
+					ZoneScaffolder.Instance.RunZone(zone, programName,
+						isvsListed?.Count() == zonesListed.Count() ? isvsListed.ElementAt(i) : isvsListed?.First());
+				}
 			}
 		}
 

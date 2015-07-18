@@ -25,15 +25,14 @@ namespace ExternalPrograms
 			};
 		}
 
-		public int DelayTime { get; set; } = 50;
-		public Color? DotColor { get; set; } = Color.Blue;
+		int DelayTime { get; set; } = 50;
+		Color? DotColor { get; set; } = Color.Blue;
 		public override SyncLevel SyncLevel { get; set; } = ScrollDotSyncLevel.Dot;
 
 		public override void Setup()
 		{
 			AddMappedInput<int>(this, "DelayTime");
 			AddMappedInput<Color?>(this, "DotColor");
-
 		}
 
 		public override void Loop()
@@ -43,14 +42,14 @@ namespace ExternalPrograms
 				//prepare frame
 				var sendColors = new Dictionary<int, Color>();
 				Blackout(sendColors);
-				
+
 
 				SetLeadingColor(sendColors, i, _colors);
 				//SetTrailLeadingColor(sendColors, i, 3, true);
-				if (i+1 < LightCount) sendColors[i+1] = DotColor != null ? (Color)DotColor : _colors[new Random().Next(0, _colors.Count - 1)];
+				if (i + 1 < LightCount) sendColors[i + 1] = DotColor != null ? (Color)DotColor : _colors[new Random().Next(0, _colors.Count - 1)];
 
-				SendColors(sendColors);		//send frame
-				ProgramCommon.Delay(DelayTime);											//pause before next iteration
+				SendColors(sendColors);     //send frame
+				ProgramCommon.Delay(DelayTime);                                         //pause before next iteration
 
 				SyncContext?.SignalAndWait(100);
 			}
@@ -67,11 +66,11 @@ namespace ExternalPrograms
 			{
 				if (forward) sendColors[leadIndex + 1] = SetColor((decimal)length / (i + 1));
 			}
-        }
+		}
 
 		private void SetLeadingColor(Dictionary<int, Color> sendColors, int i, List<Color> colors)
 		{
-			sendColors[i] = DotColor != null ? (Color) DotColor : colors[new Random().Next(0, colors.Count - 1)];
+			sendColors[i] = DotColor != null ? (Color)DotColor : colors[new Random().Next(0, colors.Count - 1)];
 		}
 
 		private void Blackout(Dictionary<int, Color> sendColors)

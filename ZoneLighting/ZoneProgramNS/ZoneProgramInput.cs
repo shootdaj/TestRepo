@@ -21,8 +21,6 @@ namespace ZoneLighting.ZoneProgramNS
 		[DataMember]
 		public object Value { get; protected set; }
 
-		public SyncContext SyncContext { get; set; }
-
 		public ZoneProgramInput(string name, Type type) : this()
 		{
 			Name = name;

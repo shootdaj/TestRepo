@@ -15,8 +15,8 @@ namespace ZoneLighting.StockPrograms
 	[ExportMetadata("Name", "Scroll2Dots")]
 	public class Scroll2Dots : LoopingZoneProgram
 	{
-		public int DelayTime { get; set; } = 50;
-		public Color? DotColor { get; set; } = Color.Blue;
+		int DelayTime { get; set; } = 50;
+		Color? DotColor { get; set; } = Color.Blue;
 		public override SyncLevel SyncLevel { get; set; } = ScrollDotSyncLevel.Dot;
 
 		public override void Setup()

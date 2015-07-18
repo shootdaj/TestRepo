@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace ZoneLighting.ZoneProgramNS
 {
-	[DataContract]
 	public class ColorScheme : List<Color>
 	{
-		public static ColorScheme All { get; set; } = new ColorScheme();
-
 		public static ColorScheme Primaries => new ColorScheme()
 		{
 			Color.Red,
@@ -35,7 +33,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public static Color GetRandomSchemeColor(ColorScheme colorScheme)
 		{
-			return colorScheme == All ? GetRandomColor() : colorScheme.ElementAt(ProgramCommon.RandomIntBetween(0, colorScheme.Count));
+			return colorScheme?.ElementAt(ProgramCommon.RandomIntBetween(0, colorScheme.Count)) ?? GetRandomColor();
 		}
 
 		public static Color GetRandomColor()

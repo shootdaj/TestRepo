@@ -15,7 +15,7 @@ namespace ZoneLighting.StockPrograms
 	{
 		public List<ScrollTrail> ScrollTrails { get; set; }
 
-		public int DelayTime { get; set; } = 65;
+		int DelayTime { get; set; } = 65;
 		//public Color? DotColor { get; set; } = Color.Blue;
 		
 		public override void Setup()

@@ -362,14 +362,15 @@ namespace ZoneLighting.ZoneNS
 
 		#region De/Serialization
 
-		public List<Tuple<string, ISV>> ZoneProgramInputs { get; set; } = new List<Tuple<string, ISV>>();
+		[DataMember]
+		public Dictionary<string, ZoneProgramInputCollection> ZoneProgramInputs { get; set; } = new Dictionary<string, ZoneProgramInputCollection>();
 
 		public void SetZoneProgramInputs()
 		{
-			ZoneProgramInputs.Add(new Tuple<string, ISV>(ZoneProgram.Name, ZoneProgram.GetInputValues()));
+			ZoneProgramInputs = new Dictionary<string, ZoneProgramInputCollection> {[ZoneProgram.Name] = ZoneProgram.Inputs};
 			InterruptingPrograms.ToList().ForEach(program =>
 			{
-				ZoneProgramInputs.Add(new Tuple<string, ISV>(program.Name, program.GetInputValues()));
+				ZoneProgramInputs[program.Name] = program.Inputs;
 			});
 		}
 

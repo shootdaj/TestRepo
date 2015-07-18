@@ -19,7 +19,7 @@ namespace ZoneLightingTests
 		{
 			var rainbow = new Rainbow();
 			rainbow.SetInput("Speed", 50);
-			Assert.AreEqual(rainbow.Speed, 50);
+			Assert.AreEqual(((IRainbowTest)rainbow).SpeedTest, 50);
 		}
 		
 		[Test]
@@ -27,7 +27,7 @@ namespace ZoneLightingTests
 		{
 			var rainbow = new Rainbow();
 			Assert.Throws<WarningException>(() => rainbow.SetInput("Speed", 101));
-			Assert.AreNotEqual(rainbow.Speed, 101);
+			Assert.AreNotEqual(((IRainbowTest)rainbow).SpeedTest, 101);
 		}
 
 		/// <summary>

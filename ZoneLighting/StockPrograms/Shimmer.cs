@@ -16,16 +16,16 @@ namespace ZoneLighting.StockPrograms
 	[ExportMetadata("Name", "Shimmer")]
 	public class Shimmer : LoopingZoneProgram
 	{
-		public int MaxFadeSpeed { get; set; } = 127;
-		public int MaxFadeDelay { get; set; } = 1;
-		public double Density { get; set; } = 1.0;
-		public double Brightness { get; set; } = 1.0;
+		int MaxFadeSpeed { get; set; } = 127;
+		int MaxFadeDelay { get; set; } = 1;
+		double Density { get; set; } = 1.0;
+		double Brightness { get; set; } = 1.0;
 
 		/// <summary>
 		/// Set to true to set the delay and speed to be randomly generated with the MaxFadeDelay and MaxFadeSpeed being the maximum value.
 		/// </summary>
-		public bool Random { get; set; } = true;
-		public ColorScheme ColorScheme { get; set; } = ColorScheme.All;
+		bool Random { get; set; } = true;
+		ColorScheme ColorScheme { get; set; } = null;
 
 		private Random RandomGen { get; } = new Random();
 

@@ -11,10 +11,13 @@ namespace ZoneLighting.StockPrograms
 	/// </summary>
 	[Export(typeof(ZoneProgram))]
 	[ExportMetadata("Name", "Rainbow")]
-	public class Rainbow : LoopingZoneProgram
+	public class Rainbow : LoopingZoneProgram, IRainbowTest
 	{
-		public int DelayTime { get; set; } = 50;
-		public int Speed { get; set; } = 1;
+		int DelayTime { get; set; } = 50;
+		int Speed { get; set; } = 1;
+
+		int IRainbowTest.SpeedTest => Speed;
+
 		public override SyncLevel SyncLevel { get; set; } = RainbowSyncLevel.Fade;
 
 		public Rainbow() : base()
@@ -58,5 +61,10 @@ namespace ZoneLighting.StockPrograms
 			public static SyncLevel Fade = new SyncLevel("Fade");
 			public static SyncLevel Color = new SyncLevel("Color");
 		}
+	}
+
+	public interface IRainbowTest
+	{
+		int SpeedTest { get; }
 	}
 }

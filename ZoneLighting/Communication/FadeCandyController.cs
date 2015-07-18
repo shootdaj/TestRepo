@@ -185,10 +185,10 @@ namespace ZoneLighting.Communication
 		public override void SendPixelFrame(IPixelFrame opcPixelFrame)
 		{
 			var byteArray = ((OPCPixelFrame)opcPixelFrame).ToByteArray();
-			var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
-			byteArray.ToList().ForEach(x => byteArrayString += x + ",");
-			byteArrayString += "}";
-			Debug.Print(byteArrayString);
+			//var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
+			//byteArray.ToList().ForEach(x => byteArrayString += x + ",");
+			//byteArrayString += "}";
+			//Debug.Print(byteArrayString);
 			AssertInit();
 			if (WebSocket.ReadyState == WebSocketState.Closed)
 				Connect();

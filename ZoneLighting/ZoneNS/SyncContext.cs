@@ -70,9 +70,9 @@ namespace ZoneLighting.ZoneNS
 			Sync(zonePrograms.ToList());
 		}
 
-		public void Sync(IEnumerable<Zone> zones, bool forceStop = false, ISV isv = null)
+		public void Sync(IEnumerable<Zone> zones, bool forceStop = false, IEnumerable<ISV> isv = null)
 		{
-            Sync(zones.Select(zone => zone.ZoneProgram), forceStop, isv);
+			Sync(zones.Select(zone => zone.ZoneProgram), forceStop, isv);
 		}
 
 		public void Sync(params Zone[] zones)
@@ -86,31 +86,37 @@ namespace ZoneLighting.ZoneNS
 		/// their synchronizable states before executing the synchronization. If no programs are already attached,
 		/// then this method attaches the given program(s) to this context and starts them.
 		/// </summary>
-		public void Sync(IEnumerable<ZoneProgram> zonePrograms, bool forceStop = false, ISV isv = null)
+		public void Sync(IEnumerable<ZoneProgram> zonePrograms, bool forceStop = false, IEnumerable<ISV> isvs = null)
 		{
 			var incomingZonePrograms = zonePrograms as IList<ZoneProgram> ?? zonePrograms.ToList();
+			var isvsListed = isvs?.ToList();
+
+			if (isvsListed != null && isvsListed.Count() != 1 && isvsListed.Count() != incomingZonePrograms.Count())
+			{
+				throw new Exception("Number of items in isvs should be either 1 or equal to number of zone programs.");
+			}
 
 			//stop programs if specified to do so
-		    if (forceStop)
-		        incomingZonePrograms.ToList().ForEach(zoneProgram =>
-		        {
-		            if (zoneProgram.State == ProgramState.Started)
-		            {
-		                zoneProgram.Stop(true);
-		            }
-		        });
-		    else
-		    {
-		        incomingZonePrograms.ToList().ForEach(zoneProgram =>
-		        {
-		            if (zoneProgram.State == ProgramState.Started)
-		            {
-		                zoneProgram.Stop();
-		            }
-		        });
-		    }
+			if (forceStop)
+				incomingZonePrograms.ToList().ForEach(zoneProgram =>
+				{
+					if (zoneProgram.State == ProgramState.Started)
+					{
+						zoneProgram.Stop(true);
+					}
+				});
+			else
+			{
+				incomingZonePrograms.ToList().ForEach(zoneProgram =>
+				{
+					if (zoneProgram.State == ProgramState.Started)
+					{
+						zoneProgram.Stop();
+					}
+				});
+			}
 
-		    ////incoming program must be stopped if forceStop is not true
+			////incoming program must be stopped if forceStop is not true
 			//if (incomingZonePrograms.Any(zp => zp.State != ProgramState.Stopped))
 			//	throw new Exception("Given program must be stopped before a live sync is executed.");
 
@@ -144,12 +150,14 @@ namespace ZoneLighting.ZoneNS
 					});
 
 					//start all incoming programs
-					incomingZonePrograms.ToList().ForEach(zoneProgram =>
+					for (int i = 0; i < incomingZonePrograms.Count; i++)
 					{
+						var zoneProgram = incomingZonePrograms[i];
 						zoneProgram.SetSyncContext(this);
 						ZonePrograms.Add(zoneProgram);
-						zoneProgram.Start(sync: false, isv: isv);
-					});
+						zoneProgram.Start(sync: false,
+							isv: isvsListed?.Count() == incomingZonePrograms.Count() ? isvsListed.ElementAt(i) : isvsListed?.First());
+					}
 
 					//wait for sync-state from all programs (incoming and existing)
 					ZonePrograms.Cast<LoopingZoneProgram>().ToList().ForEach(zp =>
@@ -230,11 +238,11 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public void SignalAndWait(int? timeout = null)
 		{
-		    //lock (Barrier)
-		    //{
-		        if (Barrier.ParticipantCount <= 0) return;
-		        Barrier.SignalAndWait(timeout ?? UniversalTimeout);
-		    //}
+			//lock (Barrier)
+			//{
+			if (Barrier.ParticipantCount <= 0) return;
+			Barrier.SignalAndWait(timeout ?? UniversalTimeout);
+			//}
 		}
 
 		public int GetNumberOfRemainingParticipants() => Barrier.ParticipantsRemaining;
