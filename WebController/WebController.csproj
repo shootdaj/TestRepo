@@ -262,6 +262,9 @@
     <Content Include="Content\SPA\font-awesome\scss\_spinning.scss" />
     <Content Include="Content\SPA\font-awesome\scss\_stacked.scss" />
     <Content Include="Content\SPA\font-awesome\scss\_variables.scss" />
+    <Content Include="Zones\ExternalZones.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\PublishProfiles\BLAZE IIS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
