@@ -94,8 +94,13 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 
 		public bool DoesProgramExist(string programName)
 		{
-			return ZoneProgramFactories.Select(x => x.Metadata.Name).Contains(programName);
+			return GetAvailablePrograms().Contains(programName);
 		}
+
+	    public IEnumerable<string> GetAvailablePrograms()
+	    {
+		    return ZoneProgramFactories.Select(x => x.Metadata.Name);
+	    }
 
 		internal ZoneProgram CreateZoneProgram(string programName)
 		{
