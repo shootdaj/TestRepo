@@ -121,6 +121,8 @@ namespace ZoneLighting
 		public BetterList<Zone> AvailableZones
 			=> Zones.Where(z => !ProgramSets.Any(p => p.Zones.Contains(z))).ToBetterList();
 
+		public IEnumerable<string> AvailablePrograms => ZoneScaffolder.Instance.GetAvailablePrograms();
+
 		/// <summary>
 		/// Container for the external modules.
 		/// </summary>

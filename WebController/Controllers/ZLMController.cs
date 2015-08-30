@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Dynamic;
 using System.Linq;
@@ -9,15 +10,18 @@ using ZoneLighting;
 using ZoneLighting.ConfigNS;
 using ZoneLighting.Usables;
 using ZoneLighting.ZoneProgramNS;
+using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace WebController.Controllers
 {
 	public class ZLMController : Controller
 	{
+		public static ZLM ZLM => (ZLM) System.Web.HttpContext.Current.Application["ZLM"];
+
 		public static void ZLMAction(Action<ZLM> action)
 		{
 			System.Web.HttpContext.Current.Application.Lock();
-			action.Invoke((ZLM)System.Web.HttpContext.Current.Application["ZLM"]);
+			action.Invoke(ZLM);
 			System.Web.HttpContext.Current.Application.UnLock();
 		}
 
@@ -66,7 +70,7 @@ namespace WebController.Controllers
 		public ActionResult DisposeZLM()
 		{
 			System.Web.HttpContext.Current.Application.Lock();
-			((ZLM)System.Web.HttpContext.Current.Application["ZLM"]).Dispose();
+			(ZLM).Dispose();
 			System.Web.HttpContext.Current.Application.UnLock();
 
 			return View("Index", new ZLMViewModel());
@@ -176,6 +180,13 @@ namespace WebController.Controllers
 			}
 
 			return View("Index", new ZLMViewModel());
+		}
+
+
+
+		public ActionResult ProgramSetDetails(string name)
+		{
+			return View(ZLM.ProgramSets[name]);
 		}
 	}
 }

@@ -67,6 +67,10 @@ To create a new zone program assembly (if you don't want to use the default Exte
 
 The concept of synchronization is central to this application. The user can run programs on zones but these programs have no knowledge of each other. So what would you do if you wanted two programs to move in lock-step? That is where the concept of synchronization comes in, in the form of SyncContext. The user just has to provide whether or not they want the programs to be synced when creating a program set. The SyncContext is managed internally by the program set. The file ZoneLighting\Usables\RunnerHelpers.cs contains examples of ways to start a program set with synchronization.
 
+###Managed Extensibility Framework
+
+This application uses .NET's Managed Extensibility Framework (MEF) to load ZonePrograms. MEF is C#'s solution to allow loading of "modules" or "plugins" into an application. This essentially means that this entire application is effectively a large "shell" that accepts zone programs as plugins that will provide the functionality. ZoneLighting provides the scaffolding and wiring to allow loading of zone program plugins, which are then loaded into zones. 
+
 ###ZoneLightingManager (ZLM)
 
 ZoneLightingManager (ZLM, in short) is the "runner" class for the entire application. All high-level operations like creating and destroying program sets are done using this class. To use ZLM, simply create an instance of it. WebController already creates one and keeps it in the ASP.NET Application State and displays it on the index page.

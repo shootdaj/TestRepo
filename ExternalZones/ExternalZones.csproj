@@ -59,6 +59,7 @@
   <PropertyGroup>
     <PostBuildEvent>robocopy "$(TargetDir)." "$(TargetDir)Zones\." "$(TargetFileName)" /is
 robocopy "$(TargetDir)." "$(SolutionDir)Tests\ZoneLightingTests\Resources\Zones\." "$(TargetFileName)" /is
+robocopy "$(TargetDir)." "$(SolutionDir)WebController\Zones\." "$(TargetFileName)" /is
 
 rem each robocopy statement and then underneath have the error check.
 if %25ERRORLEVEL%25 GEQ 8 goto failed

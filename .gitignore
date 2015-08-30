@@ -270,3 +270,4 @@ WebController/ZoneConfiguration.json
 !Console/App.config
 !WebController/Web.config
 !WebController/Views/Web.config
+!ExternalPrograms/app.config
