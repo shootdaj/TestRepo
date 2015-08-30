@@ -11,7 +11,7 @@
         {
             "type": "fadecandy",
             "map": [
-                [ 1, 0, 64, 64 ]                
+                [ 1, 0, 0, 64 ]                
             ],
             "dither": true,
             "interpolate": false

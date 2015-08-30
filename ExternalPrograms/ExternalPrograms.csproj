@@ -57,7 +57,9 @@
     <Compile Include="AndroidTrail.cs" />
     <Compile Include="BlinkColorLoop.cs" />
     <Compile Include="Cylon.cs" />
+    <Compile Include="Outlines.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scroll2Dots.cs" />
     <Compile Include="ScrollTrail.cs" />
     <Compile Include="Shimmer.cs" />
     <Compile Include="Rainbow.cs" />

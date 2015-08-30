@@ -21,7 +21,7 @@ namespace ZoneLightingTests.ProgramTests
 			{
 				var isv = new ISV();
 				isv.Add("MaxFadeSpeed", 1);
-				isv.Add("MaxFadeDelay", 2);
+				isv.Add("MaxFadeDelay", 20);
 				isv.Add("Density", 0.5);
 				isv.Add("Brightness", 0.5);
 				isv.Add("Random", random);

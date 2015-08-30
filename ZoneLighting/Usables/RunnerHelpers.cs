@@ -101,8 +101,8 @@ namespace ZoneLighting.Usables
 			var isv = new ISV();
 			isv.Add("MaxFadeSpeed", 1);
 			isv.Add("MaxFadeDelay", 20);
-			isv.Add("Density", 0.1);
-			isv.Add("Brightness", 0.5);
+			isv.Add("Density", 1.0);
+			isv.Add("Brightness", 0.3);
 			isv.Add("Random", true);
 			//isv.Add("ColorScheme", ColorScheme.Primaries);
 			var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix", PixelType.FadeCandyWS2812Pixel,
