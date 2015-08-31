@@ -100,7 +100,7 @@ namespace WebController.Controllers
 
 
 		//[HttpPost]
-		public ActionResult ZLMCommand(string Command)
+		public ActionResult ZLMCommand(string Command, string programSetName, string program)
 		{
 			var split = Command.Split(' ');
 			var command = split[0];
@@ -111,31 +111,40 @@ namespace WebController.Controllers
 
 			if (command == "Start")
 			{
-				if (arg1 == "All")
+				//if (arg1 == "All")
+				//	ZLMAction(zlm =>
+				//	{
+				//		Parallel.ForEach(zlm.ProgramSets, programSet =>
+				//		{
+				//			programSet.Start();
+				//		});
+				//	});
+				//else
 					ZLMAction(zlm =>
 					{
-						Parallel.ForEach(zlm.ProgramSets, programSet =>
-						{
-							programSet.Start();
-						});
-					});
-				else
-					ZLMAction(zlm =>
-					{
-						zlm.ProgramSets.First(z => z.Name == arg1).Start();
+						zlm.ProgramSets.First(z => z.Name == arg1).Dispose();
+
+						var isv = new ISV();
+						isv.Add("MaxFadeSpeed", 1);
+						isv.Add("MaxFadeDelay", 20);
+						isv.Add("Density", 1.0);
+						isv.Add("Brightness", 1.0);
+						isv.Add("Random", true);
+
+						zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);
 					});
 			}
 			else if (command == "Stop")
 			{
-				if (arg1 == "All")
-					ZLMAction(zlm =>
-					{
-						Parallel.ForEach(zlm.ProgramSets, programSet =>
-						{
-							programSet.Stop();
-						});
-					});
-				else
+				//if (arg1 == "All")
+				//	ZLMAction(zlm =>
+				//	{
+				//		Parallel.ForEach(zlm.ProgramSets, programSet =>
+				//		{
+				//			programSet.Stop();
+				//		});
+				//	});
+				//else
 					ZLMAction(zlm =>
 					{
 						zlm.ProgramSets.First(z => z.Name == arg1).Stop();

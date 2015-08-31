@@ -6,7 +6,7 @@
 @using (Ajax.BeginForm(new AjaxOptions { UpdateTargetId = "ZonesControl" }))
 {
 	<script type="text/javascript">
-		$(document).ready(function() {
+		$(document).ready(function () {
 			function MyClass() {
 				this.prop1 = "test";
 			}
@@ -21,14 +21,12 @@
 
 
 
-			@*$("#btnUninit").click(function () {
+		@*$("#btnUninit").click(function () {
             var url = "@Url.Action("UninitializeZLM", "ZLM")";
             $.get(url, null, function (data) {
                 $("#result").html(data);
             });
         });*@
-
-
 
 
 		//});
@@ -39,6 +37,16 @@
 				$("#result").html(data);
 			});
 		}
+
+		function startProgramSet(programSet, programName) {
+			var url = '@Url.Action("ZLMCommand", "ZLM")';
+			$.post(url, { Command: "Start " + programSet + " " + programName }, function (data) {
+				$("#result").html(data);
+			});
+
+		};
+
+
 	</script>
 
 	<div class="row">
@@ -52,56 +60,56 @@
 				<div class="panel-body">
 					<table class="table table-striped table-hover">
 						<thead>
-						<tr>
-							<th>Name</th>
-							<th>Program</th>
-							<th>Running</th>
-							<th># Lights</th>
-							<th>Set Color</th>
-						</tr>
+							<tr>
+								<th>Name</th>
+								<th>Program</th>
+								<th>Running</th>
+								<th># Lights</th>
+								<th>Set Color</th>
+							</tr>
 						</thead>
 						<tbody>
-						@if (Model.Zones != null)
-						{
-							foreach (var zone in Model.Zones)
+							@if (Model.Zones != null)
 							{
-								<tr>
-									<td>@zone.Name</td>
-									<td>@zone.ZoneProgram</td>
-									<td>@zone.Running</td>
-									<td>@zone.LightCount</td>
-									<td>
-										<div class="form">
-											<div class="form-group">
-												<select class="form-control" onchange=" setColor('@zone.Name', this.value, this.nextElementSibling.value) " style="display: inline-flex; width: inherit;">
-													@{
-														var knownColors = Enum.GetValues(typeof (KnownColor)).Cast<KnownColor>().ToList();
-														var colors = knownColors.Select(Color.FromKnownColor).ToList();
+								foreach (var zone in Model.Zones)
+								{
+									<tr>
+										<td>@zone.Name</td>
+										<td>@zone.ZoneProgram</td>
+										<td>@zone.Running</td>
+										<td>@zone.LightCount</td>
+										<td>
+											<div class="form">
+												<div class="form-group">
+													<select class="form-control" onchange=" setColor('@zone.Name', this.value, this.nextElementSibling.value) " style="display: inline-flex; width: inherit;">
+														@{
+															var knownColors = Enum.GetValues(typeof(KnownColor)).Cast<KnownColor>().ToList();
+															var colors = knownColors.Select(Color.FromKnownColor).ToList();
 
-														foreach (var knownColor in knownColors)
-														{
-															var color = Color.FromKnownColor(knownColor);
-
-															if (typeof (SystemColors).GetProperties().Select(p => p.Name).Contains(color.Name))
+															foreach (var knownColor in knownColors)
 															{
-																colors.RemoveAll(c => c.Name == color.Name);
+																var color = Color.FromKnownColor(knownColor);
+
+																if (typeof(SystemColors).GetProperties().Select(p => p.Name).Contains(color.Name))
+																{
+																	colors.RemoveAll(c => c.Name == color.Name);
+																}
+															}
+
+															foreach (var color in colors.OrderBy(c => c.Name))
+															{
+																<option value="@color.Name">@color.Name</option>
 															}
 														}
-
-														foreach (var color in colors.OrderBy(c => c.Name))
-														{
-															<option value="@color.Name">@color.Name</option>
-														}
-													}
-												</select>
-												<input type="number" value="0.5" step="0.01" onchange=" setColor('@zone.Name', this.previousElementSibling.value, this.value) " max="1.0" min="0.0" class="form-control inTable"/>
-												<input type="button" value="Set" onclick=" setColor('@zone.Name', this.previousElementSibling.previousElementSibling.value, this.previousElementSibling.value) " class="form-control btn btn-primary inTable"/>
+													</select>
+													<input type="number" value="0.5" step="0.01" onchange=" setColor('@zone.Name', this.previousElementSibling.value, this.value) " max="1.0" min="0.0" class="form-control inTable" />
+													<input type="button" value="Set" onclick=" setColor('@zone.Name', this.previousElementSibling.previousElementSibling.value, this.previousElementSibling.value) " class="form-control btn btn-primary inTable" />
+												</div>
 											</div>
-										</div>
-									</td>
-								</tr>
-							}
-						}
+										</td>
+									</tr>
+																}
+															}
 						</tbody>
 					</table>
 				</div>
@@ -128,34 +136,34 @@
 								<th>Action</th>
 							</tr>
 						</thead>*@
-						@*<tbody>
-							@if (Model.ProgramSets != null)
-							{
-								foreach (var programSet in Model.ProgramSets)
-								{
-									<tr>
-										<td class="@(programSet.State == ProgramState.Started ? "on" : "")">@programSet.Name</td>
-										<td class="@(programSet.State == ProgramState.Started ? "on" : "")">@programSet.ProgramName</td>
-										<td class="@(programSet.State == ProgramState.Started ? "on" : "")">@programSet.State</td>
-										<td class="@(programSet.State == ProgramState.Started ? "on" : "")">
-											@if (programSet.State == ProgramState.Stopped)
-											{
-												@Html.ActionLink("Start", "ZLMCommand", "ZLM", new { Command = "Start " + programSet.Name }, new { @class = "form-control btn btn-primary inTable" })
-											}
-											else
-											{
-												@Html.ActionLink("Stop", "ZLMCommand", "ZLM", new { Command = "Stop " + programSet.Name }, new { @class = "form-control btn btn-primary inTable" })
-											}
-										</td>
-									</tr>
-								}
-							}
-						</tbody>*@
-					@*</table>
-				</div>
-			</div>
-		</div>
-	</div>*@
+															@*<tbody>
+																	@if (Model.ProgramSets != null)
+																	{
+																		foreach (var programSet in Model.ProgramSets)
+																		{
+																			<tr>
+																				<td class="@(programSet.State == ProgramState.Started ? "on" : "")">@programSet.Name</td>
+																				<td class="@(programSet.State == ProgramState.Started ? "on" : "")">@programSet.ProgramName</td>
+																				<td class="@(programSet.State == ProgramState.Started ? "on" : "")">@programSet.State</td>
+																				<td class="@(programSet.State == ProgramState.Started ? "on" : "")">
+																					@if (programSet.State == ProgramState.Stopped)
+																					{
+																						@Html.ActionLink("Start", "ZLMCommand", "ZLM", new { Command = "Start " + programSet.Name }, new { @class = "form-control btn btn-primary inTable" })
+																					}
+																					else
+																					{
+																						@Html.ActionLink("Stop", "ZLMCommand", "ZLM", new { Command = "Stop " + programSet.Name }, new { @class = "form-control btn btn-primary inTable" })
+																					}
+																				</td>
+																			</tr>
+																		}
+																	}
+																</tbody>*@
+															@*</table>
+																			</div>
+																		</div>
+																	</div>
+																</div>*@
 
 
 
@@ -171,66 +179,67 @@
 
 
 
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="panel panel-primary">
-				<div class="panel-heading">
-					<h3 class="panel-title">
-						<i class="fa fa-bar-chart-o"></i> Program Sets
-					</h3>
-				</div>
-				<div class="panel-body">
-					<table class="table table-striped table-hover">
-						<thead>
-							<tr>
-								<th>Name</th>
-								<th>Program</th>
-								<th>State</th>
-								<th>Action</th>
-							</tr>
-						</thead>
-						<tbody>
-							@if (Model.ProgramSets != null)
-							{
-								foreach (var programSet in Model.ProgramSets)
-								{
-									<tr>
-										<td class="@(programSet.State == ProgramState.Started ? "on" : "")">@programSet.Name</td>
-										@if (programSet.State == ProgramState.Started)
-										{
-											<td class="on">@programSet.ProgramName</td>
-										}
-										else
-										{
-											<td>
-												<select class="form-control" style="display: inline-flex; width: inherit;">
-													@{
-														foreach (var programName in Model.AvailablePrograms)
-														{
-															<option value="@programName">@programName</option>
-														}
-													}
-												</select>
-											</td>
-										}
-										<td class="@(programSet.State == ProgramState.Started ? "on" : "")">@programSet.State</td>
-										<td class="@(programSet.State == ProgramState.Started ? "on" : "")">
-											@if (programSet.State == ProgramState.Stopped)
-											{
-												@Html.ActionLink("Start", "ZLMCommand", "ZLM", new { Command = "Start " + programSet.Name }, new { @class = "form-control btn btn-primary inTable" })
-											}
-											else
-											{
-												@Html.ActionLink("Stop", "ZLMCommand", "ZLM", new { Command = "Stop " + programSet.Name }, new { @class = "form-control btn btn-primary inTable" })												
-											}
-										</td>
-									</tr>
-								}
-							}
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-															}
+															<div class="row">
+																<div class="col-lg-12">
+																	<div class="panel panel-primary">
+																		<div class="panel-heading">
+																			<h3 class="panel-title">
+																				<i class="fa fa-bar-chart-o"></i> Program Sets
+																			</h3>
+																		</div>
+																		<div class="panel-body">
+																			<table class="table table-striped table-hover">
+																				<thead>
+																					<tr>
+																						<th>Name</th>
+																						<th>Program</th>
+																						<th>State</th>
+																						<th>Action</th>
+																					</tr>
+																				</thead>
+																				<tbody>
+																					@if (Model.ProgramSets != null)
+																					{
+																						foreach (var programSet in Model.ProgramSets)
+																						{
+																							<tr>
+																								<td class="@(programSet.State == ProgramState.Started ? "on" : "")">@programSet.Name</td>
+																								@if (programSet.State == ProgramState.Started)
+																								{
+																									<td class="on">@programSet.ProgramName</td>			}
+																								else
+																								{
+																									<td>
+																										@*@Html.DropDownList("ddl" + programSet.Name + "Program", Model.AvailablePrograms)*@
+
+																										<select class="form-control" style="display: inline-flex; width: inherit;" id='ddlProgramSetProgram'>
+																											@{				foreach (var programName in Model.AvailablePrograms)
+																												{
+																													<option value="@programName">@programName</option>			}
+																											}
+																										</select>
+
+																									</td>					}
+																								<td class="@(programSet.State == ProgramState.Started ? "on" : "")">@programSet.State</td>
+																								<td class="@(programSet.State == ProgramState.Started ? "on" : "")">
+																									@if (programSet.State == ProgramState.Stopped)
+																									{
+																										//@Html.ActionLink("Start", "ZLMCommand", "ZLM", new { Command = "Start " + programSet.Name }, new { @class = "form-control btn btn-primary inTable" })
+																										<input type="button" onclick="startProgramSet('ShimmerSet', document.getElementById('ddlProgramSetProgram').options[document.getElementById('ddlProgramSetProgram').selectedIndex].text)" value="Start"/>
+																										@*<button onclick='startProgramSet(@programSet.Name, @( "ddl" + programSet.Name + "Program.SelectedValue"))'>Start</button>*@
+																									}
+																									else
+																									{
+																										@Html.ActionLink("Dispose", "ZLMCommand", "ZLM", new { Command = "Stop " + programSet.Name,  }, new { @class = "form-control btn btn-primary inTable" })
+																									}
+																								</td>
+																							</tr>					
+																								}
+																							}
+																				</tbody>
+																			</table>
+																		</div>
+																	</div>
+																</div>
+															</div>		
+																						}
