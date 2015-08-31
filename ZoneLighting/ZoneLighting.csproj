@@ -41,6 +41,10 @@
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Sanford.Multimedia, Version=6.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CSharpMidiToolkit\Sanford.Multimedia.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
@@ -80,6 +84,7 @@
   <ItemGroup>
     <Compile Include="Helpers.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="StockPrograms\MidiBlink.cs" />
     <Compile Include="StockPrograms\Outlines.cs" />
     <Compile Include="StockPrograms\Shimmer.cs" />
     <Compile Include="Usables\RunnerHelpers.cs" />
@@ -153,7 +158,12 @@
     <Content Include="Doc\zoneconfigurationexample.txt" />
     <Content Include="Doc\ZoneLightingClasses.jpg" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Temp\CSharpMidiToolkitV5_demo\Sanford.Multimedia.Midi\Sanford.Multimedia.Midi.csproj">
+      <Project>{4269C72A-8D3A-4737-8F89-72EAA33EA9E1}</Project>
+      <Name>Sanford.Multimedia.Midi</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

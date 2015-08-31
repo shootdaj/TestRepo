@@ -24,7 +24,7 @@ namespace ZoneLighting.StockPrograms
 
 				if (soft)
 				{
-					ProgramCommon.SoftBlink(this, new List<Tuple<Color, int>>
+					ProgramCommon.SoftBlink(new List<Tuple<Color, int>>
 					{
 						{color, time},
 					}, OutputColor, SyncContext);

@@ -117,8 +117,8 @@ namespace ZoneLighting.ZoneProgramNS
 					syncContext?.SignalAndWait();
 			});
 		}
-
-		public static void SoftBlink(ZoneProgram program, List<Tuple<Color, int>> colorsAndHoldTimes, Action<Color> outputMethod,
+		
+		public static void SoftBlink(List<Tuple<Color, int>> colorsAndHoldTimes, Action<Color> outputMethod,
 			SyncContext syncContext = null)
 		{
 			colorsAndHoldTimes.ForEach(tuple =>
