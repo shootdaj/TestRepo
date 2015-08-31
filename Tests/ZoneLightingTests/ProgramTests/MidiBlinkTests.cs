@@ -46,23 +46,23 @@ namespace ZoneLightingTests.ProgramTests
 			}
 		}
 
-		[Test]
-		public void etstet()
-		{
-			var midiInput = new InputDevice(0);
+		//[Test]
+		//public void etstet()
+		//{
+		//	var midiInput = new InputDevice(0);
 
-			midiInput.ChannelMessageReceived += (sender, args) =>
-			{
-				Debug.Print("nice");
-			};
+		//	midiInput.ChannelMessageReceived += (sender, args) =>
+		//	{
+		//		Debug.Print("nice");
+		//	};
 
-			midiInput.SysCommonMessageReceived += (sender, args) => { };
-			midiInput.SysExMessageReceived += (sender, args) => { };
-			midiInput.SysRealtimeMessageReceived += (sender, args) => { };
-			midiInput.Error += (sender, args) => { };
+		//	midiInput.SysCommonMessageReceived += (sender, args) => { };
+		//	midiInput.SysExMessageReceived += (sender, args) => { };
+		//	midiInput.SysRealtimeMessageReceived += (sender, args) => { };
+		//	midiInput.Error += (sender, args) => { };
 
-			midiInput.StartRecording();
-		}
+		//	midiInput.StartRecording();
+		//}/
 
 		[TestCase(10, true, 0.5, 1, 1, 0.5)]
 		[TestCase(10, false, 0.5, 1, 1, 0.5)]
