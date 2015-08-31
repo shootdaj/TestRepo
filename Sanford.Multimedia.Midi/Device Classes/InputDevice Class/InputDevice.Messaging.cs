@@ -42,7 +42,7 @@ namespace Sanford.Multimedia.Midi
 {
     public partial class InputDevice : MidiDevice
     {
-        private void HandleMessage(int handle, int msg, int instance, int param1, int param2)
+        private void HandleMessage(IntPtr handle, int msg, int instance, int param1, int param2)
         {
             if(msg == MIM_OPEN)
             {
@@ -210,7 +210,7 @@ namespace Sanford.Multimedia.Midi
 
         private void ReleaseBuffer(IntPtr headerPtr)
         {
-            int result = midiInUnprepareHeader(Handle, headerPtr, SizeOfMidiHeader);
+            int result = midiInUnprepareHeader(hHandle, headerPtr, SizeOfMidiHeader);
 
             if(result != DeviceException.MMSYSERR_NOERROR)
             {
@@ -240,7 +240,7 @@ namespace Sanford.Multimedia.Midi
             IntPtr headerPtr = headerBuilder.Result;
 
             // Prepare the header to be used.
-            result = midiInPrepareHeader(Handle, headerPtr, SizeOfMidiHeader);
+            result = midiInPrepareHeader(hHandle, headerPtr, SizeOfMidiHeader);
 
             // If the header was perpared successfully.
             if(result == DeviceException.MMSYSERR_NOERROR)
@@ -248,7 +248,7 @@ namespace Sanford.Multimedia.Midi
                 bufferCount++;
 
                 // Add the buffer to the InputDevice.
-                result = midiInAddBuffer(Handle, headerPtr, SizeOfMidiHeader);
+                result = midiInAddBuffer(hHandle, headerPtr, SizeOfMidiHeader);
 
                 // If the buffer could not be added.
                 if(result != MidiDeviceException.MMSYSERR_NOERROR)
@@ -256,7 +256,7 @@ namespace Sanford.Multimedia.Midi
                     // Unprepare header - there's a chance that this will fail 
                     // for whatever reason, but there's not a lot that can be
                     // done at this point.
-                    midiInUnprepareHeader(Handle, headerPtr, SizeOfMidiHeader);
+                    midiInUnprepareHeader(hHandle, headerPtr, SizeOfMidiHeader);
 
                     bufferCount--;
 

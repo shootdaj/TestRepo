@@ -65,8 +65,8 @@ namespace Sanford.Multimedia.Midi
         {
             if(!IsDisposed)
             {
-                midiInReset(Handle);
-                midiInClose(Handle);
+                midiInReset(hHandle);
+                midiInClose(hHandle);
             }
         }
 

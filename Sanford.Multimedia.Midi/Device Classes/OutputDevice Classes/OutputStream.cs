@@ -44,29 +44,29 @@ namespace Sanford.Multimedia.Midi
     public sealed class OutputStream : OutputDeviceBase
     {
         [DllImport("winmm.dll")]
-        private static extern int midiStreamOpen(ref int handle, ref int deviceID, int reserved,
+        private static extern int midiStreamOpen(ref IntPtr handle, ref int deviceID, int reserved,
             OutputDevice.MidiOutProc proc, int instance, uint flag);
 
         [DllImport("winmm.dll")]
-        private static extern int midiStreamClose(int handle);
+        private static extern int midiStreamClose(IntPtr handle);
 
         [DllImport("winmm.dll")]
-        private static extern int midiStreamOut(int handle, IntPtr headerPtr, int sizeOfMidiHeader);
+        private static extern int midiStreamOut(IntPtr handle, IntPtr headerPtr, int sizeOfMidiHeader);
 
         [DllImport("winmm.dll")]
-        private static extern int midiStreamPause(int handle);
+        private static extern int midiStreamPause(IntPtr handle);
 
         [DllImport("winmm.dll")]
-        private static extern int midiStreamPosition(int handle, ref Time t, int sizeOfTime);
+        private static extern int midiStreamPosition(IntPtr handle, ref Time t, int sizeOfTime);
 
         [DllImport("winmm.dll")]
-        private static extern int midiStreamProperty(int handle, ref Property p, uint flags);
+        private static extern int midiStreamProperty(IntPtr handle, ref Property p, uint flags);
 
         [DllImport("winmm.dll")]
-        private static extern int midiStreamRestart(int handle);
+        private static extern int midiStreamRestart(IntPtr handle);
 
         [DllImport("winmm.dll")]
-        private static extern int midiStreamStop(int handle);
+        private static extern int midiStreamStop(IntPtr handle);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct Property
@@ -129,7 +129,7 @@ namespace Sanford.Multimedia.Midi
                 {
                     Reset();
 
-                    int result = midiStreamClose(Handle);
+                    int result = midiStreamClose(hHandle);
 
                     if(result != MidiDeviceException.MMSYSERR_NOERROR)
                     {
@@ -139,8 +139,8 @@ namespace Sanford.Multimedia.Midi
             }
             else
             {
-                midiOutReset(Handle);
-                midiStreamClose(Handle);
+                midiOutReset(hHandle);
+                midiStreamClose(hHandle);
             }
 
             base.Dispose(disposing);
@@ -173,7 +173,7 @@ namespace Sanford.Multimedia.Midi
 
             lock(lockObject)
             {
-                int result = midiStreamRestart(Handle);
+                int result = midiStreamRestart(hHandle);
 
                 if(result != MidiDeviceException.MMSYSERR_NOERROR)
                 {
@@ -195,7 +195,7 @@ namespace Sanford.Multimedia.Midi
 
             lock(lockObject)
             {
-                int result = midiStreamPause(Handle);
+                int result = midiStreamPause(hHandle);
 
                 if(result != MidiDeviceException.MMSYSERR_NOERROR)
                 {
@@ -217,7 +217,7 @@ namespace Sanford.Multimedia.Midi
 
             lock(lockObject)
             {
-                int result = midiStreamStop(Handle);
+                int result = midiStreamStop(hHandle);
 
                 if(result != MidiDeviceException.MMSYSERR_NOERROR)
                 {
@@ -389,7 +389,7 @@ namespace Sanford.Multimedia.Midi
 
                 events.Clear();
 
-                int result = midiOutPrepareHeader(Handle, headerBuilder.Result, SizeOfMidiHeader);
+                int result = midiOutPrepareHeader(hHandle, headerBuilder.Result, SizeOfMidiHeader);
 
                 if(result == MidiDeviceException.MMSYSERR_NOERROR)
                 {
@@ -402,11 +402,11 @@ namespace Sanford.Multimedia.Midi
                     throw new OutputDeviceException(result);
                 }
 
-                result = midiStreamOut(Handle, headerBuilder.Result, SizeOfMidiHeader);
+                result = midiStreamOut(hHandle, headerBuilder.Result, SizeOfMidiHeader);
 
                 if(result != MidiDeviceException.MMSYSERR_NOERROR)
                 {
-                    midiOutUnprepareHeader(Handle, headerBuilder.Result, SizeOfMidiHeader);
+                    midiOutUnprepareHeader(hHandle, headerBuilder.Result, SizeOfMidiHeader);
 
                     headerBuilder.Destroy();
 
@@ -432,7 +432,7 @@ namespace Sanford.Multimedia.Midi
 
             lock(lockObject)
             {
-                int result = midiStreamPosition(Handle, ref t, Marshal.SizeOf(typeof(Time)));
+                int result = midiStreamPosition(hHandle, ref t, Marshal.SizeOf(typeof(Time)));
 
                 if(result != MidiDeviceException.MMSYSERR_NOERROR)
                 {
@@ -453,7 +453,7 @@ namespace Sanford.Multimedia.Midi
             }
         }
 
-        protected override void HandleMessage(int handle, int msg, int instance, int param1, int param2)
+        protected override void HandleMessage(IntPtr handle, int msg, int instance, int param1, int param2)
         {
             if(msg == MOM_POSITIONCB)
             {
@@ -511,7 +511,7 @@ namespace Sanford.Multimedia.Midi
 
                 lock(lockObject)
                 {
-                    int result = midiStreamProperty(Handle, ref d, MIDIPROP_GET | MIDIPROP_TIMEDIV);
+                    int result = midiStreamProperty(hHandle, ref d, MIDIPROP_GET | MIDIPROP_TIMEDIV);
 
                     if(result != MidiDeviceException.MMSYSERR_NOERROR)
                     {
@@ -543,7 +543,7 @@ namespace Sanford.Multimedia.Midi
 
                 lock(lockObject)
                 {
-                    int result = midiStreamProperty(Handle, ref d, MIDIPROP_SET | MIDIPROP_TIMEDIV);
+                    int result = midiStreamProperty(hHandle, ref d, MIDIPROP_SET | MIDIPROP_TIMEDIV);
 
                     if(result != MidiDeviceException.MMSYSERR_NOERROR)
                     {
@@ -571,7 +571,7 @@ namespace Sanford.Multimedia.Midi
 
                 lock(lockObject)
                 {
-                    int result = midiStreamProperty(Handle, ref t, MIDIPROP_GET | MIDIPROP_TEMPO);
+                    int result = midiStreamProperty(hHandle, ref t, MIDIPROP_GET | MIDIPROP_TEMPO);
 
                     if(result != MidiDeviceException.MMSYSERR_NOERROR)
                     {
@@ -603,7 +603,7 @@ namespace Sanford.Multimedia.Midi
 
                 lock(lockObject)
                 {
-                    int result = midiStreamProperty(Handle, ref t, MIDIPROP_SET | MIDIPROP_TEMPO);
+                    int result = midiStreamProperty(hHandle, ref t, MIDIPROP_SET | MIDIPROP_TEMPO);
 
                     if(result != MidiDeviceException.MMSYSERR_NOERROR)
                     {

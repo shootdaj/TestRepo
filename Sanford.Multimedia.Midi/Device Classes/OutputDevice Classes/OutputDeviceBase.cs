@@ -44,21 +44,21 @@ namespace Sanford.Multimedia.Midi
     public abstract class OutputDeviceBase : MidiDevice
     {
         [DllImport("winmm.dll")]
-        protected static extern int midiOutReset(int handle);
+        protected static extern int midiOutReset(IntPtr handle);
 
         [DllImport("winmm.dll")]
-        protected static extern int midiOutShortMsg(int handle, int message);
+        protected static extern int midiOutShortMsg(IntPtr handle, int message);
 
         [DllImport("winmm.dll")]
-        protected static extern int midiOutPrepareHeader(int handle,
+        protected static extern int midiOutPrepareHeader(IntPtr handle,
             IntPtr headerPtr, int sizeOfMidiHeader);
 
         [DllImport("winmm.dll")]
-        protected static extern int midiOutUnprepareHeader(int handle,
+        protected static extern int midiOutUnprepareHeader(IntPtr handle,
             IntPtr headerPtr, int sizeOfMidiHeader);
 
         [DllImport("winmm.dll")]
-        protected static extern int midiOutLongMsg(int handle,
+        protected static extern int midiOutLongMsg(IntPtr handle,
             IntPtr headerPtr, int sizeOfMidiHeader);
 
         [DllImport("winmm.dll")]
@@ -75,7 +75,7 @@ namespace Sanford.Multimedia.Midi
         protected delegate void GenericDelegate<T>(T args);
 
         // Represents the method that handles messages from Windows.
-        protected delegate void MidiOutProc(int handle, int msg, int instance, int param1, int param2);
+        protected delegate void MidiOutProc(IntPtr handle, int msg, int instance, int param1, int param2);
 
         // For releasing buffers.
         protected DelegateQueue delegateQueue = new DelegateQueue();
@@ -89,7 +89,7 @@ namespace Sanford.Multimedia.Midi
         private MidiHeaderBuilder headerBuilder = new MidiHeaderBuilder();
 
         // The device handle.
-        protected int hndle = 0;        
+        protected IntPtr hndle = new IntPtr(0);        
 
         public OutputDeviceBase(int deviceID) : base(deviceID)
         {
@@ -141,7 +141,7 @@ namespace Sanford.Multimedia.Midi
                 headerBuilder.Build();
 
                 // Prepare system exclusive buffer.
-                int result = midiOutPrepareHeader(Handle, headerBuilder.Result, SizeOfMidiHeader);
+                int result = midiOutPrepareHeader(hHandle, headerBuilder.Result, SizeOfMidiHeader);
 
                 // If the system exclusive buffer was prepared successfully.
                 if(result == MidiDeviceException.MMSYSERR_NOERROR)
@@ -149,12 +149,12 @@ namespace Sanford.Multimedia.Midi
                     bufferCount++;
 
                     // Send system exclusive message.
-                    result = midiOutLongMsg(Handle, headerBuilder.Result, SizeOfMidiHeader);
+                    result = midiOutLongMsg(hHandle, headerBuilder.Result, SizeOfMidiHeader);
 
                     // If the system exclusive message could not be sent.
                     if(result != MidiDeviceException.MMSYSERR_NOERROR)
                     {
-                        midiOutUnprepareHeader(Handle, headerBuilder.Result, SizeOfMidiHeader);
+                        midiOutUnprepareHeader(hHandle, headerBuilder.Result, SizeOfMidiHeader);
                         bufferCount--;
                         headerBuilder.Destroy();
 
@@ -216,7 +216,7 @@ namespace Sanford.Multimedia.Midi
             lock(lockObject)
             {
                 // Reset the OutputDevice.
-                int result = midiOutReset(Handle); 
+                int result = midiOutReset(hHandle); 
 
                 if(result == MidiDeviceException.MMSYSERR_NOERROR)
                 {
@@ -237,7 +237,7 @@ namespace Sanford.Multimedia.Midi
         {
             lock(lockObject)
             {
-                int result = midiOutShortMsg(Handle, message);
+                int result = midiOutShortMsg(hHandle, message);
 
                 if(result != MidiDeviceException.MMSYSERR_NOERROR)
                 {
@@ -264,7 +264,7 @@ namespace Sanford.Multimedia.Midi
         }
 
         // Handles Windows messages.
-        protected virtual void HandleMessage(int handle, int msg, int instance, int param1, int param2)
+        protected virtual void HandleMessage(IntPtr handle, int msg, int instance, int param1, int param2)
         {
             if(msg == MOM_OPEN)
             {
@@ -286,7 +286,7 @@ namespace Sanford.Multimedia.Midi
                 IntPtr headerPtr = (IntPtr)state;
 
                 // Unprepare the buffer.
-                int result = midiOutUnprepareHeader(Handle, headerPtr, SizeOfMidiHeader);
+                int result = midiOutUnprepareHeader(hHandle, headerPtr, SizeOfMidiHeader);
 
                 if(result != MidiDeviceException.MMSYSERR_NOERROR)
                 {
@@ -327,11 +327,20 @@ namespace Sanford.Multimedia.Midi
         {
             get
             {
-                return hndle;
+	            return //hndle;
+		            0;
             }
         }
 
-        public static int DeviceCount
+		public IntPtr hHandle
+		{
+			get
+			{
+				return hndle;
+			}
+		}
+
+		public static int DeviceCount
         {
             get
             {

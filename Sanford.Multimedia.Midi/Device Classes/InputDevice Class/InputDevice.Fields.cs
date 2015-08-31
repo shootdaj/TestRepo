@@ -60,7 +60,7 @@ namespace Sanford.Multimedia.Midi
 
         private SysCommonMessageBuilder scBuilder = new SysCommonMessageBuilder();
 
-        private int handle = 0;
+        private IntPtr handle = new IntPtr(0);
 
         private volatile bool resetting = false;
 

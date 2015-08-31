@@ -41,13 +41,22 @@ namespace Sanford.Multimedia.Midi
     {
         public override int Handle
         {
-            get 
-            { 
-                return handle; 
+            get
+            {
+	            return //handle; 
+				0;
             }
         }
 
-        public int SysExBufferSize
+		public IntPtr hHandle
+		{
+			get
+			{
+				return handle;
+			}
+		}
+
+		public int SysExBufferSize
         {
             get
             {

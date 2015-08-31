@@ -95,7 +95,7 @@ namespace Sanford.Multimedia.Midi
 
                 if(result == DeviceException.MMSYSERR_NOERROR)
                 {
-                    result = midiInStart(Handle);
+                    result = midiInStart(hHandle);
                 }
 
                 if(result == MidiDeviceException.MMSYSERR_NOERROR)
@@ -131,7 +131,7 @@ namespace Sanford.Multimedia.Midi
 
             lock(lockObject)
             {
-                int result = midiInStop(Handle);
+                int result = midiInStop(hHandle);
 
                 if(result == MidiDeviceException.MMSYSERR_NOERROR)
                 {
@@ -159,7 +159,7 @@ namespace Sanford.Multimedia.Midi
             {
                 resetting = true;
 
-                int result = midiInReset(Handle);                
+                int result = midiInReset(hHandle);                
 
                 if(result == MidiDeviceException.MMSYSERR_NOERROR)
                 {
