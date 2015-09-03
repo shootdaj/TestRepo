@@ -20,12 +20,16 @@ namespace WebController
 
 			bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
 					  "~/Scripts/bootstrap-darkadmin.min.js",
+					  //"~/Scripts/bootstrap-gplus.min.js",
+					  //"~/Scripts/scripts-gplus.min.js",
 					  "~/Scripts/respond.js"));
 
 			bundles.Add(new StyleBundle("~/Content/css").Include(
 					  "~/Content/bootstrap-darkadmin.min.css",
-					  "~/Content/local.css"
-					  ,"~/Content/Site.css"
+					  //"~/Content/bootstrap-gplus.min.css",
+					  //"~/Content/styles-gplus.css",
+					  "~/Content/local.css",
+					  "~/Content/Site.css"
 					  ));
 
 			// Set EnableOptimizations to false for debugging. For more information,

@@ -16,7 +16,7 @@ namespace WebController.Controllers
 {
 	public class ZLMController : Controller
 	{
-		public static ZLM ZLM => (ZLM) System.Web.HttpContext.Current.Application["ZLM"];
+		public static ZLM ZLM => (ZLM)System.Web.HttpContext.Current.Application["ZLM"];
 
 		public static void ZLMAction(Action<ZLM> action)
 		{
@@ -63,7 +63,7 @@ namespace WebController.Controllers
 				loadZoneModules: loadZoneModules, initAction: initAction);
 
 			System.Web.HttpContext.Current.Application.UnLock();
-			
+
 			return View("Index", new ZLMViewModel());
 		}
 
@@ -100,63 +100,37 @@ namespace WebController.Controllers
 
 
 		//[HttpPost]
-		public ActionResult ZLMCommand(string Command, string programSetName, string program)
+		public ActionResult ZLMCommand(string Command, string programSetName, string programName)
 		{
-			var split = Command.Split(' ');
-			var command = split[0];
-			var arg1 = split[1];
-			var arg2 = "";
-			if (split.Length > 2 )
-				arg2 = split[2];
-
-			if (command == "Start")
-			{
-				//if (arg1 == "All")
-				//	ZLMAction(zlm =>
-				//	{
-				//		Parallel.ForEach(zlm.ProgramSets, programSet =>
-				//		{
-				//			programSet.Start();
-				//		});
-				//	});
-				//else
-					ZLMAction(zlm =>
-					{
-						zlm.ProgramSets.First(z => z.Name == arg1).Dispose();
-
-						var isv = new ISV();
-						isv.Add("MaxFadeSpeed", 1);
-						isv.Add("MaxFadeDelay", 20);
-						isv.Add("Density", 1.0);
-						isv.Add("Brightness", 1.0);
-						isv.Add("Random", true);
-
-						zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);
-					});
-			}
-			else if (command == "Stop")
-			{
-				//if (arg1 == "All")
-				//	ZLMAction(zlm =>
-				//	{
-				//		Parallel.ForEach(zlm.ProgramSets, programSet =>
-				//		{
-				//			programSet.Stop();
-				//		});
-				//	});
-				//else
-					ZLMAction(zlm =>
-					{
-						zlm.ProgramSets.First(z => z.Name == arg1).Stop();
-					});
-			}
-			else if (command == "SetZoneColor")
-			{
-				
-			}
-
-			return View("Index", new ZLMViewModel());
+			var command = Command;
+			ProcessZLMCommand(command, programSetName, programName);
+			return PartialView("ProgramSet", new ZLMViewModel().ZLM);
 		}
+
+		private void ProcessZLMCommand(string command, string programSetName, string programName)
+		{
+			if (command.ToLower().Trim() == "start")
+			{
+				ZLMAction(zlm =>
+				{
+					zlm.DisposeProgramSets(programSetName);
+					
+					var isv = new ISV();
+					isv.Add("MaxFadeSpeed", 1);
+					isv.Add("MaxFadeDelay", 20);
+					isv.Add("Density", 1.0);
+					isv.Add("Brightness", 1.0);
+					isv.Add("Random", true);
+
+					zlm.CreateProgramSet(programSetName, programName, false, isv, zlm.Zones);
+				});
+			}
+			else if (command.ToLower().Trim() == "stop")
+			{
+				ZLMAction(zlm => zlm.ProgramSets.First(z => z.Name == programSetName).Stop());
+			}
+		}
+		
 
 		public ActionResult SetZoneColor(string zoneName, string color, float brightness)
 		{

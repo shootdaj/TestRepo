@@ -11,14 +11,11 @@
 					</h3>
 				</div>
 				<div class="panel-body">
-					<div class="fa-align-center">
-						@Html.ActionLink("Create ZLM", "CreateZLM", "ZLM", null, new { @class = "btn btn-primary" })
-						@Html.ActionLink("Dispose ZLM", "DisposeZLM", "ZLM", null, new { @class = "btn btn-primary" })
-						@Html.ActionLink("Save", "Save", "ZLM", null, new { @class = "btn btn-primary" })
-					</div>
+					@Html.ActionLink("Create ZLM", "CreateZLM", "ZLM", null, new { @class = "btn btn-primary bottom10 inTable" })<br />
+					@Html.ActionLink("Dispose ZLM", "DisposeZLM", "ZLM", null, new { @class = "btn btn-primary bottom10 inTable" })<br />
+					@Html.ActionLink("Save", "Save", "ZLM", null, new { @class = "btn btn-primary bottom10 inTable" })
 				</div>
 			</div>
-			
 		</div>
 	</div>
 }

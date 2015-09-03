@@ -175,11 +175,8 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ZLMController.cs" />
-    <Compile Include="Controllers\ZLMViewModel.cs" />
-    <Compile Include="Controllers\ZonesController.cs" />
+    <Compile Include="Models\ZLMViewModel.cs" />
     <Compile Include="Extensions\WebControllerExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -193,9 +190,11 @@
     <Content Include="Content\bootstrap-darkadmin.css" />
     <Content Include="Content\bootstrap-darkadmin.min.css" />
     <Content Include="Content\bootstrap-darkly.css" />
+    <Content Include="Content\bootstrap-gplus.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\loadng.gif" />
     <Content Include="Content\local.css" />
     <Content Include="Content\SPA\bootstrap.css" />
     <Content Include="Content\SPA\bootstrap.min.css" />
@@ -213,6 +212,7 @@
     <Content Include="Content\SPA\styles.css" />
     <Content Include="Content\SPA\tables.html" />
     <Content Include="Content\SPA\user.html" />
+    <Content Include="Content\styles-gplus.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -221,6 +221,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Scripts\bootstrap-darkadmin.min.js" />
+    <Content Include="Scripts\bootstrap-gplus.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -262,6 +263,7 @@
     <Content Include="Content\SPA\font-awesome\scss\_spinning.scss" />
     <Content Include="Content\SPA\font-awesome\scss\_stacked.scss" />
     <Content Include="Content\SPA\font-awesome\scss\_variables.scss" />
+    <Content Include="Scripts\scripts-gplus.js" />
     <Content Include="Zones\ExternalZones.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -321,7 +323,7 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\ZLM\DisposeZLM.cshtml" />
     <Content Include="Views\ZLM\AdminControl.cshtml" />
-    <Content Include="Views\ZLM\ProgramSetDetails.cshtml" />
+    <Content Include="Views\ZLM\ProgramSet.cshtml" />
     <None Include="Web.config.template" />
     <None Include="Web.config.Debug.template">
       <DependentUpon>Web.config.template</DependentUpon>

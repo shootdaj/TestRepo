@@ -119,7 +119,7 @@ namespace ZoneLighting
 		/// Returns the zones that are not being used by any program sets.
 		/// </summary>
 		public BetterList<Zone> AvailableZones
-			=> Zones.Where(z => !ProgramSets.Any(p => p.Zones.Contains(z))).ToBetterList();
+			=> Zones.Where(z => !ProgramSets.Any(p => p.Zones != null && p.Zones.Contains(z))).ToBetterList();
 
 		public IEnumerable<string> AvailablePrograms => ZoneScaffolder.Instance.GetAvailablePrograms();
 
@@ -191,11 +191,23 @@ namespace ZoneLighting
 			});
 		}
 
-		public void DisposeProgramSets()
+		public void DisposeProgramSets(params string[] programSetNames)
 		{
-			ProgramSets.ForEach(programSet => programSet.Dispose());
-			ProgramSets.Clear();
-			ProgramSets = null;
+			if (programSetNames == null || !programSetNames.Any())
+			{
+				ProgramSets.ForEach(programSet => programSet.Dispose());
+				ProgramSets.Clear();
+				ProgramSets = null;
+			}
+			else
+			{
+				var programSetsToDispose = ProgramSets.Where(programSet => programSetNames.Contains(programSet.Name)).ToList();
+				programSetsToDispose.ForEach(programSet =>
+				{
+					ProgramSets.Remove(programSet);
+					programSet.Dispose();
+				});
+			}
 		}
 
 		public void Dispose()

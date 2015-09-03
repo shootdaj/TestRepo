@@ -6,53 +6,7 @@
 @{
 	ViewBag.Title = "Zone Lighting Manager";
 }
-@*<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>*@
 <script src="~/Scripts/jquery-2.1.4.min.js"></script>
-<script type="text/javascript">
-	@*$(document).ready(function () {
-        $("#btnInit").click(function () {
-            var url = "@Url.Action("InitializeZLM", "ZLM")";
-            $.get(url, null, function (data) {
-                $("#result").html(data);
-            });
-        });
-
-        $("#btnUninit").click(function () {
-            var url = "@Url.Action("UninitializeZLM", "ZLM")";
-            $.get(url, null, function (data) {
-                $("#result").html(data);
-            });
-        });
-    });*@
-</script>
-<script type="text/javascript">
-    @*function getCities(abbr) {
-        $.ajax({
-            url: "@Url.Action("Zones", "Zones")",
-            data: { abbreviation: abbr },
-            dataType: "json",
-            type: "POST",
-            error: function () {
-                alert("An error occurred.");
-            },
-            success: function (data) {
-                var items = "";
-                $.each(data, function (i, item) {
-                    items += "<option value=\"" + item.Value + "\">" + item.Text + "</option>";
-                });
-
-                $("#City").html(items);
-            }
-        });
-    }*@
-
-	//$(document).ready(function () {
-	//	$("#Zone").change(function () {
-	//		var abbr = $("#Zone").val();
-	//		//getCities(abbr);
-	//	});
-	//});
-</script>
 
 <div class="row">
 	<div class="col-lg-12">
@@ -65,25 +19,15 @@
 			<div class="row">
 				<div class="col-lg-9">
 					@Html.Partial("ZonesControl", Model.ZLM)
+					<div id="programSets">
+						@Html.Partial("ProgramSet", Model.ZLM)
+					</div>
 					@Html.Partial("Notification", Model.ZLM)
 				</div>
 				<div class="col-lg-3">
 					@Html.Partial("AdminControl", Model.ZLM)
 				</div>
 			</div>
-			@*<div class="form-group">
-				@Html.Label("Create ZLM")
-				@Html.Partial("CreateZLM", Model.ZLM)
-			</div>
-			<div class="form-group">
-				@Html.Label("Dispose ZLM")
-				@Html.Partial("DisposeZLM", Model.ZLM)
-			</div>
-			<div class="form-group">
-				@Html.Label("Save")
-				@Html.Partial("Save", Model.ZLM)
-			</div>*@
-			
 		</div>
 	</div>
 </div>
