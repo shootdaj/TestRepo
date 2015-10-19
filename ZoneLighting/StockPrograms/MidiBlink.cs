@@ -77,6 +77,7 @@ namespace ZoneLighting.StockPrograms
 		protected override void StopCore(bool force)
 		{
 			RemoveInput("Color");
+			MidiInput.StopRecording();
 			MIDIManager.RemoveDevice(MidiInput);
 		}
 	}
