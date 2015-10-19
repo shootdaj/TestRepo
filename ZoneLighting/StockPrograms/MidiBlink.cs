@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Drawing;
+using MIDIator;
 using Sanford.Multimedia.Midi;
 using ZoneLighting.ZoneProgramNS;
 
@@ -17,15 +18,15 @@ namespace ZoneLighting.StockPrograms
 		
 		public MidiBlink()
 		{
-			if (InputDevice.DeviceCount == 0)
+			if (MIDIManager.DeviceCount == 0)
 			{
 				throw new Exception("No MIDI devices found.");
 			}
 
 			try
 			{
-				MidiInput = new InputDevice(0);
-				MidiInput.ChannelMessageReceived += (sender, args) =>
+				var device = MIDIManager.CreateDevice(3);
+				device.AddChannelMessageAction((sender, args) =>
 				{
 					//ProgramCommon.Blink(new List<Tuple<Color, int>>
 					//{
@@ -41,12 +42,7 @@ namespace ZoneLighting.StockPrograms
 					{
 						OutputColor(Color.FromArgb(50, args.Message.Data2, 50));
 					}
-				};
-
-				MidiInput.SysCommonMessageReceived += (sender, args) => {};
-				MidiInput.SysExMessageReceived += (sender, args) => { };
-				MidiInput.SysRealtimeMessageReceived += (sender, args) => { };
-				MidiInput.Error += (sender, args) => { };
+				});
 
 				MidiInput.StartRecording();
 			}
