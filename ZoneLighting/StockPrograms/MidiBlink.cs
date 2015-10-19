@@ -14,8 +14,9 @@ namespace ZoneLighting.StockPrograms
 	[ExportMetadata("Name", "MidiBlink")]
 	public class MidiBlink : ReactiveZoneProgram
 	{
-		private InputDevice MidiInput { get; set; }
-		
+		private MIDIManager.MIDIDevice MidiInput { get; }
+
+
 		public MidiBlink()
 		{
 			if (MIDIManager.DeviceCount == 0)
@@ -25,8 +26,8 @@ namespace ZoneLighting.StockPrograms
 
 			try
 			{
-				var device = MIDIManager.CreateDevice(3);
-				device.AddChannelMessageAction((sender, args) =>
+				MidiInput = MIDIManager.CreateDevice(3);
+				MidiInput.AddChannelMessageAction((sender, args) =>
 				{
 					//ProgramCommon.Blink(new List<Tuple<Color, int>>
 					//{
@@ -76,9 +77,7 @@ namespace ZoneLighting.StockPrograms
 		protected override void StopCore(bool force)
 		{
 			RemoveInput("Color");
-			MidiInput.StopRecording();
-			MidiInput.Reset();
-			MidiInput.Close();
+			MIDIManager.RemoveDevice(MidiInput);
 		}
 	}
 }
