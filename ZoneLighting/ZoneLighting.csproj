@@ -150,6 +150,7 @@
     <Compile Include="ZoneProgramNS\ZoneProgram.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Doc\ZoneLightingClasses.cd" />
     <None Include="packages.config" />
   </ItemGroup>
