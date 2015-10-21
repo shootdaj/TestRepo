@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Dynamic;
 using ZoneLighting.Communication;
+using ZoneLighting.ConfigNS;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
@@ -145,5 +147,27 @@ namespace ZoneLighting.Usables
 				12, 3);
 			zlm.CreateProgramSet("RainbowSet", "Rainbow", true, null, zlm.Zones);
 		}
+
+	    public static void RunMidiTwoDimensionalFadeOnNeoMatrix(ZLM zlm)
+	    {
+	        var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix", PixelType.FadeCandyWS2812Pixel,
+	            64, 1);
+	        dynamic startingParameters = new ExpandoObject();
+	        startingParameters.DeviceID = int.Parse(Config.Get("MIDIDeviceID"));
+	        zlm.CreateProgramSet("MidiTwoDimensionalFadeSet", "MidiTwoDimensionalFade", false, null, zlm.Zones,
+	            startingParameters);
+	    }
+
+	    public static void RunMidiTwoDimensionalFadeInBasement(ZLM zlm)
+	    {
+            var isv = new ISV();
+            var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing", PixelType.FadeCandyWS2812Pixel,
+                6, 1);
+            var rightwing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing", PixelType.FadeCandyWS2812Pixel,
+                12, 3);
+            var center = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Center", PixelType.FadeCandyWS2811Pixel,
+                21, 2);
+            zlm.CreateProgramSet("MidiTwoDimensionalFadeSet", "MidiTwoDimensionalFade", false, isv, zlm.Zones);
+        }
 	}
 }

@@ -55,7 +55,7 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
-		public ProgramSet(string programName, IEnumerable<Zone> zones, bool sync, IEnumerable<ISV> isvs, string name)
+		public ProgramSet(string programName, IEnumerable<Zone> zones, bool sync, IEnumerable<ISV> isvs, string name, dynamic startingParameters = null)
 		{
 			if (!ZoneScaffolder.Instance.DoesProgramExist(programName))
 				throw new Exception($"No program by the name '{programName}' exists.");
@@ -77,7 +77,7 @@ namespace ZoneLighting.ZoneProgramNS
 				Zones.ForEach(zone =>
 				{
 					zone.Stop(true);
-					ZoneScaffolder.Instance.RunZone(zone, programName, null, true, SyncContext, true);
+				    ZoneScaffolder.Instance.RunZone(zone, programName, null, true, SyncContext, true, startingParameters);
 				});
 
 				SyncContext = new SyncContext();
@@ -90,8 +90,9 @@ namespace ZoneLighting.ZoneProgramNS
 					var zone = Zones[i];
 					zone.Stop(true);
 
-					ZoneScaffolder.Instance.RunZone(zone, programName,
-						isvsListed?.Count() == zonesListed.Count() ? isvsListed.ElementAt(i) : isvsListed?.First());
+				    ZoneScaffolder.Instance.RunZone(zone, programName,
+				        isvsListed?.Count() == zonesListed.Count() ? isvsListed.ElementAt(i) : isvsListed?.First(),
+				        startingParameters: startingParameters);
 				}
 			}
 		}

@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using ZoneLighting.Communication;
-using ZoneLighting.ConfigNS;
 using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
 
@@ -113,9 +111,9 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		/// <summary>
 		/// Runs a zone with the given program name and starting values of the inputs as a name-value dictionary.
 		/// </summary>
-		public void RunZone(Zone zone, string programName, ISV isv = null, bool isSyncRequested = false, SyncContext syncContext = null, bool dontStart = false)
+		public void RunZone(Zone zone, string programName, ISV isv = null, bool isSyncRequested = false, SyncContext syncContext = null, bool dontStart = false, dynamic startingParameters = null)
 		{
-			zone.Run(CreateZoneProgram(programName), isv, isSyncRequested, syncContext, dontStart);
+			zone.Run(CreateZoneProgram(programName), isv, isSyncRequested, syncContext, dontStart, startingParameters);
 		}
 
 

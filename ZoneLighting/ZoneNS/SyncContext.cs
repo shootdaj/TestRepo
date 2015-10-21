@@ -86,7 +86,7 @@ namespace ZoneLighting.ZoneNS
 		/// their synchronizable states before executing the synchronization. If no programs are already attached,
 		/// then this method attaches the given program(s) to this context and starts them.
 		/// </summary>
-		public void Sync(IEnumerable<ZoneProgram> zonePrograms, bool forceStop = false, IEnumerable<ISV> isvs = null)
+		public void Sync(IEnumerable<ZoneProgram> zonePrograms, bool forceStop = false, IEnumerable<ISV> isvs = null, dynamic startingParameters = null)
 		{
 			var incomingZonePrograms = zonePrograms as IList<ZoneProgram> ?? zonePrograms.ToList();
 			var isvsListed = isvs?.ToList();
@@ -156,7 +156,7 @@ namespace ZoneLighting.ZoneNS
 						zoneProgram.SetSyncContext(this);
 						ZonePrograms.Add(zoneProgram);
 						zoneProgram.Start(sync: false,
-							isv: isvsListed?.Count() == incomingZonePrograms.Count() ? isvsListed.ElementAt(i) : isvsListed?.First());
+							isv: isvsListed?.Count() == incomingZonePrograms.Count() ? isvsListed.ElementAt(i) : isvsListed?.First(), startingParameters: startingParameters);
 					}
 
 					//wait for sync-state from all programs (incoming and existing)

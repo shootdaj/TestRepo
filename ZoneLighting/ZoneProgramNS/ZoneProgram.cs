@@ -105,15 +105,16 @@ namespace ZoneLighting.ZoneProgramNS
 				SetInterruptQueue(interruptQueue);
 		}
 
-		/// <summary>
-		/// Starts the zone program.
-		/// </summary>
-		/// <param name="isv">Starting values for the program.</param>
-		/// <param name="sync">Whether or not to start the program in sync with a SyncContext.</param>
-		/// <param name="syncContext">If this parameter is supplied when sync=true, this method will use the supplied SyncContext to
-		/// sync this program with. If sync=true and this parameter is not supplied, this method will use the already assigned
-		/// SyncContext to sync this program with.</param>
-		public void Start(ISV isv = null, bool sync = false, SyncContext syncContext = null)
+	    /// <summary>
+	    /// Starts the zone program.
+	    /// </summary>
+	    /// <param name="isv">Starting values for the program.</param>
+	    /// <param name="sync">Whether or not to start the program in sync with a SyncContext.</param>
+	    /// <param name="syncContext">If this parameter is supplied when sync=true, this method will use the supplied SyncContext to
+	    /// sync this program with. If sync=true and this parameter is not supplied, this method will use the already assigned
+	    /// SyncContext to sync this program with.</param>
+	    /// <param name="startingParameters">Parameters to be passed into the StartCore method.</param>
+	    public void Start(ISV isv = null, bool sync = false, SyncContext syncContext = null, dynamic startingParameters = null)
 		{
 			if (State == ProgramState.Stopped)
 			{
@@ -143,8 +144,8 @@ namespace ZoneLighting.ZoneProgramNS
 				else
 				{
 
-					//subclass processing
-					StartCore(); //isSyncRequested);
+					//subclass processing - passing in starting parameters
+					StartCore(startingParameters); //isSyncRequested);
 
 					//set program state
 					State = ProgramState.Started;
@@ -210,14 +211,15 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Overridables
 
-		/// <summary>
-		/// This is a core method, meaning this method is wrapped within another method that's required for 
-		/// any pre/postprocessing that is required by this class to maintain the functions provided by this class. 
-		/// This is the core method for the Start public API call, which is a public member of this class. 
-		/// So the inheritor of this class must provide the core functionality, but the user of an instance
-		/// of this class can only call the method that wraps this method - Start. 
-		/// </summary>
-		protected abstract void StartCore();//bool isSyncRequested);
+	    /// <summary>
+	    /// This is a core method, meaning this method is wrapped within another method that's required for 
+	    /// any pre/postprocessing that is required by this class to maintain the functions provided by this class. 
+	    /// This is the core method for the Start public API call, which is a public member of this class. 
+	    /// So the inheritor of this class must provide the core functionality, but the user of an instance
+	    /// of this class can only call the method that wraps this method - Start. 
+	    /// </summary>
+	    /// <param name="parameters"></param>
+	    protected abstract void StartCore(dynamic parameters = null);
 
 		/// This is a core method, meaning this method is wrapped within another method that's required for 
 		/// any pre/postprocessing that is required by this class to maintain the functions provided by this class. 
@@ -392,7 +394,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public ZoneProgramInput GetInput(string name, bool silent = true)
+		public ZoneProgramInput GetInput(string name, bool silent = false)
 		{
 			if (Inputs.Contains(name))
 				return Inputs[name];

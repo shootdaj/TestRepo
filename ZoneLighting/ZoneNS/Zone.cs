@@ -296,24 +296,24 @@ namespace ZoneLighting.ZoneNS
 
 		#endregion
 
-        public void Run(ZoneProgram zoneProgram, ISV isv = null, bool isSyncRequested = false, SyncContext syncContext = null, bool dontStart = false)
+        public void Run(ZoneProgram zoneProgram, ISV isv = null, bool isSyncRequested = false, SyncContext syncContext = null, bool dontStart = false, dynamic startingParameters = null)
 		{
 			if (!Running)
 			{
 				SetupInterruptProcessing();
-				SetupZoneProgram(zoneProgram, isv, isSyncRequested, syncContext, dontStart);
+				SetupZoneProgram(zoneProgram, isv, isSyncRequested, syncContext, dontStart, startingParameters);
 				Running = true;
 			}
 		}
 
-		private void SetupZoneProgram(ZoneProgram zoneProgram, ISV isv, bool isSyncRequested, SyncContext syncContext, bool dontStart)
+		private void SetupZoneProgram(ZoneProgram zoneProgram, ISV isv, bool isSyncRequested, SyncContext syncContext, bool dontStart, dynamic startingParameters = null)
 		{
 			SetProgram(zoneProgram);
 			ZoneProgram.LightingController = LightingController;
 			ZoneProgram.SetSyncContext(syncContext);
 			ZoneProgram.SetInterruptQueue(InterruptQueue);
 			if (!dontStart)
-				ZoneProgram.Start(isv, isSyncRequested);
+				ZoneProgram.Start(isv, isSyncRequested, startingParameters: startingParameters);
 		}
 
 		public bool Running { get; private set; }

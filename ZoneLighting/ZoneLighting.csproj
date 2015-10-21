@@ -38,7 +38,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="MIDIator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MIDIator.1.0.4\lib\net45\MIDIator.dll</HintPath>
+      <HintPath>..\packages\MIDIator.1.0.7\lib\net45\MIDIator.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -104,7 +104,7 @@
   <ItemGroup>
     <Compile Include="Helpers.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="StockPrograms\MidiBlink.cs" />
+    <Compile Include="StockPrograms\MidiTwoDimensionalFade.cs" />
     <Compile Include="StockPrograms\Outlines.cs" />
     <Compile Include="StockPrograms\Shimmer.cs" />
     <Compile Include="Usables\RunnerHelpers.cs" />
@@ -173,11 +173,39 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Doc\ZoneLightingClasses.cd" />
+    <None Include="FadeCandy\basement.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="FadeCandy\fc-boot-v101.hex" />
+    <None Include="FadeCandy\fc-firmware-v105.dfu" />
+    <None Include="FadeCandy\fc-firmware-v105.elf" />
+    <None Include="FadeCandy\fc-firmware-v105.hex" />
+    <None Include="FadeCandy\fc-firmware-v106.dfu" />
+    <None Include="FadeCandy\fc-firmware-v106.elf" />
+    <None Include="FadeCandy\fc-firmware-v106.hex" />
+    <None Include="FadeCandy\fc-firmware-v107.dfu" />
+    <None Include="FadeCandy\fc-firmware-v107.elf" />
+    <None Include="FadeCandy\fc-firmware-v107.hex" />
+    <None Include="FadeCandy\fcserver-osx" />
+    <None Include="FadeCandy\fcserver-rpi" />
+    <None Include="FadeCandy\fcserverNeopixel.bat" />
+    <None Include="FadeCandy\LICENSE" />
+    <None Include="FadeCandy\neomatrixOneZone.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="FadeCandy\neopixel.json" />
+    <None Include="FadeCandy\neopixeltest.json" />
+    <None Include="FadeCandy\README.md" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Doc\zoneconfigurationexample.txt" />
     <Content Include="Doc\ZoneLightingClasses.jpg" />
+    <Content Include="FadeCandy\dfu-util.exe" />
+    <Content Include="FadeCandy\fcserver.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="FadeCandy\neopixeltest.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -203,7 +203,7 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
-		protected override void StartCore()//bool isSyncRequested)
+		protected override void StartCore(dynamic parameters = null)//bool isSyncRequested)
 		{
 			//handle sync state request
 			//StartTrigger.Fire(this, null);

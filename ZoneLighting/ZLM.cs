@@ -69,13 +69,13 @@ namespace ZoneLighting
 		/// <param name="isv"></param>
 		/// <param name="zones"></param>
 		public ProgramSet CreateProgramSet(string programSetName, string programName, bool sync, ISV isv,
-			IEnumerable<Zone> zones)
+			IEnumerable<Zone> zones, dynamic startingParameters = null)
 		{
 			var zonesList = zones as IList<Zone> ?? zones.ToList();
 			if (zonesList.Any(z => !AvailableZones.Contains(z)))
 				throw new Exception("Some of the provided zones are not available.");
 			
-			var programSet = new ProgramSet(programName, zonesList, sync, isv.Listify(), programSetName);
+			var programSet = new ProgramSet(programName, zonesList, sync, isv.Listify(), programSetName, startingParameters);
 			ProgramSets.Add(programSet);
 			return programSet;
 		}

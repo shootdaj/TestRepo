@@ -5,7 +5,7 @@ namespace ZoneLighting.ZoneProgramNS
 {
 	public abstract class ReactiveZoneProgram : ZoneProgram
 	{
-		protected override void StartCore()//bool isSyncRequested)
+		protected override void StartCore(dynamic parameters = null)
 		{
 			
 		}
