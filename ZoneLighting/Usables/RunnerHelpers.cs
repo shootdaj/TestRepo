@@ -167,7 +167,10 @@ namespace ZoneLighting.Usables
                 12, 3);
             var center = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Center", PixelType.FadeCandyWS2811Pixel,
                 21, 2);
-            zlm.CreateProgramSet("MidiTwoDimensionalFadeSet", "MidiTwoDimensionalFade", false, isv, zlm.Zones);
-        }
+			dynamic startingParameters = new ExpandoObject();
+			startingParameters.DeviceID = int.Parse(Config.Get("MIDIDeviceID"));
+		    zlm.CreateProgramSet("MidiTwoDimensionalFadeSet", "MidiTwoDimensionalFade", false, isv, zlm.Zones,
+			    startingParameters);
+	    }
 	}
 }
