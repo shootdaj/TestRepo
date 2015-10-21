@@ -48,7 +48,7 @@ namespace ZoneLighting.StockPrograms
 
 		protected override void StopCore(bool force)
 		{
-			RemoveInput("Color");
+			RemoveInput("Blink");
 		}
 	}
 }

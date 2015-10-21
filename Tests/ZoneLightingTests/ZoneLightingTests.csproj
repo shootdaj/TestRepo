@@ -136,7 +136,15 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="Resources\InitializeFromZoneConfiguration_Works_TestFile.config" />
+    <None Include="Resources\FadeCandy\fcserverConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\FadeCandy\neomatrixOneZone.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\InitializeFromZoneConfiguration_Works_TestFile.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Sanford.Multimedia.Midi\Sanford.Multimedia.Midi.csproj">
@@ -153,7 +161,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Logs\Deadlock4Steppers.txt" />
-    <Content Include="Resources\Programs\ExternalPrograms.dll" />
+    <Content Include="Resources\Programs\ExternalPrograms.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
