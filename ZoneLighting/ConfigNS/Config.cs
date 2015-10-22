@@ -138,14 +138,5 @@ namespace ZoneLighting.ConfigNS
 					LoadZonesSerializerSettings);
 			return (IEnumerable<Zone>)deserializedZones;
 		}
-
-
-		public static string Get(string settingName, string exceptionMessage = null)
-		{
-			var configValue = ConfigurationManager.AppSettings[settingName];
-			if (exceptionMessage != null && string.IsNullOrEmpty(configValue))
-				throw new Exception(exceptionMessage);
-			return configValue;
-		}
-	}
+    }
 }

@@ -2,9 +2,9 @@
 using System.Drawing;
 using System.Threading;
 using NUnit.Framework;
+using Refigure;
 using ZoneLighting;
 using ZoneLighting.Communication;
-using ZoneLighting.ConfigNS;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Factories;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Dynamic;
+using Refigure;
 using ZoneLighting.Communication;
-using ZoneLighting.ConfigNS;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;

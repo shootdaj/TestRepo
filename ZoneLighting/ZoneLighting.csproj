@@ -45,6 +45,10 @@
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Refigure, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Refigure.1.0.0.1\lib\net45\Refigure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Sanford.Collections, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Sanford.Win10.1.0.0\lib\net45\Sanford.Collections.dll</HintPath>
       <Private>True</Private>

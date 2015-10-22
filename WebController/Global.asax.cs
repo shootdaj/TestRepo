@@ -4,8 +4,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Refigure;
 using ZoneLighting;
-using ZoneLighting.ConfigNS;
 using ZoneLighting.Usables;
 
 namespace WebController
