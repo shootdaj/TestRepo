@@ -115,7 +115,7 @@ namespace ZoneLighting.Communication
 			//	if (!string.IsNullOrEmpty(e1.Data))
 			//	{
 			//		//Console.WriteLine(e1.Data);
-			//		//do something with returned data? --> procOut += e1.Data + Environment.NewLine;
+			//		//do something with returned data from the fcserver process? log it? --> procOut += e1.Data + Environment.NewLine;
 			//	}
 			//};
 			FadeCandyServerProcess.Start();
