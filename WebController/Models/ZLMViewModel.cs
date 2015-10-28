@@ -1,8 +1,13 @@
+using System.Collections.Generic;
 using System.Web.Mvc;
+using WebController.Container;
+using WebController.Controllers;
 using ZoneLighting;
+using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
+using ZoneLighting.ZoneProgramNS;
 
-namespace WebController.Controllers
+namespace WebController.Models
 {
 	public class ZLMViewModel
 	{
@@ -10,28 +15,19 @@ namespace WebController.Controllers
 
 		public ZLMViewModel()
 		{
-			if (System.Web.HttpContext.Current.Application["ZLM"] != null)
-				if (((ZLM)System.Web.HttpContext.Current.Application["ZLM"]).Zones != null)
-				if (((ZLM)System.Web.HttpContext.Current.Application["ZLM"]).Zones != null)
-					ZLMController.ZLMAction(zlm => AvailableZones = new SelectList(zlm.Zones, "Name"));
+			if (ZLMContainer.Instance?.Zones != null)
+				ZLMController.ZLMAction(zlm => AvailableZones = new SelectList(zlm.Zones, "Name"));
 		}
 
-		public ZLM ZLM => (ZLM)System.Web.HttpContext.Current.Application["ZLM"];
+		public ZLM ZLM => ZLMContainer.Instance;
 
 		public Zone Zone { get; set; }
-		//public IZoneProgram ZoneProgram { get; set; }
+
+		public BetterList<ProgramSet> ProgramSets => ZLMContainer.Instance.ProgramSets;
 
 		public SelectList AvailableZones { get; set; }
-		//public SelectList AvailableZonePrograms { get; set; }
 
-		//public IEnumerable<Zone> Zones
-		//{
-		//	get { return ZoneLightingManager.Zones; }
-		//}
+		public IEnumerable<string> AvailablePrograms => ZLMContainer.Instance.AvailablePrograms;
 
-		//public IEnumerable<string> ZonePrograms
-		//{
-		//	get { return ZoneLightingManager.AvailableProgramNames; }
-		//}
 	}
 }

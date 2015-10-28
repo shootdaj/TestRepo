@@ -1,4 +1,4 @@
-﻿@model WebController.Controllers.ZLMViewModel
+﻿@model WebController.Models.ZLMViewModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Zone Lighting Manager";
@@ -18,7 +18,7 @@
 				<div class="col-lg-9">
 					@Html.Partial("ZonesControl", Model.ZLM)
 					<div id="programSets">
-						@Html.Partial("ProgramSet", Model.ZLM)
+						@Html.Partial("ProgramSet", Model)
 					</div>
 					@Html.Partial("Notification", Model.ZLM)
 				</div>

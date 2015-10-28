@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using Refigure;
+using WebController.Container;
 using ZoneLighting;
 using ZoneLighting.Usables;
 
@@ -29,14 +30,10 @@ namespace WebController
 				initAction = (Action<ZLM>)Delegate.CreateDelegate(typeof(Action<ZLM>), initActionInfo);
 			}
 
-			//put ZLM into Application state
-			System.Web.HttpContext.Current.Application.Lock();
-
-			System.Web.HttpContext.Current.Application["ZLM"] = new ZLM(loadZonesFromConfig: !firstRun,
+			//put ZLM into static state
+			ZLMContainer.Instance = new ZLM(loadZonesFromConfig: !firstRun,
 				loadProgramSetsFromConfig: !firstRun,
 				loadZoneModules: loadZoneModules, initAction: initAction);
-
-			System.Web.HttpContext.Current.Application.UnLock();
 			
 			AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

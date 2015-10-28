@@ -1,28 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Dynamic;
 using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using Refigure;
+using WebController.Container;
+using WebController.Models;
 using ZoneLighting;
 using ZoneLighting.Usables;
 using ZoneLighting.ZoneProgramNS;
-using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace WebController.Controllers
 {
 	public class ZLMController : Controller
 	{
-		public static ZLM ZLM => (ZLM)System.Web.HttpContext.Current.Application["ZLM"];
+		public static ZLM ZLM => ZLMContainer.Instance;
 
 		public static void ZLMAction(Action<ZLM> action)
 		{
-			System.Web.HttpContext.Current.Application.Lock();
 			action.Invoke(ZLM);
-			System.Web.HttpContext.Current.Application.UnLock();
 		}
 
 		public ActionResult Index()
@@ -55,24 +51,18 @@ namespace WebController.Controllers
 				var initActionInfo = typeof(RunnerHelpers).GetMethods().First(method => method.Name == Config.Get("InitAction"));
 				initAction = (Action<ZLM>)Delegate.CreateDelegate(typeof(Action<ZLM>), initActionInfo);
 			}
-
-			System.Web.HttpContext.Current.Application.Lock();
-
-			System.Web.HttpContext.Current.Application["ZLM"] = new ZLM(loadZonesFromConfig: !firstRun,
+			
+			ZLMContainer.Instance = new ZLM(loadZonesFromConfig: !firstRun,
 				loadProgramSetsFromConfig: !firstRun,
 				loadZoneModules: loadZoneModules, initAction: initAction);
-
-			System.Web.HttpContext.Current.Application.UnLock();
 
 			return View("Index", new ZLMViewModel());
 		}
 
 		public ActionResult DisposeZLM()
 		{
-			System.Web.HttpContext.Current.Application.Lock();
 			(ZLM).Dispose();
-			System.Web.HttpContext.Current.Application.UnLock();
-
+		
 			return View("Index", new ZLMViewModel());
 		}
 
@@ -104,7 +94,7 @@ namespace WebController.Controllers
 		{
 			var command = Command;
 			ProcessZLMCommand(command, programSetName, programName);
-			return PartialView("ProgramSet", new ZLMViewModel().ZLM);
+			return PartialView("ProgramSet", new ZLMViewModel());
 		}
 
 		private void ProcessZLMCommand(string command, string programSetName, string programName)
@@ -163,13 +153,6 @@ namespace WebController.Controllers
 			}
 
 			return View("Index", new ZLMViewModel());
-		}
-
-
-
-		public ActionResult ProgramSetDetails(string name)
-		{
-			return View(ZLM.ProgramSets[name]);
 		}
 	}
 }

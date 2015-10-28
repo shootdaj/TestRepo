@@ -17,6 +17,11 @@
 	color: rgb(32, 54, 54);
 }
 
+    .on {
+	background-color: #60AD1F;
+	color: rgb(32, 54, 54);
+}
+
 input {
 	color: navy;
 }

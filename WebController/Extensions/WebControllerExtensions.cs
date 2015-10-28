@@ -28,5 +28,10 @@ namespace WebController.Extensions
 				return new SelectList(new List<string>() { }, "none", "none");
 			}
 		}
+
+		public static SelectList ToSelectList(this IEnumerable<string> enumerable)
+		{
+			return new SelectList(enumerable);
+		}
 	}
 }
