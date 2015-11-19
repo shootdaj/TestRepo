@@ -1,29 +1,63 @@
-{
+﻿{
   "webroot": "wwwroot",
+  "userSecretsId": "aspnet5-WebRemote-d2870286-6fe0-42d3-8831-8d997ecb94ad",
   "version": "1.0.0-*",
+
   "dependencies": {
-    "Microsoft.AspNet.Server.IIS": "1.0.0-beta4",
-    "Microsoft.AspNet.Mvc": "6.0.0-beta4",
-    "Microsoft.AspNet.StaticFiles": "1.0.0-beta4",
-  },
-  "frameworks": {
-    "aspnet50": {
-      "dependencies": {
-        "ZoneLighting": "1.0.0-*"
-      }
-    }
+    "EntityFramework.SqlServer": "7.0.0-beta5",
+    "EntityFramework.Commands": "7.0.0-beta5",
+    "Microsoft.AspNet.Mvc": "6.0.0-beta5",
+    "Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-beta5",
+    "Microsoft.AspNet.Authentication.Cookies": "1.0.0-beta5",
+    "Microsoft.AspNet.Authentication.Facebook": "1.0.0-beta5",
+    "Microsoft.AspNet.Authentication.Google": "1.0.0-beta5",
+    "Microsoft.AspNet.Authentication.MicrosoftAccount": "1.0.0-beta5",
+    "Microsoft.AspNet.Authentication.Twitter": "1.0.0-beta5",
+    "Microsoft.AspNet.Diagnostics": "1.0.0-beta5",
+    "Microsoft.AspNet.Diagnostics.Entity": "7.0.0-beta5",
+    "Microsoft.AspNet.Identity.EntityFramework": "3.0.0-beta5",
+    "Microsoft.AspNet.Server.IIS": "1.0.0-beta5",
+    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta5",
+    "Microsoft.AspNet.StaticFiles": "1.0.0-beta5",
+    "Microsoft.AspNet.Tooling.Razor": "1.0.0-beta5",
+    "Microsoft.Framework.Configuration.Abstractions": "1.0.0-beta5",
+    "Microsoft.Framework.Configuration.Json": "1.0.0-beta5",
+    "Microsoft.Framework.Configuration.UserSecrets": "1.0.0-beta5",
+    "Microsoft.Framework.Logging": "1.0.0-beta5",
+    "Microsoft.Framework.Logging.Console": "1.0.0-beta5",
+    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-beta5"
   },
 
-  "bundleExclude": [
-    "node_modules",
-    "bower_components",
-    "**.kproj",
-    "**.user",
-    "**.vspscc"
-  ],
+  "commands": {
+    "web": "Microsoft.AspNet.Hosting --config hosting.ini",
+    "ef": "EntityFramework.Commands"
+  },
+
+  "frameworks": {
+    "dnx451": {
+      "dependencies": {
+        "ZoneLighting": "1.0.0-*"
+      },
+      "frameworkAssemblies": {
+        "System.Drawing": "4.0.0.0"
+      }
+    },
+    "dnxcore50": { }
+  },
+
   "exclude": [
     "wwwroot",
     "node_modules",
     "bower_components"
-  ]
+  ],
+  "publishExclude": [
+    "node_modules",
+    "bower_components",
+    "**.xproj",
+    "**.user",
+    "**.vspscc"
+  ],
+  "scripts": {
+    "prepublish": [ "npm install", "bower install", "gulp clean", "gulp min" ]
+  }
 }

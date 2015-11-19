@@ -1,0 +1,10 @@
+{
+  "AppSettings": {
+    "SiteTitle": "WebRemote"
+  },
+  "Data": {
+    "DefaultConnection": {
+      "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=aspnet5-WebRemote-d2870286-6fe0-42d3-8831-8d997ecb94ad;Trusted_Connection=True;MultipleActiveResultSets=true"
+    }
+  }
+}
