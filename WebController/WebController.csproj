@@ -180,10 +180,12 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Container\ZLMContainer.cs" />
+    <Compile Include="Controllers\ProgramSetController.cs" />
     <Compile Include="Controllers\ZLMController.cs" />
     <Compile Include="Helpers\RazorHelper.cs" />
+    <Compile Include="Models\ProgramSetInputVM.cs" />
     <Compile Include="Models\ProgramSetVM.cs" />
-    <Compile Include="Models\ZLMViewModel.cs" />
+    <Compile Include="Models\ZLMVM.cs" />
     <Compile Include="Extensions\WebControllerExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -314,6 +316,7 @@
     <Content Include="Views\ZLM\DisposeZLM.cshtml" />
     <Content Include="Views\ZLM\AdminControl.cshtml" />
     <Content Include="Views\ZLM\ProgramSet.cshtml" />
+    <Content Include="Views\ZLM\ProgramSetInput.cshtml" />
     <None Include="Web.config.template" />
     <None Include="Web.config.Debug.template">
       <DependentUpon>Web.config.template</DependentUpon>
@@ -326,6 +329,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\ProgramSet\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ZoneLighting\ZoneLighting.csproj">

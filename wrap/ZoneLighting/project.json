@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net45": {
+      "wrappedProject": "../../ZoneLighting/ZoneLighting.csproj",
+      "bin": {
+        "assembly": "../../ZoneLighting/obj/{configuration}/ZoneLighting.dll",
+        "pdb": "../../ZoneLighting/obj/{configuration}/ZoneLighting.pdb"
+      },
+      "dependencies": {
+        "EventSourceProxy": "3.0.3",
+        "Microsoft.Tpl.Dataflow": "4.5.24",
+        "MIDIator": "1.0.7",
+        "Newtonsoft.Json": "7.0.1",
+        "Refigure": "1.0.0.1",
+        "Rx-Core": "2.2.5",
+        "Rx-Interfaces": "2.2.5",
+        "Rx-Linq": "2.2.5",
+        "Rx-Main": "2.2.5",
+        "Rx-PlatformServices": "2.2.5",
+        "Sanford.Win10": "1.0.0",
+        "WebSocketSharp": "1.0.3-rc9"
+      }
+    }
+  }
+}

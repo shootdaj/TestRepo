@@ -1,6 +1,5 @@
 ﻿using System.Web.Mvc;
 using System.Web.Mvc.Html;
-using WebController.Models;
 using ZoneLighting.ZoneProgramNS;
 
 namespace WebController.Helpers
@@ -23,11 +22,11 @@ namespace WebController.Helpers
 			return returnValue.ToHtmlString();
 		}
 
-		public static string GetProgramNameMarkup(this HtmlHelper helper, ProgramSet programSet, SelectList programList)
+		public static string GetProgramNameMarkup(this HtmlHelper helper, ProgramSet programSet, SelectList programList, ZoneProgram selectedProgram)
 		{
 			var returnValue = MvcHtmlString.Create(programSet.State == ProgramState.Stopped
-				? helper.DropDownList("ddl" + programSet.Name + "Program", programList, new {@class = "form-control", style= "display: inline-flex; width: inherit;" }).ToString()
-				: programSet.Name);
+				? helper.DropDownList("ddl" + programSet.Name + "Program", programList, new {@class = "form-control", style= "display: inline-flex; width: inherit;" }).ToString() + helper.Partial("ProgramSetInput", selectedProgram)
+				: programSet.ProgramName);
 
 			return returnValue.ToHtmlString();
 		}

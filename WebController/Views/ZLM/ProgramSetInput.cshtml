@@ -1,0 +1,2 @@
+﻿@model WebController.Models.ProgramSetInputVM
+@Html.DropDownListFor(x => x.SelectedProgram, new SelectList(Model.AvailablePrograms, "Name", "Name", Model.SelectedProgram))

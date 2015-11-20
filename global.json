@@ -1,5 +1,8 @@
 {
   "sources": [
     "wrap"
+  ],
+  "projects": [
+    "wrap"
   ]
 }

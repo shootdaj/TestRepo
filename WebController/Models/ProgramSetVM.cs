@@ -8,10 +8,9 @@ namespace WebController.Models
 {
 	public class ProgramSetVM
 	{
-		public BetterList<ProgramSet> ProgramSets => ZLMContainer.Instance.ProgramSets;
 
-		public BetterList<Zone> AvailableZones => ZLMContainer.Instance.AvailableZones;
+		public BetterList<Zone> AvailableZones { get; set; } //=> ZLMContainer.Instance.AvailableZones;
 
-		public IEnumerable<string> AvailablePrograms => ZLMContainer.Instance.AvailablePrograms;
+		public IEnumerable<string> AvailablePrograms { get; set; } //=> ZLMContainer.Instance.AvailablePrograms;
 	}
 }

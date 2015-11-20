@@ -80,7 +80,6 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <summary>
 		/// Gets the name of the program based on ExportMetadata attribute, if any.
 		/// </summary>
-		/// <param name="thisType">Type to scan</param>
 		private void GetNameFromMetadata()
 		{
 			//since the name is only set during construction, we can assume that if it hasn't been set by the constructor, it will be null or empty.

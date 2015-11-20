@@ -2,7 +2,7 @@
 @using WebController.Helpers
 @using ZoneLighting.Usables
 @using ZoneLighting.ZoneProgramNS
-@model WebController.Models.ZLMViewModel
+@model WebController.Models.ZLMVM
 
 <div class="row">
     <div class="col-lg-12">
@@ -31,16 +31,13 @@
                 </script>
 
                 <div id="gridContent">
-                    @grid.GetHtml(tableStyle: "table table-striped table-hover",
+                    @grid.GetHtml("table table-striped table-hover",
                         selectedRowStyle: "on",
                         columns: grid.Columns(
                         grid.Column("Name", "Name"),
-                        grid.Column(header: "Program", format: item => Html.Raw(string.Format("<text>{0}</text>", Html.GetProgramNameMarkup(((ProgramSet)((WebGridRow)item).Value), Model.AvailablePrograms.ToSelectList())))
-                        ),
+                        grid.Column(header: "Program", format: item => Html.Raw(string.Format("<text>{0}</text>", Html.GetProgramNameMarkup(((ProgramSet)((WebGridRow)item).Value), Model.AvailablePrograms.ToSelectList()))), canSort: true),
                         grid.Column("State", "State"),
-                        grid.Column(header: "Action", format: (item) => Html.Raw(string.Format("<text>{0}</text>", RazorHelper.GetProgramActionMarkup(((ProgramSet)((WebGridRow)item).Value)))))
-                       
-
+                        grid.Column(header: "Action", format: (item) => Html.Raw(string.Format("<text>{0}</text>", RazorHelper.GetProgramActionMarkup(((ProgramSet)((WebGridRow)item).Value)))), canSort: true)
                         ))
                 </div>
 

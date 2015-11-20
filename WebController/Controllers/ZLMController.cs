@@ -23,7 +23,7 @@ namespace WebController.Controllers
 
 		public ActionResult Index()
 		{
-			return View(new ZLMViewModel());
+			return View(new ZLMVM());
 		}
 
 		[HttpPost]
@@ -31,7 +31,7 @@ namespace WebController.Controllers
 		{
 			ZLMAction(zlm => zlm.DisposeProgramSets());
 			//MvcApplication.ZLM.Uninitialize();
-			return View("Index", new ZLMViewModel());
+			return View("Index", new ZLMVM());
 		}
 
 		//[HttpPost]
@@ -56,14 +56,14 @@ namespace WebController.Controllers
 				loadProgramSetsFromConfig: !firstRun,
 				loadZoneModules: loadZoneModules, initAction: initAction);
 
-			return View("Index", new ZLMViewModel());
+			return View("Index", new ZLMVM());
 		}
 
 		public ActionResult DisposeZLM()
 		{
 			(ZLM).Dispose();
 		
-			return View("Index", new ZLMViewModel());
+			return View("Index", new ZLMVM());
 		}
 
 		public ActionResult Save()
@@ -74,7 +74,7 @@ namespace WebController.Controllers
 				zlm.SaveProgramSets();
 			});
 
-			return View("Index", new ZLMViewModel());
+			return View("Index", new ZLMVM());
 		}
 
 		//[HttpPost]
@@ -85,7 +85,7 @@ namespace WebController.Controllers
 				zlm.Zones.First(z => z.Name == zoneName).Stop(true);
 			});
 
-			return View("Index", new ZLMViewModel());
+			return View("Index", new ZLMVM());
 		}
 
 
@@ -94,7 +94,7 @@ namespace WebController.Controllers
 		{
 			var command = Command;
 			ProcessZLMCommand(command, programSetName, programName);
-			return PartialView("ProgramSet", new ZLMViewModel());
+			return PartialView("ProgramSet", new ZLMVM());
 		}
 
 		private void ProcessZLMCommand(string command, string programSetName, string programName)
@@ -130,7 +130,7 @@ namespace WebController.Controllers
 				zlm.Zones[zoneName].SendLights(zlm.Zones[zoneName].LightingController);
 			});
 
-			return View("Index", new ZLMViewModel());
+			return View("Index", new ZLMVM());
 		}
 
 		public ActionResult Notify(string colorString, int? time = 60, int? cycles = 2)
@@ -152,7 +152,7 @@ namespace WebController.Controllers
 				}
 			}
 
-			return View("Index", new ZLMViewModel());
+			return View("Index", new ZLMVM());
 		}
 	}
 }
