@@ -271,3 +271,5 @@ WebController/ZoneConfiguration.json
 !WebController/Web.config
 !WebController/Views/Web.config
 !ExternalPrograms/app.config
+!ExternalZones/app.config
+!ZoneLighting/app.config
