@@ -8,22 +8,24 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AustinHarris.JsonRpc;
 using ZoneLighting.Communication;
-using ZoneLighting.ConfigNS;
 using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Factories;
+using Config = ZoneLighting.ConfigNS.Config;
 
 namespace ZoneLighting
 {
 	/// <summary>
 	/// This class is responsible for managing the higher level tasks for zones and program sets.
 	/// </summary>
-	public sealed class ZLM : IDisposable
+	public sealed class ZLM : JsonRpcService, IDisposable
 	{
 		#region API
 
+		[JsonRpcMethod()]
 		public string GetZoneSummary()
 		{
 			var newline = Environment.NewLine;

@@ -9,6 +9,8 @@ namespace WebController
 		{
 			routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+			routes.IgnoreRoute("json.rpc");
+
 			routes.MapRoute(
 				name: "Default",
 				url: "{controller}/{action}/{id}",

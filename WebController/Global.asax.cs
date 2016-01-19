@@ -13,6 +13,8 @@ namespace WebController
 {
     public class MvcApplication : HttpApplication
     {
+	    private ZLM ZLM;
+
         protected void Application_Start()
         {
 			bool firstRun;
@@ -31,10 +33,16 @@ namespace WebController
 			}
 
 			//put ZLM into static state
-			ZLMContainer.Instance = new ZLM(loadZonesFromConfig: !firstRun,
+			//ZLMContainer.Instance = new ZLM(loadZonesFromConfig: !firstRun,
+			//	loadProgramSetsFromConfig: !firstRun,
+			//	loadZoneModules: loadZoneModules, initAction: initAction);
+
+			ZLM = new ZLM(loadZonesFromConfig: !firstRun,
 				loadProgramSetsFromConfig: !firstRun,
 				loadZoneModules: loadZoneModules, initAction: initAction);
-			
+
+	        ZLMContainer.Instance = ZLM;
+
 			AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
