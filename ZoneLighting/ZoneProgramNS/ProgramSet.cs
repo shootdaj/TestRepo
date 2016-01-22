@@ -55,6 +55,15 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
+		/// <summary>
+		/// Creates a set of programs that run on a given set of zones with the given input starting values
+		/// </summary>
+		/// <param name="programName"></param>
+		/// <param name="zones"></param>
+		/// <param name="sync"></param>
+		/// <param name="isvs"></param>
+		/// <param name="name"></param>
+		/// <param name="startingParameters"></param>
 		public ProgramSet(string programName, IEnumerable<Zone> zones, bool sync, IEnumerable<ISV> isvs, string name, dynamic startingParameters = null)
 		{
 			if (!ZoneScaffolder.Instance.DoesProgramExist(programName))

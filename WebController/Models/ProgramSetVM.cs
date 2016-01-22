@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using WebController.Container;
+using WebController.ContainerNS;
 using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
@@ -8,10 +8,10 @@ namespace WebController.Models
 {
 	public class ProgramSetVM
 	{
-		public BetterList<ProgramSet> ProgramSets => ZLMContainer.Instance.ProgramSets;
+		public BetterList<ProgramSet> ProgramSets => Container.ZLM.ProgramSets;
 
-		public BetterList<Zone> AvailableZones => ZLMContainer.Instance.AvailableZones;
+		public BetterList<Zone> AvailableZones => Container.ZLM.AvailableZones;
 
-		public IEnumerable<string> AvailablePrograms => ZLMContainer.Instance.AvailablePrograms;
+		public IEnumerable<string> AvailablePrograms => Container.ZLM.AvailablePrograms;
 	}
 }

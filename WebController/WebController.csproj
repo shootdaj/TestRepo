@@ -15,7 +15,7 @@
     <AssemblyName>WebController</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -187,8 +187,11 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="Container\ZLMContainer.cs" />
+    <Compile Include="ContainerNS\Container.cs" />
+    <Compile Include="Controllers\IZLMRPC.cs" />
     <Compile Include="Controllers\ZLMController.cs" />
+    <Compile Include="Controllers\ZLMRPC.cs" />
+    <Compile Include="Controllers\ZLMRPCController.cs" />
     <Compile Include="Helpers\RazorHelper.cs" />
     <Compile Include="Models\ProgramSetVM.cs" />
     <Compile Include="Models\ZLMViewModel.cs" />
@@ -334,6 +337,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Container\" />
+    <Folder Include="Views\ZLMRPC\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ZoneLighting\ZoneLighting.csproj">
@@ -359,7 +364,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>56965</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/WebController</IISUrl>
+          <IISUrl>http://localhost:56965/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

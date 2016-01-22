@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
-using WebController.Container;
+using WebController.ContainerNS;
 using WebController.Controllers;
 using ZoneLighting;
 using ZoneLighting.Usables;
@@ -15,19 +15,19 @@ namespace WebController.Models
 
 		public ZLMViewModel()
 		{
-			if (ZLMContainer.Instance?.Zones != null)
-				ZLMController.ZLMAction(zlm => AvailableZones = new SelectList(zlm.Zones, "Name"));
+			if (ZLMRPC.ZLM?.Zones != null)
+				ZLMRPC.ZLMAction(zlm => AvailableZones = new SelectList(zlm.Zones, "Name"));
 		}
 
-		public ZLM ZLM => ZLMContainer.Instance;
+		public IZLM ZLM => Container.ZLM;
 
 		public Zone Zone { get; set; }
 
-		public BetterList<ProgramSet> ProgramSets => ZLMContainer.Instance.ProgramSets;
+		public BetterList<ProgramSet> ProgramSets => Container.ZLM.ProgramSets;
 
 		public SelectList AvailableZones { get; set; }
 
-		public IEnumerable<string> AvailablePrograms => ZLMContainer.Instance.AvailablePrograms;
+		public IEnumerable<string> AvailablePrograms => Container.ZLM.AvailablePrograms;
 
 	}
 }

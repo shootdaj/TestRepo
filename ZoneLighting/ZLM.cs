@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using AustinHarris.JsonRpc;
 using ZoneLighting.Communication;
 using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
@@ -21,11 +20,10 @@ namespace ZoneLighting
 	/// <summary>
 	/// This class is responsible for managing the higher level tasks for zones and program sets.
 	/// </summary>
-	public sealed class ZLM : JsonRpcService, IDisposable
+	public sealed class ZLM : IDisposable, IZLM
 	{
 		#region API
 
-		[JsonRpcMethod()]
 		public string GetZoneSummary()
 		{
 			var newline = Environment.NewLine;
@@ -67,9 +65,10 @@ namespace ZoneLighting
 		/// </summary>
 		/// <param name="programSetName">Name of program set</param>
 		/// <param name="programName">Name of program</param>
-		/// <param name="sync"></param>
-		/// <param name="isv"></param>
-		/// <param name="zones"></param>
+		/// <param name="sync">Whether or not to start the programs in sync</param>
+		/// <param name="isv">Input starting values - starting values for the inputs</param>
+		/// <param name="zones">Zones to run the program set on</param>
+		/// <param name="startingParameters">Starting parameters for creating this program set</param>
 		public ProgramSet CreateProgramSet(string programSetName, string programName, bool sync, ISV isv,
 			IEnumerable<Zone> zones, dynamic startingParameters = null)
 		{
