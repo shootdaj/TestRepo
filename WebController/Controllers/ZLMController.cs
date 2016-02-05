@@ -7,6 +7,7 @@ namespace WebController.Controllers
 {
 	public class ZLMController : Controller
 	{
+		#region Internals
 		public ZLMController()
 		{
 			ZLMRPC = Container.ZLMRPC;
@@ -15,6 +16,20 @@ namespace WebController.Controllers
 		public IZLMRPC ZLMRPC { get; set; }
 
 		public static IZLM ZLM => Container.ZLM;
+
+		private ActionResult ReturnZLMView(string viewName = null)
+		{
+			return viewName == null ? View(new ZLMViewModel()) : View(viewName, new ZLMViewModel());
+		}
+
+		private ActionResult ReturnZLMPartialView(string partialViewName)
+		{
+			return PartialView(partialViewName, new ZLMViewModel());
+		}
+
+		#endregion
+
+		#region Actions
 
 		public ActionResult Index()
 		{
@@ -43,11 +58,7 @@ namespace WebController.Controllers
 			return ReturnZLMView("Index");
 		}
 
-		private ActionResult ReturnZLMView(string viewName = null)
-		{
-			return viewName == null ? View(new ZLMViewModel()) : View(viewName, new ZLMViewModel());
-		}
-
+		
 		[HttpPost]
 		public ActionResult Save()
 		{
@@ -70,12 +81,7 @@ namespace WebController.Controllers
 			ZLMRPC.ProcessZLMCommand(command, programSetName, programName);
 			return ReturnZLMPartialView("ProgramSet");
 		}
-
-		private ActionResult ReturnZLMPartialView(string partialViewName)
-		{
-			return PartialView(partialViewName, new ZLMViewModel());
-		}
-
+		
 		[HttpPost]
 		public ActionResult SetZoneColor(string zoneName, string color, float brightness)
 		{
@@ -89,8 +95,6 @@ namespace WebController.Controllers
 			ZLMRPC.Notify(colorString, time, cycles);
 			return ReturnZLMView("Index");
 		}
-
-		#region Internals
 
 		#endregion
 	}

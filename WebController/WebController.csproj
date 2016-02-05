@@ -45,14 +45,6 @@
       <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="AustinHarris.JsonRpc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AustinHarris.JsonRpc.1.0.0\lib\net40\AustinHarris.JsonRpc.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="AustinHarris.JsonRpc.AspNet, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AustinHarris.JsonRpc.AspNet.1.0.2.0\lib\net40\AustinHarris.JsonRpc.AspNet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -116,6 +108,10 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.0.5813.39031, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.0.1\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
@@ -341,6 +337,14 @@
     <Folder Include="Views\ZLMRPC\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\JSON-RPC.NET\AustinHarris.JsonRpc.AspNet\AustinHarris.JsonRpc.AspNet.csproj">
+      <Project>{fffdebbc-93f5-4a22-9ec5-d86a4a792dbb}</Project>
+      <Name>AustinHarris.JsonRpc.AspNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JSON-RPC.NET\Json-Rpc\AustinHarris.JsonRpc.csproj">
+      <Project>{24FC1A2A-0BC3-43A7-9BFE-B628C2C4A307}</Project>
+      <Name>AustinHarris.JsonRpc</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ZoneLighting\ZoneLighting.csproj">
       <Project>{FE00DB62-6C3C-4D04-9F03-23DA814298B6}</Project>
       <Name>ZoneLighting</Name>

@@ -2,7 +2,6 @@
 {
 	public interface IZLMRPC
 	{
-		//static void CreateZLM();
 		void DisposeZLM();
 		void Notify(string colorString, int? time, int? cycles);
 		void ProcessZLMCommand(string command, string programSetName, string programName);
