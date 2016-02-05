@@ -3,11 +3,9 @@ using System.Drawing;
 using System.Dynamic;
 using System.Linq;
 using AustinHarris.JsonRpc;
-using WebController.ContainerNS;
+using WebController.IoC;
 using ZoneLighting;
-using ZoneLighting.Usables;
 using ZoneLighting.ZoneProgramNS;
-using Config = Refigure.Config;
 
 namespace WebController.Controllers
 {
@@ -26,30 +24,7 @@ namespace WebController.Controllers
 		[JsonRpcMethod("CreateZLM")]
 		public void CreateZLMInstance()
 		{
-			CreateZLM();
-		}
-
-		[JsonRpcMethod()]
-		public static void CreateZLM()
-		{	
-			bool firstRun;
-			if (!Boolean.TryParse(Config.Get("FirstRun"), out firstRun))
-				firstRun = true;
-
-			bool loadZoneModules;
-			if (!Boolean.TryParse(Config.Get("LoadZoneModules"), out loadZoneModules))
-				loadZoneModules = false;
-
-			Action<ZLM> initAction = null;
-			if (typeof (RunnerHelpers).GetMethods().Select(method => method.Name).Contains(Config.Get("InitAction")))
-			{
-				var initActionInfo = typeof (RunnerHelpers).GetMethods().First(method => method.Name == Config.Get("InitAction"));
-				initAction = (Action<ZLM>) Delegate.CreateDelegate(typeof (Action<ZLM>), initActionInfo);
-			}
-
-			Container.ZLM = new ZLM(loadZonesFromConfig: !firstRun,
-				loadProgramSetsFromConfig: !firstRun,
-				loadZoneModules: loadZoneModules, initAction: initAction);
+			Container.CreateZLM();
 		}
 
 		public static void ZLMAction(Action<IZLM> action)

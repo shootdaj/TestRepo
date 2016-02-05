@@ -5,8 +5,8 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using Refigure;
-using WebController.ContainerNS;
 using WebController.Controllers;
+using WebController.IoC;
 using ZoneLighting;
 using ZoneLighting.Usables;
 
@@ -16,8 +16,8 @@ namespace WebController
 	{
 		protected void Application_Start()
 		{
-			ZLMRPC.CreateZLM();
-			Container.ZLMRPC = new ZLMRPC(Container.ZLM);
+			Container.CreateZLM();
+			Container.CreateZLMRPC();
 
 			AreaRegistration.RegisterAllAreas();
 			FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

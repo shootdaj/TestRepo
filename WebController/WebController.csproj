@@ -183,7 +183,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="ContainerNS\Container.cs" />
+    <Compile Include="IoC\Container.cs" />
     <Compile Include="Controllers\IZLMRPC.cs" />
     <Compile Include="Controllers\ZLMController.cs" />
     <Compile Include="Controllers\ZLMRPC.cs" />
@@ -333,7 +333,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Container\" />
     <Folder Include="Views\ZLMRPC\" />
   </ItemGroup>
   <ItemGroup>

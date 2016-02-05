@@ -1,5 +1,5 @@
 ﻿using System.Web.Mvc;
-using WebController.ContainerNS;
+using WebController.IoC;
 using WebController.Models;
 using ZoneLighting;
 
@@ -47,7 +47,7 @@ namespace WebController.Controllers
 		[HttpPost]
 		public ActionResult CreateZLM()
 		{
-			Controllers.ZLMRPC.CreateZLM();
+			Container.CreateZLM();
 			return ReturnZLMView("Index");
 		}
 
