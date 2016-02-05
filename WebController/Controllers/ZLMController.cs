@@ -2,6 +2,7 @@
 using WebController.IoC;
 using WebController.Models;
 using ZoneLighting;
+using ZoneLighting.ZoneProgramNS;
 
 namespace WebController.Controllers
 {
@@ -44,14 +45,12 @@ namespace WebController.Controllers
 			return ReturnZLMView("Index");
 		}
 
-		[HttpPost]
 		public ActionResult CreateZLM()
 		{
-			Container.CreateZLM();
+			ZLMRPC.CreateZLMInstance();
 			return ReturnZLMView("Index");
 		}
 
-		[HttpPost]
 		public ActionResult DisposeZLM()
 		{
 			ZLMRPC.DisposeZLM();
@@ -78,7 +77,15 @@ namespace WebController.Controllers
 		public ActionResult ZLMCommand(string Command, string programSetName, string programName)
 		{
 			var command = Command;
-			ZLMRPC.ProcessZLMCommand(command, programSetName, programName);
+
+			var isv = new ISV();
+			isv.Add("MaxFadeSpeed", 1);
+			isv.Add("MaxFadeDelay", 20);
+			isv.Add("Density", 1.0);
+			isv.Add("Brightness", 1.0);
+			isv.Add("Random", true);
+
+			ZLMRPC.ProcessZLMCommand(command, programSetName, programName, isv);
 			return ReturnZLMPartialView("ProgramSet");
 		}
 		

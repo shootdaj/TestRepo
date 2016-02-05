@@ -16,6 +16,11 @@ namespace WebController.Controllers
 	{
 		public ZLMRPC(IZLM zlm)
 		{
+			Construct(zlm);
+		}
+
+		public void Construct(IZLM zlm)
+		{
 			ZLM = zlm;
 		}
 
@@ -25,6 +30,7 @@ namespace WebController.Controllers
 		public void CreateZLMInstance()
 		{
 			Container.CreateZLM();
+			Construct(Container.ZLM);
 		}
 
 		public static void ZLMAction(Action<IZLM> action)
@@ -51,25 +57,17 @@ namespace WebController.Controllers
 		[JsonRpcMethod()]
 		public void DisposeZLM()
 		{
-			ZLMController.ZLM.Dispose();
+			ZLM.Dispose();
 		}
 
 		[JsonRpcMethod()]
-		public void ProcessZLMCommand(string command, string programSetName, string programName)
+		public void ProcessZLMCommand(string command, string programSetName, string programName, ISV isv)
 		{
 			if (command.ToLower().Trim() == "start")
 			{
 				ZLMAction(zlm =>
 				{
 					zlm.DisposeProgramSets(programSetName);
-
-					var isv = new ISV();
-					isv.Add("MaxFadeSpeed", 1);
-					isv.Add("MaxFadeDelay", 20);
-					isv.Add("Density", 1.0);
-					isv.Add("Brightness", 1.0);
-					isv.Add("Random", true);
-
 					zlm.CreateProgramSet(programSetName, programName, false, isv, zlm.Zones);
 				});
 			}
