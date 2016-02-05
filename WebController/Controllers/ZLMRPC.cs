@@ -24,11 +24,12 @@ namespace WebController.Controllers
 		public static IZLM ZLM { get; private set; }
 
 		[JsonRpcMethod("CreateZLM")]
-		public void CreateZLMInstanceMethod()
+		public void CreateZLMInstance()
 		{
 			CreateZLM();
 		}
 
+		[JsonRpcMethod()]
 		public static void CreateZLM()
 		{	
 			bool firstRun;
