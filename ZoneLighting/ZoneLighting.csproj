@@ -112,6 +112,7 @@
   <ItemGroup>
     <Compile Include="Helpers.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Int32Converter.cs" />
     <Compile Include="IZLM.cs" />
     <Compile Include="StockPrograms\MidiTwoDimensionalFade.cs" />
     <Compile Include="StockPrograms\Outlines.cs" />

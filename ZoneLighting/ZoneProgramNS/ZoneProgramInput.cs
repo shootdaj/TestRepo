@@ -32,7 +32,7 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 		}
 
-		public virtual void Subscribe(Action<object> toCall)
+		public virtual void Subscribe(Action<dynamic> toCall)
 		{
 			InputDisposable = InputSubject.Subscribe(toCall);
 		}

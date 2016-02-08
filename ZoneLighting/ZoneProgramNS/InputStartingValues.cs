@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using AustinHarris.JsonRpc;
+using Newtonsoft.Json;
 
 namespace ZoneLighting.ZoneProgramNS
 {
@@ -8,11 +10,13 @@ namespace ZoneLighting.ZoneProgramNS
 	/// Input Starting Values = ISV
 	/// </summary>
 	[Serializable]
+	[JsonObject]
 	public class ISV : DynamicObject
 	{
 		public ISV()
 		{ }
 
+		[JsonConverter(typeof(Int32Converter))]
 		private Dictionary<string, object> _dictionary = new Dictionary<string, object>();
 
 		public object this[string key] => _dictionary[key];

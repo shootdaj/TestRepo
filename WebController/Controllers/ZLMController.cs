@@ -79,11 +79,15 @@ namespace WebController.Controllers
 			var command = Command;
 
 			var isv = new ISV();
-			isv.Add("MaxFadeSpeed", 1);
-			isv.Add("MaxFadeDelay", 20);
-			isv.Add("Density", 1.0);
-			isv.Add("Brightness", 1.0);
-			isv.Add("Random", true);
+			if (command.ToLower() == "start" && programName == "Shimmer")
+			{
+				
+				isv.Add("MaxFadeSpeed", 1);
+				isv.Add("MaxFadeDelay", 20);
+				isv.Add("Density", 1.0);
+				isv.Add("Brightness", 0.3);
+				isv.Add("Random", true);
+			}
 
 			ZLMRPC.ProcessZLMCommand(command, programSetName, programName, isv);
 			return ReturnZLMPartialView("ProgramSet");

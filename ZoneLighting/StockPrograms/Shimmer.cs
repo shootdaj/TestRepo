@@ -10,16 +10,16 @@ using ZoneLighting.ZoneProgramNS;
 namespace ZoneLighting.StockPrograms
 {
 	/// <summary>
-	/// Outputs a looping rainbow to the zone (currently only works with FadeCandy).
+	/// Outputs a shimmery pattern
 	/// </summary>
 	[Export(typeof(ZoneProgram))]
 	[ExportMetadata("Name", "Shimmer")]
 	public class Shimmer : LoopingZoneProgram
 	{
-		int MaxFadeSpeed { get; set; } = 127;
-		int MaxFadeDelay { get; set; } = 1;
+		int MaxFadeSpeed { get; set; } = 1;
+		int MaxFadeDelay { get; set; } = 20;
 		double Density { get; set; } = 1.0;
-		double Brightness { get; set; } = 1.0;
+		double Brightness { get; set; } = 0.3;
 
 		/// <summary>
 		/// Set to true to set the delay and speed to be randomly generated with the MaxFadeDelay and MaxFadeSpeed being the maximum value.
