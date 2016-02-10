@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Dynamic;
 using System.Linq;
 using AustinHarris.JsonRpc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WebController.IoC;
 using ZoneLighting;
 using ZoneLighting.ZoneProgramNS;
@@ -26,8 +29,8 @@ namespace WebController.Controllers
 
 		public static IZLM ZLM { get; private set; }
 
-		[JsonRpcMethod("CreateZLM")]
-		public void CreateZLMInstance()
+		[JsonRpcMethod]
+		public void CreateZLM()
 		{
 			Container.CreateZLM();
 			Construct(Container.ZLM);
@@ -38,7 +41,7 @@ namespace WebController.Controllers
 			action.Invoke(ZLM);
 		}
 
-		[JsonRpcMethod()]
+		[JsonRpcMethod]
 		public void Save()
 		{
 			ZLMAction(zlm =>
@@ -48,13 +51,13 @@ namespace WebController.Controllers
 			});
 		}
 
-		[JsonRpcMethod()]
+		[JsonRpcMethod]
 		public void StopZone(string zoneName)
 		{
 			ZLMAction(zlm => { zlm.Zones.First(z => z.Name == zoneName).Stop(true); });
 		}
 
-		[JsonRpcMethod()]
+		[JsonRpcMethod]
 		public void DisposeZLM()
 		{
 			ZLM.Dispose();
@@ -77,7 +80,7 @@ namespace WebController.Controllers
 			}
 		}
 
-		[JsonRpcMethod()]
+		[JsonRpcMethod]
 		public void SetZoneColor(string zoneName, string color, float brightness)
 		{
 			ZLMAction(zlm =>
@@ -87,7 +90,7 @@ namespace WebController.Controllers
 			});
 		}
 
-		[JsonRpcMethod()]
+		[JsonRpcMethod]
 		public void Notify(string colorString, int? time, int? cycles)
 		{
 			var color = Color.FromName(colorString);
@@ -104,6 +107,41 @@ namespace WebController.Controllers
 						zlm => { zlm.Zones.ToList().ForEach(z => z.InterruptingPrograms[0].SetInput("Blink", parameters)); });
 				}
 			}
+		}
+
+		//[JsonRpcMethod]
+		//public void SetInput(string zoneName, string name, string data)
+		//{
+		//	ZLMAction(zlm =>
+		//	{
+		//		var realData = JsonConvert.DeserializeObject<typeisneededforconvertertobeused>(data, new JsonSerializerSettings()
+		//		{
+		//			Converters = new List<JsonConverter> { new Int32Converter() }
+		//		});
+		//		zlm.Zones[zoneName].ZoneProgram.SetInput(name, realData);
+		//	});
+		//}
+
+		[JsonRpcMethod()]
+		public void SetInputs(string zoneName, ISV isv)
+		{
+			ZLMAction(zlm =>
+			{
+				zlm.Zones[zoneName].ZoneProgram.SetInputs(isv);
+			});
+		}
+
+		[JsonRpcMethod]
+		public string GetZoneSummary()
+		{
+			var result = string.Empty;
+
+			ZLMAction(zlm =>
+			{
+				result = zlm.GetZoneSummary();
+			});
+
+			return result;
 		}
 	}
 }

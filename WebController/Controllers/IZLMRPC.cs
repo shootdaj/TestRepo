@@ -10,6 +10,6 @@ namespace WebController.Controllers
 		void Save();
 		void SetZoneColor(string zoneName, string color, float brightness);
 		void StopZone(string zoneName);
-		void CreateZLMInstance();
+		void CreateZLM();
 	}
 }

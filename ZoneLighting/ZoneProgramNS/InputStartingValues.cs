@@ -10,14 +10,14 @@ namespace ZoneLighting.ZoneProgramNS
 	/// Input Starting Values = ISV
 	/// </summary>
 	[Serializable]
-	[JsonObject]
+	[JsonConverter(typeof(ISVConverter))]
 	public class ISV : DynamicObject
 	{
 		public ISV()
 		{ }
-
-		[JsonConverter(typeof(Int32Converter))]
-		private Dictionary<string, object> _dictionary = new Dictionary<string, object>();
+		
+		//[JsonConverter(typeof(Int32DictionaryConverter))]
+		public Dictionary<string, object> _dictionary = new Dictionary<string, object>();
 
 		public object this[string key] => _dictionary[key];
 
@@ -55,5 +55,3 @@ namespace ZoneLighting.ZoneProgramNS
 		}
 	}
 }
-
-

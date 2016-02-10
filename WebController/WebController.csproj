@@ -365,7 +365,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>56965</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/WebController</IISUrl>
+          <IISUrl>http://localhost:99/WebController</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

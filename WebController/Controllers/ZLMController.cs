@@ -47,7 +47,7 @@ namespace WebController.Controllers
 
 		public ActionResult CreateZLM()
 		{
-			ZLMRPC.CreateZLMInstance();
+			ZLMRPC.CreateZLM();
 			return ReturnZLMView("Index");
 		}
 
@@ -78,10 +78,9 @@ namespace WebController.Controllers
 		{
 			var command = Command;
 
-			var isv = new ISV();
+			dynamic isv = new ISV();
 			if (command.ToLower() == "start" && programName == "Shimmer")
 			{
-				
 				isv.Add("MaxFadeSpeed", 1);
 				isv.Add("MaxFadeDelay", 20);
 				isv.Add("Density", 1.0);
