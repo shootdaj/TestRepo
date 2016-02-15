@@ -23,6 +23,7 @@ namespace WebController.IoC
 			if (!bool.TryParse(Config.Get("LoadZoneModules"), out loadZoneModules))
 				loadZoneModules = false;
 
+			//get initAction from config
 			Action<ZLM> initAction = null;
 			if (typeof (RunnerHelpers).GetMethods().Select(method => method.Name).Contains(Config.Get("InitAction")))
 			{

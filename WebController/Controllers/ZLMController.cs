@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Web.Mvc;
 using WebController.IoC;
 using WebController.Models;
 using ZoneLighting;
@@ -9,6 +11,7 @@ namespace WebController.Controllers
 	public class ZLMController : Controller
 	{
 		#region Internals
+
 		public ZLMController()
 		{
 			ZLMRPC = Container.ZLMRPC;
@@ -20,12 +23,12 @@ namespace WebController.Controllers
 
 		private ActionResult ReturnZLMView(string viewName = null)
 		{
-			return viewName == null ? View(new ZLMViewModel()) : View(viewName, new ZLMViewModel());
+			return viewName == null ? View(new ZLMViewModel(ZLMRPC)) : View(viewName, new ZLMViewModel(ZLMRPC));
 		}
 
 		private ActionResult ReturnZLMPartialView(string partialViewName)
 		{
-			return PartialView(partialViewName, new ZLMViewModel());
+			return PartialView(partialViewName, new ZLMViewModel(ZLMRPC));
 		}
 
 		#endregion
@@ -40,7 +43,7 @@ namespace WebController.Controllers
 		[HttpPost]
 		public ActionResult DisposeProgramSets()
 		{
-			Controllers.ZLMRPC.ZLMAction(zlm => zlm.DisposeProgramSets());
+			ZLMRPC.DisposeProgramSets();
 			//MvcApplication.ZLM.Uninitialize();
 			return ReturnZLMView("Index");
 		}
@@ -88,7 +91,19 @@ namespace WebController.Controllers
 				isv.Add("Random", true);
 			}
 
-			ZLMRPC.ProcessZLMCommand(command, programSetName, programName, isv);
+			if (command.ToUpperInvariant() == "START")
+			{
+				ZLMRPC.StartProgramSet(programSetName, programName, new List<string>() { "all"} , isv);
+			}
+			else if (command.ToUpperInvariant() == "STOP")
+			{
+				ZLMRPC.StopProgramSet(programSetName);
+			}
+			else
+			{
+				throw new ArgumentException("No.");
+			}
+			
 			return ReturnZLMPartialView("ProgramSet");
 		}
 		

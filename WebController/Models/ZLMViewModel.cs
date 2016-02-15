@@ -11,12 +11,16 @@ namespace WebController.Models
 {
 	public class ZLMViewModel
 	{
-		//public ZoneLightingManager ZLM => ZoneLightingManager.Instance;
+		private IZLMRPC ZLMRPC { get; set; }
 
-		public ZLMViewModel()
+		public ZLMViewModel(IZLMRPC zlmrpc)
 		{
-			if (ZLMRPC.ZLM?.Zones != null)
-				ZLMRPC.ZLMAction(zlm => AvailableZones = new SelectList(zlm.Zones, "Name"));
+			ZLMRPC = zlmrpc;
+
+			var zones = ZLMRPC.GetZoneNames();
+
+			if (zones != null)
+				AvailableZones = new SelectList(zones);
 		}
 
 		public IZLM ZLM => Container.ZLM;

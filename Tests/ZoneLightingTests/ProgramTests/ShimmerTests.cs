@@ -49,7 +49,7 @@ namespace ZoneLightingTests.ProgramTests
 		[TestCase(10, true, 1.0, 127, 2, 0.5)]
 		[TestCase(10, true, 1.0, 127, 1, 0.5)]
 		[TestCase(10, true, 1.0, 127, 0, 0.5)]
-		[TestCase(10, true, 1.0, 0, 0, 0.5)]
+		[TestCase(10, true, 1.0, 1, 0, 0.5)]
 		[Ignore("Manual")]
 		public void Shimmer_ColorScheme_Works(int sleepSeconds, bool random, double density, int maxFadeSpeed, int maxFadeDelay, double brightness)
 		{

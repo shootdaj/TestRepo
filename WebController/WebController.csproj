@@ -183,6 +183,8 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Helpers\Enumeration.cs" />
+    <Compile Include="Helpers\Helpers.cs" />
     <Compile Include="IoC\Container.cs" />
     <Compile Include="Controllers\IZLMRPC.cs" />
     <Compile Include="Controllers\ZLMController.cs" />

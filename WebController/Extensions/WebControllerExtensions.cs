@@ -15,17 +15,17 @@ namespace WebController.Extensions
 				if (zonesEnumerated.Any())
 				{
 					var values = from Zone z in zonesEnumerated
-						select new {ID = z.Name, z.Name};
+								 select new { ID = z.Name, z.Name };
 					return new SelectList(values, "ID", "Name", zones);
 				}
 				else
 				{
-					return new SelectList(new List<string>() {}, "none", "none");
+					return new SelectList(new List<string>(), "none", "none");
 				}
 			}
 			else
 			{
-				return new SelectList(new List<string>() { }, "none", "none");
+				return new SelectList(new List<string>(), "none", "none");
 			}
 		}
 

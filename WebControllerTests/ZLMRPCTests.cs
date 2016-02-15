@@ -13,8 +13,7 @@ namespace WebControllerTests
 		[Category("Integration")]
 	    public void CreateZLM_Works()
 	    {
-
-		    //var zlmrpc = new ZLMRPC();
+			
 	    }
     }
 }
