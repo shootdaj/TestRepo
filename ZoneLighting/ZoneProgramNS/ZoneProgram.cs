@@ -56,6 +56,8 @@ namespace ZoneLighting.ZoneProgramNS
 
 		protected SyncContext SyncContext { get; set; }
 
+		protected bool ForceStoppable { get; set; }
+
 		#region Triggers
 
 		public Trigger StartTrigger { get; private set; } = new Trigger("StartTrigger");
@@ -87,9 +89,9 @@ namespace ZoneLighting.ZoneProgramNS
 			if (string.IsNullOrEmpty(Name))
 			{
 				var thisType = GetType();
-				if (thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false).Any())
+				if (thisType.GetCustomAttributes(typeof(ExportMetadataAttribute), false).Any())
 					Name =
-						(string) thisType.GetCustomAttributes(typeof (ExportMetadataAttribute), false)
+						(string)thisType.GetCustomAttributes(typeof(ExportMetadataAttribute), false)
 							.Cast<ExportMetadataAttribute>().First(attr => attr.Name == "Name").Value;
 			}
 		}
@@ -105,16 +107,16 @@ namespace ZoneLighting.ZoneProgramNS
 				SetInterruptQueue(interruptQueue);
 		}
 
-	    /// <summary>
-	    /// Starts the zone program.
-	    /// </summary>
-	    /// <param name="isv">Starting values for the program.</param>
-	    /// <param name="sync">Whether or not to start the program in sync with a SyncContext.</param>
-	    /// <param name="syncContext">If this parameter is supplied when sync=true, this method will use the supplied SyncContext to
-	    /// sync this program with. If sync=true and this parameter is not supplied, this method will use the already assigned
-	    /// SyncContext to sync this program with.</param>
-	    /// <param name="startingParameters">Parameters to be passed into the StartCore method.</param>
-	    public void Start(ISV isv = null, bool sync = false, SyncContext syncContext = null, dynamic startingParameters = null)
+		/// <summary>
+		/// Starts the zone program.
+		/// </summary>
+		/// <param name="isv">Starting values for the program.</param>
+		/// <param name="sync">Whether or not to start the program in sync with a SyncContext.</param>
+		/// <param name="syncContext">If this parameter is supplied when sync=true, this method will use the supplied SyncContext to
+		/// sync this program with. If sync=true and this parameter is not supplied, this method will use the already assigned
+		/// SyncContext to sync this program with.</param>
+		/// <param name="startingParameters">Parameters to be passed into the StartCore method.</param>
+		public void Start(ISV isv = null, bool sync = false, SyncContext syncContext = null, dynamic startingParameters = null)
 		{
 			if (State == ProgramState.Stopped)
 			{
@@ -211,15 +213,16 @@ namespace ZoneLighting.ZoneProgramNS
 
 		#region Overridables
 
-	    /// <summary>
-	    /// This is a core method, meaning this method is wrapped within another method that's required for 
-	    /// any pre/postprocessing that is required by this class to maintain the functions provided by this class. 
-	    /// This is the core method for the Start public API call, which is a public member of this class. 
-	    /// So the inheritor of this class must provide the core functionality, but the user of an instance
-	    /// of this class can only call the method that wraps this method - Start. 
-	    /// </summary>
-	    /// <param name="parameters"></param>
-	    protected abstract void StartCore(dynamic parameters = null);
+		/// <summary>
+		/// This is a core method, meaning this method is wrapped within another method that's required for 
+		/// any pre/postprocessing that is required by this class to maintain the functions provided by this class. 
+		/// This is the core method for the Start public API call, which is a public member of this class. 
+		/// So the inheritor of this class must provide the core functionality, but the user of an instance
+		/// of this class can only call the method that wraps this method - Start. 
+		/// </summary>
+		/// <param name="parameters"></param>
+		/// <param name="forceStoppable"></param>
+		protected abstract void StartCore(dynamic parameters = null, bool forceStoppable = true);
 
 		/// This is a core method, meaning this method is wrapped within another method that's required for 
 		/// any pre/postprocessing that is required by this class to maintain the functions provided by this class. 
@@ -360,7 +363,7 @@ namespace ZoneLighting.ZoneProgramNS
 			if (filterPredicate != null)
 				input.Subscribe(incomingValue =>
 				{
-					if (filterPredicate((T)incomingValue))
+					if (filterPredicate(ConvertIncomingValue<T>(incomingValue)))
 					{
 						propertyInfo.SetValue(instance, incomingValue);
 					}
@@ -371,7 +374,7 @@ namespace ZoneLighting.ZoneProgramNS
 				});
 			else
 			{
-				input.Subscribe(incomingValue => propertyInfo.SetValue(instance, incomingValue));
+				input.Subscribe(incomingValue => propertyInfo.SetValue(instance, ConvertIncomingValue<T>(incomingValue)));
 			}
 
 			//set value of input to the value of the property
@@ -379,6 +382,22 @@ namespace ZoneLighting.ZoneProgramNS
 
 			return input;
 		}
+
+		/// <summary>
+		/// TODO: Inject this from somewhere else and possibly also do this at the Json-RPC level? (But ISV is inherent dynamic so maybe this is the right place?)
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="incomingValue"></param>
+		/// <returns></returns>
+		private static T ConvertIncomingValue<T>(dynamic incomingValue)
+		{
+			if ((typeof(T) == typeof(Color?) || typeof(T) == typeof(Color)))
+				if (incomingValue is string)
+					return Color.FromName(incomingValue);
+
+			return (T)incomingValue;
+		}
+
 
 		/// <summary>
 		/// Removes an input from the program.

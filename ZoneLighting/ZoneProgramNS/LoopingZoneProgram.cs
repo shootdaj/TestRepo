@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneNS;
 
@@ -203,8 +201,10 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
-		protected override void StartCore(dynamic parameters = null)//bool isSyncRequested)
+		protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)//bool isSyncRequested)
 		{
+			ForceStoppable = forceStoppable;
+
 			//handle sync state request
 			//StartTrigger.Fire(this, null);
 			//if (isSyncRequested)

@@ -5,9 +5,9 @@ namespace ZoneLighting.ZoneProgramNS
 {
 	public abstract class ReactiveZoneProgram : ZoneProgram
 	{
-		protected override void StartCore(dynamic parameters = null)
+		protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
 		{
-			
+			ForceStoppable = forceStoppable;
 		}
 
 		[SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]

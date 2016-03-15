@@ -71,7 +71,7 @@ namespace WebController.Controllers
 		[HttpPost]
 		public ActionResult StopZone(string zoneName)
 		{
-			ZLMRPC.StopZone(zoneName);
+			ZLMRPC.StopZone(zoneName, true);
 			return ReturnZLMView("Index");
 		}
 
@@ -93,7 +93,8 @@ namespace WebController.Controllers
 
 			if (command.ToUpperInvariant() == "START")
 			{
-				ZLMRPC.StartProgramSet(programSetName, programName, new List<string>() { "all"} , isv);
+				//TODO: Uncomment and fix
+				//ZLMRPC.RestartProgramSet(programSetName, programName, new List<string>() { "all"} , isv);
 			}
 			else if (command.ToUpperInvariant() == "STOP")
 			{

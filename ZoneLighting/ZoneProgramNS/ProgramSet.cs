@@ -18,7 +18,9 @@ namespace ZoneLighting.ZoneProgramNS
 	[DataContract]
 	public class ProgramSet : IDisposable, IBetterListType, ITestProgramSet
 	{
-        [DataMember]
+		#region Internals
+
+		[DataMember]
 		public string Name { get; private set; }
 
 		public SyncContext SyncContext { get; private set; }
@@ -55,15 +57,13 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
+		#endregion
+
+		#region API
+
 		/// <summary>
 		/// Creates a set of programs that run on a given set of zones with the given input starting values
 		/// </summary>
-		/// <param name="programName"></param>
-		/// <param name="zones"></param>
-		/// <param name="sync"></param>
-		/// <param name="isvs"></param>
-		/// <param name="name"></param>
-		/// <param name="startingParameters"></param>
 		public ProgramSet(string programName, IEnumerable<Zone> zones, bool sync, IEnumerable<ISV> isvs, string name, dynamic startingParameters = null)
 		{
 			if (!ZoneScaffolder.Instance.DoesProgramExist(programName))
@@ -106,6 +106,9 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
+		/// <summary>
+		/// This constructor is only to be used by the JSON deserializer for loading from configuration file.
+		/// </summary>
 		[JsonConstructor]
 		public ProgramSet(string programName, IEnumerable<Zone> zones, bool sync, string name)
 		{
@@ -132,6 +135,19 @@ namespace ZoneLighting.ZoneProgramNS
 			zone.Run(program, isv);
 		}
 
+		public void Start()
+		{
+			if (SyncContext == null)
+				ZonePrograms.ForEach(zp => zp.Start());
+			else
+				SyncContext.Sync(ZonePrograms);
+		}
+
+		public void Stop(bool force = false)
+		{
+			ZonePrograms.Parallelize(zp => zp.Stop(force));
+		}
+
 		public void RemoveZone(Zone zone, bool force = true)
 		{
 			SyncContext?.Unsync(zone);
@@ -147,25 +163,18 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			Name = null;
 			if (Zones != null)
-				Parallel.ForEach(Zones, zone => zone.Stop(force));
-			//Zones.ForEach(zone => zone.Stop(force));
+				ZonePrograms.Parallelize(zp => zp.Stop(force));
 			Zones = null;
 			ProgramName = null;
 			SyncContext?.Dispose();
 			SyncContext = null;
 		}
 
-		public void Start()
+		public void SetInputs(ISV isv)
 		{
-			if (SyncContext == null)
-				ZonePrograms.ForEach(zp => zp.Start());
-			else
-				SyncContext.Sync(ZonePrograms);
+			ZonePrograms.Parallelize(zp => zp.SetInputs(isv));
 		}
 
-		public void Stop(bool force = false)
-		{
-			Parallel.ForEach(ZonePrograms, zp => zp.Stop(force));
-		}
+		#endregion
 	}
 }

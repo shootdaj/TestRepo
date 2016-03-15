@@ -6,9 +6,6 @@ using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.StockPrograms
 {
-	/// <summary>
-	/// Outputs a static color to the zone.
-	/// </summary>
 	[Export(typeof(ZoneProgram))]
 	[ExportMetadata("Name", "BlinkColorReactive")]
 	public class BlinkColorReactive : ReactiveZoneProgram
@@ -27,7 +24,7 @@ namespace ZoneLighting.StockPrograms
 					ProgramCommon.SoftBlink(new List<Tuple<Color, int>>
 					{
 						{color, time},
-					}, OutputColor, SyncContext);
+					}, OutputColor, SyncContext, null, ForceStoppable);
 				}
 				else
 				{

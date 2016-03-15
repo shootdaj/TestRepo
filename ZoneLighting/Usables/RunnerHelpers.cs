@@ -57,29 +57,29 @@ namespace ZoneLighting.Usables
 			var notificationSyncContext = new SyncContext("NotificationContext");
 
 			//add zones
-			var row12 = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Row12", PixelType.FadeCandyWS2812Pixel, 16, 1, 0.5);
-			var row34 = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Row34", PixelType.FadeCandyWS2812Pixel, 16, 2, 0.5);
-			var row56 = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Row56", PixelType.FadeCandyWS2812Pixel, 16, 3, 0.5);
-			var row78 = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Row78", PixelType.FadeCandyWS2812Pixel, 16, 4, 0.5);
+			//var row12 = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Row12", PixelType.FadeCandyWS2812Pixel, 16, 1, 0.5);
+			//var row34 = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Row34", PixelType.FadeCandyWS2812Pixel, 16, 2, 0.5);
+			//var row56 = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Row56", PixelType.FadeCandyWS2812Pixel, 16, 3, 0.5);
+			//var row78 = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Row78", PixelType.FadeCandyWS2812Pixel, 16, 4, 0.5);
 
-			zlm.CreateProgramSet("ShimmerSet", "ScrollTrail", true, null, zlm.Zones);
+			var neoMatrix = CreateNeoMatrixZone(zlm);
+
+			var isv = new ISV();
+			isv.Add("MaxFadeSpeed", 1);
+			isv.Add("MaxFadeDelay", 20);
+			isv.Add("Density", 1.0);
+			isv.Add("Brightness", 0.3);
+			isv.Add("Random", true);
+
+			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);
 
 			//setup interrupting inputs - in the real code this method should not be used. The ZoneScaffolder.AddInterruptingProgram should be used.
-			row12.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-			row34.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-			row56.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-			row78.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
-
+			neoMatrix.AddInterruptingProgram(new BlinkColorReactive(), null, notificationSyncContext);
+			
 			//synchronize and start interrupting programs
-			notificationSyncContext.Sync(row12.InterruptingPrograms[0],
-				row34.InterruptingPrograms[0],
-				row56.InterruptingPrograms[0],
-				row78.InterruptingPrograms[0]);
+			notificationSyncContext.Sync(neoMatrix.InterruptingPrograms[0]);
 
-			row12.InterruptingPrograms[0].Start();
-			row34.InterruptingPrograms[0].Start();
-			row56.InterruptingPrograms[0].Start();
-			row78.InterruptingPrograms[0].Start();
+			neoMatrix.InterruptingPrograms[0].Start();
 		}
 
 		public static Action AddNeopixelZonesAndProgramsWithSync(ZLM zlm)
@@ -107,9 +107,16 @@ namespace ZoneLighting.Usables
 			isv.Add("Brightness", 0.3);
 			isv.Add("Random", true);
 			//isv.Add("ColorScheme", ColorScheme.Primaries);
+			CreateNeoMatrixZone(zlm);
+			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);
+		}
+
+		public static Zone CreateNeoMatrixZone(ZLM zlm)
+		{
 			var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix", PixelType.FadeCandyWS2812Pixel,
 				64, 1);
-			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);
+
+			return neomatrix;
 		}
 
 		public static void RunRainbowOnNeoMatrix(ZLM zlm)
@@ -172,5 +179,20 @@ namespace ZoneLighting.Usables
 		    zlm.CreateProgramSet("MidiTwoDimensionalFadeSet", "MidiTwoDimensionalFade", false, isv, zlm.Zones,
 			    startingParameters);
 	    }
+
+		public static void RunShimmerOnNeoMatrixFourZones(ZLM zlm)
+		{
+			var isv = new ISV();
+			isv.Add("MaxFadeSpeed", 1);
+			isv.Add("MaxFadeDelay", 20);
+			isv.Add("Density", 1.0);
+			isv.Add("Brightness", 1.0);
+			isv.Add("Random", true);
+			var firstRow = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "FirstRow", PixelType.FadeCandyWS2812Pixel, 16, 1);
+			var secondRow = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "SecondRow", PixelType.FadeCandyWS2812Pixel, 16, 2);
+			var thirdRow = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ThirdRow", PixelType.FadeCandyWS2812Pixel, 16, 3);
+			var fourthRow = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "FourthRow", PixelType.FadeCandyWS2812Pixel, 16, 4);
+			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);
+		}
 	}
 }

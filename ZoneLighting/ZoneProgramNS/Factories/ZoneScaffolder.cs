@@ -105,7 +105,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 			if (DoesProgramExist(programName))
 				return ZoneProgramFactories.ToDictionary(x => x.Metadata.Name)[programName].CreateExport().Value;
 			else
-				throw new Exception(string.Format("No program by the name '{0}' exists.", programName));
+				throw new Exception($"No program by the name '{programName}' exists.");
 		}
 
 		/// <summary>
@@ -135,10 +135,10 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 			get { return ZoneProgramFactories.Select(x => x.Metadata.Name); }
 		}
 
-		public Zone AddFadeCandyZone(BetterList<Zone> zones, string name, PixelType pixelType, int numberOfLights, int channel, double? brightness = null)
+		public Zone AddFadeCandyZone(BetterList<Zone> zones, string name, PixelType pixelType, int numberOfLights, byte? channel, double? brightness = null)
 		{
 			//create new zone
-			var zone = new FadeCandyZone(FadeCandyController.Instance, name, brightness);
+			var zone = new FadeCandyZone(FadeCandyController.Instance, name, brightness, (byte)channel);
 			//add lights and add zone to collection
 			((FadeCandyZone)zones.Add(zone)).AddFadeCandyLights(pixelType, numberOfLights, (byte)channel);
 			return zone;

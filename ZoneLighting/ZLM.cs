@@ -4,10 +4,10 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Configuration;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using ZoneLighting.Communication;
 using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
@@ -23,6 +23,148 @@ namespace ZoneLighting
 	public sealed class ZLM : IDisposable, IZLM
 	{
 		#region API
+
+		#region Admin
+
+		public Zone AddFadeCandyZone(string name, PixelType pixelType, int numberOfLights, byte? channel)
+		{
+			return ZoneScaffolder.Instance.AddFadeCandyZone(Zones, name, pixelType, numberOfLights, channel);
+		}
+
+		public void Save()
+		{
+			SaveZones();
+			SaveProgramSets();
+		}
+
+		#endregion
+
+		#region Program Set
+
+		public ProgramSet CreateProgramSet(string programSetName, string programName, IEnumerable<string> zoneNames, bool sync = true,
+			ISV isv = null, dynamic startingParameters = null)
+		{
+			var zones = GetZonesByNames(zoneNames.ToList());
+			return CreateProgramSet(programSetName, programName, sync, isv, zones, startingParameters);
+		}
+
+		/// <summary>
+		/// Creates a ProgramSet
+		/// </summary>
+		/// <param name="programSetName">Name of program set</param>
+		/// <param name="programName">Name of program</param>
+		/// <param name="sync">Whether or not to start the programs in sync</param>
+		/// <param name="isv">Input starting values - starting values for the inputs</param>
+		/// <param name="zones">Zones to run the program set on</param>
+		/// <param name="startingParameters">Starting parameters for creating this program set. These will be fed to the constructor(s) of the ZoneProgram(s).</param>
+		public ProgramSet CreateProgramSet(string programSetName, string programName, bool sync, ISV isv,
+			IEnumerable<Zone> zones, dynamic startingParameters = null)
+		{
+			var zonesList = zones as IList<Zone> ?? zones.ToList();
+			if (zonesList.Any(z => !AvailableZones.Contains(z)))
+				throw new Exception("Some of the provided zones are not available.");
+
+			var programSet = new ProgramSet(programName, zonesList, sync, isv.Listify(), programSetName, startingParameters);
+			ProgramSets.Add(programSet);
+			return programSet;
+		}
+
+		/// <summary>
+		/// Creates a ProgramSet with one program instance
+		/// </summary>
+		public ProgramSet CreateSingularProgramSet(string programSetName, ZoneProgram program, ISV isv, Zone zone)
+		{
+			if (!AvailableZones.Contains(zone)) throw new Exception("The provided zone is not available.");
+
+			var programSet = new ProgramSet(program, zone, isv, programSetName);
+			ProgramSets.Add(programSet);
+			return programSet;
+		}
+
+		/// <summary>
+		/// Disposes the given program set and creates another with the same name and the given parameters (name, zones and ISV).
+		/// </summary>
+		public void RecreateProgramSet(string programSetName, string programName, List<string> zoneNames, ISV isv)
+		{
+			var zones = GetZonesByNames(zoneNames);
+
+			DisposeProgramSets(programSetName.Listify());
+			CreateProgramSet(programSetName, programName, false, isv, zones);
+		}
+
+		/// <summary>
+		/// Disposes the given program set(s). If no specific program sets are provided, disposes all program sets.
+		/// </summary>
+		public void DisposeProgramSets(List<string>programSetNames = null, bool force = false)
+		{
+			if (programSetNames == null || !programSetNames.Any())
+			{
+				ProgramSets.ForEach(programSet => programSet.Dispose(force));
+				ProgramSets.Clear();
+				ProgramSets = null;
+			}
+			else
+			{
+				var programSetsToDispose = ProgramSets.Where(programSet => programSetNames.Contains(programSet.Name)).ToList();
+				programSetsToDispose.ForEach(programSet =>
+				{
+					ProgramSets.Remove(programSet);
+					programSet.Dispose(force);
+				});
+			}
+		}
+
+		/// <summary>
+		/// Sets inputs for a given program set. This will set inputs for all programs in the program set.
+		/// </summary>
+		public void SetProgramSetInputs(string programSetName, ISV isv)
+		{
+			ProgramSets[programSetName].SetInputs(isv);
+		}
+
+		/// <summary>
+		/// Removes the given zone from the given program set and stops the zone.
+		/// TODO: This is a very unelegant and stupid way of removing zones (basically disposing and recreating the program set without the zone)
+		/// TODO: What needs to happen is Unsync, which is currently broken for 3 or more programs. This needs to be resolved eventually. 
+		/// </summary>
+		public void RecreateProgramSetWithoutZone(string programSetName, string zoneName, bool force = false)
+		{
+			var isv = ProgramSets[programSetName].Zones.First().ZoneProgram.GetInputValues();
+			var programName = ProgramSets[programSetName].ProgramName;
+			var zones = ProgramSets[programSetName].Zones.Select(zone => zone.Name).ToList();
+			var sync = ProgramSets[programSetName].Sync;
+			DisposeProgramSets(programSetName.Listify(), true);
+			zones.Remove(zoneName);
+			Zones[zoneName].ClearColors();
+			//todo: get starting parameters to work - currently null is being passed in
+			CreateProgramSet(programSetName, programName, zones, sync, isv, null);
+		}
+
+		#endregion
+
+		#region Zone
+
+		public void StopZone(string zoneName, bool force)
+		{
+			Zones.First(z => z.Name == zoneName).Stop(force);
+		}
+
+		public void SetInputs(string zoneName, ISV isv)
+		{
+			Zones[zoneName].ZoneProgram.SetInputs(isv);
+		}
+
+		public void SetZoneColor(string zoneName, string color, float brightness)
+		{
+			Zones[zoneName].SetColor(Color.FromName(color).Darken(brightness));
+			Zones[zoneName].SendLights(Zones[zoneName].LightingController);
+		}
+
+		public void SetColor(string zoneName, string color, int index, double? brightness = 1)
+		{
+			Zones[zoneName].SetColor(Color.FromName(color), index, brightness);
+			Zones[zoneName].SendLights(Zones[zoneName].LightingController);
+		}
 
 		public string GetZoneSummary()
 		{
@@ -60,50 +202,24 @@ namespace ZoneLighting
 			return summary;
 		}
 
-		/// <summary>
-		/// Creates a ProgramSet
-		/// </summary>
-		/// <param name="programSetName">Name of program set</param>
-		/// <param name="programName">Name of program</param>
-		/// <param name="sync">Whether or not to start the programs in sync</param>
-		/// <param name="isv">Input starting values - starting values for the inputs</param>
-		/// <param name="zones">Zones to run the program set on</param>
-		/// <param name="startingParameters">Starting parameters for creating this program set</param>
-		public ProgramSet CreateProgramSet(string programSetName, string programName, bool sync, ISV isv,
-			IEnumerable<Zone> zones, dynamic startingParameters = null)
-		{
-			var zonesList = zones as IList<Zone> ?? zones.ToList();
-			if (zonesList.Any(z => !AvailableZones.Contains(z)))
-				throw new Exception("Some of the provided zones are not available.");
-			
-			var programSet = new ProgramSet(programName, zonesList, sync, isv.Listify(), programSetName, startingParameters);
-			ProgramSets.Add(programSet);
-			return programSet;
-		}
+		#endregion
 
-		/// <summary>
-		/// Creates a ProgramSet with one program instance
-		/// </summary>
-		public ProgramSet CreateSingularProgramSet(string programSetName, ZoneProgram program, ISV isv, Zone zone)
-		{
-			if (!AvailableZones.Contains(zone)) throw new Exception("Some of the provided zones are not available.");
+		#endregion
 
-			var programSet = new ProgramSet(program, zone, isv, programSetName);
-			ProgramSets.Add(programSet);
-			return programSet;
-		}
+		#region Helpers
 
-		/// <summary>
-		/// Adds a fade candy zone to the manager.
-		/// </summary>
-		/// <param name="name">Name of the zone</param>
-		/// <param name="pixelType">Type of pixel for the zone</param>
-		/// <param name="numberOfLights">Number of lights in the zone</param>
-		/// <param name="channel">FadeCandy channel on which this zone is connected</param>
-		/// <returns></returns>
-		public Zone AddFadeCandyZone(string name, PixelType pixelType, int numberOfLights, int channel)
+		private IEnumerable<Zone> GetZonesByNames(List<string> zoneNames)
 		{
-			return ZoneScaffolder.Instance.AddFadeCandyZone(Zones, name, pixelType, numberOfLights, channel);
+			IEnumerable<Zone> zones;
+			if (zoneNames.Count == 1 && zoneNames.First().ToUpperInvariant() == "ALL")
+			{
+				zones = AvailableZones;
+			}
+			else
+			{
+				zones = Zones.Where(zone => zoneNames.Contains(zone.Name));
+			}
+			return zones;
 		}
 
 		#endregion
@@ -113,7 +229,7 @@ namespace ZoneLighting
 		/// <summary>
 		/// All zones that can be managed by this class.
 		/// </summary>
-		[ImportMany(typeof (Zone), AllowRecomposition = true)]
+		[ImportMany(typeof(Zone), AllowRecomposition = true)]
 		public BetterList<Zone> Zones { get; private set; } = new BetterList<Zone>();
 
 		/// <summary>
@@ -138,6 +254,14 @@ namespace ZoneLighting
 
 		#region C+I
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ZLM"/> (ZoneLightingManager) class.
+		/// </summary>
+		/// <param name="loadZoneModules">if set to <c>true</c> loads external zone modules from assemblies in the folder provided in the configuration appSetting with key "ZoneDLLFolder".</param>
+		/// <param name="loadZonesFromConfig">if set to <c>true</c>, loads external zones from the saved configuration file provided in the application configuration (app/web.config) appSetting with key "ZoneConfigurationSaveFile".</param>
+		/// <param name="loadProgramSetsFromConfig">if set to <c>true</c>, loads program sets from the saved configuration file provided in the application configuration appSetting (app/web.config) with key "ProgramSetConfigurationSaveFile".</param>
+		/// <param name="initAction">If provided, this action will be executed after this instance is initialized.</param>
+		/// <param name="fadeCandyConfigFilePath">The path at which the FadeCandy configuration file is located.</param>
 		public ZLM(bool loadZoneModules = false, bool loadZonesFromConfig = true, bool loadProgramSetsFromConfig = true,
 			Action<ZLM> initAction = null, string fadeCandyConfigFilePath = null)
 		{
@@ -184,31 +308,9 @@ namespace ZoneLighting
 			ZoneScaffolder.Instance.Uninitialize();
 		}
 
-		private void StopZones()
+		public void StopZones()
 		{
-			Parallel.ForEach(Zones, zone =>
-			{
-				zone.Stop();
-			});
-		}
-
-		public void DisposeProgramSets(params string[] programSetNames)
-		{
-			if (programSetNames == null || !programSetNames.Any())
-			{
-				ProgramSets.ForEach(programSet => programSet.Dispose());
-				ProgramSets.Clear();
-				ProgramSets = null;
-			}
-			else
-			{
-				var programSetsToDispose = ProgramSets.Where(programSet => programSetNames.Contains(programSet.Name)).ToList();
-				programSetsToDispose.ForEach(programSet =>
-				{
-					ProgramSets.Remove(programSet);
-					programSet.Dispose();
-				});
-			}
+			Zones.Parallelize(zone => zone.Stop());
 		}
 
 		public void Dispose()
@@ -222,12 +324,9 @@ namespace ZoneLighting
 
 		}
 
-		private void DisposeZones()
+		public void DisposeZones()
 		{
-			Parallel.ForEach(Zones, zone =>
-			{
-				zone.Dispose();
-			});
+			Zones.Parallelize(zone => zone.Dispose());
 			Zones.Clear();
 			Zones = null;
 		}
@@ -242,10 +341,10 @@ namespace ZoneLighting
 				"Zone configuration save file not found."))));
 		}
 
-		private void LoadProgramSetsFromConfig()
+		private void LoadProgramSetsFromConfig(string filename = null)
 		{
 			ProgramSets.AddRange(
-				Config.DeserializeProgramSets(File.ReadAllText(Refigure.Config.Get("ProgramSetConfigurationSaveFile",
+				Config.DeserializeProgramSets(File.ReadAllText(filename ?? Refigure.Config.Get("ProgramSetConfigurationSaveFile",
 					"Program Set configuration save file not found.")), Zones));
 		}
 
@@ -277,7 +376,7 @@ namespace ZoneLighting
 				var assembly = Assembly.LoadFrom(file);
 
 				if (assembly.GetCustomAttributesData()
-					.Any(ass => ass.AttributeType == typeof (ZoneAssemblyAttribute)))
+					.Any(ass => ass.AttributeType == typeof(ZoneAssemblyAttribute)))
 				{
 					fileCatalogs.Add(new AssemblyCatalog(assembly));
 					//this may be required to be uncommented in the future
@@ -298,7 +397,7 @@ namespace ZoneLighting
 		//	ExternalProgramCatalog.Refresh();
 		//	ExternalProgramContainer.ComposeParts(this);
 		//}
-		
+
 		#endregion
 	}
 }

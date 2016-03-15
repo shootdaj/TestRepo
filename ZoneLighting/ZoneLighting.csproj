@@ -201,10 +201,21 @@
     <None Include="FadeCandy\fcserver-rpi" />
     <None Include="FadeCandy\fcserverNeopixel.bat" />
     <None Include="FadeCandy\LICENSE" />
+    <None Include="FadeCandy\neomatrixFourZonesBase0.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="FadeCandy\neomatrixOneZoneBase0.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="FadeCandy\neomatrixOneZone.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="FadeCandy\neopixel.json" />
+    <None Include="FadeCandy\neomatrixFourZones.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="FadeCandy\neopixel.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="FadeCandy\neopixeltest.json" />
     <None Include="FadeCandy\README.md" />
     <None Include="packages.config" />

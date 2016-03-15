@@ -51,7 +51,7 @@ namespace ExternalPrograms
 				SendColors(sendColors);     //send frame
 				ProgramCommon.Delay(DelayTime);                                         //pause before next iteration
 
-				SyncContext?.SignalAndWait(100);
+				SyncContext?.SignalAndWait(1000);
 			}
 		}
 

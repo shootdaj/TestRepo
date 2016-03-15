@@ -15,9 +15,10 @@ namespace ZoneLighting.StockPrograms
     {
         private MIDIDevice MidiInput { get; set; }
 
-        protected override void StartCore(dynamic parameters = null)
+        protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
         {
-            MidiInput = MIDIManager.GetDevice(parameters?.DeviceID);
+			ForceStoppable = forceStoppable;
+			MidiInput = MIDIManager.GetDevice(parameters?.DeviceID);
             MidiInput.AddChannelMessageAction(TwoDimensionalFade);
             MidiInput.StartRecording();
         }

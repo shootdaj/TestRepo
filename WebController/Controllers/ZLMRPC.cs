@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Dynamic;
 using System.Linq;
+using System.Text;
 using AustinHarris.JsonRpc;
 using WebController.IoC;
 using ZoneLighting;
+using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
@@ -23,12 +25,12 @@ namespace WebController.Controllers
 			Construct(zlm);
 		}
 
-		public void Construct(IZLM zlm)
+		private void Construct(IZLM zlm)
 		{
 			ZLM = zlm;
 		}
 
-		public IZLM ZLM { get; private set; }
+		private IZLM ZLM { get; set; }
 
 		#endregion
 
@@ -42,26 +44,26 @@ namespace WebController.Controllers
 		{
 			action.Invoke(ZLM);
 		}
-		private IEnumerable<Zone> DetermineZones(List<string> zoneNames)
-		{
-			IEnumerable<Zone> zones;
-			if (zoneNames.Count == 1 && zoneNames.First().ToUpperInvariant() == "ALL")
-			{
-				zones = ZLM.AvailableZones;
-			}
-			else
-			{
-				zones = ZLM.Zones.Where(zone => zoneNames.Contains(zone.Name));
-			}
-			return zones;
-		}
-
 
 		#endregion
 
 		#region API
 
 		#region Admin 
+
+		/// <summary>
+		/// Adds a FadeCandy zone to ZLM. This 
+		/// </summary>
+		/// <param name="name">Name of zone</param>
+		/// <param name="pixelType">Type of the pixel to use for the zone</param>
+		/// <param name="numberOfLights">The number of lights.</param>
+		/// <param name="channel">The channel.</param>
+		/// <returns>The instance of the zone that was added.</returns>
+		[JsonRpcMethod]
+		public Zone AddFadeCandyZone(string name, PixelType pixelType, int numberOfLights, byte? channel)
+		{
+			return ZLM.AddFadeCandyZone(name, pixelType, numberOfLights, channel);
+		}
 
 		/// <summary>
 		/// Creates a ZoneLightingManager.
@@ -74,19 +76,32 @@ namespace WebController.Controllers
 		}
 
 		[JsonRpcMethod]
-		public void Save()
-		{
-			ZLMAction(zlm =>
-			{
-				zlm.SaveZones();
-				zlm.SaveProgramSets();
-			});
-		}
-
-		[JsonRpcMethod]
 		public void DisposeZLM()
 		{
 			ZLMAction(zlm => zlm.Dispose());
+		}
+
+		[JsonRpcMethod]
+		public void Save()
+		{
+			ZLMAction(zlm => zlm.Save());
+		}
+
+		[JsonRpcMethod]
+		public string GetStatus()
+		{
+			var sb = new StringBuilder();
+			sb.AppendLine("--ZoneLighting Summary--");
+			sb.AppendLine("=============================");
+			sb.AppendLine($"{ZLM.ProgramSets.Count} ProgramSet(s) currently running:");
+			ZLM.ProgramSets.ForEach(ps =>
+			{
+				sb.AppendLine(
+					$"{ps.Name} running {ps.ProgramName} on zone(s) {ps.Zones.Select(zone => zone.Name).Aggregate((i, j) => $"{i}, {j}")}" +
+					(ps.Sync ? " in sync" : string.Empty));
+			});
+			sb.AppendLine("--End of Summary--");
+			return sb.ToString();
 		}
 
 		#endregion
@@ -94,32 +109,58 @@ namespace WebController.Controllers
 		#region Program Set
 
 		[JsonRpcMethod]
+		public void CreateProgramSet(string programSetName, string programName, IEnumerable<string> zoneNames, bool sync = true,
+			ISV isv = null, dynamic startingParameters = null)
+		{
+			ZLMAction(zlm => zlm.CreateProgramSet(programSetName, programName, zoneNames, sync, isv, startingParameters));
+		}
+
+		[JsonRpcMethod]
+		public void DisposeProgramSet(string programSetName)
+		{
+			ZLMAction(zlm => zlm.DisposeProgramSets(programSetName.Listify()));
+		}
+
+		[JsonRpcMethod]
 		public void DisposeProgramSets()
 		{
 			ZLMAction(zlm => zlm.DisposeProgramSets());
 		}
 
-		[JsonRpcMethod()]
-		public void StartProgramSet(string programSetName, string programName, List<string> zoneNames, ISV isv)
+		[JsonRpcMethod]
+		public void RecreateProgramSet(string programSetName, string programName, List<string> zoneNames, ISV isv)
 		{
-			var zones = DetermineZones(zoneNames);
-
-			ZLMAction(zlm =>
-			{
-				zlm.DisposeProgramSets(programSetName);
-				zlm.CreateProgramSet(programSetName, programName, false, isv, zones);
-			});
+			ZLMAction(zlm => zlm.RecreateProgramSet(programSetName, programName, zoneNames, isv));
 		}
 
-		[JsonRpcMethod()]
+		[JsonRpcMethod]
+		public void StartProgramSet(string programSetName)
+		{
+			ZLMAction(zlm => zlm.ProgramSets[programSetName].Start());
+		}
+
+		[JsonRpcMethod]
 		public void StopProgramSet(string programSetName)
 		{
-			ZLMAction(zlm => zlm.ProgramSets.First(z => z.Name == programSetName).Stop());
+			ZLMAction(zlm => zlm.ProgramSets[programSetName].Stop());
+		}
+
+
+		[JsonRpcMethod]
+		public void SetProgramSetInputs(string programSetName, ISV isv)
+		{
+			ZLM.SetProgramSetInputs(programSetName, isv);
+		}
+
+		[JsonRpcMethod]
+		public void RecreateProgramSetWithoutZone(string programSetName, string zoneName, bool force = false)
+		{
+			ZLM.RecreateProgramSetWithoutZone(programSetName, zoneName, force);
 		}
 
 		#endregion
 
-		#region Zone API
+		#region Zone
 
 		//public void StartZone(string zoneName)
 		//{
@@ -127,25 +168,50 @@ namespace WebController.Controllers
 		//}
 
 		[JsonRpcMethod]
-		public void StopZone(string zoneName)
+		public void StopZone(string zoneName, bool force)
 		{
-			ZLMAction(zlm => zlm.Zones.First(z => z.Name == zoneName).Stop(true));
+			ZLMAction(zlm => zlm.StopZone(zoneName, force));
 		}
 
-
-		[JsonRpcMethod()]
+		[JsonRpcMethod]
 		public List<string> GetZoneNames()
 		{
 			return ZLM.Zones.Select(zone => zone.Name).ToList();
 		}
 
-		[JsonRpcMethod()]
+		//[JsonRpcMethod]
+		//public List<Zone> GetZones()
+		//{
+		//	return ZLM.Zones;
+		//}
+
+		//[JsonRpcMethod]
+		//public List<Zone> GetAvailableZones()
+		//{
+		//	return ZLM.AvailableZones;
+		//}
+
+		//public List<string> GetAvailableZoneNames()
+		//{
+			
+		//}
+
+		[JsonRpcMethod]
 		public void SetInputs(string zoneName, ISV isv)
 		{
-			ZLMAction(zlm =>
-			{
-				zlm.Zones[zoneName].ZoneProgram.SetInputs(isv);
-			});
+			ZLM.SetInputs(zoneName, isv);
+		}
+
+		[JsonRpcMethod]
+		public void SetZoneColor(string zoneName, string color, float brightness = 1)
+		{
+			ZLM.SetZoneColor(zoneName, color, brightness);
+		}
+
+		[JsonRpcMethod]
+		public void SetColor(string zoneName, string color, int index, double? brightness = 1)
+		{
+			ZLM.SetColor(zoneName, color, index, brightness);
 		}
 
 		[JsonRpcMethod]
@@ -164,16 +230,6 @@ namespace WebController.Controllers
 		#endregion
 
 		#region Misc
-
-		[JsonRpcMethod]
-		public void SetZoneColor(string zoneName, string color, float brightness)
-		{
-			ZLMAction(zlm =>
-			{
-				zlm.Zones[zoneName].SetColor(Color.FromName(color).Darken(brightness));
-				zlm.Zones[zoneName].SendLights(zlm.Zones[zoneName].LightingController);
-			});
-		}
 
 		[JsonRpcMethod]
 		public void Notify(string colorString, int? time, int? cycles)

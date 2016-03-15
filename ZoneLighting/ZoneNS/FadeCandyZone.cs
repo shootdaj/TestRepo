@@ -6,9 +6,10 @@ namespace ZoneLighting.ZoneNS
 	public class FadeCandyZone : Zone
 	{
 		[JsonConstructor]
-		public FadeCandyZone(ILightingController lightingController = null, string name = "", double? brightness = null)
+		public FadeCandyZone(ILightingController lightingController = null, string name = "", double? brightness = null, byte? channel = null)
 			: base(lightingController, name, brightness)
 		{
+			Channel = channel;
 		}
 		
 		/// <summary>
@@ -25,5 +26,7 @@ namespace ZoneLighting.ZoneNS
 				AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i, pixelType: pixelType));
 			}
 		}
+
+		public byte? Channel { get; protected set; }
 	}
 }

@@ -79,6 +79,7 @@ namespace ExternalPrograms
 
 		protected override void PreStop(bool force)
 		{
+			ForceStoppable = force;
 			ShimmerCTS.Cancel();
 			Task.WaitAll(Tasks.ToArray());
 			Tasks.ForEach(task =>
@@ -110,7 +111,7 @@ namespace ExternalPrograms
 					ColorsToSend[pixelToShine] = color;
 				}
 
-			}, out endingColor, cts: ShimmerCTS);
+			}, out endingColor, cts: ShimmerCTS, forceStoppable: ForceStoppable);
 
 			ProgramCommon.FadeToBlack(GetColor(pixelToShine), fadeSpeed, delayTime, false, color =>
 			{
@@ -119,7 +120,7 @@ namespace ExternalPrograms
 					ColorsToSend[pixelToShine] = color;
 				}
 
-			}, out endingColor, cts: ShimmerCTS);
+			}, out endingColor, cts: ShimmerCTS, force: ForceStoppable);
 
 			PixelStates[pixelToShine] = false;
 
