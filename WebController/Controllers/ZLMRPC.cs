@@ -194,12 +194,6 @@ namespace WebController.Controllers
 		}
 
 		//[JsonRpcMethod]
-		//public List<Zone> GetZones()
-		//{
-		//	return ZLM.Zones;
-		//}
-
-		//[JsonRpcMethod]
 		//public List<Zone> GetAvailableZones()
 		//{
 		//	return ZLM.AvailableZones;
