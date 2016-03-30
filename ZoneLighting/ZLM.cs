@@ -101,7 +101,6 @@ namespace ZoneLighting
 			{
 				ProgramSets.ForEach(programSet => programSet.Dispose(force));
 				ProgramSets.Clear();
-				ProgramSets = null;
 			}
 			else
 			{
@@ -316,7 +315,9 @@ namespace ZoneLighting
 		public void Dispose()
 		{
 			DisposeProgramSets();
+			ProgramSets = null;
 			DisposeZones();
+			Zones = null;
 			UninitLightingControllers();
 			UninitZoneScaffolder();
 			ExternalZoneContainer?.Dispose();
@@ -328,7 +329,6 @@ namespace ZoneLighting
 		{
 			Zones.Parallelize(zone => zone.Dispose());
 			Zones.Clear();
-			Zones = null;
 		}
 
 		#endregion

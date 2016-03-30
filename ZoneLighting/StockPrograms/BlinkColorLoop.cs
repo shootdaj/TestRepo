@@ -29,7 +29,7 @@ namespace ZoneLighting.StockPrograms
 		public override void Setup()
 		{
 			AddMappedInput<int>(this, "HoldTime", i => i.IsInRange(1, 100));
-			AddMappedInput<int>(this, "SyncLevel");
+			AddMappedInput<SyncLevel>(this, "SyncLevel");
 		}
 
 		public override void Loop()

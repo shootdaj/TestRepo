@@ -17,19 +17,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoneLightingTests", "Tests\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4CF8894A-26F4-444E-B3D6-038B853AE2F8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9F3FC046-7B87-4EDD-8794-C8A8E8B156E8}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2577F777-6510-431B-85E7-51D0EF9E6A90}"
 	ProjectSection(SolutionItems) = preProject
-		JSON-RPC.NET\AustinHarris.JsonRpc.vsmdi = JSON-RPC.NET\AustinHarris.JsonRpc.vsmdi
-		JSON-RPC.NET\Local.testsettings = JSON-RPC.NET\Local.testsettings
 		PullDownConfig.bat = PullDownConfig.bat
 		QUICKSTART.md = QUICKSTART.md
 		README.md = README.md
-		JSON-RPC.NET\TraceAndTestImpact.testsettings = JSON-RPC.NET\TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalLib", "ExternalLib", "{1E6AD0D7-62BB-4132-8094-6C44476EB6D6}"
@@ -39,16 +31,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebControllerTests", "WebControllerTests\WebControllerTests.csproj", "{78F92D31-CA64-4CA8-9305-23B9484BB0E2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JSON-RPC.NET", "JSON-RPC.NET", "{6BE368EF-13AF-493C-9016-B457AE286472}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2577F777-6510-431B-85E7-51D0EF9E6A90}"
-	ProjectSection(SolutionItems) = preProject
-		JSON-RPC.NET\AustinHarris.JsonRpc.vsmdi = JSON-RPC.NET\AustinHarris.JsonRpc.vsmdi
-		JSON-RPC.NET\Local.testsettings = JSON-RPC.NET\Local.testsettings
-		PullDownConfig.bat = PullDownConfig.bat
-		QUICKSTART.md = QUICKSTART.md
-		README.md = README.md
-		JSON-RPC.NET\TraceAndTestImpact.testsettings = JSON-RPC.NET\TraceAndTestImpact.testsettings
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AustinHarris.JsonRpc", "JSON-RPC.NET\Json-Rpc\AustinHarris.JsonRpc.csproj", "{24FC1A2A-0BC3-43A7-9BFE-B628C2C4A307}"
 EndProject
@@ -262,7 +244,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C4A346A2-F4A2-49E6-81B8-B56C2632DF72} = {4CF8894A-26F4-444E-B3D6-038B853AE2F8}
-		{BBFBBA8A-2F75-422C-ACCD-D05A6EF7244C} = {6BE368EF-13AF-493C-9016-B457AE286472}
 		{4269C72A-8D3A-4737-8F89-72EAA33EA9E1} = {1E6AD0D7-62BB-4132-8094-6C44476EB6D6}
 		{78F92D31-CA64-4CA8-9305-23B9484BB0E2} = {4CF8894A-26F4-444E-B3D6-038B853AE2F8}
 		{24FC1A2A-0BC3-43A7-9BFE-B628C2C4A307} = {6BE368EF-13AF-493C-9016-B457AE286472}

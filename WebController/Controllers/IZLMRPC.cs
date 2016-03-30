@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using WebController.Models;
 using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
@@ -14,7 +15,7 @@ namespace WebController.Controllers
 		void StopZone(string zoneName, bool force);
 		void CreateZLM();
 		void DisposeProgramSets();
-		List<string> GetZoneNames();
+		List<ZoneJsonModel> GetZones();
 		//void RestartProgramSet(string programSetName, string programName, List<string> zoneNames, ISV isv);
 		void StopProgramSet(string programSetName);
 		void SetInputs(string zoneName, ISV isv);
@@ -23,7 +24,7 @@ namespace WebController.Controllers
 		void StartProgramSet(string programSetName);
 		void RecreateProgramSet(string programSetName, string programName, List<string> zoneNames, ISV isv);
 
-		void CreateProgramSet(string programSetName, string programName, IEnumerable<string> zoneNames, bool sync = true, ISV isv = null, dynamic startingParameters = null);
+		ProgramSetJsonModel CreateProgramSet(string programSetName, string programName, IEnumerable<string> zoneNames, bool sync = true, ISV isv = null, dynamic startingParameters = null);
 
 		//List<Zone> GetZones();
 		//List<Zone> GetAvailableZones();

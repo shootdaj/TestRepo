@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using WebController.Controllers;
 using WebController.IoC;
@@ -17,10 +18,10 @@ namespace WebController.Models
 		{
 			ZLMRPC = zlmrpc;
 
-			var zones = ZLMRPC.GetZoneNames();
+			var zones = ZLMRPC.GetZones();
 
 			if (zones != null)
-				AvailableZones = new SelectList(zones);
+				AvailableZones = new SelectList(zones.Select(x => x.Name));
 		}
 
 		public IZLM ZLM => Container.ZLM;

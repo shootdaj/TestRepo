@@ -21,7 +21,7 @@ namespace ZoneLightingTests.Resources.Programs
 		{
 			AddInput<int>("Speed", speed => Speed = (int)speed);
 			AddInput<int>("DelayTime", delayTime => DelayTime = (int)delayTime);
-			AddMappedInput<int>(this, "SyncLevel");
+			AddMappedInput<SyncLevel>(this, "SyncLevel");
 		}
 
 		public override void Loop()

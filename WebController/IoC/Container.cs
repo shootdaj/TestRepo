@@ -1,20 +1,29 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
+using AutoMapper;
 using Refigure;
 using WebController.Controllers;
+using WebController.Models;
 using ZoneLighting;
 using ZoneLighting.Usables;
+using ZoneLighting.ZoneNS;
+using ZoneLighting.ZoneProgramNS;
 
 namespace WebController.IoC
 {
 	public class Container
 	{
-		public static IZLM ZLM { get; set; }
+		public static IZLM ZLM { get; private set; }
 
-		public static IZLMRPC ZLMRPC { get; set; }
+		public static IZLMRPC ZLMRPC { get; private set; }
+
+		public static MapperConfiguration MapperConfiguration { get; private set; }
+
+		public static IMapper AutoMapper { get; private set; }
 
 		public static void CreateZLM()
-		{	
+		{
 			bool firstRun;
 			if (!bool.TryParse(Config.Get("FirstRun"), out firstRun))
 				firstRun = true;
@@ -25,10 +34,10 @@ namespace WebController.IoC
 
 			//get initAction from config
 			Action<ZLM> initAction = null;
-			if (typeof (RunnerHelpers).GetMethods().Select(method => method.Name).Contains(Config.Get("InitAction")))
+			if (typeof(RunnerHelpers).GetMethods().Select(method => method.Name).Contains(Config.Get("InitAction")))
 			{
-				var initActionInfo = typeof (RunnerHelpers).GetMethods().First(method => method.Name == Config.Get("InitAction"));
-				initAction = (Action<ZLM>) Delegate.CreateDelegate(typeof (Action<ZLM>), initActionInfo);
+				var initActionInfo = typeof(RunnerHelpers).GetMethods().First(method => method.Name == Config.Get("InitAction"));
+				initAction = (Action<ZLM>)Delegate.CreateDelegate(typeof(Action<ZLM>), initActionInfo);
 			}
 
 			ZLM = new ZLM(loadZonesFromConfig: !firstRun,
@@ -42,6 +51,17 @@ namespace WebController.IoC
 				throw new Exception("Create ZLM first.");
 
 			ZLMRPC = new ZLMRPC(ZLM);
+		}
+
+		public static void CreateAutomapConfig()
+		{
+			MapperConfiguration = new MapperConfiguration(cfg =>
+				{
+					cfg.CreateMap<Zone, ZoneJsonModel>();
+					cfg.CreateMap<ProgramSet, ProgramSetJsonModel>();
+				});
+			MapperConfiguration.AssertConfigurationIsValid();
+			AutoMapper = MapperConfiguration.CreateMapper();
 		}
 	}
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using WebController.IoC;
 using ZoneLighting.ZoneNS;
 
 namespace WebController.Extensions
@@ -34,6 +35,12 @@ namespace WebController.Extensions
 		public static SelectList ToSelectList(this IEnumerable<string> enumerable)
 		{
 			return new SelectList(enumerable);
+		}
+
+		public static TDestination ToJsonModel<TSource, TDestination>(this TSource input)
+		{
+			var output = Container.AutoMapper.Map<TSource, TDestination>(input);
+			return output;
 		}
 	}
 }
