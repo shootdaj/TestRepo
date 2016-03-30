@@ -28,7 +28,7 @@ namespace ZoneLighting.StockPrograms
 		{
 			AddMappedInput<int>(this, "Speed", i => i.IsInRange(1, 100));
 			AddMappedInput<int>(this, "DelayTime", i => i.IsInRange(1, 100));
-			AddMappedInput<int>(this, "SyncLevel");
+			AddMappedInput<SyncLevel>(this, "SyncLevel");
 		}
 
 		public override void Loop()

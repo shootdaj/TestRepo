@@ -6,11 +6,11 @@
     using System.Reflection;
     using AustinHarris.JsonRpc;
 
-    public abstract class JsonRpcService
+    public abstract class JsonRpcService : IDisposable
     {
         protected JsonRpcService()
         {
-            buildService(Handler.DefaultSessionId());
+			buildService(Handler.DefaultSessionId());
         }
 
         protected JsonRpcService(string sessionID)
@@ -61,5 +61,10 @@
                 }
             }
         }
+
+	    public void Dispose()
+	    {
+		    Handler.DestroySession(Handler.DefaultSessionId());
+	    }
     }
 }

@@ -328,7 +328,7 @@ namespace ZoneLighting.ZoneNS
 		{
 			if (Running)
 			{
-				ZoneProgram.Dispose(force);
+				ZoneProgram?.Dispose(force);
 				UnsetProgram();
 				UnsetupInterruptProcessing();
 				DisposeAllInterruptingPrograms();

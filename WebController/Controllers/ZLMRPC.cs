@@ -5,7 +5,9 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using AustinHarris.JsonRpc;
+using WebController.Extensions;
 using WebController.IoC;
+using WebController.Models;
 using ZoneLighting;
 using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
@@ -16,7 +18,7 @@ namespace WebController.Controllers
 	/// <summary>
 	/// Encapsulates an RPC-style controller implementation for ZLM.
 	/// </summary>
-	public class ZLMRPC : JsonRpcService, IZLMRPC
+	public class ZLMRPC : JsonRpcService, IZLMRPC, IDisposable
 	{
 		#region Internals
 
@@ -28,6 +30,7 @@ namespace WebController.Controllers
 		private void Construct(IZLM zlm)
 		{
 			ZLM = zlm;
+			Container.CreateAutomapConfig();
 		}
 
 		private IZLM ZLM { get; set; }
@@ -60,9 +63,9 @@ namespace WebController.Controllers
 		/// <param name="channel">The channel.</param>
 		/// <returns>The instance of the zone that was added.</returns>
 		[JsonRpcMethod]
-		public Zone AddFadeCandyZone(string name, PixelType pixelType, int numberOfLights, byte? channel)
+		public ZoneJsonModel AddFadeCandyZone(string name, PixelType pixelType, int numberOfLights, byte? channel)
 		{
-			return ZLM.AddFadeCandyZone(name, pixelType, numberOfLights, channel);
+			return ZLM.AddFadeCandyZone(name, pixelType, numberOfLights, channel).ToJsonModel<Zone, ZoneJsonModel>();
 		}
 
 		/// <summary>
@@ -109,10 +112,20 @@ namespace WebController.Controllers
 		#region Program Set
 
 		[JsonRpcMethod]
-		public void CreateProgramSet(string programSetName, string programName, IEnumerable<string> zoneNames, bool sync = true,
+		public ProgramSetJsonModel CreateProgramSet(string programSetName, string programName, IEnumerable<string> zoneNames, bool sync = true,
 			ISV isv = null, dynamic startingParameters = null)
 		{
-			ZLMAction(zlm => zlm.CreateProgramSet(programSetName, programName, zoneNames, sync, isv, startingParameters));
+			var model = new ProgramSetJsonModel();
+			ProgramSet programSet = null;
+
+			ZLMAction(
+				zlm =>
+					programSet =
+						zlm.CreateProgramSet(programSetName, programName, zoneNames, sync, isv, startingParameters)
+				);
+
+			model = programSet.ToJsonModel<ProgramSet, ProgramSetJsonModel>();
+			return model;
 		}
 
 		[JsonRpcMethod]
@@ -174,9 +187,10 @@ namespace WebController.Controllers
 		}
 
 		[JsonRpcMethod]
-		public List<string> GetZoneNames()
+		public List<ZoneJsonModel> GetZones()
 		{
-			return ZLM.Zones.Select(zone => zone.Name).ToList();
+			//return ZLM.Zones.Select(zone => zone.Name).ToList();
+			return ZLM.Zones.Select(zone => zone.ToJsonModel<Zone, ZoneJsonModel>()).ToList();
 		}
 
 		//[JsonRpcMethod]
@@ -287,5 +301,12 @@ namespace WebController.Controllers
 		//}
 		
 		#endregion
+
+		
+		public void Dispose()
+		{
+			ZLM.Dispose();
+			base.Dispose();
+		}
 	}
 }
