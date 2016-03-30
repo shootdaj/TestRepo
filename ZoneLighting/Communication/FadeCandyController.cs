@@ -4,10 +4,8 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using Refigure;
 using WebSocketSharp;
-using ZoneLighting.Usables;
 
 namespace ZoneLighting.Communication
 {
@@ -118,10 +116,10 @@ namespace ZoneLighting.Communication
 			//		//do something with returned data from the fcserver process? log it? --> procOut += e1.Data + Environment.NewLine;
 			//	}
 			//};
-			FadeCandyServerProcess.Start();
+			FCServerRunning = FadeCandyServerProcess.Start();
 			//FadeCandyServerProcess.BeginOutputReadLine();
 
-			FCServerRunning = true;
+			//FCServerRunning = true;
 		}
 
 		/// <summary>
