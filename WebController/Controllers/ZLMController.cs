@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Web.Mvc;
 using WebController.IoC;
 using WebController.Models;
-using ZoneLighting;
 using ZoneLighting.ZoneProgramNS;
 
 namespace WebController.Controllers
@@ -18,8 +16,6 @@ namespace WebController.Controllers
 		}
 
 		public IZLMRPC ZLMRPC { get; set; }
-
-		public static IZLM ZLM => Container.ZLM;
 
 		private ActionResult ReturnZLMView(string viewName = null)
 		{
