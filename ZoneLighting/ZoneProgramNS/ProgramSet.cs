@@ -163,9 +163,9 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			Name = null;
 			if (Zones != null)
-				ZonePrograms.Parallelize(zp => zp.Stop(force));
-			ZonePrograms.ForEach(zoneProgram => zoneProgram.Dispose());
-			Zones?.ForEach(zone => zone.UnsetProgram());
+				ZonePrograms.Parallelize(zp => zp?.Stop(force));
+			ZonePrograms?.ForEach(zoneProgram => zoneProgram?.Dispose());
+			Zones?.ForEach(zone => zone?.UnsetProgram());
 			Zones = null;
 			ProgramName = null;
 			SyncContext?.Dispose();

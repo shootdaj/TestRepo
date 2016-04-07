@@ -18,7 +18,7 @@ namespace WebController.Controllers
 		List<ZoneJsonModel> GetZones();
 		//void RestartProgramSet(string programSetName, string programName, List<string> zoneNames, ISV isv);
 		void StopProgramSet(string programSetName);
-		void SetInputs(string zoneName, ISV isv);
+		void SetZoneInputs(string zoneName, ISV isv);
 		string GetZoneSummary();
 		void SetProgramSetInputs(string programSetName, ISV isv);
 		void StartProgramSet(string programSetName);
@@ -31,6 +31,17 @@ namespace WebController.Controllers
 		void DisposeProgramSet(string programSetName);
 		string GetStatus();
 		void RecreateProgramSetWithoutZone(string programSetName, string zoneName, bool force = false);
-		void SetColor(string zoneName, string color, int index, double? brightness = 1);
+
+		/// <summary>
+		/// Sets the color of a single light on a zone.
+		/// </summary>
+		/// <param name="zoneName">Name of the zone.</param>
+		/// <param name="color">The color.</param>
+		/// <param name="index">The index of the light.</param>
+		/// <param name="brightness">The brightness.</param>
+		void SetLightColor(string zoneName, string color, int index, float brightness = 1);
+
+		void SetAllZonesColor(string color, float brightness = 1);
+
 	}
 }

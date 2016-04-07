@@ -69,7 +69,8 @@ namespace WebController.Controllers
 		}
 
 		/// <summary>
-		/// Creates a ZoneLightingManager.
+		/// Creates a ZoneLightingManager. This method is intended to be used on re-creations rather than the initial create.
+		/// For initial creation of ZLM, use Container.CreateZLM().
 		/// </summary>
 		[JsonRpcMethod]
 		public void CreateZLM()
@@ -205,9 +206,9 @@ namespace WebController.Controllers
 		//}
 
 		[JsonRpcMethod]
-		public void SetInputs(string zoneName, ISV isv)
+		public void SetZoneInputs(string zoneName, ISV isv)
 		{
-			ZLM.SetInputs(zoneName, isv);
+			ZLM.SetZoneInputs(zoneName, isv);
 		}
 
 		[JsonRpcMethod]
@@ -217,9 +218,15 @@ namespace WebController.Controllers
 		}
 
 		[JsonRpcMethod]
-		public void SetColor(string zoneName, string color, int index, double? brightness = 1)
+		public void SetLightColor(string zoneName, string color, int index, float brightness = 1)
 		{
-			ZLM.SetColor(zoneName, color, index, brightness);
+			ZLM.SetLightColor(zoneName, color, index, brightness);
+		}
+
+		[JsonRpcMethod]
+		public void SetAllZonesColor(string color, float brightness = 1)
+		{
+			ZLM.SetAllZonesColor(color, brightness);
 		}
 
 		[JsonRpcMethod]
@@ -299,7 +306,7 @@ namespace WebController.Controllers
 		
 		public void Dispose()
 		{
-			ZLM.Dispose();
+			ZLM?.Dispose();
 			base.Dispose();
 		}
 	}

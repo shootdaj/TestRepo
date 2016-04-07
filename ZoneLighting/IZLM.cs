@@ -50,7 +50,7 @@ namespace ZoneLighting
 		void RecreateProgramSet(string programSetName, string programName, List<string> zoneNames, ISV isv);
 		void DisposeProgramSets(List<string> programSetNames = null, bool force = false);
 		void StopZone(string zoneName, bool force);
-		void SetInputs(string zoneName, ISV isv);
+		void SetZoneInputs(string zoneName, ISV isv);
 		void SetZoneColor(string zoneName, string color, float brightness);
 		string GetZoneSummary();
 		void StopZones();
@@ -70,6 +70,8 @@ namespace ZoneLighting
 		/// </summary>
 		void RecreateProgramSetWithoutZone(string programSetName, string zoneName, bool force = false);
 
-		void SetColor(string zoneName, string color, int index, double? brightness = 1);
+		void SetLightColor(string zoneName, string color, int index, float brightness = 1);
+
+		void SetAllZonesColor(string color, float brightness = 1);
 	}
 }

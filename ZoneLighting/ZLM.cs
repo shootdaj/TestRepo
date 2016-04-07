@@ -99,16 +99,16 @@ namespace ZoneLighting
 		{
 			if (programSetNames == null || !programSetNames.Any())
 			{
-				ProgramSets.ForEach(programSet => programSet.Dispose(force));
-				ProgramSets.Clear();
+				ProgramSets?.ForEach(programSet => programSet?.Dispose(force));
+				ProgramSets?.Clear();
 			}
 			else
 			{
-				var programSetsToDispose = ProgramSets.Where(programSet => programSetNames.Contains(programSet.Name)).ToList();
-				programSetsToDispose.ForEach(programSet =>
+				var programSetsToDispose = ProgramSets?.Where(programSet => programSetNames.Contains(programSet.Name)).ToList();
+				programSetsToDispose?.ForEach(programSet =>
 				{
-					ProgramSets.Remove(programSet);
-					programSet.Dispose(force);
+					ProgramSets?.Remove(programSet);
+					programSet?.Dispose(force);
 				});
 			}
 		}
@@ -148,7 +148,7 @@ namespace ZoneLighting
 			Zones.First(z => z.Name == zoneName).Stop(force);
 		}
 
-		public void SetInputs(string zoneName, ISV isv)
+		public void SetZoneInputs(string zoneName, ISV isv)
 		{
 			Zones[zoneName].ZoneProgram.SetInputs(isv);
 		}
@@ -159,10 +159,19 @@ namespace ZoneLighting
 			Zones[zoneName].SendLights(Zones[zoneName].LightingController);
 		}
 
-		public void SetColor(string zoneName, string color, int index, double? brightness = 1)
+		public void SetLightColor(string zoneName, string color, int index, float brightness = 1)
 		{
 			Zones[zoneName].SetColor(Color.FromName(color), index, brightness);
 			Zones[zoneName].SendLights(Zones[zoneName].LightingController);
+		}
+
+		public void SetAllZonesColor(string color, float brightness = 1)
+		{
+			Zones.ForEach(zone =>
+			{
+				zone.SetColor(Color.FromName(color).Darken(brightness));
+				zone.SendLights(zone.LightingController);
+			});
 		}
 
 		public string GetZoneSummary()
@@ -322,13 +331,12 @@ namespace ZoneLighting
 			UninitZoneScaffolder();
 			ExternalZoneContainer?.Dispose();
 			ExternalZoneContainer = null;
-
 		}
 
 		public void DisposeZones()
 		{
-			Zones.Parallelize(zone => zone.Dispose());
-			Zones.Clear();
+			Zones?.Parallelize(zone => zone?.Dispose());
+			Zones?.Clear();
 		}
 
 		#endregion
