@@ -123,10 +123,10 @@ namespace ZoneLighting.ZoneProgramNS
 				//set starting values
 				SetStartingValues(isv);
 
-				//if sync or synccontext is null
+				//if sync, or if synccontext is not null
 				if (sync || syncContext != null)
 				{
-					//if synccontext is null
+					//if synccontext is not null
 					if (syncContext != null)
 					{
 						//sync with provided synccontext
@@ -139,13 +139,12 @@ namespace ZoneLighting.ZoneProgramNS
 						if (SyncContext == null)
 							throw new Exception("If Start is called with LiveSync, either a Sync Context must be passed in with it or one must be set before calling Start.");
 
-						//otherwise, sync with provided synccontext
+						//otherwise, sync with existing synccontext
 						SyncContext.Sync(this);
 					}
 				}
 				else
 				{
-
 					//subclass processing - passing in starting parameters
 					StartCore(startingParameters); //isSyncRequested);
 
@@ -347,7 +346,7 @@ namespace ZoneLighting.ZoneProgramNS
 		}
 
 		/// <summary>
-		/// Adds an input as a direct map to a member of the subclass. This essentially extends a property in 
+		/// Adds a live input as a direct map to a member of the subclass. This essentially extends a property in 
 		/// the subclass as an input, which can be set to any value by the user.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -374,7 +373,14 @@ namespace ZoneLighting.ZoneProgramNS
 				});
 			else
 			{
-				input.Subscribe(incomingValue => propertyInfo.SetValue(instance, ConvertIncomingValue<T>(incomingValue)));
+				input.Subscribe(incomingValue =>
+				{
+					if (propertyInfo.CanWrite)
+						propertyInfo.SetValue(instance, ConvertIncomingValue<T>(incomingValue));
+					else
+						throw new InvalidOperationException(
+							$"Input {input.Name} has an underlying property without an accessible setter. Cannot set value for this property.");
+				});
 			}
 
 			//set value of input to the value of the property

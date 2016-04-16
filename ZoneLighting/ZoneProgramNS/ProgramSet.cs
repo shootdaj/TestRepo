@@ -39,6 +39,9 @@ namespace ZoneLighting.ZoneProgramNS
         [DataMember]
 	    public bool Sync { get; private set; }
 
+		[DataMember]
+		public dynamic StartingParameters { get; private set; }
+
 		/// <summary>
 		/// For testing only
 		/// </summary>
@@ -80,6 +83,7 @@ namespace ZoneLighting.ZoneProgramNS
 			Zones = zonesListed.ToList();
 			ProgramName = programName;
 		    Sync = sync;
+			StartingParameters = startingParameters;
 
 			if (Sync)
 			{
@@ -135,12 +139,12 @@ namespace ZoneLighting.ZoneProgramNS
 			zone.Run(program, isv);
 		}
 
-		public void Start()
+		public void Start(dynamic startingParameters = null)
 		{
 			if (SyncContext == null)
-				ZonePrograms.ForEach(zp => zp.Start());
+				ZonePrograms.ForEach(zp => zp.Start(startingParameters: startingParameters ?? StartingParameters));
 			else
-				SyncContext.Sync(ZonePrograms);
+				SyncContext.Sync(ZonePrograms, startingParameters: startingParameters);
 		}
 
 		public void Stop(bool force = false)

@@ -10,6 +10,8 @@ namespace ZoneLighting.StockPrograms
 	[ExportMetadata("Name", "BlinkColorReactive")]
 	public class BlinkColorReactive : ReactiveZoneProgram
 	{
+		private double Brightness { get; set; } = 1;
+
 		protected override void SetupInterruptingInputs()
 		{
 			AddInterruptingInput<Color>("Blink", parametersObject =>
@@ -18,13 +20,14 @@ namespace ZoneLighting.StockPrograms
 				Color color = parameters.Color;
 				int time = parameters.Time;
 				bool soft = parameters.Soft;
+				double brightness = parameters.Brightness ?? Brightness;
 
 				if (soft)
 				{
 					ProgramCommon.SoftBlink(new List<Tuple<Color, int>>
 					{
 						{color, time},
-					}, OutputColor, SyncContext, null, ForceStoppable);
+					}, OutputColor, SyncContext, true, null, ForceStoppable, brightness);
 				}
 				else
 				{

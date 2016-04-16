@@ -6,7 +6,7 @@
 
 		function setColor(zoneName, color, brightness) {
 			var url = '@Url.Action("SetZoneColor", "ZLM")' + "?zoneName=" + zoneName + "&color=" + color + "&brightness=" + brightness;
-			$.get(url, null, function (data) {
+			$.post(url, null, function (data) {
 				$("#result").html(data);
 			});
 		}

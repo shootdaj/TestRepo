@@ -9,7 +9,7 @@ namespace WebController.Controllers
 	public interface IZLMRPC
 	{
 		void DisposeZLM();
-		void Notify(string colorString, int? time, int? cycles);
+		void Notify(string colorString, int? time, int? cycles, double? brightness);
 		void Save();
 		void SetZoneColor(string zoneName, string color, float brightness = 1);
 		void StopZone(string zoneName, bool force);

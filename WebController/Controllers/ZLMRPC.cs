@@ -247,7 +247,7 @@ namespace WebController.Controllers
 		#region Misc
 
 		[JsonRpcMethod]
-		public void Notify(string colorString, int? time, int? cycles)
+		public void Notify(string colorString, int? time, int? cycles, double? brightness)
 		{
 			var color = Color.FromName(colorString);
 			if (color.IsKnownColor)
@@ -256,6 +256,7 @@ namespace WebController.Controllers
 				parameters.Color = color;
 				parameters.Time = time;
 				parameters.Soft = true;
+				parameters.Brightness = brightness;
 
 				for (int i = 0; i < cycles; i++)
 				{

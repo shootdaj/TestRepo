@@ -6,42 +6,49 @@ using ZoneLighting.ZoneProgramNS;
 
 namespace ExternalPrograms
 {
-	/// <summary>
-	/// Outputs a static color to the zone.
-	/// </summary>
 	[Export(typeof(ZoneProgram))]
 	[ExportMetadata("Name", "BlinkColorReactive")]
 	public class BlinkColorReactive : ReactiveZoneProgram
 	{
+		private double Brightness { get; set; } = 1;
+
 		protected override void SetupInterruptingInputs()
 		{
-			AddInterruptingInput<Color>("Blink", colorTimeTuple =>
+			AddInterruptingInput<Color>("Blink", parametersObject =>
 			{
-				var color = ((Tuple<Color, int>)colorTimeTuple).Item1;
-				var time = ((Tuple<Color, int>)colorTimeTuple).Item2;
+				dynamic parameters = parametersObject;
+				Color color = parameters.Color;
+				int time = parameters.Time;
+				bool soft = parameters.Soft;
+				double brightness = parameters.Brightness ?? Brightness;
 
-				////if sync is requested, go into synchronizable state
-				//if (IsSyncStateRequested)
-				//{
-				//	IsSynchronizable.Fire(this, null);
-				//	WaitForSync.WaitForFire();
-				//	IsSyncStateRequested = false;
-				//}
-
-				ProgramCommon.Blink(new List<Tuple<Color, int>>
+				if (soft)
 				{
-					{ color, time},
-					{ Color.Empty, time}
-				}, (colorToSet) =>
+					ProgramCommon.SoftBlink(new List<Tuple<Color, int>>
+					{
+						{color, time},
+					}, OutputColor, SyncContext, true, null, ForceStoppable, brightness);
+				}
+				else
 				{
-					SendColor(colorToSet);
-				}, SyncContext);
+					ProgramCommon.Blink(new List<Tuple<Color, int>>
+					{
+						{color, time},
+						{Color.Empty, time}
+					}, OutputColor, SyncContext);
+				}
 			});
 		}
 
+		private void OutputColor(Color colorToSet)
+		{
+			SendColor(colorToSet);
+		}
+
+
 		protected override void StopCore(bool force)
 		{
-			RemoveInput("Color");
+			RemoveInput("Blink");
 		}
 	}
 }

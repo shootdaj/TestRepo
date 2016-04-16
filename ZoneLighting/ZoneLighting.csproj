@@ -33,6 +33,10 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Anshul.Utilities, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Anshul.Utilities.1.0.8.0\lib\net45\Anshul.Utilities.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="AustinHarris.JsonRpc, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AustinHarris.JsonRpc.1.0.4.29\lib\net40\AustinHarris.JsonRpc.dll</HintPath>
       <Private>True</Private>
@@ -183,6 +187,7 @@
     <Compile Include="ZoneProgramNS\ZoneProgram.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Doc\ZoneLightingClasses.cd" />
     <None Include="FadeCandy\basement.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

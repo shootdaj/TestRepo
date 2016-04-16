@@ -12,7 +12,7 @@ using ZoneLighting.ZoneProgramNS;
 
 namespace WebController.IoC
 {
-	public class Container
+	public static class Container
 	{
 		public static IZLM ZLM { get; private set; }
 

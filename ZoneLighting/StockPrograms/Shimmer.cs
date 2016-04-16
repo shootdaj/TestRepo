@@ -43,7 +43,7 @@ namespace ZoneLighting.StockPrograms
 
 		ColorScheme ColorScheme { get; set; } = null;
 
-		private Random RandomGen { get; } = new Random();
+		//private Random RandomGen { get; } = new Random();
 
 		private MIDIDevice MidiInput { get; set; }
 
@@ -58,8 +58,8 @@ namespace ZoneLighting.StockPrograms
 			AddMappedInput<bool>(this, "Random");
 			AddMappedInput<ColorScheme>(this, "ColorScheme");
 			AddMappedInput<bool>(this, "Sparkle");
-			AddMappedInput<int>(this, "SparkleHigh", i => i.IsInRange(0, LightCount) && i > SparkleLow);
-			AddMappedInput<int>(this, "SparkleLow", i => i.IsInRange(0, LightCount) && i < SparkleHigh);
+			AddMappedInput<int>(this, "SparkleHigh", i => i.IsInRange(0, Zone == null ? int.MaxValue : LightCount) && i > SparkleLow);
+			AddMappedInput<int>(this, "SparkleLow", i => i.IsInRange(0, Zone == null ? int.MaxValue : LightCount) && i < SparkleHigh);
 			AddMappedInput<int>(this, "SparkleIntensity", i => i.IsInRange(0, 100));
 		}
 
@@ -83,16 +83,49 @@ namespace ZoneLighting.StockPrograms
 		protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
 		{
 			MidiInput = MIDIManager.GetDevice(parameters?.DeviceID);
-			MidiInput.AddChannelMessageAction((Action));
+			MidiInput.AddChannelMessageAction(XAxisMaxFadeDelayControl);
 			MidiInput.StartRecording();
 
 			base.StartCore(null, forceStoppable);
 		}
 
-		private void Action(object sender, ChannelMessageEventArgs args)
+		private void XAxisMaxFadeDelayControl(object sender, ChannelMessageEventArgs args)
 		{
-			//do stuff
+			if (args.Message.Data1 == (int)NumarkOrbitMidiNote.K1_XAxis)
+			{
+				var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 1, 99);
+				//Debug.Print(scaledValue.ToString());
+				MaxFadeDelay = scaledValue;
+				//SetInput("MaxFadeDelay", scaledValue);
+			}
+			else if (args.Message.Data1 == (int)NumarkOrbitMidiNote.K1_YAxis)
+			{
+				var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
+				SetInput("Density", scaledValue);
+			}
+			else if (args.Message.Data1 == (int)NumarkOrbitMidiNote.K1_BigKnob)
+			{
+				var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
+				SetInput("Brightness", scaledValue);
+			}
+			else if (args.Message.Data1 == (int)NumarkOrbitMidiNote.K1_A1)
+			{
+				SetInput("ColorScheme", ColorScheme.All);
+			}
+			else if (args.Message.Data1 == (int)NumarkOrbitMidiNote.K1_A2)
+			{
+				SetInput("ColorScheme", ColorScheme.Primaries);
+			}
+			else if (args.Message.Data1 == (int)NumarkOrbitMidiNote.K1_A3)
+			{
+				SetInput("ColorScheme", ColorScheme.Secondaries);
+			}
+			else if (args.Message.Data1 == (int)NumarkOrbitMidiNote.K1_A4)
+			{
+				SetInput("ColorScheme", ColorScheme.Reds);
+			}
 		}
+
 
 		public override void Loop()
 		{
@@ -106,6 +139,10 @@ namespace ZoneLighting.StockPrograms
 						Tasks[i].Start();
 					}
 				}
+			}
+			else
+			{
+
 			}
 
 			SendColors(ColorsToSend);
@@ -166,6 +203,29 @@ namespace ZoneLighting.StockPrograms
 
 			if (ShimmerCTS.IsCancellationRequested)
 				return;
+		}
+
+		public enum NumarkOrbitMidiNote
+		{
+			K1_BigKnob = 0x1,
+			K1_XAxis = 0x9,
+			K1_YAxis = 0x10,
+			K1_A1 = 0x24,
+			K1_A2 = 0x25,
+			K1_A3 = 0x26,
+			K1_A4 = 0x27,
+			K1_B1 = 0x28,
+			K1_B2 = 0x29,
+			K1_B3 = 0x30,
+			K1_B4 = 0x31,
+			K1_C1 = 0x32,
+			K1_C2 = 0x33,
+			K1_C3 = 0x34,
+			K1_C4 = 0x35,
+			K1_D1 = 0x36,
+			K1_D2 = 0x37,
+			K1_D3 = 0x38,
+			K1_D4 = 0x39,
 		}
 	}
 }

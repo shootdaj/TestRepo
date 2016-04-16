@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Anshul.Utilities, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Anshul.Utilities.1.0.8.0\lib\net45\Anshul.Utilities.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MIDIator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MIDIator.1.0.7\lib\net45\MIDIator.dll</HintPath>
       <Private>True</Private>
@@ -98,6 +102,7 @@
     <Compile Include="StepperInternalLoop.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

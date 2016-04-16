@@ -112,9 +112,9 @@ namespace WebController.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult Notify(string colorString, int? time = 60, int? cycles = 2)
+		public ActionResult Notify(string colorString, int? time = 60, int? cycles = 2, double? brightness = 1)
 		{
-			ZLMRPC.Notify(colorString, time, cycles);
+			ZLMRPC.Notify(colorString, time, cycles, brightness);
 			return ReturnZLMView("Index");
 		}
 

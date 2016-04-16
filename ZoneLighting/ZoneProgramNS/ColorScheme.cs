@@ -9,6 +9,8 @@ namespace ZoneLighting.ZoneProgramNS
 {
 	public class ColorScheme : List<Color>
 	{
+		public static ColorScheme All => new ColorScheme();
+
 		public static ColorScheme Primaries => new ColorScheme()
 		{
 			Color.Red,
@@ -26,6 +28,42 @@ namespace ZoneLighting.ZoneProgramNS
 			Color.Cyan,
 		};
 
+		public static ColorScheme Reds => new ColorScheme()
+		{
+			Color.Red,
+			Color.DarkRed,
+			Color.IndianRed,
+			Color.MediumVioletRed,
+			Color.OrangeRed,
+			Color.PaleVioletRed,
+			Color.PaleVioletRed,
+			Color.Crimson,
+			Color.DeepPink,
+			Color.HotPink,
+			Color.Coral,
+			Color.Firebrick,
+		};
+
+		public static ColorScheme Blues => new ColorScheme()
+		{
+			Color.Blue,
+			Color.Aqua,
+			Color.DarkBlue,
+			Color.CadetBlue,
+			Color.CornflowerBlue,
+			Color.Cyan,
+			Color.DarkCyan,
+			Color.DarkSlateBlue,
+			Color.DodgerBlue,
+			Color.SkyBlue,
+			Color.DeepSkyBlue,
+			Color.Teal,
+			Color.MediumBlue,
+			Color.DarkTurquoise,
+			Color.Navy,
+			Color.MidnightBlue
+		};
+
 		public static Color GetRandomPrimarySchemeColor()
 		{
 			return GetRandomSchemeColor(Primaries);
@@ -33,7 +71,12 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public static Color GetRandomSchemeColor(ColorScheme colorScheme)
 		{
-			return colorScheme?.ElementAt(ProgramCommon.RandomIntBetween(0, colorScheme.Count)) ?? GetRandomColor();
+			if (colorScheme == null)
+				return GetRandomColor();
+			if (!colorScheme.Any())
+				return GetRandomColor();
+			else
+				return colorScheme.ElementAt(ProgramCommon.RandomIntBetween(0, colorScheme.Count));
 		}
 
 		public static Color GetRandomColor()

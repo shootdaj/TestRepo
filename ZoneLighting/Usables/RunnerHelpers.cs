@@ -111,6 +111,25 @@ namespace ZoneLighting.Usables
 			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);
 		}
 
+		public static void RunShimmerAndBlinkColorReactiveOnNeoMatrix(ZLM zlm)
+		{
+			var isv = new ISV();
+			isv.Add("MaxFadeSpeed", 1);
+			isv.Add("MaxFadeDelay", 20);
+			isv.Add("Density", 1.0);
+			isv.Add("Brightness", 0.3);
+			isv.Add("Random", true);
+			//isv.Add("ColorScheme", ColorScheme.Primaries);
+
+			dynamic startingParameters = new ExpandoObject();
+			startingParameters.DeviceID = int.Parse(Config.Get("MIDIDeviceID"));
+
+			var zone = CreateNeoMatrixZone(zlm);
+			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones, startingParameters);
+			zone.AddInterruptingProgram(new BlinkColorReactive());
+			zone.InterruptingPrograms[0].Start();
+		}
+
 		public static Zone CreateNeoMatrixZone(ZLM zlm)
 		{
 			var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix", PixelType.FadeCandyWS2812Pixel,

@@ -125,12 +125,14 @@ namespace ZoneLighting.ZoneProgramNS
 		}
 		
 		public static void SoftBlink(List<Tuple<Color, int>> colorsAndHoldTimes, Action<Color> outputMethod,
-			SyncContext syncContext = null, CancellationTokenSource cts = null, bool forceStoppable = true)
+			SyncContext syncContext = null, bool reverse = true, CancellationTokenSource cts = null, bool forceStoppable = true, double brightness = 1)
 		{
+			var speed = 1;
+
 			colorsAndHoldTimes.ForEach(tuple =>
 			{
 				Color? endingColor;
-				Fade(Color.Black, tuple.Item1, tuple.Item2, 1, false, outputMethod, out endingColor, syncContext, false, cts, forceStoppable);
+				Fade(Color.Black, tuple.Item1.Darken(brightness), speed, tuple.Item2, false, outputMethod, out endingColor, syncContext, reverse, cts, forceStoppable);
 				syncContext?.SignalAndWait();
 			});
 		}
@@ -155,10 +157,41 @@ namespace ZoneLighting.ZoneProgramNS
 		}
 
 		#endregion
-		private static Random Random { get; } = new Random();
+
 		public static int RandomIntBetween(int low, int high)
 		{
-			return Random.Next(low, high);
+			return RandomGen.Next(low, high);
+		}
+	}
+
+	public static class RandomGen
+	{
+		private static Random _global = new Random();
+		[ThreadStatic]
+		private static Random _local;
+
+		public static int Next(int maxValue)
+		{
+			Random inst = _local;
+			if (inst == null)
+			{
+				int seed;
+				lock (_global) seed = _global.Next();
+				_local = inst = new Random(seed);
+			}
+			return inst.Next(maxValue);
+		}
+
+		public static int Next(int minValue, int maxValue)
+		{
+			Random inst = _local;
+			if (inst == null)
+			{
+				int seed;
+				lock (_global) seed = _global.Next();
+				_local = inst = new Random(seed);
+			}
+			return inst.Next(minValue, maxValue);
 		}
 	}
 
