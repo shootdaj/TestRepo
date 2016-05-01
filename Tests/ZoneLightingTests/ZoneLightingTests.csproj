@@ -143,6 +143,9 @@
     <None Include="Resources\FadeCandy\fcserverConfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\FadeCandy\LivingRoom.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\FadeCandy\neomatrixOneZone.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

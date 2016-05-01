@@ -44,6 +44,19 @@ namespace ZoneLighting.ZoneProgramNS
 			Color.Firebrick,
 		};
 
+		public static ColorScheme RedsBluesGreens
+		{
+			get
+			{
+				var colorScheme = new ColorScheme();
+				colorScheme.AddRange(Reds);
+				colorScheme.AddRange(Blues);
+				colorScheme.AddRange(Greens);
+
+				return colorScheme;
+			}
+		}
+
 		public static ColorScheme Blues => new ColorScheme()
 		{
 			Color.Blue,
@@ -62,6 +75,25 @@ namespace ZoneLighting.ZoneProgramNS
 			Color.DarkTurquoise,
 			Color.Navy,
 			Color.MidnightBlue
+		};
+
+		public static ColorScheme Greens=> new ColorScheme()
+		{
+			Color.Green,
+			Color.GreenYellow,
+			Color.DarkGreen,
+			Color.DarkOliveGreen,
+			Color.Olive,
+			Color.DarkSeaGreen,
+			Color.ForestGreen,
+			Color.LawnGreen,
+			Color.LightGreen,
+			Color.LightSeaGreen,
+			Color.LimeGreen,
+			Color.MediumSeaGreen,
+			Color.MediumSpringGreen,
+			Color.PaleGreen,
+			Color.Chartreuse
 		};
 
 		public static Color GetRandomPrimarySchemeColor()

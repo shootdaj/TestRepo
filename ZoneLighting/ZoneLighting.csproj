@@ -209,6 +209,9 @@
     <None Include="FadeCandy\neomatrixFourZonesBase0.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="FadeCandy\LivingRoom.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="FadeCandy\neomatrixOneZoneBase0.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
