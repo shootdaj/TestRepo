@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Refigure;
 using ZoneLighting.TriggerDependencyNS;
 using ZoneLighting.ZoneNS;
 
@@ -35,12 +36,11 @@ namespace ZoneLighting.ZoneProgramNS
 		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
 		private object SyncStateRequestLock { get; } = new object();
 		protected virtual int MaxSyncTimeout { get; }
-
 		private bool Running { get; set; }
-
 		protected CancellationTokenSource LoopCTS;
 		private Task LoopingTask { get; set; }
 		private Thread RunProgramThread { get; set; }
+		protected int LoopWaitTime { get; set; } = 1;
 
 		protected void StartLoop()
 		{
@@ -113,6 +113,9 @@ namespace ZoneLighting.ZoneProgramNS
 							StopTrigger.Fire(this, null);
 							break;
 						}
+
+						//this makes the CPU consumption way lesser
+						Thread.Sleep(LoopWaitTime);
 					}
 				}
 				catch (ThreadAbortException ex)
