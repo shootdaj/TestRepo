@@ -65,8 +65,8 @@
       <HintPath>..\..\packages\NUnitTestAdapter.2.0.0\lib\NUnit.VisualStudio.TestAdapter.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Refigure, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Refigure.1.0.0.1\lib\net45\Refigure.dll</HintPath>
+    <Reference Include="Refigure, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Refigure.1.0.3.0\lib\net45\Refigure.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Sanford.Multimedia">
