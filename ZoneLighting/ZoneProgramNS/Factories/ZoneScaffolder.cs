@@ -135,12 +135,23 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 			get { return ZoneProgramFactories.Select(x => x.Metadata.Name); }
 		}
 
-		public Zone AddFadeCandyZone(BetterList<Zone> zones, string name, PixelType pixelType, int numberOfLights, byte? channel, double? brightness = null)
+		public FadeCandyZone AddFadeCandyZone(BetterList<Zone> zones, string name, PixelType pixelType, int numberOfLights, byte? channel, double? brightness = null)
 		{
 			//create new zone
 			var zone = new FadeCandyZone(FadeCandyController.Instance, name, brightness, (byte)channel);
+			
 			//add lights and add zone to collection
 			((FadeCandyZone)zones.Add(zone)).AddFadeCandyLights(pixelType, numberOfLights, (byte)channel);
+			return zone;
+		}
+
+		public FadeCandyZone AddFadeCandyZone(BetterList<Zone> zones, string name, PixelType pixelType, Dictionary<int,int> logicalPhysicalMapping, byte? channel, double? brightness = null)
+		{
+			//create new zone
+			var zone = new FadeCandyZone(FadeCandyController.Instance, name, brightness, (byte)channel);
+
+			//add lights and add zone to collection
+			((FadeCandyZone)zones.Add(zone)).AddFadeCandyLights(pixelType, logicalPhysicalMapping, (byte)channel);
 			return zone;
 		}
 
@@ -148,7 +159,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 
 		#region Macro API
 
-        public void CreateProgramSetsFromConfig()
+		public void CreateProgramSetsFromConfig()
         {
             
         }

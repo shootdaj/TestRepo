@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MIDIator;
 using Sanford.Multimedia.Midi;
+using ZoneLighting.StockPrograms.MIDI;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
@@ -83,60 +84,66 @@ namespace ZoneLighting.StockPrograms
 		protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
 		{
 			MidiInput = MIDIManager.GetDevice(parameters?.DeviceID);
-			MidiInput.AddChannelMessageAction(XAxisMaxFadeDelayControl);
+			MidiInput.AddChannelMessageAction(HandleMidi);
 			MidiInput.StartRecording();
 
 			base.StartCore(null, forceStoppable);
 		}
 
-		private void XAxisMaxFadeDelayControl(object sender, ChannelMessageEventArgs args)
+		private void HandleMidi(object sender, ChannelMessageEventArgs args)
 		{
-			switch (args.Message.Data1)
+			switch (args.Message.MidiChannel)
 			{
-				case (int)NumarkOrbitMidiNote.K1_XAxis:
+				case 0:
 					{
-						var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 1, 99);
-						//Debug.Print(scaledValue.ToString());
-						MaxFadeDelay = scaledValue;
-						//SetInput("MaxFadeDelay", scaledValue);
+						switch (args.Message.Data1)
+						{
+							case (int)NumarkOrbitMidiNote.XAxis:
+								{
+									var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 1, 99);
+									//Debug.Print(scaledValue.ToString());
+									MaxFadeDelay = scaledValue;
+									//SetInput("MaxFadeDelay", scaledValue);
+								}
+								break;
+							case (int)NumarkOrbitMidiNote.YAxis:
+								{
+									var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
+									SetInput("Density", scaledValue);
+								}
+								break;
+							case (int)NumarkOrbitMidiNote.K1_BigKnob:
+								{
+									var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
+									SetInput("Brightness", scaledValue);
+								}
+								break;
+							case (int)NumarkOrbitMidiNote.A1:
+								SetInput("ColorScheme", ColorScheme.All);
+								break;
+							case (int)NumarkOrbitMidiNote.A2:
+								SetInput("ColorScheme", ColorScheme.Primaries);
+								break;
+							case (int)NumarkOrbitMidiNote.A3:
+								SetInput("ColorScheme", ColorScheme.Secondaries);
+								break;
+							case (int)NumarkOrbitMidiNote.B1:
+								SetInput("ColorScheme", ColorScheme.RedsBluesGreens);
+								break;
+							case (int)NumarkOrbitMidiNote.B2:
+								SetInput("ColorScheme", ColorScheme.Reds);
+								break;
+							case (int)NumarkOrbitMidiNote.B3:
+								SetInput("ColorScheme", ColorScheme.Blues);
+								break;
+							case (int)NumarkOrbitMidiNote.B4:
+								SetInput("ColorScheme", ColorScheme.Greens);
+								break;
+						}
 					}
-					break;
-				case (int)NumarkOrbitMidiNote.K1_YAxis:
-					{
-						var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
-						SetInput("Density", scaledValue);
-					}
-					break;
-				case (int)NumarkOrbitMidiNote.K1_BigKnob:
-					{
-						var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
-						SetInput("Brightness", scaledValue);
-					}
-					break;
-				case (int)NumarkOrbitMidiNote.K1_A1:
-					SetInput("ColorScheme", ColorScheme.All);
-					break;
-				case (int)NumarkOrbitMidiNote.K1_A2:
-					SetInput("ColorScheme", ColorScheme.Primaries);
-					break;
-				case (int)NumarkOrbitMidiNote.K1_A3:
-					SetInput("ColorScheme", ColorScheme.Secondaries);
-					break;
-				case (int)NumarkOrbitMidiNote.K1_B1:
-					SetInput("ColorScheme", ColorScheme.RedsBluesGreens);
-					break;
-				case (int)NumarkOrbitMidiNote.K1_B2:
-					SetInput("ColorScheme", ColorScheme.Reds);
-					break;
-				case (int)NumarkOrbitMidiNote.K1_B3:
-					SetInput("ColorScheme", ColorScheme.Blues);
-					break;
-				case (int)NumarkOrbitMidiNote.K1_B4:
-					SetInput("ColorScheme", ColorScheme.Greens);
 					break;
 			}
 		}
-
 
 		public override void Loop()
 		{
@@ -216,27 +223,6 @@ namespace ZoneLighting.StockPrograms
 				return;
 		}
 
-		public enum NumarkOrbitMidiNote
-		{
-			K1_BigKnob = 0x1,
-			K1_XAxis = 0x9,
-			K1_YAxis = 0xA,
-			K1_A1 = 0x24,
-			K1_A2 = 0x25,
-			K1_A3 = 0x26,
-			K1_A4 = 0x27,
-			K1_B1 = 0x28,
-			K1_B2 = 0x29,
-			K1_B3 = 0x2A,
-			K1_B4 = 0x2B,
-			K1_C1 = 0x2C,
-			K1_C2 = 0x2D,
-			K1_C3 = 0x2E,
-			K1_C4 = 0x2F,
-			K1_D1 = 0x30,
-			K1_D2 = 0x31,
-			K1_D3 = 0x32,
-			K1_D4 = 0x33,
-		}
+		
 	}
 }

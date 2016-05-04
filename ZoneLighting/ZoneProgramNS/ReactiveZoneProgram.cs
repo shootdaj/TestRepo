@@ -13,6 +13,7 @@ namespace ZoneLighting.ZoneProgramNS
 		[SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
 		protected ReactiveZoneProgram()
 		{
+			// ReSharper disable once VirtualMemberCallInConstructor
 			SetupInterruptingInputs();
 		}
 

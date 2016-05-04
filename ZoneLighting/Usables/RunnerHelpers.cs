@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using Refigure;
 using ZoneLighting.Communication;
@@ -11,6 +12,16 @@ namespace ZoneLighting.Usables
 {
 	public static class RunnerHelpers
 	{
+		public static Dictionary<int, int> LivingRoomLogicalPhysicalMapping = new Dictionary<int, int>
+		{
+			{0, 5},
+			{1, 3},
+			{2, 0},
+			{3, 2},
+			{4, 4},
+			{5, 1}
+		};
+
 		public static Action AddBasementZonesAndProgramsWithSyncAction(ZLM zlm)
 		{
 			return () =>
@@ -149,6 +160,15 @@ namespace ZoneLighting.Usables
 			//zone.InterruptingPrograms[0].Start();
 		}
 
+		public static void RunMidiPlayInLivingRoom(ZLM zlm)
+		{
+			dynamic startingParameters = new ExpandoObject();
+			startingParameters.DeviceID = int.Parse(Config.Get("MIDIDeviceID"));
+
+			var zone = CreateLivingRoomZone(zlm);
+			zlm.CreateProgramSet("MidiPlaySet", "LivingRoomMidiPlay", false, null, zlm.Zones, startingParameters);
+		}
+
 		public static Zone CreateNeoMatrixZone(ZLM zlm)
 		{
 			var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix", PixelType.FadeCandyWS2812Pixel,
@@ -159,10 +179,13 @@ namespace ZoneLighting.Usables
 
 		public static Zone CreateLivingRoomZone(ZLM zlm)
 		{
-			var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LivingRoom", PixelType.FadeCandyWS2812Pixel,
-				6, 1);
+			const byte fadeCandyChannel = 1;
+			const PixelType pixelType = PixelType.FadeCandyWS2812Pixel;
 
-			return neomatrix;
+			var livingRoom = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LivingRoom", pixelType, LivingRoomLogicalPhysicalMapping,
+				fadeCandyChannel);
+			
+			return livingRoom;
 		}
 
 		public static void RunRainbowOnNeoMatrix(ZLM zlm)

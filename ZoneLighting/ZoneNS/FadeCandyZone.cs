@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
 using ZoneLighting.Communication;
 
 namespace ZoneLighting.ZoneNS
@@ -25,6 +27,23 @@ namespace ZoneLighting.ZoneNS
 			{
 				AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i, pixelType: pixelType));
 			}
+		}
+
+		/// <summary>
+		/// Used to add FadeCandyLights using a given mapping. The mapping is a map from the logical index to the physical index.
+		/// So if your first light (the way Programs and Zones see it), is actually the fifth light connected to FadeCandy, the entry 
+		/// for that light would be (1,5).
+		/// </summary>
+		/// <param name="pixelType">PixelType.</param>
+		/// <param name="fcChannel">The FadeCandy channel on which these lights are connected.</param>
+		/// <param name="logicalPhysicalMapping">The logical-physical mapping.</param>
+		public void AddFadeCandyLights(PixelType pixelType, Dictionary<int, int> logicalPhysicalMapping, byte fcChannel)
+		{
+			logicalPhysicalMapping.Keys.ToList().ForEach(key =>
+			{
+				AddLight(new LED(logicalIndex: key, fadeCandyChannel: fcChannel, fadeCandyIndex: logicalPhysicalMapping[key],
+					pixelType: pixelType));
+			});
 		}
 
 		public byte? Channel { get; protected set; }
