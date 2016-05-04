@@ -271,3 +271,5 @@ WebController/ZoneConfiguration.json
 !WebController/Web.config
 !WebController/Views/Web.config
 !ExternalPrograms/app.config
+!WebControllerTests/Resources/FadeCandy/dfu-util.exe
+!WebControllerTests/Resources/FadeCandy/fcserver.exe
