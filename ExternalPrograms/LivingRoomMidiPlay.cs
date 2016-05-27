@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Dynamic;
 using System.Linq;
+using Anshul.Utilities;
 using MIDIator;
 using Sanford.Multimedia.Midi;
 using ZoneLighting.ZoneProgramNS;
@@ -34,13 +35,14 @@ namespace ExternalPrograms
 		{
 			var values = GetLightPositionAndColor(args);
 
-			if (args.Message.Data2 == 0)
+			if (args.Message.Command == ChannelCommand.NoteOff)
 			{
 				TurnOffLight(values.LightPosition);
 			}
-			else
+			else if (args.Message.Command == ChannelCommand.NoteOn)
 			{
-				TurnOnLight(values.LightPosition, values.LightColor);
+				var darkenFactor = Math.Scale(args.Message.Data2, 0.0, 127.0, 0.0, 1.0);
+				TurnOnLight(values.LightPosition, ((Color)(values.LightColor)).Darken(darkenFactor));
 			}
 		}
 

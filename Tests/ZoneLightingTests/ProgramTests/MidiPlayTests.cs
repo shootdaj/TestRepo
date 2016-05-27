@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Dynamic;
+using System.Threading;
 using NUnit.Framework;
 using Refigure;
 using ZoneLighting;
@@ -18,7 +19,9 @@ namespace ZoneLightingTests.ProgramTests
 			var zlm = new ZLM(false, false, false, zlmInner =>
 			{
 				var livingRoom = RunnerHelpers.CreateLivingRoomZone(zlmInner);
-				zlmInner.CreateSingularProgramSet("MidiPlaySet", new LivingRoomMidiPlay(), null, livingRoom);
+				dynamic startingParameters = new ExpandoObject();
+				startingParameters.DeviceID = int.Parse(Config.Get("MIDIDeviceID", "Please set the value of MIDIDeviceID in configuration."));
+				zlmInner.CreateSingularProgramSet("MidiPlaySet", new LivingRoomMidiPlay(), null, livingRoom, startingParameters);
 				
 			}, Config.Get("LivingRoomZone"));
 

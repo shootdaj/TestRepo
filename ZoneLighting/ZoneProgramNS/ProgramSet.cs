@@ -128,7 +128,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// <summary>
 		/// Creates a program set with a single program on a single zone.
 		/// </summary>
-		public ProgramSet(ZoneProgram program, Zone zone, ISV isv, string setName)
+		public ProgramSet(ZoneProgram program, Zone zone, ISV isv, string setName, dynamic startingParameters = null)
 		{
 			Name = setName;
 			ProgramName = program.Name;
@@ -136,7 +136,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 			zone.Stop(true);
 			//ZoneScaffolder.Instance.RunZone(zone, "", isv);
-			zone.Run(program, isv);
+			zone.Run(program, isv, startingParameters: startingParameters);
 		}
 
 		public void Start(dynamic startingParameters = null)
