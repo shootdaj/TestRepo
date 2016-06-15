@@ -2,7 +2,7 @@
 
 ## PROJECT SUMMARY
 
-ZoneLighting is a .NET application to create pixel-based lighting. It abstracts out the logical view of the lights in **zones**, each of which can run a **program**. Each zone has a **lighting controller**, which is an interface for lighting controllers such as the FadeCandy board or an Arduino. Programs can output any pattern of lights using a zone's lighting controller. Hardware support is currently limited to FadeCandy boards with WS2812 RGB LEDs, but the architecture is designed and intended for extensibility.
+ZoneLighting is a .NET application to create pixel-based lighting. It abstracts out the logical view of the lights in **zones**, each of which can run a **program**. Each zone has a **lighting controller**, which is an interface for lighting controllers such as the **FadeCandy** board or an **Arduino**. Programs can output any pattern of lights using a zone's lighting controller. Hardware support is currently limited to FadeCandy boards with WS2812 RGB LEDs, but the architecture is designed and intended for extensibility.
 
 
 * **ORIGINAL AUTHOR**: Anshul Vishwakarma
