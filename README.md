@@ -7,8 +7,8 @@ ZoneLighting is a .NET application to create pixel-based lighting. It abstracts 
 
 * **ORIGINAL AUTHOR**: Anshul Vishwakarma
 * **EMAIL**: shootdaj@gmail.com
-* **REQUIRED SOFTWARE**: Windows with .NET runtime installed (latest version - 4.5 as of writing). Requires C# 6.0 (Visual Studio 2015 Preview) to compile.
-* **REQUIRED HARDWARE**: Lighting Hardware such as FadeCandy with WS2812 strips or (currently unsupported) an Arduino-based LPD8806 RGB LED Strip
+* **REQUIRED SOFTWARE**: Windows with .NET runtime installed (latest version - 4.6.1 as of writing). Requires C# 6.0 (Visual Studio 2015) to build.
+* **REQUIRED HARDWARE**: Lighting hardware such as FadeCandy with WS2812 strips or (currently unsupported) an Arduino-based LPD8806 RGB LED Strip
 * **LICENSE**: MIT (See file *LICENSE*)
 
 
