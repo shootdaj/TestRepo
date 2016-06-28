@@ -113,15 +113,23 @@ namespace ZoneLighting.ZoneProgramNS
 		{
 			colorsAndHoldTimes.ForEach(tuple =>
 			{
-				if (tightness < 2)
-					syncContext?.SignalAndWait();
+				if (syncContext != null && tightness < 2)
+					syncContext.SignalAndWait();
 				outputMethod(tuple.Item1);
-				if (tightness == 2)
-					syncContext?.SignalAndWait();
+				if (syncContext != null && tightness == 2)
+					syncContext.SignalAndWait();
 				Delay(tuple.Item2);
-				if (tightness >= 3)
-					syncContext?.SignalAndWait();
+				if (syncContext != null && tightness >= 3)
+					syncContext.SignalAndWait();
 			});
+		}
+
+		public static void Blink(Color color, int ms, Action<Color> outputMethod)
+		{
+			var colorsAndHoldTimes = new List<Tuple<Color, int>>(); 
+			colorsAndHoldTimes.Add(new Tuple<Color, int>(color, ms));
+			colorsAndHoldTimes.Add(new Tuple<Color, int>(Color.Black, 1));
+			Blink(colorsAndHoldTimes, outputMethod);
 		}
 		
 		public static void SoftBlink(List<Tuple<Color, int>> colorsAndHoldTimes, Action<Color> outputMethod,
@@ -135,6 +143,13 @@ namespace ZoneLighting.ZoneProgramNS
 				Fade(Color.Black, tuple.Item1.Darken(brightness), speed, tuple.Item2, false, outputMethod, out endingColor, syncContext, reverse, cts, forceStoppable);
 				syncContext?.SignalAndWait();
 			});
+		}
+
+		public static void SoftBlink(Color color, int fadeSleepTime, Action<Color> outputMethod)
+		{
+			var colorsAndHoldTimes = new List<Tuple<Color, int>>();
+			colorsAndHoldTimes.Add(new Tuple<Color, int>(color, fadeSleepTime));
+			SoftBlink(colorsAndHoldTimes, outputMethod, reverse: true);
 		}
 
 		#endregion

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Refigure;
@@ -35,12 +36,12 @@ namespace ZoneLighting.ZoneProgramNS
 		public Trigger IsSynchronizable { get; set; } = new Trigger("LoopingZoneProgram.IsSynchronizable");
 		public Trigger WaitForSync { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
 		private object SyncStateRequestLock { get; } = new object();
-		protected virtual int MaxSyncTimeout { get; }
+		protected virtual int MaxSyncTimeout { get; }//TODO: wtf is this shit? to be used in syncing somehow? wtf man
 		private bool Running { get; set; }
 		protected CancellationTokenSource LoopCTS;
 		private Task LoopingTask { get; set; }
 		private Thread RunProgramThread { get; set; }
-		protected int LoopWaitTime { get; set; } = 5;
+		protected virtual int LoopWaitTime { get; set; } = 5;
 
 		protected void StartLoop()
 		{

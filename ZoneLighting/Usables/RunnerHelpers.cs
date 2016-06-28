@@ -169,6 +169,18 @@ namespace ZoneLighting.Usables
 			zlm.CreateProgramSet("MidiPlaySet", "LivingRoomMidiPlay", false, null, zlm.Zones, startingParameters);
 		}
 
+		public static void RunStopWatchBlinkInLivingRoom(ZLM zlm)
+		{
+			var zone = CreateLivingRoomZone(zlm);
+			zlm.CreateProgramSet("StopWatchBlinkSet", "StopWatchBlink", false, null, zlm.Zones);
+		}
+
+		public static void RunStopWatchBlinkOnNeoMatrix(ZLM zlm)
+		{
+			var zone = CreateNeoMatrixZone(zlm);
+			zlm.CreateProgramSet("StopWatchBlinkSet", "StopWatchBlink", false, null, zlm.Zones);
+		}
+
 		public static Zone CreateNeoMatrixZone(ZLM zlm)
 		{
 			var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix", PixelType.FadeCandyWS2812Pixel,

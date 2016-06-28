@@ -53,7 +53,7 @@ namespace ExternalPrograms
 		protected override void StopCore(bool force)
 		{
 			MidiInput.StopRecording();
-			MIDIManager.DisposeDevice(MidiInput);
+			MIDIManager.RemoveDevice(MidiInput);
 		}
 
 		public enum Axis

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -401,6 +402,17 @@ namespace ZoneLighting.ZoneProgramNS
 				if (incomingValue is string)
 					return Color.FromName(incomingValue);
 
+			if ((typeof(T) == typeof(ColorScheme)))
+				if (incomingValue is string)
+				{
+					if (typeof(ColorScheme).GetProperties().Any(p => p.Name == incomingValue))
+					{
+						var outgoingValue =
+							(T) typeof(ColorScheme).GetProperties().First(p => p.Name == incomingValue).GetValue(null, null);
+						return outgoingValue;
+					}
+				}
+
 			return (T)incomingValue;
 		}
 
@@ -454,6 +466,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public int LightCount => Zone.LightCount;
 		public Trigger WaitForAllPrograms { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
+		protected Stopwatch StopWatch { get; set; } = new Stopwatch();
 
 		/// <summary>
 		/// Gets the color of the light at the given index.
