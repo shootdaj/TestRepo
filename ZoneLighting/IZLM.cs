@@ -45,7 +45,7 @@ namespace ZoneLighting
 		/// <summary>
 		/// Creates a ProgramSet with one program instance
 		/// </summary>
-		ProgramSet CreateSingularProgramSet(string programSetName, ZoneProgram program, ISV isv, Zone zone);
+		ProgramSet CreateSingularProgramSet(string programSetName, ZoneProgram program, ISV isv, Zone zone, dynamic startingParameters = null);
 
 		void RecreateProgramSet(string programSetName, string programName, List<string> zoneNames, ISV isv);
 		void DisposeProgramSets(List<string> programSetNames = null, bool force = false);

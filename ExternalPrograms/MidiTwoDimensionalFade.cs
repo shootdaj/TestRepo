@@ -46,14 +46,14 @@ namespace ExternalPrograms
 			SendColor(Color.FromArgb(X, Y, 50));
 		}
 
-		protected override void SetupInterruptingInputs()
+		protected override void SetupInputs()
 		{
 		}
 
 		protected override void StopCore(bool force)
 		{
 			MidiInput.StopRecording();
-			MIDIManager.DisposeDevice(MidiInput);
+			MIDIManager.RemoveDevice(MidiInput);
 		}
 
 		public enum Axis

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MIDIator;
@@ -50,7 +52,9 @@ namespace ExternalPrograms
 
 		public override SyncLevel SyncLevel { get; set; } = SyncLevel.None;
 
-		public override void Setup()
+	    protected override int LoopWaitTime { get; set; } = 10;
+
+	    public override void Setup()
 		{
 			AddMappedInput<int>(this, "MaxFadeSpeed", i => i.IsInRange(1, 127));
 			AddMappedInput<int>(this, "MaxFadeDelay", i => i.IsInRange(0, 100));
@@ -83,11 +87,21 @@ namespace ExternalPrograms
 
 		protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
 		{
-			MidiInput = MIDIManager.GetDevice(parameters?.DeviceID);
-			MidiInput.AddChannelMessageAction(HandleMidi);
-			MidiInput.StartRecording();
+		    int deviceID = parameters?.DeviceID;
+			var freeDevices = MIDIManager.FreeDevices;
+		    var freeDeviceIDs = freeDevices.Select(x => x.DeviceID).ToList();
+			var isDeviceNull = parameters?.DeviceID == null;
 
-			base.StartCore(null, forceStoppable);
+			if (!isDeviceNull && freeDeviceIDs.Contains(deviceID))
+		    {
+                MidiInput = MIDIManager.GetDevice(parameters.DeviceID);
+		        MidiInput.AddChannelMessageAction(HandleMidi);
+		        MidiInput.StartRecording();
+		    }
+            else
+                throw new WarningException("Supplied MIDI Device ID is either in use or invalid.");
+
+		    base.StartCore(null, forceStoppable);
 		}
 
 		private void HandleMidi(object sender, ChannelMessageEventArgs args)

@@ -103,9 +103,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public static Color GetRandomSchemeColor(ColorScheme colorScheme)
 		{
-			if (colorScheme == null)
-				return GetRandomColor();
-			if (!colorScheme.Any())
+			if (!colorScheme.Any()) //this is for ColorScheme.All
 				return GetRandomColor();
 			else
 				return colorScheme.ElementAt(ProgramCommon.RandomIntBetween(0, colorScheme.Count));
@@ -114,6 +112,14 @@ namespace ZoneLighting.ZoneProgramNS
 		public static Color GetRandomColor()
 		{
 			return Color.FromArgb(ProgramCommon.RandomIntBetween(0, 255), ProgramCommon.RandomIntBetween(0, 255), ProgramCommon.RandomIntBetween(0, 255));
+		}
+	}
+
+	public static class ColorSchemeExtensions
+	{
+		public static Color GetRandomSchemeColor(this ColorScheme colorScheme)
+		{
+			return ColorScheme.GetRandomSchemeColor(colorScheme);
 		}
 	}
 }
