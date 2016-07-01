@@ -118,8 +118,12 @@ namespace ZoneLighting.Usables
 			isv.Add("Brightness", 0.3);
 			isv.Add("Random", true);
 			//isv.Add("ColorScheme", ColorScheme.Primaries);
+
+			dynamic startingParameters = new ExpandoObject();
+			startingParameters.DeviceID = int.Parse(Config.Get("MIDIDeviceID"));
+
 			CreateNeoMatrixZone(zlm);
-			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);
+			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones, startingParameters: startingParameters);
 		}
 
 		public static void RunShimmerAndBlinkColorReactiveOnNeoMatrix(ZLM zlm)
