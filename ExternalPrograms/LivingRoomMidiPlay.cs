@@ -109,7 +109,7 @@ namespace ExternalPrograms
 			SendColors(ColorsToSend);
 		}
 
-		protected override void SetupInterruptingInputs()
+		protected override void SetupInputs()
 		{
 
 		}

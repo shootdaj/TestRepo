@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -11,22 +12,24 @@ namespace ExternalPrograms
 {
 	[Export(typeof(ZoneProgram))]
 	[ExportMetadata("Name", "StopWatchBlink")]
-	public class StopWatchBlink : LoopingZoneProgram
+	public class StopWatchBlink : LoopingZoneProgram, IClock
 	{
-		private Color _color = Color.Red;
-		private ColorScheme _colorScheme = ColorScheme.All;
+	    private Color _color = Color.Red;
+	    private ColorScheme _colorScheme = ColorScheme.All;
 
-		private long ElapsedMS { get; set; }
+	    private long ElapsedMS { get; set; }
 
-		public int Period { get; set; } = 1000;
+        public Stopwatch StopWatch { get; set; }
 
-		public int BlinkTime { get; set; } = 100;
+	    public int Period { get; set; } = 1000;
 
-		public bool UseColor { get; set; } = true;
+	    public int BlinkTime { get; set; } = 100;
 
-		public bool SoftBlink { get; set; } = true;
+	    public bool UseColor { get; set; } = true;
 
-		public ColorScheme ColorScheme
+	    public bool SoftBlink { get; set; } = true;
+
+	    public ColorScheme ColorScheme
 		{
 			get { return _colorScheme; }
 			set
@@ -36,7 +39,7 @@ namespace ExternalPrograms
 			}
 		}
 
-		public Color Color
+	    public Color Color
 		{
 			get { return _color; }
 			set
@@ -46,15 +49,15 @@ namespace ExternalPrograms
 			}
 		}
 
-		public int BPM
+	    public int BPM
 		{
 			get { return (int) TimeSpan.FromMinutes(1).TotalMilliseconds/Period; }
 			set { Period = (int)((60 / (float)value) * 1000); }
 		}
 
-		public TimeSpan PeriodTimeSpan => TimeSpan.FromMilliseconds(Period);
+	    public TimeSpan PeriodTimeSpan => TimeSpan.FromMilliseconds(Period);
 
-		public override void Setup()
+	    public override void Setup()
 		{
 			AddMappedInput<int>(this, "Period", i => i > 0);
 			AddMappedInput<int>(this, "BlinkTime", i => i > 0);
@@ -67,7 +70,7 @@ namespace ExternalPrograms
 			ElapsedMS = StopWatch.ElapsedMilliseconds;
 		}
 
-		public override void Loop()
+	    public override void Loop()
 		{
 			var currentElapsedMS = StopWatch.ElapsedMilliseconds;
 			var difference = currentElapsedMS - ElapsedMS;
@@ -79,7 +82,7 @@ namespace ExternalPrograms
 			}
 		}
 
-		private void Blink()
+	    private void Blink()
 		{
 			ProgramCommon.SoftBlink(UseColor ? Color : ColorScheme.GetRandomSchemeColor(), BlinkTime/50, SendColor);
 			//ProgramCommon.SoftBlink(UseColor ? Color : ColorScheme.GetRandomSchemeColor(), BlinkTime, SendColor);

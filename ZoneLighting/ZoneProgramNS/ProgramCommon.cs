@@ -179,9 +179,13 @@ namespace ZoneLighting.ZoneProgramNS
 		}
 	}
 
+    /// <summary>
+    /// Use this class for Random generation. This is to avoid cross-thread issues with Random.
+    /// </summary>
 	public static class RandomGen
 	{
 		private static Random _global = new Random();
+
 		[ThreadStatic]
 		private static Random _local;
 
@@ -191,7 +195,8 @@ namespace ZoneLighting.ZoneProgramNS
 			if (inst == null)
 			{
 				int seed;
-				lock (_global) seed = _global.Next();
+				lock (_global)
+                    seed = _global.Next();
 				_local = inst = new Random(seed);
 			}
 			return inst.Next(maxValue);
@@ -203,7 +208,8 @@ namespace ZoneLighting.ZoneProgramNS
 			if (inst == null)
 			{
 				int seed;
-				lock (_global) seed = _global.Next();
+				lock (_global)
+                    seed = _global.Next();
 				_local = inst = new Random(seed);
 			}
 			return inst.Next(minValue, maxValue);

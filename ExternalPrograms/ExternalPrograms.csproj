@@ -89,6 +89,7 @@
     <Compile Include="BlinkColorLoop.cs" />
     <Compile Include="Cylon.cs" />
     <Compile Include="LivingRoomMidiPlay.cs" />
+    <Compile Include="MicroTimerClockBlink.cs" />
     <Compile Include="MidiTwoDimensionalFade.cs" />
     <Compile Include="Outlines.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

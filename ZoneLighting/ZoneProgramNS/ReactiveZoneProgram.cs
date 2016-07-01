@@ -14,10 +14,10 @@ namespace ZoneLighting.ZoneProgramNS
 		protected ReactiveZoneProgram()
 		{
 			// ReSharper disable once VirtualMemberCallInConstructor
-			SetupInterruptingInputs();
+			SetupInputs();
 		}
 
-		protected abstract void SetupInterruptingInputs();
+		protected abstract void SetupInputs();
 
 		protected override void StopCore(bool force)
 		{

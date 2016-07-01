@@ -466,7 +466,6 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public int LightCount => Zone.LightCount;
 		public Trigger WaitForAllPrograms { get; set; } = new Trigger("LoopingZoneProgram.WaitForSync");
-		protected Stopwatch StopWatch { get; set; } = new Stopwatch();
 
 		/// <summary>
 		/// Gets the color of the light at the given index.

@@ -107,7 +107,7 @@ namespace ZoneLighting.StockPrograms
 			SendColors(ColorsToSend);
 		}
 
-		protected override void SetupInterruptingInputs()
+		protected override void SetupInputs()
 		{
 
 		}

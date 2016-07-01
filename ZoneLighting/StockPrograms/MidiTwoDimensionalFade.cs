@@ -46,7 +46,7 @@ namespace ZoneLighting.StockPrograms
             SendColor(Color.FromArgb(X, Y, 50));
         }
 
-        protected override void SetupInterruptingInputs()
+        protected override void SetupInputs()
         {
         }
 
