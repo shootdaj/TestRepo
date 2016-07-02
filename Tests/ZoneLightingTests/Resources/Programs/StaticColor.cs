@@ -14,7 +14,7 @@ namespace ZoneLightingTests.Resources.Programs
 	{
 		public Trigger ChangeLightColorTrigger { get; } = new Trigger("ChangeLightColorTrigger");
 
-		protected override void SetupInputs()
+		protected override void Setup()
 		{
 			AddInterruptingInput<Color>("Color", color =>
 			{

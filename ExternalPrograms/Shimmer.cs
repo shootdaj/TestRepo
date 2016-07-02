@@ -54,7 +54,10 @@ namespace ExternalPrograms
 
 	    protected override int LoopWaitTime { get; set; } = 10;
 
-	    public override void Setup()
+		/// <summary>
+		/// This overrides Setup() in ZoneProgram. This happens during constructor call.
+		/// </summary>
+		public override void Setup()
 		{
 			AddMappedInput<int>(this, "MaxFadeSpeed", i => i.IsInRange(1, 127));
 			AddMappedInput<int>(this, "MaxFadeDelay", i => i.IsInRange(0, 100));
@@ -74,7 +77,7 @@ namespace ExternalPrograms
 
 		private Dictionary<int, Color> ColorsToSend { get; } = new Dictionary<int, Color>();
 
-		protected override void PreStart()
+		protected override void PreLoopStart()
 		{
 			for (int i = 0; i < Math.Floor(Density * Zone.LightCount); i++)
 			{

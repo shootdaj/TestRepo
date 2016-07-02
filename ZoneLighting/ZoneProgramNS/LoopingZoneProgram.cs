@@ -213,12 +213,12 @@ namespace ZoneLighting.ZoneProgramNS
 			//StartTrigger.Fire(this, null);
 			//if (isSyncRequested)
 			//	RequestSyncState();
-			PreStart();
+			PreLoopStart();
 
 			StartLoop();
 		}
 
-		protected virtual void PreStart() { }
+		protected virtual void PreLoopStart() { }
 
 		protected virtual void PreStop(bool force) { }
 

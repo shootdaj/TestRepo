@@ -27,7 +27,7 @@ namespace ZoneLighting.ZoneProgramNS.Clock
             set { Timer.IgnoreEventIfLateBy = value; }
         }
 
-        public Action Action { get; set; }
+        public Action<MicroTimerEventArgs> Action { get; set; }
 
         /// <summary>
         /// Creates a new instance of the MicroTimerClock
@@ -37,7 +37,7 @@ namespace ZoneLighting.ZoneProgramNS.Clock
         /// <param name="ignoreEventIfLateBy">.NET is inherently non-realtime, so there is a certain amount of
         /// drift that may occur during heavy processing. This drift can be ignored if it passed a certain threhold that is 
         /// provided by this parameter. More details are at http://www.codeproject.com/Articles/98346/Microsecond-and-Millisecond-NET-Timer</param>
-        public MicroTimerClock(long interval, Action action, long ignoreEventIfLateBy)
+        public MicroTimerClock(long interval, Action<MicroTimerEventArgs> action, long ignoreEventIfLateBy)
         {
             Interval = interval;
             Timer.MicroTimerElapsed += Timer_MicroTimerElapsed;
@@ -49,7 +49,7 @@ namespace ZoneLighting.ZoneProgramNS.Clock
         {
             if (Action == null)
                 throw new Exception("Action cannot be null.");
-            Action();
+            Action(timerEventArgs);
         }
 
 		public void Start()

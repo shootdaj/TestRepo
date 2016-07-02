@@ -108,12 +108,7 @@ namespace ExternalPrograms
 			ColorsToSend[position] = Color.Black;
 			SendColors(ColorsToSend);
 		}
-
-		protected override void SetupInputs()
-		{
-
-		}
-
+		
 		protected override void StopCore(bool force)
 		{
 

@@ -12,7 +12,7 @@ namespace ExternalPrograms
 	{
 		private double Brightness { get; set; } = 1;
 
-		protected override void SetupInputs()
+		protected override void Setup()
 		{
 			AddInterruptingInput<Color>("Blink", parametersObject =>
 			{

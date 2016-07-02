@@ -194,6 +194,9 @@ namespace ZoneLighting.ZoneProgramNS
 			StartTrigger = null;
 		}
 
+		/// <summary>
+		/// TODO: Should this be virtual?
+		/// </summary>
 		public virtual void SetSyncContext(SyncContext syncContext)
 		{
 			//if same sync context is being passed, ignore request

@@ -12,7 +12,7 @@ namespace ZoneLighting.StockPrograms
 	{
 		private double Brightness { get; set; } = 1;
 
-		protected override void SetupInputs()
+		protected override void Setup()
 		{
 			AddInterruptingInput<Color>("Blink", parametersObject =>
 			{
@@ -44,7 +44,6 @@ namespace ZoneLighting.StockPrograms
 		{
 			SendColor(colorToSet);
 		}
-
 
 		protected override void StopCore(bool force)
 		{

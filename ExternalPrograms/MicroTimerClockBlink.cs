@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Clock;
 
@@ -22,12 +18,23 @@ namespace ExternalPrograms
 
 	    private long DriftThreshold { get; set; } = 500;
 		
-        public MicroTimerClockBlink()
-        {
-			Clock = new MicroTimerClock(Interval, () => SendColor(Color), DriftThreshold);
-        }
+	    protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
+	    {
+			Clock = new MicroTimerClock(Interval, args => SendColor(Color), DriftThreshold);
+			Clock.Start();
+		}
+
+	    protected override void StopCore(bool force)
+	    {
+		    Clock.Stop();
+	    }
+
+	    public override void Dispose(bool force)
+	    {
+		    Clock = null;
+	    }
 		
-		protected override void SetupInputs()
+	    protected override void Setup()
 		{
 			AddMappedInput<int>(this, "Interval", i => i > 0);
 			AddMappedInput<Color>(this, "Color");

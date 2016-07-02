@@ -163,8 +163,8 @@
     <Compile Include="ZoneNS\ZoneAssemblyAttribute.cs" />
     <Compile Include="ZoneNS\ZonesJsonConverter.cs" />
     <Compile Include="LED.cs" />
-    <Compile Include="ZoneProgramNS\MicroLibrary\MicroTimer.cs" />
-    <Compile Include="ZoneProgramNS\Clock\StopwatchClock.cs" />
+    <Compile Include="ZoneProgramNS\MicroLibrary\MicroLibrary.cs" />
+    <Compile Include="ZoneProgramNS\Clock\MicroTimerClock.cs" />
     <Compile Include="ZoneProgramNS\ColorScheme.cs" />
     <Compile Include="ZoneProgramNS\HSLColor.cs" />
     <Compile Include="ZoneProgramNS\IClock.cs" />

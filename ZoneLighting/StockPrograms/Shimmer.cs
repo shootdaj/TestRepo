@@ -70,7 +70,7 @@ namespace ZoneLighting.StockPrograms
 
 		private Dictionary<int, Color> ColorsToSend { get; } = new Dictionary<int, Color>();
 
-		protected override void PreStart()
+		protected override void PreLoopStart()
 		{
 			for (int i = 0; i < Math.Floor(Density * Zone.LightCount); i++)
 			{
