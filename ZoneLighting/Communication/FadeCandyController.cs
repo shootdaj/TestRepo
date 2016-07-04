@@ -84,6 +84,7 @@ namespace ZoneLighting.Communication
 			//need to set this because otherwise for WebController, the file is loaded from runner's dir 
 			//for example if its resharper, it tries to load from resharper's base dir
 			//if its iis, it tries to load from w3wp or iisexpress's base dir
+			var oldEnvDir = Environment.CurrentDirectory;
 			Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
 			var execExists = File.Exists(ConfigurationManager.AppSettings["FCServerExecutablePath"]);
@@ -121,6 +122,8 @@ namespace ZoneLighting.Communication
 			//FadeCandyServerProcess.BeginOutputReadLine();
 
 			//FCServerRunning = true;
+
+			Environment.CurrentDirectory = oldEnvDir;
 		}
 
 		/// <summary>
