@@ -121,6 +121,7 @@
     <Compile Include="ISVConverter.cs" />
     <Compile Include="IZLM.cs" />
     <Compile Include="StockPrograms\LivingRoomMidiPlay.cs" />
+    <Compile Include="StockPrograms\MicroClockBlink.cs" />
     <Compile Include="StockPrograms\MidiTwoDimensionalFade.cs" />
     <Compile Include="StockPrograms\MIDI\NumarkOrbitMidiNote.cs" />
     <Compile Include="StockPrograms\Outlines.cs" />
@@ -164,7 +165,7 @@
     <Compile Include="ZoneNS\ZonesJsonConverter.cs" />
     <Compile Include="LED.cs" />
     <Compile Include="ZoneProgramNS\MicroLibrary\MicroLibrary.cs" />
-    <Compile Include="ZoneProgramNS\Clock\MicroTimerClock.cs" />
+    <Compile Include="ZoneProgramNS\MicroClock.cs" />
     <Compile Include="ZoneProgramNS\ColorScheme.cs" />
     <Compile Include="ZoneProgramNS\HSLColor.cs" />
     <Compile Include="ZoneProgramNS\IClock.cs" />
@@ -241,6 +242,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="FadeCandy\neopixeltest.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ZoneProgramNS\Clock\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

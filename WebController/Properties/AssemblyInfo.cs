@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("WebController")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Grange Insurance")]
+[assembly: AssemblyCompany("Anshul Vishwakarma")]
 [assembly: AssemblyProduct("WebController")]
-[assembly: AssemblyCopyright("Copyright © Grange Insurance 2014")]
+[assembly: AssemblyCopyright("Copyright © Anshul Vishwakarma 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

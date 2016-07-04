@@ -11,7 +11,7 @@ namespace ZoneLightingTests.ProgramTests
 {
 	public class ShimmerTests
 	{
-		[TestCase(30, true)]
+		[TestCase(300, true)]
 		[TestCase(30, false)]
 		[Ignore("Manual")]
 		public void Shimmer_Works(int sleepSeconds, bool random)
@@ -72,5 +72,7 @@ namespace ZoneLightingTests.ProgramTests
 			//cleanup
 			zlm.Dispose();
 		}
+
+		//TODO: Add tests for MIDI stuff.
 	}
 }

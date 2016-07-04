@@ -54,7 +54,7 @@ namespace ZoneLightingTests
 		/// fundamental that is reflected in the saved configuration.
 		/// </summary>
 		/// <param name="filename"></param>
-		[Ignore]
+		[Ignore("Not a test, just a piece of code that needs to be reused often.")]
 		[TestCase(@"C:\Temp\test.config")] //NOTE: Insert file path in test case to generate to the path.
 		public void GenerateTestConfiguration(string filename)
 		{

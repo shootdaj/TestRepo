@@ -13,7 +13,7 @@ namespace ZoneLightingTests.ProgramTests
 {
 	public class ScrollTrailTests
 	{
-		[TestCase(null)]
+		[TestCase(30)]
 		[Ignore("Manual")]
 		public void ScrollTrail_Works(int? sleepSeconds)
 		{

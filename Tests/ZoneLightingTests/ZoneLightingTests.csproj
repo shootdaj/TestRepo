@@ -53,8 +53,8 @@
       <HintPath>..\..\packages\NUnitTestAdapter.2.0.0\lib\nunit.core.interfaces.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.0.5813.39031, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.3.0.1\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nunit.util, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
@@ -112,6 +112,7 @@
     <Compile Include="InterruptingInputTests.cs" />
     <Compile Include="ExtensionsTests.cs" />
     <Compile Include="MainProgramRunner.cs" />
+    <Compile Include="ProgramTests\MicroClockBlinkTests.cs" />
     <Compile Include="ProgramTests\MidiTwoDimensionalFadeTests.cs" />
     <Compile Include="ProgramTests\MidiPlayTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -155,7 +156,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Sanford.Multimedia.Midi\Sanford.Multimedia.Midi.csproj">
+    <ProjectReference Include="..\..\IMPORTED\Sanford.Multimedia.Midi\Sanford.Multimedia.Midi.csproj">
       <Project>{4269C72A-8D3A-4737-8F89-72EAA33EA9E1}</Project>
       <Name>Sanford.Multimedia.Midi</Name>
     </ProjectReference>
@@ -170,6 +171,9 @@
   <ItemGroup>
     <Content Include="Logs\Deadlock4Steppers.txt" />
     <Content Include="Resources\Programs\ExternalPrograms.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Zones\ExternalZones.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

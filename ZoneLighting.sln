@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebController", "WebController\WebController.csproj", "{E0D96A42-BD06-4270-9385-CF9FE1004D7B}"
 EndProject
@@ -19,26 +19,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4CF8894A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2577F777-6510-431B-85E7-51D0EF9E6A90}"
 	ProjectSection(SolutionItems) = preProject
+		nuget.config = nuget.config
 		PullDownConfig.bat = PullDownConfig.bat
 		QUICKSTART.md = QUICKSTART.md
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalLib", "ExternalLib", "{1E6AD0D7-62BB-4132-8094-6C44476EB6D6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Imported", "Imported", "{1E6AD0D7-62BB-4132-8094-6C44476EB6D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sanford.Multimedia.Midi", "Sanford.Multimedia.Midi\Sanford.Multimedia.Midi.csproj", "{4269C72A-8D3A-4737-8F89-72EAA33EA9E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sanford.Multimedia.Midi", "IMPORTED\Sanford.Multimedia.Midi\Sanford.Multimedia.Midi.csproj", "{4269C72A-8D3A-4737-8F89-72EAA33EA9E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebControllerTests", "WebControllerTests\WebControllerTests.csproj", "{78F92D31-CA64-4CA8-9305-23B9484BB0E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebControllerTests", "Tests\WebControllerTests\WebControllerTests.csproj", "{78F92D31-CA64-4CA8-9305-23B9484BB0E2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JSON-RPC.NET", "JSON-RPC.NET", "{6BE368EF-13AF-493C-9016-B457AE286472}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AustinHarris.JsonRpc", "JSON-RPC.NET\Json-Rpc\AustinHarris.JsonRpc.csproj", "{24FC1A2A-0BC3-43A7-9BFE-B628C2C4A307}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AustinHarris.JsonRpc", "IMPORTED\JSON-RPC.NET\Json-Rpc\AustinHarris.JsonRpc.csproj", "{24FC1A2A-0BC3-43A7-9BFE-B628C2C4A307}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AustinHarris.JsonRpc.AspNet", "JSON-RPC.NET\AustinHarris.JsonRpc.AspNet\AustinHarris.JsonRpc.AspNet.csproj", "{FFFDEBBC-93F5-4A22-9EC5-D86A4A792DBB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AustinHarris.JsonRpc.AspNet", "IMPORTED\JSON-RPC.NET\AustinHarris.JsonRpc.AspNet\AustinHarris.JsonRpc.AspNet.csproj", "{FFFDEBBC-93F5-4A22-9EC5-D86A4A792DBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AustinHarris.JsonRpcTestN", "JSON-RPC.NET\AustinHarris.JsonRpcTestN\AustinHarris.JsonRpcTestN.csproj", "{8569B076-5A8B-4D6A-B75D-EF75A390AA5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AustinHarris.JsonRpcTestN", "IMPORTED\JSON-RPC.NET\AustinHarris.JsonRpcTestN\AustinHarris.JsonRpcTestN.csproj", "{8569B076-5A8B-4D6A-B75D-EF75A390AA5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestServer_Console", "JSON-RPC.NET\TestServer_Console\TestServer_Console.csproj", "{31AE59FC-B6F6-4AC7-A7B9-1E07630AE42B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestServer_Console", "IMPORTED\JSON-RPC.NET\TestServer_Console\TestServer_Console.csproj", "{31AE59FC-B6F6-4AC7-A7B9-1E07630AE42B}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IoTShell", "IoTShell\IoTShell.xproj", "{46845FF9-EFA0-420E-ABFE-0D81E361BA07}"
 EndProject
@@ -264,6 +265,7 @@ Global
 		{C4A346A2-F4A2-49E6-81B8-B56C2632DF72} = {4CF8894A-26F4-444E-B3D6-038B853AE2F8}
 		{4269C72A-8D3A-4737-8F89-72EAA33EA9E1} = {1E6AD0D7-62BB-4132-8094-6C44476EB6D6}
 		{78F92D31-CA64-4CA8-9305-23B9484BB0E2} = {4CF8894A-26F4-444E-B3D6-038B853AE2F8}
+		{6BE368EF-13AF-493C-9016-B457AE286472} = {1E6AD0D7-62BB-4132-8094-6C44476EB6D6}
 		{24FC1A2A-0BC3-43A7-9BFE-B628C2C4A307} = {6BE368EF-13AF-493C-9016-B457AE286472}
 		{FFFDEBBC-93F5-4A22-9EC5-D86A4A792DBB} = {6BE368EF-13AF-493C-9016-B457AE286472}
 		{8569B076-5A8B-4D6A-B75D-EF75A390AA5F} = {6BE368EF-13AF-493C-9016-B457AE286472}

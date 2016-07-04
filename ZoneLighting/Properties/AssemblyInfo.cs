@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Runtime.CompilerServices;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -7,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ZoneLighting")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Grange Insurance")]
+[assembly: AssemblyCompany("Anshul Vishwakarma")]
 [assembly: AssemblyProduct("ZoneLighting")]
-[assembly: AssemblyCopyright("Copyright © Grange Insurance 2014")]
+[assembly: AssemblyCopyright("Copyright © Anshul Vishwakarma 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,3 +34,6 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: InternalsVisibleTo("ZoneLighting.Tests")]
+[assembly: InternalsVisibleTo("ZoneLighting.Explorables")]
+

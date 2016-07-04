@@ -8,7 +8,7 @@
 
 ##To get started: 
 
-1. Wire up the FadeCandy board following instructions here: https://learn.adafruit.com/led-art-with-fadecandy/wiring-your-leds
+1. Wire up the FadeCandy board to the Neomatrix (or another strip) following instructions here: https://learn.adafruit.com/led-art-with-fadecandy/wiring-your-leds
 2. Clone repository and open solution in Visual Studio 2015. 
 3. Hit F6 (Build). Visual Studio will restore all nuget packages and build the solution.
 4. Ensure that WebController is the startup project and hit F5 (Debug). Visual Studio will start the WebController project which will execute a program called Shimmer on the NeoMatrix or strip. 

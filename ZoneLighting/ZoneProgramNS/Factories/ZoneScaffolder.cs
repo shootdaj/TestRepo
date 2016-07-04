@@ -68,6 +68,11 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		private void ComposeWithExternalModules(string programModuleDirectory)
 		{
 			List<ComposablePartCatalog> fileCatalogs = new List<ComposablePartCatalog>();
+
+			//need to set this because otherwise for WebController, the file is loaded from c:\windows\system32\inetsrv probably
+			//because that's where w3wp.exe is or something.. who knows.
+			Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
 			foreach (var file in Directory.GetFiles(programModuleDirectory, "*.dll").ToList())
 			{
 				var assembly = Assembly.LoadFrom(file);

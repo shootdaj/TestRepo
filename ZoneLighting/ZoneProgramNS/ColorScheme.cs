@@ -103,7 +103,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 		public static Color GetRandomSchemeColor(ColorScheme colorScheme)
 		{
-			if (!colorScheme.Any()) //this is for ColorScheme.All
+			if (colorScheme == null || !colorScheme.Any()) //this is for ColorScheme.All
 				return GetRandomColor();
 			else
 				return colorScheme.ElementAt(ProgramCommon.RandomIntBetween(0, colorScheme.Count));

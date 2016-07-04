@@ -179,6 +179,12 @@ namespace ZoneLighting.Usables
 			zlm.CreateProgramSet("StopWatchBlinkSet", "StopWatchBlink", false, null, zlm.Zones);
 		}
 
+		public static void RunMicroTimerClockBlinkOnNeoMatrix(ZLM zlm)
+		{
+			var zone = CreateNeoMatrixZone(zlm);
+			zlm.CreateProgramSet("MicroTimerClockBlinkSet", "MicroTimerClockBlink", false, null, zlm.Zones);
+		}
+
 		public static void RunStopWatchBlinkOnNeoMatrix(ZLM zlm)
 		{
 			var zone = CreateNeoMatrixZone(zlm);

@@ -90,21 +90,24 @@ namespace ExternalPrograms
 
 		protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
 		{
-		    int deviceID = parameters?.DeviceID;
-			var freeDevices = MIDIManager.FreeDevices;
-		    var freeDeviceIDs = freeDevices.Select(x => x.DeviceID).ToList();
-			var isDeviceNull = parameters?.DeviceID == null;
+			if (parameters != null)
+			{
+				int? deviceID = parameters?.DeviceID;
+				var freeDevices = MIDIManager.FreeDevices;
+				var freeDeviceIDs = freeDevices?.Select(x => x.DeviceID).ToList();
+				var isDeviceNull = parameters?.DeviceID == null;
 
-			if (!isDeviceNull && freeDeviceIDs.Contains(deviceID))
-		    {
-                MidiInput = MIDIManager.GetDevice(parameters.DeviceID);
-		        MidiInput.AddChannelMessageAction(HandleMidi);
-		        MidiInput.StartRecording();
-		    }
-            else
-                throw new WarningException("Supplied MIDI Device ID is either in use or invalid.");
+				if (!isDeviceNull && freeDeviceIDs?.Contains(deviceID))
+				{
+					MidiInput = MIDIManager.GetDevice(parameters.DeviceID);
+					MidiInput.AddChannelMessageAction(HandleMidi);
+					MidiInput.StartRecording();
+				}
+				else
+					throw new WarningException("Supplied MIDI Device ID is either in use or invalid.");
+			}
 
-		    base.StartCore(null, forceStoppable);
+			base.StartCore(null, forceStoppable);
 		}
 
 		private void HandleMidi(object sender, ChannelMessageEventArgs args)

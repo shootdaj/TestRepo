@@ -81,8 +81,9 @@ namespace ZoneLighting.Communication
 
 		private void StartFCServer(string configFilePath, bool createWindow = false)
 		{
-			//need to set this because otherwise for WebController, the file is loaded from c:\windows\system32\inetsrv probably
-			//because that's where w3wp.exe is or something.. who knows.
+			//need to set this because otherwise for WebController, the file is loaded from runner's dir 
+			//for example if its resharper, it tries to load from resharper's base dir
+			//if its iis, it tries to load from w3wp or iisexpress's base dir
 			Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
 			var execExists = File.Exists(ConfigurationManager.AppSettings["FCServerExecutablePath"]);

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MIDIator;
@@ -50,6 +52,11 @@ namespace ZoneLighting.StockPrograms
 
 		public override SyncLevel SyncLevel { get; set; } = SyncLevel.None;
 
+	    protected override int LoopWaitTime { get; set; } = 10;
+
+		/// <summary>
+		/// This overrides Setup() in ZoneProgram. This happens during constructor call.
+		/// </summary>
 		public override void Setup()
 		{
 			AddMappedInput<int>(this, "MaxFadeSpeed", i => i.IsInRange(1, 127));
@@ -83,9 +90,22 @@ namespace ZoneLighting.StockPrograms
 
 		protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
 		{
-			MidiInput = MIDIManager.GetDevice(parameters?.DeviceID);
-			MidiInput.AddChannelMessageAction(HandleMidi);
-			MidiInput.StartRecording();
+			if (parameters != null)
+			{
+				int? deviceID = parameters?.DeviceID;
+				var freeDevices = MIDIManager.FreeDevices;
+				var freeDeviceIDs = freeDevices?.Select(x => x.DeviceID).ToList();
+				var isDeviceNull = parameters?.DeviceID == null;
+
+				if (!isDeviceNull && freeDeviceIDs?.Contains(deviceID))
+				{
+					MidiInput = MIDIManager.GetDevice(parameters.DeviceID);
+					MidiInput.AddChannelMessageAction(HandleMidi);
+					MidiInput.StartRecording();
+				}
+				else
+					throw new WarningException("Supplied MIDI Device ID is either in use or invalid.");
+			}
 
 			base.StartCore(null, forceStoppable);
 		}
@@ -95,52 +115,52 @@ namespace ZoneLighting.StockPrograms
 			switch (args.Message.MidiChannel)
 			{
 				case 0:
+				{
+					switch (args.Message.Data1)
 					{
-						switch (args.Message.Data1)
+						case (int) NumarkOrbitMidiNote.XAxis:
 						{
-							case (int)NumarkOrbitMidiNote.XAxis:
-								{
-									var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 1, 99);
-									//Debug.Print(scaledValue.ToString());
-									MaxFadeDelay = scaledValue;
-									//SetInput("MaxFadeDelay", scaledValue);
-								}
-								break;
-							case (int)NumarkOrbitMidiNote.YAxis:
-								{
-									var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
-									SetInput("Density", scaledValue);
-								}
-								break;
-							case (int)NumarkOrbitMidiNote.K1_BigKnob:
-								{
-									var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
-									SetInput("Brightness", scaledValue);
-								}
-								break;
-							case (int)NumarkOrbitMidiNote.A1:
-								SetInput("ColorScheme", ColorScheme.All);
-								break;
-							case (int)NumarkOrbitMidiNote.A2:
-								SetInput("ColorScheme", ColorScheme.Primaries);
-								break;
-							case (int)NumarkOrbitMidiNote.A3:
-								SetInput("ColorScheme", ColorScheme.Secondaries);
-								break;
-							case (int)NumarkOrbitMidiNote.B1:
-								SetInput("ColorScheme", ColorScheme.RedsBluesGreens);
-								break;
-							case (int)NumarkOrbitMidiNote.B2:
-								SetInput("ColorScheme", ColorScheme.Reds);
-								break;
-							case (int)NumarkOrbitMidiNote.B3:
-								SetInput("ColorScheme", ColorScheme.Blues);
-								break;
-							case (int)NumarkOrbitMidiNote.B4:
-								SetInput("ColorScheme", ColorScheme.Greens);
-								break;
+							var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 1, 99);
+							//Debug.Print(scaledValue.ToString());
+							MaxFadeDelay = scaledValue;
+							//SetInput("MaxFadeDelay", scaledValue);
 						}
+							break;
+						case (int) NumarkOrbitMidiNote.YAxis:
+						{
+							var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
+							SetInput("Density", scaledValue);
+						}
+							break;
+						case (int) NumarkOrbitMidiNote.K1_BigKnob:
+						{
+							var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
+							SetInput("Brightness", scaledValue);
+						}
+							break;
+						case (int) NumarkOrbitMidiNote.A1:
+							SetInput("ColorScheme", ColorScheme.All);
+							break;
+						case (int) NumarkOrbitMidiNote.A2:
+							SetInput("ColorScheme", ColorScheme.Primaries);
+							break;
+						case (int) NumarkOrbitMidiNote.A3:
+							SetInput("ColorScheme", ColorScheme.Secondaries);
+							break;
+						case (int) NumarkOrbitMidiNote.B1:
+							SetInput("ColorScheme", ColorScheme.RedsBluesGreens);
+							break;
+						case (int) NumarkOrbitMidiNote.B2:
+							SetInput("ColorScheme", ColorScheme.Reds);
+							break;
+						case (int) NumarkOrbitMidiNote.B3:
+							SetInput("ColorScheme", ColorScheme.Blues);
+							break;
+						case (int) NumarkOrbitMidiNote.B4:
+							SetInput("ColorScheme", ColorScheme.Greens);
+							break;
 					}
+				}
 					break;
 			}
 		}
@@ -222,7 +242,5 @@ namespace ZoneLighting.StockPrograms
 			if (ShimmerCTS.IsCancellationRequested)
 				return;
 		}
-
-		
 	}
 }

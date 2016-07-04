@@ -134,8 +134,9 @@ namespace ZoneLighting.ZoneProgramNS
 			ProgramName = program.Name;
 			Sync = false;
 
+			Zones = zone.Listify();
 			zone.Stop(true);
-			//ZoneScaffolder.Instance.RunZone(zone, "", isv);
+			//ZoneScaffolder.Instance.RunZone(zone, "", isv); -- TODO: Why aren't we using this? This seems to be better than the next line
 			zone.Run(program, isv, startingParameters: startingParameters);
 		}
 

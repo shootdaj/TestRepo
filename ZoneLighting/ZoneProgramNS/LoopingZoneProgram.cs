@@ -41,7 +41,7 @@ namespace ZoneLighting.ZoneProgramNS
 		protected CancellationTokenSource LoopCTS;
 		private Task LoopingTask { get; set; }
 		private Thread RunProgramThread { get; set; }
-		protected virtual int LoopWaitTime { get; set; } = 5;
+		protected virtual int LoopWaitTime { get; set; } = 1;
 
 		protected void StartLoop()
 		{
