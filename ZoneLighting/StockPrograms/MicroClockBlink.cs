@@ -11,15 +11,23 @@ namespace ZoneLighting.StockPrograms
     {
 		private MicroClock Clock { get; set; }
 
-	    private int Interval { get; set; } = 500000; //half a second
+	    private long Interval
+	    {
+		    get { return Clock.Interval; }
+		    set { Clock.Interval = value; }
+	    }
 
 	    private Color Color { get; set; } = Color.Red;
 
-	    private long DriftThreshold { get; set; } = 500;
-		
+	    private long DriftThreshold
+	    {
+		    get { return Clock.IgnoreEventIfLateBy; }
+			set { Clock.IgnoreEventIfLateBy = value; }
+	    } 
+
 	    protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
 	    {
-		    Clock = new MicroClock(Interval,
+		    Clock = new MicroClock(500000,
 			    args => SendColor(Color.ToArgb() != Zone.SortedLights.First().Value.GetColor().ToArgb() ? Color : Color.Black), DriftThreshold);
 			Clock.Start();
 		}
@@ -36,7 +44,7 @@ namespace ZoneLighting.StockPrograms
 		
 	    protected override void Setup()
 		{
-			AddMappedInput<int>(this, "Interval", i => i > 0);
+			AddMappedInput<long>(this, "Interval", i => i > 0);
 			AddMappedInput<Color>(this, "Color");
 			AddMappedInput<long>(this, "DriftThreshold", i => i > 0);
 		}
