@@ -114,6 +114,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Drawing\ClockedTrailShape.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Int32Converter.cs" />
@@ -125,7 +126,10 @@
     <Compile Include="StockPrograms\MidiTwoDimensionalFade.cs" />
     <Compile Include="StockPrograms\MIDI\NumarkOrbitMidiNote.cs" />
     <Compile Include="StockPrograms\Outlines.cs" />
+    <Compile Include="Drawing\Shape.cs" />
     <Compile Include="StockPrograms\Shimmer.cs" />
+    <Compile Include="Drawing\TrailShape.cs" />
+    <Compile Include="Drawing\Trail.cs" />
     <Compile Include="Usables\RunnerHelpers.cs" />
     <Compile Include="StockPrograms\BlinkColorLoop.cs" />
     <Compile Include="StockPrograms\BlinkColorReactive.cs" />
@@ -178,6 +182,7 @@
     <Compile Include="ZoneProgramNS\IZoneProgramMetadata.cs" />
     <Compile Include="ZoneProgramNS\PauseToken.cs" />
     <Compile Include="ZoneProgramNS\ProgramSet.cs" />
+    <Compile Include="StockPrograms\Raindrops.cs" />
     <Compile Include="ZoneProgramNS\ReactiveZoneProgram.cs" />
     <Compile Include="ZoneProgramNS\UnderlyingTypeConverter.cs" />
     <Compile Include="ZoneProgramNS\ZoneLightingProgramAssemblyAttribute.cs" />

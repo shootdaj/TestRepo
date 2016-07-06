@@ -115,6 +115,7 @@
     <Compile Include="ProgramTests\MicroClockBlinkTests.cs" />
     <Compile Include="ProgramTests\MidiTwoDimensionalFadeTests.cs" />
     <Compile Include="ProgramTests\MidiPlayTests.cs" />
+    <Compile Include="ProgramTests\RaindropTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Programs\Rainbow.cs" />
     <Compile Include="Resources\Programs\ScrollDot.cs" />

@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
-using System.Linq;
+using ZoneLighting.Drawing;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.StockPrograms
@@ -89,61 +88,5 @@ namespace ZoneLighting.StockPrograms
 
 			//}
 		}
-	}
-
-	public class TrailShape
-	{
-		public TrailShape(Trail trail, Shape shape)
-		{
-			Trail = trail;
-			Shape = shape;
-		}
-
-		public Trail Trail { get; }
-		public Shape Shape { get; set; }
-	}
-
-	public class Trail
-	{
-		public Trail(int length, Color color)
-		{
-			Length = length;
-			Color = color;
-		}
-
-		public int LeadIndex { get; set; } = 0;
-
-		public int Length { get; }
-
-		public Color? Color { get; }
-	}
-	
-	public class Shape
-	{
-		public Shape(params int[] pixels)
-		{
-			Pixels = pixels;
-		}
-
-		public int[] Pixels { get; }
-
-		public int GetNextIndex(int index) => index == Pixels.Length - 1 ? 0 : index + 1;
-		public int GetPreviousIndex(int index, out bool overflow)
-		{
-			overflow = false;
-			if (index == 0)
-			{
-				overflow = true;
-				return Pixels.Length - 1;
-			}
-			else
-				return index - 1;
-		}
-
-		public int GetNextPixel(int pixel) => Pixels.Last() == pixel ? Pixels.First() : Pixels[Array.IndexOf(Pixels, pixel) + 1];
-
-		public int GetPreviousPixel(int pixel) => Pixels.First() == pixel ? Pixels.Last() : Pixels[Array.IndexOf(Pixels, pixel) - 1];
-
-		public int PixelCount => Pixels.Length;
 	}
 }
