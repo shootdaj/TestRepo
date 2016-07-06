@@ -127,9 +127,10 @@
     <Compile Include="StockPrograms\MIDI\NumarkOrbitMidiNote.cs" />
     <Compile Include="StockPrograms\Outlines.cs" />
     <Compile Include="Drawing\Shape.cs" />
-    <Compile Include="StockPrograms\Shimmer.cs" />
     <Compile Include="Drawing\TrailShape.cs" />
     <Compile Include="Drawing\Trail.cs" />
+    <Compile Include="StockPrograms\Raindrops.cs" />
+    <Compile Include="StockPrograms\Shimmer.cs" />
     <Compile Include="Usables\RunnerHelpers.cs" />
     <Compile Include="StockPrograms\BlinkColorLoop.cs" />
     <Compile Include="StockPrograms\BlinkColorReactive.cs" />
