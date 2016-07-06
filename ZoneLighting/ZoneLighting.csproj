@@ -125,6 +125,7 @@
     <Compile Include="StockPrograms\MidiTwoDimensionalFade.cs" />
     <Compile Include="StockPrograms\MIDI\NumarkOrbitMidiNote.cs" />
     <Compile Include="StockPrograms\Outlines.cs" />
+    <Compile Include="StockPrograms\Raindrops.cs" />
     <Compile Include="StockPrograms\Shimmer.cs" />
     <Compile Include="Usables\RunnerHelpers.cs" />
     <Compile Include="StockPrograms\BlinkColorLoop.cs" />
