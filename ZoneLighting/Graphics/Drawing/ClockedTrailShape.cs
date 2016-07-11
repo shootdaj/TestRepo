@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZoneLighting.ZoneProgramNS;
+﻿using ZoneLighting.ZoneProgramNS.Clock;
 
-namespace ZoneLighting.Drawing
+namespace ZoneLighting.Graphics.Drawing
 {
 	public class ClockedTrailShape
 	{

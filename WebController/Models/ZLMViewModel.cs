@@ -20,7 +20,7 @@ namespace WebController.Models
 
 			var zones = ZLMRPC.GetZones();
 
-			if (zones != null)
+			if (zones != null && zones.Any())
 				AvailableZones = new SelectList(zones.Select(x => x.Name));
 		}
 

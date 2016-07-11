@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace ZoneLighting.Drawing
+namespace ZoneLighting.Graphics.Drawing
 {
 	public class Trail
 	{

@@ -20,9 +20,8 @@ namespace ExternalPrograms
 
 		private bool Random { get; set; } = false;
 
-		protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
+		protected override void StartCore(dynamic parameters = null)
 		{
-			ForceStoppable = forceStoppable;
 			MidiInput = MIDIManager.GetDevice(parameters?.DeviceID);
 			MidiInput.AddChannelMessageAction(HandleMidi);
 			MidiInput.StartRecording();

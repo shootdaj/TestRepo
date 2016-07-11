@@ -205,10 +205,8 @@ namespace ZoneLighting.ZoneProgramNS
 			}
 		}
 
-		protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)//bool isSyncRequested)
-		{
-			ForceStoppable = forceStoppable;
-
+		protected override void StartCore(dynamic parameters = null)
+		{ 
 			//handle sync state request
 			//StartTrigger.Fire(this, null);
 			//if (isSyncRequested)

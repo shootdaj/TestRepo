@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
+using ZoneLighting.Graphics;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
@@ -46,7 +47,7 @@ namespace ZoneLighting.StockPrograms
 			{
 				Color? endingColor;
 
-				ProgramCommon.Fade(GetColor(0), colors[i], Speed, DelayTime, false, (color) =>
+				Animation.Fader.FadeStatic(GetColor(0), colors[i], Speed, DelayTime, false, (color) =>
 				{
 					SendColor(color);
 				}, out endingColor, SyncLevel == RainbowSyncLevel.Fade ? SyncContext : null);

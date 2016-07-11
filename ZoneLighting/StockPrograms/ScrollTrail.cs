@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
-using ZoneLighting.Drawing;
+using ZoneLighting.Graphics.Drawing;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.StockPrograms

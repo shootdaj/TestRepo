@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using ZoneLighting.ZoneProgramNS;
+using ZoneLighting.ZoneProgramNS.Clock;
 
 namespace ZoneLighting.StockPrograms
 {
@@ -25,7 +26,7 @@ namespace ZoneLighting.StockPrograms
 			set { Clock.IgnoreEventIfLateBy = value; }
 	    } 
 
-	    protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
+	    protected override void StartCore(dynamic parameters = null)
 	    {
 		    Clock = new MicroClock(500000,
 			    args => SendColor(Color.ToArgb() != Zone.SortedLights.First().Value.GetColor().ToArgb() ? Color : Color.Black), DriftThreshold);

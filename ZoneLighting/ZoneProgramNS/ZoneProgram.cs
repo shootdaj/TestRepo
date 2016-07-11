@@ -57,8 +57,6 @@ namespace ZoneLighting.ZoneProgramNS
 
 		protected SyncContext SyncContext { get; set; }
 
-		protected bool ForceStoppable { get; set; }
-
 		#region Triggers
 
 		public Trigger StartTrigger { get; private set; } = new Trigger("StartTrigger");
@@ -224,8 +222,7 @@ namespace ZoneLighting.ZoneProgramNS
 		/// of this class can only call the method that wraps this method - Start. 
 		/// </summary>
 		/// <param name="parameters"></param>
-		/// <param name="forceStoppable"></param>
-		protected abstract void StartCore(dynamic parameters = null, bool forceStoppable = true);
+		protected abstract void StartCore(dynamic parameters = null);
 
 		/// This is a core method, meaning this method is wrapped within another method that's required for 
 		/// any pre/postprocessing that is required by this class to maintain the functions provided by this class. 

@@ -166,6 +166,24 @@ namespace WebController.Controllers
 			ZLM.SetProgramSetInputs(programSetName, isv);
 		}
 
+		[JsonRpcMethod()]
+		public void SetInputs(string programSetOrZoneName, ISV isv)
+		{
+			//figure out if supplied name is program set or zone
+			if (ZLM.ProgramSets.Any(p => p.Name == programSetOrZoneName))
+			{
+				ZLM.SetProgramSetInputs(programSetOrZoneName, isv);
+			}
+			else if (ZLM.Zones.Any(z => z.Name == programSetOrZoneName))
+			{
+				ZLM.SetZoneInputs(programSetOrZoneName, isv);
+			}
+			else
+			{
+				throw new Exception("Supplied name is neither a program set name nor a zone name.");
+			}
+		}
+
 		[JsonRpcMethod]
 		public void RecreateProgramSetWithoutZone(string programSetName, string zoneName, bool force = false)
 		{
@@ -190,8 +208,7 @@ namespace WebController.Controllers
 		[JsonRpcMethod]
 		public List<ZoneJsonModel> GetZones()
 		{
-			//return ZLM.Zones.Select(zone => zone.Name).ToList();
-			return ZLM.Zones.Select(zone => zone.ToJsonModel<Zone, ZoneJsonModel>()).ToList();
+			return ZLM.Zones?.Select(zone => zone.ToJsonModel<Zone, ZoneJsonModel>()).ToList();
 		}
 
 		//[JsonRpcMethod]

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace ZoneLighting.Drawing
+namespace ZoneLighting.Graphics.Drawing
 {
 	public class Shape
 	{

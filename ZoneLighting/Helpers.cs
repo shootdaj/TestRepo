@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 
 namespace ZoneLighting
 {
@@ -14,6 +15,18 @@ namespace ZoneLighting
 			var list = new List<T>();
 			Array.ForEach(inputs, input => list.Add(input));
 			return list;
+		}
+
+		public static bool HasProperty(dynamic obj, string name)
+		{
+			Type objType = obj.GetType();
+
+			if (objType == typeof(ExpandoObject))
+			{
+				return ((IDictionary<string, object>)obj).ContainsKey(name);
+			}
+
+			return objType.GetProperty(name) != null;
 		}
 	}
 }

@@ -5,22 +5,9 @@ namespace ZoneLighting.ZoneProgramNS
 {
 	public abstract class ReactiveZoneProgram : ZoneProgram
 	{
-		/// <summary>
-		/// This is a core method, meaning this method is wrapped within another method that's required for
-		/// any pre/postprocessing that is required by this class to maintain the functions provided by ZoneProgram.
-		/// This is the core method for the Start public API call, which is a public member of this class.
-		/// So the inheritor of this class must provide the core functionality, but the user of an instance
-		/// of this class can only call the method that wraps this method - Start.
-		/// 
-		/// This method is only here so that subclasses don't need to unnecessarily override this method
-		/// if they don't need to.
-		/// 
-		/// </summary>
-		/// <param name="parameters"></param>
-		/// <param name="forceStoppable"></param>
-		protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
+		protected override void StartCore(dynamic parameters = null)
 		{
-			ForceStoppable = forceStoppable;
+			
 		}
 
 		[SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]

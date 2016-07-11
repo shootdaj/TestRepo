@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
-using ZoneLighting.Drawing;
+using ZoneLighting.Graphics.Drawing;
 using ZoneLighting.ZoneProgramNS;
+using ZoneLighting.ZoneProgramNS.Clock;
 
 namespace ZoneLighting.StockPrograms
 {
@@ -19,7 +20,7 @@ namespace ZoneLighting.StockPrograms
 
 		public Raindrops()
 		{
-			LoopClock = new MicroClock(100000 //refresh interval
+			LoopClock = new MicroClock(10000 //refresh interval
 				, args => SendColors(ColorsToSend)
 				, 500); //500us drift threshold
 		}
@@ -48,18 +49,20 @@ namespace ZoneLighting.StockPrograms
 					ColorsToSend[trailShape.Shape.Pixels[i]] = GetColor(trailShape.Shape.Pixels[i]).Darken(trailShape.DarkenFactor);
 				else
 				//if not sharing the shape with another trailshape, then clean out the rest of the shape
-				//if (!ShareShape)
-				//sendColors[trailShape.Shape.Pixels[i]] = Color.Black;
+				if (!false) //was if (!ShareShape)
+					ColorsToSend[trailShape.Shape.Pixels[i]] = Color.Black;
 
 				//set lead index color
 				if (i == leadIndex)
 					ColorsToSend[leadPixel] = dotColor ?? ProgramCommon.GetRandomColor();
 			}
 
-			Console.WriteLine(trailShape.ToString());
+			trailShape.Trail.LeadIndex = trailShape.Shape.GetNextIndex(leadIndex);
+
+			//Console.WriteLine(trailShape.ToString());
 		}
 
-		protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
+		protected override void StartCore(dynamic parameters = null)
 		{
 			if (parameters == null || parameters.TrailShapes == null)
 				throw new Exception("Parameter TrailShapes is required.");
@@ -68,7 +71,7 @@ namespace ZoneLighting.StockPrograms
 			{
 				var clockedTrailShape = new ClockedTrailShape();
 				clockedTrailShape.Clock =
-					new MicroClock(1000000,
+					new MicroClock(100000,
 						args => SetTrailColors(clockedTrailShape.TrailShape), 500);
 				clockedTrailShape.TrailShape = trailShape;
 				ClockedTrailShapes.Add(clockedTrailShape);
@@ -76,7 +79,7 @@ namespace ZoneLighting.StockPrograms
 
 			LoopClock.Start();
 			ClockedTrailShapes.ForEach(cts => cts.Start());
-			base.StartCore(null, forceStoppable);
+			base.StartCore(null);
 		}
 
 		protected override void StopCore(bool force)

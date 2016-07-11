@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZoneLighting.Graphics;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ExternalPrograms
@@ -84,7 +85,7 @@ namespace ExternalPrograms
 
 	    private void Blink()
 		{
-			ProgramCommon.SoftBlink(UseColor ? Color : ColorScheme.GetRandomSchemeColor(), BlinkTime/50, SendColor);
+			Animation.SoftBlink(UseColor ? Color : ColorScheme.GetRandomSchemeColor(), BlinkTime/50, SendColor);
 			//ProgramCommon.SoftBlink(UseColor ? Color : ColorScheme.GetRandomSchemeColor(), BlinkTime, SendColor);
 		}
 	}

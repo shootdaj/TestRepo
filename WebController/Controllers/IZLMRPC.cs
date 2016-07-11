@@ -42,6 +42,7 @@ namespace WebController.Controllers
 		void SetLightColor(string zoneName, string color, int index, float brightness = 1);
 
 		void SetAllZonesColor(string color, float brightness = 1);
+		void SetInputs(string programSetOrZoneName, ISV isv);
 
 	}
 }

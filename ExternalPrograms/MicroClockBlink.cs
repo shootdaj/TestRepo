@@ -2,6 +2,7 @@
 using System.Drawing;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
+using ZoneLighting.ZoneProgramNS.Clock;
 
 namespace ExternalPrograms
 {
@@ -17,7 +18,7 @@ namespace ExternalPrograms
 
 	    private long DriftThreshold { get; set; } = 500;
 		
-	    protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
+	    protected override void StartCore(dynamic parameters = null)
 	    {
 			Clock = new MicroClock(Interval, args => SendColor(Color), DriftThreshold);
 			Clock.Start();

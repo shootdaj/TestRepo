@@ -1,9 +1,8 @@
 ﻿using System;
-using ZoneLighting.ZoneProgramNS.MicroLibrary;
 
-namespace ZoneLighting.ZoneProgramNS
+namespace ZoneLighting.ZoneProgramNS.Clock
 {
-    public class MicroClock
+    public class MilliClock
     {
 	    public enum ClockState
 	    {
@@ -13,7 +12,7 @@ namespace ZoneLighting.ZoneProgramNS
 
 	    public ClockState State { get; set; } = ClockState.Stopped;
 
-		private MicroTimer Timer { get; set; } = new MicroTimer();
+		private MilliTimer Timer { get; set; }
 
         public long Interval
         {
@@ -30,31 +29,31 @@ namespace ZoneLighting.ZoneProgramNS
         public Action<MicroTimerEventArgs> Action { get; set; }
 
         /// <summary>
-        /// Creates a new instance of the MicroTimerClock
+        /// Creates a new instance of the MilliTimerClock
         /// </summary>
         /// <param name="interval">Tick time defines how often OnTick() will be called</param>
         /// <param name="action">Action to perform for every tick of the clock</param>
         /// <param name="ignoreEventIfLateBy">.NET is inherently non-realtime, so there is a certain amount of
         /// drift that may occur during heavy processing. This drift can be ignored if it passed a certain threhold that is 
         /// provided by this parameter. More details are at http://www.codeproject.com/Articles/98346/Microsecond-and-Millisecond-NET-Timer</param>
-        public MicroClock(long interval, Action<MicroTimerEventArgs> action, long ignoreEventIfLateBy)
+        public MilliClock(long interval, Action<MicroTimerEventArgs> action, long ignoreEventIfLateBy)
         {
-            Interval = interval;
-            Timer.MicroTimerElapsed += Timer_MicroTimerElapsed;
+            Timer.MilliTimerElapsed += Timer_MilliTimerElapsed;
 	        Action = action;
 	        IgnoreEventIfLateBy = ignoreEventIfLateBy;
-	    }
+	        Timer = new MilliTimer(interval);
+        }
         
-        public void Timer_MicroTimerElapsed(object sender, MicroTimerEventArgs timerEventArgs)
+        public void Timer_MilliTimerElapsed(object sender, MicroTimerEventArgs timerEventArgs)
         {
-            if (Action == null)
-                throw new Exception("Action cannot be null.");
-            Action(timerEventArgs);
+			Action(timerEventArgs);
         }
 
 		public void Start()
 	    {
-		    Timer.Start();
+			if (Action == null)
+				throw new Exception("Action cannot be null.");
+			Timer.Start();
             State = ClockState.Started; 
 	    }
 

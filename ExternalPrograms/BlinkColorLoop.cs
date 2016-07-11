@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
+using ZoneLighting.Graphics;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
@@ -45,7 +46,7 @@ namespace ExternalPrograms
 
 			for (int i = 0; i < colors.Count; i++)
 			{
-				ProgramCommon.Blink(new List<Tuple<Color, int>>() { new Tuple<Color, int>(colors[i], HoldTime) }, SendColor, SyncContext);
+				Animation.Blink(new List<Tuple<Color, int>>() { new Tuple<Color, int>(colors[i], HoldTime) }, SendColor, SyncContext);
 			}
 		}
 	}

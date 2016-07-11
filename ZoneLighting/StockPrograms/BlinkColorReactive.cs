@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
+using ZoneLighting.Graphics;
 using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLighting.StockPrograms
@@ -24,14 +25,14 @@ namespace ZoneLighting.StockPrograms
 
 				if (soft)
 				{
-					ProgramCommon.SoftBlink(new List<Tuple<Color, int>>
+					Animation.SoftBlink(new List<Tuple<Color, int>>
 					{
 						{color, time},
-					}, OutputColor, SyncContext, true, null, ForceStoppable, brightness);
+					}, OutputColor, SyncContext, true, null, brightness);
 				}
 				else
 				{
-					ProgramCommon.Blink(new List<Tuple<Color, int>>
+					Animation.Blink(new List<Tuple<Color, int>>
 					{
 						{color, time},
 						{Color.Empty, time}

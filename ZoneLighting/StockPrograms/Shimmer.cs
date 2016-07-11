@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MIDIator;
 using Sanford.Multimedia.Midi;
+using ZoneLighting.Graphics;
 using ZoneLighting.StockPrograms.MIDI;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
@@ -21,6 +22,8 @@ namespace ZoneLighting.StockPrograms
 	[ExportMetadata("Name", "Shimmer")]
 	public class Shimmer : LoopingZoneProgram
 	{
+		#region Inputs
+
 		int MaxFadeSpeed { get; set; } = 1;
 		int MaxFadeDelay { get; set; } = 20;
 		double Density { get; set; } = 1.0;
@@ -46,13 +49,20 @@ namespace ZoneLighting.StockPrograms
 
 		ColorScheme ColorScheme { get; set; } = null;
 
+		#endregion
+
+		/// <summary>
+		/// This flag is tracked by the Fade methods to be able to stop immediately if a forced stop is called.
+		/// </summary>
+		private bool ForceStopFlag { get; set; }
+
 		//private Random RandomGen { get; } = new Random();
 
 		private MIDIDevice MidiInput { get; set; }
 
 		public override SyncLevel SyncLevel { get; set; } = SyncLevel.None;
 
-	    protected override int LoopWaitTime { get; set; } = 10;
+		protected override int LoopWaitTime { get; set; } = 10;
 
 		/// <summary>
 		/// This overrides Setup() in ZoneProgram. This happens during constructor call.
@@ -88,7 +98,7 @@ namespace ZoneLighting.StockPrograms
 			SendColor(Color.Black);
 		}
 
-		protected override void StartCore(dynamic parameters = null, bool forceStoppable = true)
+		protected override void StartCore(dynamic parameters = null)
 		{
 			if (parameters != null)
 			{
@@ -107,7 +117,7 @@ namespace ZoneLighting.StockPrograms
 					throw new WarningException("Supplied MIDI Device ID is either in use or invalid.");
 			}
 
-			base.StartCore(null, forceStoppable);
+			base.StartCore(null);
 		}
 
 		private void HandleMidi(object sender, ChannelMessageEventArgs args)
@@ -115,52 +125,52 @@ namespace ZoneLighting.StockPrograms
 			switch (args.Message.MidiChannel)
 			{
 				case 0:
-				{
-					switch (args.Message.Data1)
 					{
-						case (int) NumarkOrbitMidiNote.XAxis:
+						switch (args.Message.Data1)
 						{
-							var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 1, 99);
-							//Debug.Print(scaledValue.ToString());
-							MaxFadeDelay = scaledValue;
-							//SetInput("MaxFadeDelay", scaledValue);
+							case (int)NumarkOrbitMidiNote.XAxis:
+								{
+									var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 1, 99);
+									//Debug.Print(scaledValue.ToString());
+									MaxFadeDelay = scaledValue;
+									//SetInput("MaxFadeDelay", scaledValue);
+								}
+								break;
+							case (int)NumarkOrbitMidiNote.YAxis:
+								{
+									var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
+									SetInput("Density", scaledValue);
+								}
+								break;
+							case (int)NumarkOrbitMidiNote.K1_BigKnob:
+								{
+									var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
+									SetInput("Brightness", scaledValue);
+								}
+								break;
+							case (int)NumarkOrbitMidiNote.A1:
+								SetInput("ColorScheme", ColorScheme.All);
+								break;
+							case (int)NumarkOrbitMidiNote.A2:
+								SetInput("ColorScheme", ColorScheme.Primaries);
+								break;
+							case (int)NumarkOrbitMidiNote.A3:
+								SetInput("ColorScheme", ColorScheme.Secondaries);
+								break;
+							case (int)NumarkOrbitMidiNote.B1:
+								SetInput("ColorScheme", ColorScheme.RedsBluesGreens);
+								break;
+							case (int)NumarkOrbitMidiNote.B2:
+								SetInput("ColorScheme", ColorScheme.Reds);
+								break;
+							case (int)NumarkOrbitMidiNote.B3:
+								SetInput("ColorScheme", ColorScheme.Blues);
+								break;
+							case (int)NumarkOrbitMidiNote.B4:
+								SetInput("ColorScheme", ColorScheme.Greens);
+								break;
 						}
-							break;
-						case (int) NumarkOrbitMidiNote.YAxis:
-						{
-							var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
-							SetInput("Density", scaledValue);
-						}
-							break;
-						case (int) NumarkOrbitMidiNote.K1_BigKnob:
-						{
-							var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
-							SetInput("Brightness", scaledValue);
-						}
-							break;
-						case (int) NumarkOrbitMidiNote.A1:
-							SetInput("ColorScheme", ColorScheme.All);
-							break;
-						case (int) NumarkOrbitMidiNote.A2:
-							SetInput("ColorScheme", ColorScheme.Primaries);
-							break;
-						case (int) NumarkOrbitMidiNote.A3:
-							SetInput("ColorScheme", ColorScheme.Secondaries);
-							break;
-						case (int) NumarkOrbitMidiNote.B1:
-							SetInput("ColorScheme", ColorScheme.RedsBluesGreens);
-							break;
-						case (int) NumarkOrbitMidiNote.B2:
-							SetInput("ColorScheme", ColorScheme.Reds);
-							break;
-						case (int) NumarkOrbitMidiNote.B3:
-							SetInput("ColorScheme", ColorScheme.Blues);
-							break;
-						case (int) NumarkOrbitMidiNote.B4:
-							SetInput("ColorScheme", ColorScheme.Greens);
-							break;
 					}
-				}
 					break;
 			}
 		}
@@ -190,7 +200,9 @@ namespace ZoneLighting.StockPrograms
 
 		protected override void PreStop(bool force)
 		{
-			ForceStoppable = force;
+			MidiInput?.StopRecording();
+			if (force)
+				ForceStopFlag = true;
 			ShimmerCTS.Cancel();
 			Task.WaitAll(Tasks.ToArray());
 			Tasks.ForEach(task =>
@@ -219,28 +231,37 @@ namespace ZoneLighting.StockPrograms
 				? Math.Min(Brightness * SparkleIntensity, 1)
 				: Brightness;
 
-			ProgramCommon.Fade(Color.Black, ColorScheme.GetRandomSchemeColor(ColorScheme).Darken(brightness), fadeSpeed, delayTime, false, color =>
+			var fader = new Animation.Fader();
+			fader.MakeForceStoppable(GetForceStopFlag);
+
+			fader.Fade(Color.Black, ColorScheme.GetRandomSchemeColor(ColorScheme).Darken(brightness), fadeSpeed, delayTime, false, color =>
 			{
 				lock (ColorsToSend)
 				{
 					ColorsToSend[pixelToShine] = color;
 				}
 
-			}, out endingColor, cts: ShimmerCTS, forceStoppable: ForceStoppable);
+			}, out endingColor, cts: ShimmerCTS);
 
-			ProgramCommon.FadeToBlack(GetColor(pixelToShine), fadeSpeed, delayTime, false, color =>
+
+			fader.FadeToBlack(GetColor(pixelToShine), fadeSpeed, delayTime, false, color =>
 			{
 				lock (ColorsToSend)
 				{
 					ColorsToSend[pixelToShine] = color;
 				}
 
-			}, out endingColor, cts: ShimmerCTS, force: ForceStoppable);
+			}, out endingColor, cts: ShimmerCTS);
 
 			PixelStates[pixelToShine] = false;
 
 			if (ShimmerCTS.IsCancellationRequested)
 				return;
+		}
+
+		private bool GetForceStopFlag()
+		{
+			return ForceStopFlag;
 		}
 	}
 }
