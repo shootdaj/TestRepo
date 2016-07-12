@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 
 namespace ZoneLighting.Graphics.Drawing
@@ -12,8 +13,8 @@ namespace ZoneLighting.Graphics.Drawing
 
 		public int LeadIndex { get; set; } = 0;
 
-		public int Length { get; }
+		public int Length { get; set; }
 
-		public Color? Color { get; }
+		public Color? Color { get; set; }
 	}
 }

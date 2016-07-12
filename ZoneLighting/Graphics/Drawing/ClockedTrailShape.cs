@@ -1,14 +1,21 @@
-﻿using ZoneLighting.ZoneProgramNS.Clock;
+﻿using System;
+using ZoneLighting.ZoneProgramNS.Clock;
 
 namespace ZoneLighting.Graphics.Drawing
 {
 	public class ClockedTrailShape
 	{
+		public double Interval
+		{
+			get { return Clock.Interval; }
+			set { Clock.Interval = value; }
+		}
 
-
-		public MicroClock Clock { get; set; }
+		public TimerClock Clock { get; set; }
 
 		public TrailShape TrailShape { get; set; }
+
+		public Func<int> GetNewInterval { get; set; }
 		
 		public void Start()
 		{

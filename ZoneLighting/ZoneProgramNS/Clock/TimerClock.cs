@@ -28,7 +28,7 @@ namespace ZoneLighting.ZoneProgramNS.Clock
         /// </summary>
         /// <param name="interval">Tick time defines how often OnTick() will be called</param>
         /// <param name="action">Action to perform for every tick of the clock</param>
-        public TimerClock(long interval, Action<ElapsedEventArgs> action)
+        public TimerClock(double interval, Action<ElapsedEventArgs> action)
         {
             Interval = interval;
 			Timer.Elapsed += Timer_Elapsed;

@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Dynamic;
 using System.Threading;
 using NUnit.Framework;
 using Refigure;
 using ZoneLighting;
 using ZoneLighting.Communication;
-using ZoneLighting.Drawing;
+using ZoneLighting.Graphics.Drawing;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Factories;
@@ -14,16 +16,39 @@ namespace ZoneLightingTests.ProgramTests
 {
 	public class RaindropTests
 	{
-		[TestCase(30)]
+		public Func<int> GetNewInterval()
+		{
+			return ProgramCommon.RandomIntBetween(IntervalAvg - IntervalVariability, IntervalAvg + IntervalVariability);
+		}
+
+		public int IntervalAvg { get; set; }
+
+		public int IntervalVariability { get; set; }
+
+		[TestCase(30, 6, 2, 250, 200)]
 		[Ignore]
-		public void Raindrops_Works(int sleepSeconds)
+		public void Raindrops_Works(int sleepSeconds, int trailLengthAvg, int trailLengthVariability, int intervalAvg, int intervalVariability)
 		{
 			var zlm = new ZLM(false, false, false, zlmInner =>
 			{
 				dynamic startingParams = new ExpandoObject();
-				startingParams.TrailShapes = new List<TrailShape>();
-				startingParams.TrailShapes.Add(new TrailShape(new Trail(4, ProgramCommon.GetRandomColor()),
-					new Shape(0, 1, 2, 3, 4, 5, 6, 7)));
+				startingParams.ClockedTrailShapes = new List<dynamic>();
+
+				for (int i = 0; i < 64; i+=8)
+				{
+					dynamic clockedTrailShape = new ExpandoObject();
+					var trailLength = ProgramCommon.RandomIntBetween(trailLengthAvg - trailLengthVariability, trailLengthAvg + trailLengthVariability);
+					var interval = ProgramCommon.RandomIntBetween(intervalAvg - intervalVariability, intervalAvg + intervalVariability);
+					var darkenFactor = (float)0.7;
+					clockedTrailShape.TrailShape = new TrailShape(new Trail(trailLength, ProgramCommon.GetRandomColor().Darken(0.5)),
+						new Shape(i, i+1, i+2, i+3, i+4, i+5, i+6, i+7));
+					clockedTrailShape.TrailShape.DarkenFactor = darkenFactor;
+					clockedTrailShape.Interval = interval;
+					clockedTrailShape.GetNewInterval = GetNewInterval();
+					startingParams.ClockedTrailShapes.Add(clockedTrailShape);
+				}
+				
+				//startingParams.ClockedTrailShapes.Add(new ExpandoObject() )};
 				//startingParams.TrailShapes.Add(new TrailShape(new Trail(4, ProgramCommon.GetRandomColor()),
 				//	new Shape(8, 9, 10, 11, 12, 13, 14, 15)));
 				//startingParams.TrailShapes.Add(new TrailShape(new Trail(4, ProgramCommon.GetRandomColor()),

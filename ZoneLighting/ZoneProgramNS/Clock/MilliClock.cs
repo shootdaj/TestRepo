@@ -38,10 +38,10 @@ namespace ZoneLighting.ZoneProgramNS.Clock
         /// provided by this parameter. More details are at http://www.codeproject.com/Articles/98346/Microsecond-and-Millisecond-NET-Timer</param>
         public MilliClock(long interval, Action<MicroTimerEventArgs> action, long ignoreEventIfLateBy)
         {
-            Timer.MilliTimerElapsed += Timer_MilliTimerElapsed;
+			Timer = new MilliTimer(interval);
+			Timer.MilliTimerElapsed += Timer_MilliTimerElapsed;
 	        Action = action;
 	        IgnoreEventIfLateBy = ignoreEventIfLateBy;
-	        Timer = new MilliTimer(interval);
         }
         
         public void Timer_MilliTimerElapsed(object sender, MicroTimerEventArgs timerEventArgs)

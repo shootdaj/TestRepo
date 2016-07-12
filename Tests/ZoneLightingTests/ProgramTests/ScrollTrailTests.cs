@@ -23,7 +23,7 @@ namespace ZoneLightingTests.ProgramTests
 			{
 				var isv = new ISV();
 				isv.Add("DarkenFactor", (float)0.7);
-				isv.Add("DelayTime", 0);
+				isv.Add("DelayTime", 20);
 				isv.Add("ShareShape", false);
 				isv.Add("TrailShapes", new List<TrailShape>()
 				{

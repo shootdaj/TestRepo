@@ -12,7 +12,8 @@ namespace ZoneLighting.StockPrograms
 	[ExportMetadata("Name", "Raindrops")]
 	public class Raindrops : ReactiveZoneProgram
 	{
-		private MicroClock LoopClock { get; set; }
+		private TimerClock LoopClock { get; set; }
+		//private MilliClock LoopClock { get; set; }
 
 		public List<ClockedTrailShape> ClockedTrailShapes { get; set; } = new List<ClockedTrailShape>();
 
@@ -20,13 +21,14 @@ namespace ZoneLighting.StockPrograms
 
 		public Raindrops()
 		{
-			LoopClock = new MicroClock(10000 //refresh interval
-				, args => SendColors(ColorsToSend)
-				, 500); //500us drift threshold
+			LoopClock = new TimerClock(1 //refresh interval
+				, args => SendColors(ColorsToSend));
+				//, 0); //drift threshold
 		}
 
-		private void SetTrailColors(TrailShape trailShape)
+		private void SetTrailColors(ClockedTrailShape clockedTrailShape)
 		{
+			var trailShape = clockedTrailShape.TrailShape;
 			var leadIndex = trailShape.Trail.LeadIndex;
 			var leadPixel = trailShape.Shape.Pixels[leadIndex];
 			var trailEnd = leadIndex; //this changes in the for loop after these declarations
@@ -59,22 +61,28 @@ namespace ZoneLighting.StockPrograms
 
 			trailShape.Trail.LeadIndex = trailShape.Shape.GetNextIndex(leadIndex);
 
+			if (trailShape.Trail.LeadIndex == 0)
+			{
+				trailShape.Trail.Color = ProgramCommon.GetRandomColor().Darken(0.5);
+				clockedTrailShape.Interval = clockedTrailShape.GetNewInterval();
+			}
+
 			//Console.WriteLine(trailShape.ToString());
 		}
 
 		protected override void StartCore(dynamic parameters = null)
 		{
-			if (parameters == null || parameters.TrailShapes == null)
-				throw new Exception("Parameter TrailShapes is required.");
+			if (parameters == null || parameters.ClockedTrailShapes == null)
+				throw new Exception("Parameter ClockedTrailShapes is required.");
 
-			((List<TrailShape>)parameters.TrailShapes).ForEach(trailShape =>
+			((List<dynamic>)parameters.ClockedTrailShapes).ForEach(clockedTrailShape =>
 			{
-				var clockedTrailShape = new ClockedTrailShape();
-				clockedTrailShape.Clock =
-					new MicroClock(100000,
-						args => SetTrailColors(clockedTrailShape.TrailShape), 500);
-				clockedTrailShape.TrailShape = trailShape;
-				ClockedTrailShapes.Add(clockedTrailShape);
+				var tempClockedTrailShape = new ClockedTrailShape();
+				tempClockedTrailShape.Clock =
+					new TimerClock((double)clockedTrailShape.Interval,
+						args => SetTrailColors(tempClockedTrailShape));//, 0);
+				tempClockedTrailShape.TrailShape = clockedTrailShape.TrailShape;
+				ClockedTrailShapes.Add(tempClockedTrailShape);
 			});
 
 			LoopClock.Start();
@@ -91,16 +99,15 @@ namespace ZoneLighting.StockPrograms
 
 		#region Inputs
 
-		public long LoopInterval
+		public double LoopInterval
 		{
 			get { return LoopClock.Interval; }
 			set { LoopClock.Interval = value; }
 		}
 
-		public long LoopDriftThreshold
-		{
-			get { return LoopClock.IgnoreEventIfLateBy; }
-			set { LoopClock.IgnoreEventIfLateBy = value; }
+		public long LoopDriftThreshold { get; set;
+			//get { return LoopClock.IgnoreEventIfLateBy; }
+			//set { LoopClock.IgnoreEventIfLateBy = value; }
 		}
 
 		public int NumberOfDrops => ClockedTrailShapes.Count;
