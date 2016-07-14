@@ -16,19 +16,23 @@ namespace ZoneLightingTests.ProgramTests
 {
 	public class RaindropTests
 	{
-		public Func<int> GetNewInterval()
+		public int GetNewInterval()
 		{
-			return ProgramCommon.RandomIntBetween(IntervalAvg - IntervalVariability, IntervalAvg + IntervalVariability);
+			var value = ProgramCommon.RandomIntBetween(IntervalAvg - IntervalVariability, IntervalAvg + IntervalVariability);
+			return value;
 		}
 
 		public int IntervalAvg { get; set; }
 
 		public int IntervalVariability { get; set; }
 
-		[TestCase(30, 6, 2, 250, 200)]
+		[TestCase(360, 4, 2, 70, 70)]
 		[Ignore]
 		public void Raindrops_Works(int sleepSeconds, int trailLengthAvg, int trailLengthVariability, int intervalAvg, int intervalVariability)
 		{
+			IntervalAvg = intervalAvg;
+			IntervalVariability = intervalVariability;
+
 			var zlm = new ZLM(false, false, false, zlmInner =>
 			{
 				dynamic startingParams = new ExpandoObject();
@@ -39,12 +43,15 @@ namespace ZoneLightingTests.ProgramTests
 					dynamic clockedTrailShape = new ExpandoObject();
 					var trailLength = ProgramCommon.RandomIntBetween(trailLengthAvg - trailLengthVariability, trailLengthAvg + trailLengthVariability);
 					var interval = ProgramCommon.RandomIntBetween(intervalAvg - intervalVariability, intervalAvg + intervalVariability);
+
 					var darkenFactor = (float)0.7;
-					clockedTrailShape.TrailShape = new TrailShape(new Trail(trailLength, ProgramCommon.GetRandomColor().Darken(0.5)),
+					clockedTrailShape.TrailShape = new TrailShape(new Trail(trailLength, Color.Green.Darken(0.5)),
 						new Shape(i, i+1, i+2, i+3, i+4, i+5, i+6, i+7));
 					clockedTrailShape.TrailShape.DarkenFactor = darkenFactor;
 					clockedTrailShape.Interval = interval;
-					clockedTrailShape.GetNewInterval = GetNewInterval();
+					clockedTrailShape.GetNewInterval = (Func<int>) GetNewInterval;
+					clockedTrailShape.AutoTrail = true; //todo: implement autotrail 
+					clockedTrailShape.AutoSpeed = true;	//todo: implement autospeed
 					startingParams.ClockedTrailShapes.Add(clockedTrailShape);
 				}
 				
