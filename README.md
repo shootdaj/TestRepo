@@ -74,7 +74,7 @@ This application uses .NET's Managed Extensibility Framework (MEF) to load ZoneP
 
 ###ZoneLightingManager (ZLM)
 
-ZoneLightingManager (ZLM, in short) is the *runner* class for the entire application. All high-level operations like creating and destroying program sets and/or zones are done using this class. To use ZLM, simply create an instance of it. WebController already creates one and keeps it in the ASP.NET Application State and displays it on the index page.
+ZoneLightingManager (ZLM, in short) is the runner class for the entire application. All high-level operations like creating and destroying program sets and/or zones are done using this class. To use ZLM, simply create an instance of it. WebController already creates one and keeps it in the ASP.NET Application State and displays it on the index page.
 
 
 ###Electronics
