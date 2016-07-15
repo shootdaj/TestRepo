@@ -131,6 +131,7 @@
     <Compile Include="Graphics\Drawing\TrailShape.cs" />
     <Compile Include="Graphics\Drawing\Trail.cs" />
     <Compile Include="StockPrograms\Shimmer.cs" />
+    <Compile Include="StockPrograms\VisualClock.cs" />
     <Compile Include="Usables\RunnerHelpers.cs" />
     <Compile Include="StockPrograms\BlinkColorLoop.cs" />
     <Compile Include="StockPrograms\BlinkColorReactive.cs" />

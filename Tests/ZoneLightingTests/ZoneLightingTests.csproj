@@ -108,6 +108,7 @@
     <Compile Include="FadeCandyControllerTests.cs" />
     <Compile Include="InputStartingValuesTests.cs" />
     <Compile Include="LEDTests.cs" />
+    <Compile Include="ProgramTests\VisualClockTests.cs" />
     <Compile Include="ZoneProgramNS\Clock\MilliTimerTests.cs" />
     <Compile Include="ZoneProgramNS\Clock\MicroTimerTests.cs" />
     <Compile Include="ZoneProgramNS\Clock\StopwatchClockTests.cs" />

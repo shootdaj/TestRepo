@@ -26,7 +26,9 @@ namespace ZoneLightingTests.ProgramTests
 
 		public int IntervalVariability { get; set; }
 
+		[TestCase(360, 4, 2, 200, 70)]
 		[TestCase(360, 4, 2, 70, 70)]
+		[TestCase(360, 4, 2, 40, 30)]
 		[Ignore]
 		public void Raindrops_Works(int sleepSeconds, int trailLengthAvg, int trailLengthVariability, int intervalAvg, int intervalVariability)
 		{
@@ -45,7 +47,7 @@ namespace ZoneLightingTests.ProgramTests
 					var interval = ProgramCommon.RandomIntBetween(intervalAvg - intervalVariability, intervalAvg + intervalVariability);
 
 					var darkenFactor = (float)0.7;
-					clockedTrailShape.TrailShape = new TrailShape(new Trail(trailLength, Color.Green.Darken(0.5)),
+					clockedTrailShape.TrailShape = new TrailShape(new Trail(trailLength, ProgramCommon.GetRandomColor().Darken(0.5)),
 						new Shape(i, i+1, i+2, i+3, i+4, i+5, i+6, i+7));
 					clockedTrailShape.TrailShape.DarkenFactor = darkenFactor;
 					clockedTrailShape.Interval = interval;
