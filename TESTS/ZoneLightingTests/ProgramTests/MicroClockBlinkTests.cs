@@ -10,6 +10,7 @@ namespace ZoneLightingTests.ProgramTests
 {
 	public class MicroClockBlinkTests
 	{
+        //test comment
 		[TestCase(30, 100000)]
 		[TestCase(30, 10000)]
 		[Ignore("Manual")]
