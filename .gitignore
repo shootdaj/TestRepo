@@ -276,3 +276,4 @@ WebController/ZoneConfiguration.json
 !Tests/WebControllerTests/app.config
 !ZoneLighting/app.config
 !ExternalZones/app.config
+!app.config
