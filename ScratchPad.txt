@@ -1,0 +1,5 @@
+When sending ZLM information across the wire, what information should it have? 
+In other words, what information should ZLMJsonModel have?
+
+1. ProgramSet info
+	a. Name 

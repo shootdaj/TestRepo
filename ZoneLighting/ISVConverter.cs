@@ -11,7 +11,7 @@ namespace ZoneLighting
 			return objectType == typeof(ISV);
 		}
 
-		public override bool CanWrite => false;
+		public override bool CanWrite => true;
 
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 		{
@@ -33,7 +33,8 @@ namespace ZoneLighting
 
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
 		{
-			throw new NotImplementedException();
+			var isv = (ISV)value;
+			serializer.Serialize(writer, isv.Dictionary);
 		}
 	}
 }
