@@ -103,6 +103,7 @@
     <Compile Include="Stepper.cs" />
     <Compile Include="StepperInternalLoop.cs" />
     <Compile Include="StopWatchBlink.cs" />
+    <Compile Include="VisualClock.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -118,7 +119,7 @@
   <PropertyGroup>
     <PostBuildEvent>robocopy "$(TargetDir)." "$(TargetDir)Programs\." "$(TargetFileName)" /is
 robocopy "$(TargetDir)." "$(SolutionDir)Tests\ZoneLightingTests\Resources\Programs\." "$(TargetFileName)" /is
-robocopy "$(TargetDir)." "$(SolutionDir)WebController\Programs\." "$(TargetFileName)" /is
+robocopy "$(TargetDir)." "$(SolutionDir)WebRemote\Programs\." "$(TargetFileName)" /is
 robocopy "$(TargetDir)." "$(SolutionDir)Tests\WebControllerTests\Resources\Programs\." "$(TargetFileName)" /is
 rem each robocopy statement and then underneath have the error check.
 if %25ERRORLEVEL%25 GEQ 8 goto failed

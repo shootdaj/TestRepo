@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Drawing;
-using ZoneLighting.Graphics.Drawing;
 using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Clock;
 
-namespace ZoneLighting.StockPrograms
+namespace ExternalPrograms
 {
-	public class VisualClock : ReactiveZoneProgram
+    [Export(typeof(ZoneProgram))]
+    [ExportMetadata("Name", "VisualClock")]
+    public class VisualClock : ReactiveZoneProgram
 	{
 		private Color BackgroundColor { get; set; } = Color.Black.Darken(.5);
 
@@ -23,7 +25,7 @@ namespace ZoneLighting.StockPrograms
 
         private int CurrentHourPosition { get; set; }
 
-        private Shape Shape { get; set; } 
+        private ZoneLighting.Graphics.Drawing.Shape Shape { get; set; } 
 
 		private TimerClock Clock { get; set; } 
 
