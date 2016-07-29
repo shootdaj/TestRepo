@@ -18,7 +18,8 @@ namespace ZoneLightingTests.ProgramTests
 {
 	public class VisualClockTests
 	{
-		[TestCase(30)]
+        [Ignore("Manual")]
+        [TestCase(120)]
 		public void VisualClock_Works(int sleepSeconds)
 		{
 			

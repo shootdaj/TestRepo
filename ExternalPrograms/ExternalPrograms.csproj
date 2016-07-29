@@ -103,6 +103,7 @@
     <Compile Include="Stepper.cs" />
     <Compile Include="StepperInternalLoop.cs" />
     <Compile Include="StopWatchBlink.cs" />
+    <Compile Include="VisualClock.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

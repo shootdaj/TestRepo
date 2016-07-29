@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using ZoneLighting.Graphics.Drawing;
 using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Clock;
 
-namespace ZoneLighting.StockPrograms
+namespace ExternalPrograms
 {
 	public class VisualClock : ReactiveZoneProgram
 	{
@@ -23,7 +22,7 @@ namespace ZoneLighting.StockPrograms
 
         private int CurrentHourPosition { get; set; }
 
-        private Shape Shape { get; set; } 
+        private ZoneLighting.Graphics.Drawing.Shape Shape { get; set; } 
 
 		private TimerClock Clock { get; set; } 
 
