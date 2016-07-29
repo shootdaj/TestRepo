@@ -126,6 +126,21 @@ namespace ZoneLighting.Usables
 			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones, startingParameters: startingParameters);
 		}
 
+		public static void RunShimmerOnNeoMatrixWithoutMIDI(ZLM zlm)
+		{
+			var isv = new ISV();
+			isv.Add("MaxFadeSpeed", 1);
+			isv.Add("MaxFadeDelay", 20);
+			isv.Add("Density", 1.0);
+			isv.Add("Brightness", 0.3);
+			isv.Add("Random", true);
+			//isv.Add("ColorScheme", ColorScheme.Primaries);
+			
+
+			CreateNeoMatrixZone(zlm);
+			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones, startingParameters: null);
+		}
+
 		public static void RunShimmerAndBlinkColorReactiveOnNeoMatrix(ZLM zlm)
 		{
 			var isv = new ISV();
