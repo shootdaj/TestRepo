@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Clock;
 
 namespace ExternalPrograms
 {
-	public class VisualClock : ReactiveZoneProgram
+    [Export(typeof(ZoneProgram))]
+    [ExportMetadata("Name", "VisualClock")]
+    public class VisualClock : ReactiveZoneProgram
 	{
 		private Color BackgroundColor { get; set; } = Color.Black.Darken(.5);
 

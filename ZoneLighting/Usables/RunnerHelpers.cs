@@ -300,5 +300,11 @@ namespace ZoneLighting.Usables
 			var fourthRow = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "FourthRow", PixelType.FadeCandyWS2812Pixel, 16, 4);
 			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);
 		}
-	}
+
+        public static void RunVisualClockOnNeoMatrix(ZLM zlm)
+        {
+            CreateNeoMatrixZone(zlm);
+            zlm.CreateProgramSet("VisualClockSet", "VisualClock", false, null, zlm.Zones);
+        }
+    }
 }
