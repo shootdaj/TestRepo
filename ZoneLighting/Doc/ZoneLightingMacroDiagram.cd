@@ -2,14 +2,14 @@
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="ZoneLighting.ZLM" Collapsed="true">
     <Position X="8.25" Y="0.5" Width="1.5" />
-    <AssociationLine Name="ProgramSets" Type="ZoneLighting.ZoneProgramNS.ProgramSet">
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="0.158" Y="0.684" />
-      </MemberNameLabel>
-    </AssociationLine>
     <AssociationLine Name="Zones" Type="ZoneLighting.ZoneNS.Zone">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.133" Y="0.073" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="ProgramSets" Type="ZoneLighting.ZoneProgramNS.ProgramSet">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.158" Y="0.684" />
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
@@ -17,8 +17,8 @@
       <FileName>ZLM.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
-      <Property Name="ProgramSets" />
       <Property Name="Zones" />
+      <Property Name="ProgramSets" />
     </ShowAsCollectionAssociation>
     <Lollipop Position="0.179" Collapsed="true" />
   </Class>
@@ -40,8 +40,8 @@
       <FileName>ZoneProgramNS\ProgramSet.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
-      <Property Name="ZonePrograms" />
       <Property Name="Zones" />
+      <Property Name="ZonePrograms" />
     </ShowAsCollectionAssociation>
     <Lollipop Orientation="Right" Position="0.1" Collapsed="true" />
   </Class>
@@ -279,6 +279,15 @@
   </Class>
   <Class Name="ZoneLighting.StockPrograms.Shimmer" Collapsed="true">
     <Position X="7.5" Y="9.5" Width="1.5" />
+    <InheritanceLine Type="ZoneLighting.ZoneProgramNS.LoopingZoneProgram" FixedToPoint="true">
+      <Path>
+        <Point X="8.25" Y="4.691" />
+        <Point X="8.25" Y="4.845" />
+        <Point X="7.346" Y="4.845" />
+        <Point X="7.346" Y="9.75" />
+        <Point X="7.5" Y="9.75" />
+      </Path>
+    </InheritanceLine>
     <TypeIdentifier>
       <HashCode>AAAAAAA4CQIAgAAAAAgACAQBABQARkCAAAAJCCIggIA=</HashCode>
       <FileName>StockPrograms\Shimmer.cs</FileName>
