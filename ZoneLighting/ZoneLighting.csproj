@@ -207,7 +207,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Doc\ZoneLightingClasses.cd" />
+    <None Include="Doc\ZoneLighting.cd" />
+    <None Include="Doc\ZoneLightingDetailedDiagram.cd" />
+    <None Include="Doc\ZoneLightingMacroDiagram.cd" />
     <None Include="FadeCandy\basement.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -249,7 +251,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Doc\zoneconfigurationexample.txt" />
-    <Content Include="Doc\ZoneLightingClasses.jpg" />
+    <Content Include="Doc\ZoneLightingDetailedDiagram.png" />
+    <Content Include="Doc\ZoneLightingMacroDiagram.png" />
     <Content Include="FadeCandy\dfu-util.exe" />
     <Content Include="FadeCandy\fcserver.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
