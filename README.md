@@ -46,7 +46,7 @@ Since a picture is worth a 1024 words, here's an architectural diagram of how th
 
 ![ZoneLighting Macro Architectural Diagram](/ZoneLighting/Doc/ZoneLightingMacroDiagram.png)
 
-The central concept of ZoneLighting is a construct known as a ZoneProgram. The main entry point to ZoneLighting is encapsulated in ZLM. ZLM contains Program Sets (or simply Sets) and Zones. Sets and Zones allow us to control the entire application to the finest detail. Some of the programs that are packaged with ZoneLighting are listed in the diagram and all of them inherit from ZoneProgram.
+The central concept of ZoneLighting is a construct known as a **ZoneProgram** (or simply Program). The main entry point to ZoneLighting is encapsulated in **ZLM**. ZLM contains **Program Sets** (or simply Sets) and **Zones**. Sets and Zones allow us to control the entire application to the finest detail. Some of the programs that are packaged with ZoneLighting are listed in the diagram and all of them inherit from ZoneProgram.
 
 In the following sectionds, the various parts of this diagram will be explained.
 
