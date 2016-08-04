@@ -265,15 +265,12 @@ packages*/
 !*packages.config
 ZoneLighting/FadeCandy/Local/*
 !ZoneLighting/FadeCandy/*.exe
-WebController/ProgramSetConfiguration.json
-WebController/ZoneConfiguration.json
 !Tests/ZoneLightingTests/App.config
 !Console/App.config
-!WebController/Web.config
-!WebController/Views/Web.config
 !ExternalPrograms/app.config
 !nuget.config
 !Tests/WebControllerTests/app.config
 !ZoneLighting/app.config
 !ExternalZones/app.config
 !app.config
+!TESTS/WebRemoteTests/Resources/FadeCandy/*.exe
