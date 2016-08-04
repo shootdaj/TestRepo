@@ -1368,7 +1368,7 @@ namespace AustinHarris.JsonRpcTestN
 			Assert.AreEqual(expectedResult, result.Result);
 		}
 
-		[Test ()]
+		[Test]
 		public void TestBatchResultWrongRequests()
 		{
 			string request = @"[{},{""jsonrpc"":""2.0"",""id"":4}]";

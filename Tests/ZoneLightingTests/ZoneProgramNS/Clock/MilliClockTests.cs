@@ -5,9 +5,9 @@ using ZoneLighting.ZoneProgramNS.Clock;
 
 namespace ZoneLightingTests.ZoneProgramNS.Clock
 {
+	[Ignore("Manual Test")]
 	public class MilliClockTests
 	{
-		[Ignore]
 		[TestCase(30, 2)]
 		[TestCase(60, 2)]
 		public void MilliClock_ClockTicksAreCloseToThreadTimerTicks(int sleepSeconds, int msThreshold)

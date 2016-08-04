@@ -5,10 +5,10 @@ using ZoneLighting.ZoneProgramNS.Clock;
 
 namespace ZoneLightingTests.ZoneProgramNS.Clock
 {
+	[Ignore("Manual Test")]
 	public class StopwatchClockTests
 	{
 		[TestCase(30)]
-		[Ignore]
 		public void StopwatchClock_ClockTicksEqualStopwatchTicks(int sleepSeconds)
 		{
 			var ticks = 0;

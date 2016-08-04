@@ -16,9 +16,9 @@ using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLightingTests.ProgramTests
 {
+	[Ignore("Manual Test")]
 	public class VisualClockTests
 	{
-        [Ignore("Manual")]
         [TestCase(120)]
 		public void VisualClock_Works(int sleepSeconds)
 		{

@@ -12,10 +12,10 @@ using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLightingTests.ProgramTests
 {
+	[Ignore("Manual Test")]
 	public class ScrollTrailTests
 	{
 		[TestCase(3000)]
-		[Ignore("Manual")]
 		public void ScrollTrail_Works(int? sleepSeconds)
 		{
 			//act
@@ -49,7 +49,6 @@ namespace ZoneLightingTests.ProgramTests
 		}
 
 		[TestCase(30, (float)0.7, 40)]
-		[Ignore("Manual")]
 		public void ScrollTrail_FourBlueRedSquareTrails_Works(int? sleepSeconds, float darkenFactor, int delayTime)
 		{
 			//act
@@ -83,7 +82,6 @@ namespace ZoneLightingTests.ProgramTests
 		}
 
 		[TestCase(30, (float)0.7, 40)]
-		[Ignore("Manual")]
 		public void ScrollTrail_FourRandomColorsSquareTrails_Works(int? sleepSeconds, float darkenFactor, int delayTime)
 		{
 			//act
@@ -117,7 +115,6 @@ namespace ZoneLightingTests.ProgramTests
 		}
 
 		[TestCase(30)]
-		[Ignore]
 		public void RaindropsOnScrollTrail_Works(int? sleepSeconds)
 		{
 			//act

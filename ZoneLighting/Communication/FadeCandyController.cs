@@ -4,8 +4,11 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Anshul.Utilities;
 using Refigure;
 using WebSocketSharp;
+using ZoneLighting.ConfigNS;
+using Config = Refigure.Config;
 
 namespace ZoneLighting.Communication
 {
@@ -54,17 +57,14 @@ namespace ZoneLighting.Communication
 
 		public void KillFCServer()
 		{
-			foreach (var process in Process.GetProcessesByName(Config.Get("FCServerExecutablePath").Split('\\').Last().Split('.').First()))
+			TryClass.Try(() =>
 			{
-				try
+				foreach (
+					var process in
+						Process.GetProcessesByName(Config.Get("FCServerExecutablePath").Split('\\').Last().Split('.').First()))
 				{
-					process.Kill();
 				}
-				catch (Exception)
-				{
-					// ignored
-				}
-			}
+			}, 5, false, () => {Console.WriteLine("Unable to kill FCServer.");});
 		}
 
 		public void Initialize(string configFilePath = null)
@@ -131,7 +131,10 @@ namespace ZoneLighting.Communication
 		/// </summary>
 		public void Connect()
 		{
-			WebSocket.Connect();
+			TryClass.Try(() =>
+			{
+				WebSocket.Connect(); 
+			});
 		}
 
 		public override void Dispose()

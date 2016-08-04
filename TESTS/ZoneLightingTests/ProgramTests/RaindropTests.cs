@@ -14,6 +14,7 @@ using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLightingTests.ProgramTests
 {
+	[Ignore("Manual Test")]
 	public class RaindropTests
 	{
 		public int GetNewInterval()
@@ -29,7 +30,6 @@ namespace ZoneLightingTests.ProgramTests
 		[TestCase(360, 4, 2, 200, 70)]
 		[TestCase(360, 4, 2, 70, 70)]
 		[TestCase(360, 4, 2, 40, 30)]
-		[Ignore]
 		public void Raindrops_Works(int sleepSeconds, int trailLengthAvg, int trailLengthVariability, int intervalAvg, int intervalVariability)
 		{
 			IntervalAvg = intervalAvg;

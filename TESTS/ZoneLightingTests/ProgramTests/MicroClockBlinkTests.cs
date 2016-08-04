@@ -8,12 +8,12 @@ using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLightingTests.ProgramTests
 {
+	[Ignore("Manual Test")]
 	public class MicroClockBlinkTests
 	{
         //test comment
 		[TestCase(30, 100000)]
 		[TestCase(30, 10000)]
-		[Ignore("Manual")]
 		public void MicroClockBlink_Works(int sleepSeconds, int interval)
 		{
 			//act

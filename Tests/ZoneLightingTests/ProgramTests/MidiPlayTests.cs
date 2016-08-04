@@ -8,11 +8,11 @@ using ZoneLighting.Usables;
 
 namespace ZoneLightingTests.ProgramTests
 {
+	[Ignore("Manual Test")]
 	public class MidiPlayTests
 	{
 		[TestCase(30)]
 		[TestCase(30)]
-		[Ignore("Manual")]
 		public void MidiPlay_Works(int sleepSeconds)
 		{
 			//act
