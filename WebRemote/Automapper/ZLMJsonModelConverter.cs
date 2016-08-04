@@ -20,7 +20,7 @@ namespace WebRemote.Automapper
 	{
 		public ISV Resolve(Zone source, ZoneJsonModel destination, ISV destMember, ResolutionContext context)
 		{
-			return source.ZoneProgram.Inputs.ToISV();
+			return source?.ZoneProgram?.Inputs?.ToISV();
 		}
 	}
 }
