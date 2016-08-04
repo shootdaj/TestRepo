@@ -107,10 +107,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IMPORTED\JSON-RPC.NET\Json-Rpc\AustinHarris.JsonRpc.csproj">
-      <Project>{24FC1A2A-0BC3-43A7-9BFE-B628C2C4A307}</Project>
-      <Name>AustinHarris.JsonRpc</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ZoneLighting\ZoneLighting.csproj">
       <Project>{fe00db62-6c3c-4d04-9f03-23da814298b6}</Project>
       <Name>ZoneLighting</Name>

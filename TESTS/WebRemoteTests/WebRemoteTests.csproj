@@ -66,10 +66,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\IMPORTED\JSON-RPC.NET\Json-Rpc\AustinHarris.JsonRpc.csproj">
-      <Project>{24FC1A2A-0BC3-43A7-9BFE-B628C2C4A307}</Project>
-      <Name>AustinHarris.JsonRpc</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\WebRemote\WebRemote.csproj">
       <Project>{f1527c4e-3ae9-4ea2-803c-b121053df8e2}</Project>
       <Name>WebRemote</Name>
