@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Dynamic;
 using System.Linq;
 using System.Text;
-using AustinHarris.JsonRpc;
 using WebRemote.Extensions;
 using WebRemote.IoC;
 using WebRemote.Models;
@@ -18,7 +17,7 @@ namespace WebRemote
 	/// <summary>
 	/// Encapsulates an RPC-style controller implementation for ZLM.
 	/// </summary>
-	public class ZLMRPC : JsonRpcService, IZLMRPC, IDisposable
+	public class ZLMRPC : IZLMRPC, IDisposable
 	{
 		#region Internals
 
@@ -62,7 +61,7 @@ namespace WebRemote
 		/// <param name="numberOfLights">The number of lights.</param>
 		/// <param name="channel">The channel.</param>
 		/// <returns>The instance of the zone that was added.</returns>
-		[JsonRpcMethod]
+		
 		public ZoneJsonModel AddFadeCandyZone(string name, PixelType pixelType, int numberOfLights, byte? channel)
 		{
 			return ZLM.AddFadeCandyZone(name, pixelType, numberOfLights, channel).ToJsonModel<Zone, ZoneJsonModel>();
@@ -72,26 +71,26 @@ namespace WebRemote
 		/// Creates a ZoneLightingManager. This method is intended to be used on re-creations rather than the initial create.
 		/// For initial creation of ZLM, use Container.CreateZLM().
 		/// </summary>
-		[JsonRpcMethod]
+		
 		public void CreateZLM()
 		{
 			Container.CreateZLM();
 			Construct(Container.ZLM);
 		}
 
-		[JsonRpcMethod]
+		
 		public void DisposeZLM()
 		{
 			ZLMAction(zlm => zlm.Dispose());
 		}
 
-		[JsonRpcMethod]
+		
 		public void Save()
 		{
 			ZLMAction(zlm => zlm.Save());
 		}
 
-		[JsonRpcMethod]
+		
 		public string GetStatus()
 		{
 			var sb = new StringBuilder();
@@ -112,7 +111,7 @@ namespace WebRemote
 
 		#region Program Set
 
-		[JsonRpcMethod]
+		
 		public ProgramSetJsonModel CreateProgramSet(string programSetName, string programName, IEnumerable<string> zoneNames, bool sync = true,
 			ISV isv = null, dynamic startingParameters = null)
 		{
@@ -129,44 +128,44 @@ namespace WebRemote
 			return model;
 		}
 
-		[JsonRpcMethod]
+		
 		public void DisposeProgramSet(string programSetName)
 		{
 			ZLMAction(zlm => zlm.DisposeProgramSets(programSetName.Listify()));
 		}
 
-		[JsonRpcMethod]
+		
 		public void DisposeProgramSets()
 		{
 			ZLMAction(zlm => zlm.DisposeProgramSets());
 		}
 
-		[JsonRpcMethod]
+		
 		public void RecreateProgramSet(string programSetName, string programName, List<string> zoneNames, ISV isv)
 		{
 			ZLMAction(zlm => zlm.RecreateProgramSet(programSetName, programName, zoneNames, isv));
 		}
 
-		[JsonRpcMethod]
+		
 		public void StartProgramSet(string programSetName)
 		{
 			ZLMAction(zlm => zlm.ProgramSets[programSetName].Start());
 		}
 
-		[JsonRpcMethod]
+		
 		public void StopProgramSet(string programSetName)
 		{
 			ZLMAction(zlm => zlm.ProgramSets[programSetName].Stop());
 		}
 
 
-		[JsonRpcMethod]
+		
 		public void SetProgramSetInputs(string programSetName, ISV isv)
 		{
 			ZLM.SetProgramSetInputs(programSetName, isv);
 		}
 
-		[JsonRpcMethod()]
+		
 		public void SetInputs(string programSetOrZoneName, ISV isv)
 		{
 			//figure out if supplied name is program set or zone
@@ -184,7 +183,7 @@ namespace WebRemote
 			}
 		}
 
-		[JsonRpcMethod]
+		
 		public void RecreateProgramSetWithoutZone(string programSetName, string zoneName, bool force = false)
 		{
 			ZLM.RecreateProgramSetWithoutZone(programSetName, zoneName, force);
@@ -199,13 +198,13 @@ namespace WebRemote
 		//	ZLMAction(zlm => zlm.Zones.First(z => z.Name == zoneName));
 		//}
 
-		[JsonRpcMethod]
+		
 		public void StopZone(string zoneName, bool force)
 		{
 			ZLMAction(zlm => zlm.StopZone(zoneName, force));
 		}
 
-		[JsonRpcMethod]
+		
 		public List<ZoneJsonModel> GetZones()
 		{
 			return ZLM.Zones?.Select(zone => zone.ToJsonModel<Zone, ZoneJsonModel>()).ToList();
@@ -222,31 +221,31 @@ namespace WebRemote
 			
 		//}
 
-		[JsonRpcMethod]
+		
 		public void SetZoneInputs(string zoneName, ISV isv)
 		{
 			ZLM.SetZoneInputs(zoneName, isv);
 		}
 
-		[JsonRpcMethod]
+		
 		public void SetZoneColor(string zoneName, string color, float brightness = 1)
 		{
 			ZLM.SetZoneColor(zoneName, color, brightness);
 		}
 
-		[JsonRpcMethod]
+		
 		public void SetLightColor(string zoneName, string color, int index, float brightness = 1)
 		{
 			ZLM.SetLightColor(zoneName, color, index, brightness);
 		}
 
-		[JsonRpcMethod]
+		
 		public void SetAllZonesColor(string color, float brightness = 1)
 		{
 			ZLM.SetAllZonesColor(color, brightness);
 		}
 
-		[JsonRpcMethod]
+		
 		public string GetZoneSummary()
 		{
 			var result = string.Empty;
@@ -263,7 +262,7 @@ namespace WebRemote
 
 		#region Misc
 
-		[JsonRpcMethod]
+		
 		public void Notify(string colorString, int? time, int? cycles, double? brightness)
 		{
 			var color = Color.FromName(colorString);
@@ -325,7 +324,6 @@ namespace WebRemote
 		public void Dispose()
 		{
 			ZLM?.Dispose();
-			base.Dispose();
 		}
 	}
 }
