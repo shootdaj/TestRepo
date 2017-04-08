@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Dynamic;
 using System.Threading;
 using NUnit.Framework;
@@ -14,8 +13,8 @@ using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLightingTests.ProgramTests
 {
-	[Ignore("Manual Test")]
-	public class RaindropTests
+    [Explicit("Manual Test")]
+    public class RaindropTests
 	{
 		public int GetNewInterval()
 		{

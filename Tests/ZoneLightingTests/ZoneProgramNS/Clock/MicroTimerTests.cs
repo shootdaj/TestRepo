@@ -5,8 +5,8 @@ using ZoneLighting.ZoneProgramNS.Clock;
 
 namespace ZoneLightingTests.ZoneProgramNS.Clock
 {
-	[Ignore("Manual Test")]
-	public class MicroTimerTests
+    [Explicit("Manual Test")]
+    public class MicroTimerTests
 	{
 		[TestCase(30, 10000, 1000, 2)]
 		[TestCase(30, 5000, 1000, 2)]

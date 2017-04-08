@@ -5,8 +5,8 @@ using ZoneLighting.ZoneProgramNS.Clock;
 
 namespace ZoneLightingTests.ZoneProgramNS.Clock
 {
-	[Ignore("Manual Test")]
-	public class TimerClockTests
+    [Explicit("Manual Test")]
+    public class TimerClockTests
 	{
 		[TestCase(30)]
 		public void TimerClock_ClockTicksEqualThreadTimerTicks(int sleepSeconds)

@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
 using NUnit.Framework;
 using Refigure;
 using ZoneLighting;
 using ZoneLighting.Communication;
-using ZoneLighting.Graphics.Drawing;
 using ZoneLighting.StockPrograms;
-using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLightingTests.ProgramTests
 {
-	[Ignore("Manual Test")]
-	public class VisualClockTests
+    [Explicit("Manual Test")]
+    public class VisualClockTests
 	{
         [TestCase(120)]
 		public void VisualClock_Works(int sleepSeconds)

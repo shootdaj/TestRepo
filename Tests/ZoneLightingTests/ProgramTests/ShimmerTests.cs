@@ -9,8 +9,8 @@ using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLightingTests.ProgramTests
 {
-	[Ignore("Manual Test")]
-	public class ShimmerTests
+    [Explicit("Manual Test")]
+    public class ShimmerTests
 	{
 		[TestCase(300, true)]
 		[TestCase(30, false)]

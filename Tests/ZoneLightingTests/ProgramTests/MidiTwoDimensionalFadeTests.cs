@@ -10,8 +10,8 @@ using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLightingTests.ProgramTests
 {
-	[Ignore("Manual Test")]
-	public class MidiTwoDimensionalFadeTests
+    [Explicit("Manual Test")]
+    public class MidiTwoDimensionalFadeTests
     {
         [TestCase(60, true)]
         [Ignore("Manual")]

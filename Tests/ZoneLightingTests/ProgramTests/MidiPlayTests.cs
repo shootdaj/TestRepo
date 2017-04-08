@@ -8,8 +8,8 @@ using ZoneLighting.Usables;
 
 namespace ZoneLightingTests.ProgramTests
 {
-	[Ignore("Manual Test")]
-	public class MidiPlayTests
+    [Explicit("Manual Test")]
+    public class MidiPlayTests
 	{
 		[TestCase(30)]
 		[TestCase(30)]

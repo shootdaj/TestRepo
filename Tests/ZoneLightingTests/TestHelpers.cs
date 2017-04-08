@@ -6,7 +6,6 @@ using NUnit.Framework;
 using ZoneLighting;
 using ZoneLighting.Communication;
 using ZoneLighting.StockPrograms;
-using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS.Factories;
 

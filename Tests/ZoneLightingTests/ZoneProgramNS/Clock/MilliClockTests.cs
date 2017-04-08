@@ -5,8 +5,8 @@ using ZoneLighting.ZoneProgramNS.Clock;
 
 namespace ZoneLightingTests.ZoneProgramNS.Clock
 {
-	[Ignore("Manual Test")]
-	public class MilliClockTests
+    [Explicit("Manual Test")]
+    public class MilliClockTests
 	{
 		[TestCase(30, 2)]
 		[TestCase(60, 2)]

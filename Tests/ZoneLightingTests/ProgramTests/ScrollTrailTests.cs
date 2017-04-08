@@ -12,7 +12,7 @@ using ZoneLighting.ZoneProgramNS.Factories;
 
 namespace ZoneLightingTests.ProgramTests
 {
-	[Ignore("Manual Test")]
+	[Explicit("Manual Test")]
 	public class ScrollTrailTests
 	{
 		[TestCase(3000)]

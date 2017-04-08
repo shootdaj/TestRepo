@@ -8,8 +8,8 @@ using ZoneLighting.ZoneProgramNS;
 
 namespace ZoneLightingTests.ProgramTests
 {
-	[Ignore("Manual Test")]
-	public class MicroClockBlinkTests
+    [Explicit("Manual Test")]
+    public class MicroClockBlinkTests
 	{
         //test comment
 		[TestCase(30, 100000)]

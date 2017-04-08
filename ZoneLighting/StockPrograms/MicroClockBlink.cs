@@ -12,10 +12,10 @@ namespace ZoneLighting.StockPrograms
     {
 		private MicroClock Clock { get; set; }
 
-	    private long Interval
+	    private long? Interval
 	    {
-		    get { return Clock.Interval; }
-		    set { Clock.Interval = value; }
+		    get { return Clock?.Interval ?? null; }
+		    set { Clock.Interval = value ?? default(long); }
 	    }
 
 	    private Color Color { get; set; } = Color.Red;
@@ -45,7 +45,7 @@ namespace ZoneLighting.StockPrograms
 		
 	    protected override void Setup()
 		{
-			AddMappedInput<long>(this, "Interval", i => i > 0);
+			AddMappedInput<long?>(this, "Interval", i => i > 0);
 			AddMappedInput<Color>(this, "Color");
 			AddMappedInput<long>(this, "DriftThreshold", i => i > 0);
 		}

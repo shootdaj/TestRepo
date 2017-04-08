@@ -14,6 +14,8 @@ namespace ZoneLighting
 			return betterList;
 		}
 
+
+		//TODO: Remove this and use the Listify in Anshul.Utilities after updating it to the latest version
 		/// <summary>
 		/// Takes an object and turns it into a list of its type. Basically puts the incoming object
 		/// into a list.

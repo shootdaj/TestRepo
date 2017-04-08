@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
+﻿using System.Drawing;
 using System.Linq;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using ZoneLighting;
 using ZoneLighting.Communication;
