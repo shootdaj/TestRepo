@@ -6,16 +6,17 @@ namespace ZoneLighting
 {
     /// <summary>
     /// Represents an LED. This class must implement the ILightingControllerPixel for each type of lighting controller
-    /// that it needs to be output on.
+    /// that it needs to be output on (for example is currently implements IOPCPixelContainer which inherits from ILightingControllerPixel).
     /// </summary>
     [DataContract]
-    public class LED : ILogicalRGBLight, IFadeCandyPixelContainer
+    public class LED : ILogicalRGBLight, IOPCPixelContainer
 	{
 		#region CORE
 
         public Color Color { get; set; }
+
         [DataMember]
-		public FadeCandyPixel FadeCandyPixel { get; set; }
+		public OPCPixel OPCPixel { get; set; }
 
 		#region Color Parts
 
@@ -49,16 +50,16 @@ namespace ZoneLighting
 
 		public LED(Color? color = null, int? logicalIndex = null, byte? fadeCandyChannel = null, int? fadeCandyIndex = null, PixelType pixelType = PixelType.None)
 		{
-			FadeCandyPixel = GetFadeCandyPixelInstance(pixelType);
+			OPCPixel = GetFadeCandyPixelInstance(pixelType);
 
 			if (color != null)
 				SetColor((Color) color);
 			if (logicalIndex != null)
 				LogicalIndex = (int)logicalIndex;
 			if (fadeCandyChannel != null)
-				FadeCandyPixel.Channel = (byte)fadeCandyChannel;
+				OPCPixel.Channel = (byte)fadeCandyChannel;
 			if (fadeCandyIndex != null)
-				FadeCandyPixel.PhysicalIndex = (int)fadeCandyIndex;
+				OPCPixel.PhysicalIndex = (int)fadeCandyIndex;
 		}
 
 		#endregion
@@ -72,23 +73,23 @@ namespace ZoneLighting
 
 		#region API
         
-		public static FadeCandyPixel GetFadeCandyPixelInstance(PixelType pixelType)
+		public static OPCPixel GetFadeCandyPixelInstance(PixelType pixelType)
 		{
 			switch (pixelType)
 			{
-				case PixelType.FadeCandyWS2811Pixel:
-					return new FadeCandyWS2811Pixel();
-				case PixelType.FadeCandyWS2812Pixel:
-					return new FadeCandyWS2812Pixel();
+				case PixelType.OPCRBGPixel:
+					return new OPCRBGPixel();
+				case PixelType.OPCRGBPixel:
+					return new OPCRGBPixel();
 			}
 
 			return null;
 		}
 
-		public void MapFadeCandyPixel(byte channel, int index)
+		public void SetOPCPixel(byte channel, int index)
 		{
-			FadeCandyPixel.Channel = channel;
-			FadeCandyPixel.PhysicalIndex = index;
+			OPCPixel.Channel = channel;
+			OPCPixel.PhysicalIndex = index;
 		}
 
 		public bool SetColor(Color color)

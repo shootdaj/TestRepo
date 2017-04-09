@@ -72,7 +72,7 @@ namespace ZoneLightingTests.ProgramTests
 				//startingParams.TrailShapes.Add(new TrailShape(new Trail(4, ProgramCommon.GetRandomColor()),
 				//	new Shape(56, 57, 58, 59, 60, 61, 62, 63)));
 
-				var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlmInner.Zones, "NeoMatrix", PixelType.FadeCandyWS2812Pixel,
+				var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlmInner.Zones, "NeoMatrix", PixelType.OPCRGBPixel,
 					64, 1);
 				zlmInner.CreateSingularProgramSet("", new Raindrops(), null, neomatrix, startingParams);
 			}, Config.Get("NeoMatrixOneZone"));

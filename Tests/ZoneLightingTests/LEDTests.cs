@@ -30,11 +30,11 @@ namespace ZoneLightingTests
 		{
 			byte channel = 1;//A.Dummy<byte>();
 			int physicalIndex = 1;//A.Dummy<int>();
-			var led = new LED(pixelType: PixelType.FadeCandyWS2812Pixel);
-			led.MapFadeCandyPixel(channel, physicalIndex);
+			var led = new LED(pixelType: PixelType.OPCRGBPixel);
+			led.SetOPCPixel(channel, physicalIndex);
 
-			Assert.AreEqual(led.FadeCandyPixel.Channel, channel);
-			Assert.AreEqual(led.FadeCandyPixel.PhysicalIndex, physicalIndex);
+			Assert.AreEqual(led.OPCPixel.Channel, channel);
+			Assert.AreEqual(led.OPCPixel.PhysicalIndex, physicalIndex);
 		}
 	}
 }

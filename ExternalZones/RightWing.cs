@@ -9,7 +9,7 @@ namespace ExternalZones
 	{
 		public RightWing() : base("RightWing")
 		{
-			AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 12, 2);
+			AddFadeCandyLights(PixelType.OPCRGBPixel, 12, 2);
 		}
 	}
 }

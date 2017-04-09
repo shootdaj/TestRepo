@@ -1,228 +1,158 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Anshul.Utilities;
-using Refigure;
 using WebSocketSharp;
-using ZoneLighting.ConfigNS;
 using Config = Refigure.Config;
 
 namespace ZoneLighting.Communication
 {
-	/// <summary>
+    /// <summary>
 	/// This class is used to connect and send/receive messages to a FadeCandy
 	/// board using WebSockets.
 	/// </summary>
-	public class FadeCandyController : LightingController
-	{
-		#region Singleton
+	public class FadeCandyController : OPCWebSocketController
+    {
+        #region Singleton
 
-		private static FadeCandyController _instance;
-		private Process FadeCandyServerProcess { get; set; } = new Process();
+        private static FadeCandyController _instance;
+        private Process FadeCandyServerProcess { get; set; } = new Process();
 
-		public static FadeCandyController Instance
-			=> _instance ?? (_instance = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"]));
+        public static FadeCandyController Instance
+            => _instance ?? (_instance = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"]));
 
-		#endregion
+        #endregion
 
-		#region CORE
+        #region CORE
 
-		/// <summary>
-		/// URL for the server on which FadeCandy is running.
-		/// </summary>
-		public string ServerURL { get; private set; }
-		
-		/// <summary>
-		/// The WebSocket that will be used to send/receive messages to/from the FadeCandy board.
-		/// </summary>
-		private WebSocket WebSocket { get; set; }
+        public bool FCServerRunning { get; private set; } = false;
 
-		public override Type PixelType => typeof (IFadeCandyPixelContainer);
+        #endregion
 
-		#endregion
+        #region C+I+D
 
-		#region C+I+D
+        public FadeCandyController(string serverURL) : base(serverURL)
+        {
+        }
 
-		public FadeCandyController(string serverURL)
-		{
-			ServerURL = serverURL;
-		}
+        public void KillFCServer()
+        {
+            TryClass.Try(() =>
+            {
+                foreach (
+                    var process in
+                        Process.GetProcessesByName(Config.Get("FCServerExecutablePath").Split('\\').Last().Split('.').First()))
+                {
+                }
+            }, 5, false, () => { Console.WriteLine("Unable to kill FCServer."); });
+        }
 
-		public bool Initialized { get; private set; }
+        public void Initialize(string configFilePath = null)
+        {
+            if (!Initialized)
+            {
+                base.Initialize();
+                KillFCServer();
+                StartFCServer(configFilePath ?? ConfigurationManager.AppSettings["FCServerConfigFilePath"]);
+                Initialized = true;
+            }
+        }
 
-		public bool FCServerRunning { get; private set; } = false;
+        private void StartFCServer(string configFilePath, bool createWindow = false)
+        {
+            //need to set this because otherwise for WebController, the file is loaded from runner's dir 
+            //for example if its resharper, it tries to load from resharper's base dir
+            //if its iis, it tries to load from w3wp or iisexpress's base dir
+            var oldEnvDir = Environment.CurrentDirectory;
+            Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
-		public void KillFCServer()
-		{
-			TryClass.Try(() =>
-			{
-				foreach (
-					var process in
-						Process.GetProcessesByName(Config.Get("FCServerExecutablePath").Split('\\').Last().Split('.').First()))
-				{
-				}
-			}, 5, false, () => {Console.WriteLine("Unable to kill FCServer.");});
-		}
+            var execExists = File.Exists(ConfigurationManager.AppSettings["FCServerExecutablePath"]);
+            var configExists = File.Exists(configFilePath);
+            if (!execExists)
+                throw new Exception(
+                    "fcserver.exe not found at specified location. Please update the location in the config file. BaseDirectory: " +
+                    AppDomain.CurrentDomain.BaseDirectory + ". Looking for path: " +
+                    Path.GetFullPath(Config.Get("FCServerExecutablePath")) + ". Environment Directory: " + Environment.CurrentDirectory);
+            if (!configExists)
+                throw new Exception(
+                    "FCServer configuration file not found at specified location. Please update the location in the config file. BaseDirectory: " +
+                    AppDomain.CurrentDomain.BaseDirectory + ". Looking for path: " +
+                    Path.GetFullPath(configFilePath) + ". Environment Directory: " + Environment.CurrentDirectory);
 
-		public void Initialize(string configFilePath = null)
-		{
-			if (!Initialized)
-			{
-				KillFCServer();
-				StartFCServer(configFilePath ?? ConfigurationManager.AppSettings["FCServerConfigFilePath"]);
-				WebSocket = new WebSocket(ServerURL);
-				Connect();
-				Initialized = true;
-			}
-		}
+            if (FCServerRunning) return;
+            var cmdInfo = new ProcessStartInfo
+            {
+                FileName = Config.Get("FCServerExecutablePath"),
+                Arguments = configFilePath,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = !createWindow
+            };
+            FadeCandyServerProcess = new Process { StartInfo = cmdInfo };
+            //FadeCandyServerProcess.OutputDataReceived += (s, e1) =>
+            //{
+            //	if (!string.IsNullOrEmpty(e1.Data))
+            //	{
+            //		//Console.WriteLine(e1.Data);
+            //		//do something with returned data from the fcserver process? log it? --> procOut += e1.Data + Environment.NewLine;
+            //	}
+            //};
+            FCServerRunning = FadeCandyServerProcess.Start();
+            //FadeCandyServerProcess.BeginOutputReadLine();
 
-		private void StartFCServer(string configFilePath, bool createWindow = false)
-		{
-			//need to set this because otherwise for WebController, the file is loaded from runner's dir 
-			//for example if its resharper, it tries to load from resharper's base dir
-			//if its iis, it tries to load from w3wp or iisexpress's base dir
-			var oldEnvDir = Environment.CurrentDirectory;
-			Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            //FCServerRunning = true;
 
-			var execExists = File.Exists(ConfigurationManager.AppSettings["FCServerExecutablePath"]);
-			var configExists = File.Exists(configFilePath);
-			if (!execExists)
-				throw new Exception(
-					"fcserver.exe not found at specified location. Please update the location in the config file. BaseDirectory: " +
-					AppDomain.CurrentDomain.BaseDirectory + ". Looking for path: " +
-					Path.GetFullPath(Config.Get("FCServerExecutablePath")) + ". Environment Directory: " + Environment.CurrentDirectory);
-			if (!configExists)
-				throw new Exception(
-					"FCServer configuration file not found at specified location. Please update the location in the config file. BaseDirectory: " +
-					AppDomain.CurrentDomain.BaseDirectory + ". Looking for path: " +
-					Path.GetFullPath(configFilePath) + ". Environment Directory: " + Environment.CurrentDirectory);
+            Environment.CurrentDirectory = oldEnvDir;
+        }
 
-			if (FCServerRunning) return;
-			var cmdInfo = new ProcessStartInfo
-			{
-				FileName = Config.Get("FCServerExecutablePath"),
-				Arguments = configFilePath,
-				UseShellExecute = false,
-				RedirectStandardOutput = true,
-				CreateNoWindow = !createWindow
-			};
-		    FadeCandyServerProcess = new Process {StartInfo = cmdInfo};
-		    //FadeCandyServerProcess.OutputDataReceived += (s, e1) =>
-			//{
-			//	if (!string.IsNullOrEmpty(e1.Data))
-			//	{
-			//		//Console.WriteLine(e1.Data);
-			//		//do something with returned data from the fcserver process? log it? --> procOut += e1.Data + Environment.NewLine;
-			//	}
-			//};
-			FCServerRunning = FadeCandyServerProcess.Start();
-			//FadeCandyServerProcess.BeginOutputReadLine();
+        public override void Dispose()
+        {
+            base.Dispose();
+            Uninitialize();
+            _instance = null;
+        }
 
-			//FCServerRunning = true;
+        public override void Uninitialize()
+        {
+            if (Initialized)
+            {
+                if (WebSocket.ReadyState == WebSocketState.Connecting || WebSocket.ReadyState == WebSocketState.Open)
+                    base.Uninitialize();
+                StopFCServer();
+                Initialized = false;
+            }
+        }
 
-			Environment.CurrentDirectory = oldEnvDir;
-		}
+        private void StopFCServer()
+        {
+            if (!FCServerRunning) return;
+            if (FadeCandyServerProcess.HasExited) return;
+            FadeCandyServerProcess.Kill();
+            FadeCandyServerProcess.Dispose();
+            FCServerRunning = false;
+        }
 
-		/// <summary>
-		/// Starts the WebSocket connections.
-		/// </summary>
-		public void Connect()
-		{
-			TryClass.Try(() =>
-			{
-				WebSocket.Connect(); 
-			});
-		}
+        #endregion
 
-		public override void Dispose()
-		{
-			Uninitialize();
-			ServerURL = null;
-			_instance = null;
-		}
+        #region API
 
-		public void Uninitialize()
-		{
-			if (Initialized)
-			{
-				Disconnect();
-				StopFCServer();
-				WebSocket = null;
-				Initialized = false;
-			}
-		}
+        public WebSocketState ConnectionState => WebSocket.ReadyState;
 
-		/// <summary>
-		/// Stops the WebSocket connections.
-		/// </summary>
-		public void Disconnect()
-		{
-			AssertInit();
-			WebSocket.Close();
-		}
-		
-		private void StopFCServer()
-		{
-			if (!FCServerRunning) return;
-			if (FadeCandyServerProcess.HasExited) return;
-			FadeCandyServerProcess.Kill();
-			FadeCandyServerProcess.Dispose();
-			FCServerRunning = false;
-		}
+        #endregion
+    }
 
-		public void AssertInit()
-		{
-			if (!Initialized)
-				throw new Exception("FadeCandyController instance is not initialized.");
-		}
 
-		#endregion
 
-		#region API
-
-		/// <summary>
-		/// Sends a Pixel Frame to the connected FadeCandy board.
-		/// </summary>
-		/// <param name="opcPixelFrame">The OPCPixelFrame to send to the board.</param>
-		public override void SendPixelFrame(IPixelFrame opcPixelFrame)
-		{
-			var byteArray = ((OPCPixelFrame)opcPixelFrame).ToByteArray();
-			//var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
-			//byteArray.ToList().ForEach(x => byteArrayString += x + ",");
-			//byteArrayString += "}";
-			//Debug.Print(byteArrayString);
-			AssertInit();
-			if (WebSocket.ReadyState == WebSocketState.Closed)
-				Connect();
-			WebSocket.Send(byteArray); //TODO: Change this to async?
-		}
-
-		/// <summary>
-		/// Sends a list of LEDs to the connected FadeCandy board.
-		/// </summary>
-		public override void SendLEDs(IList<ILightingControllerPixel> leds)
-		{
-			OPCPixelFrame.CreateChannelBurstFromLEDs(leds.Cast<IFadeCandyPixelContainer>().ToList()).ToList().ForEach(SendPixelFrame);
-		}
-
-		public WebSocketState ConnectionState => WebSocket.ReadyState;
-
-		#endregion
-	}
-
-	
-
-	//TODO: Test out control messages on the board and then finish this.
-	///// <summary>
-	///// Control Frames are used for administrative tasks on the FadeCandy server.
-	///// </summary>
-	//public class ControlFrame : WebSocketOPCPacket
-	//{
-	//	public ControlFrame(byte channel, IList<byte> data) : base(channel, data, OPCCommand.SystemExclusive)
-	//	{
-	//	}
-	//}
+    //TODO: Test out control messages on the board and then finish this.
+    ///// <summary>
+    ///// Control Frames are used for administrative tasks on the FadeCandy server.
+    ///// </summary>
+    //public class ControlFrame : WebSocketOPCPacket
+    //{
+    //	public ControlFrame(byte channel, IList<byte> data) : base(channel, data, OPCCommand.SystemExclusive)
+    //	{
+    //	}
+    //}
 }

@@ -12,7 +12,7 @@ namespace ZoneLightingTests
         public void PixelType_ReturnsIFadeCandyPixel()
         {
             var fadeCandyController = new FadeCandyController(A.Dummy<string>());
-            var result = fadeCandyController.PixelType == typeof(IFadeCandyPixelContainer);
+            var result = fadeCandyController.PixelType == typeof(IOPCPixelContainer);
             fadeCandyController.Dispose();
             Assert.True(result);
         }

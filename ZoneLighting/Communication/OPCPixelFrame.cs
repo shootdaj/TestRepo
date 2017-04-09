@@ -26,19 +26,19 @@ namespace ZoneLighting.Communication
 		}
 		
 		/// <summary>
-		/// Creates an OPC Pixel Frame from a list of LEDs.
+		/// Creates an OPC Pixel Frame from a list OPC Pixels (or leds)
 		/// </summary>
 		/// <param name="channel">Channel this frame will be sent to.</param>
-		/// <param name="leds">List of LEDs to map.</param>
-		public static OPCPixelFrame CreateFromLEDs(byte channel, IList<IFadeCandyPixelContainer> leds)
+		/// <param name="opcPixels">List of LEDs to map.</param>
+		public static OPCPixelFrame CreateFromOPCPixels(byte channel, IList<IOPCPixelContainer> opcPixels)
 		{
-			var data = new byte[leds.Count * 3];
+			var data = new byte[opcPixels.Count * 3];
 
-			foreach (IFadeCandyPixelContainer led in leds)
+			foreach (IOPCPixelContainer led in opcPixels)
 			{
-				data[led.FadeCandyPixel.RedIndex] = led.Color.R;
-				data[led.FadeCandyPixel.GreenIndex] = led.Color.G;
-				data[led.FadeCandyPixel.BlueIndex] = led.Color.B;
+				data[led.OPCPixel.RedIndex] = led.Color.R;
+				data[led.OPCPixel.GreenIndex] = led.Color.G;
+				data[led.OPCPixel.BlueIndex] = led.Color.B;
 			}
 
 			var returnValue = new OPCPixelFrame(channel, data);
@@ -49,44 +49,21 @@ namespace ZoneLighting.Communication
 		/// Since OPC messages contain a single channel, a separate message needs to be 
 		/// sent for each channel within the LEDs collection.
 		/// </summary>
-		/// <param name="leds"></param>
+		/// <param name="opcPixels"></param>
 		/// <returns></returns>
-		public static IList<OPCPixelFrame> CreateChannelBurstFromLEDs(IList<IFadeCandyPixelContainer> leds)
+		public static IList<OPCPixelFrame> CreateChannelBurstFromOPCPixels(IList<IOPCPixelContainer> opcPixels)
 		{
 			var returnValue = new List<OPCPixelFrame>();
 
-			foreach (var channel in leds.Select(x => x.FadeCandyPixel.Channel).Distinct())
+			foreach (var channel in opcPixels.Select(x => x.OPCPixel.Channel).Distinct())
 			{
-				returnValue.Add(CreateFromLEDs(channel,
-					leds.Where(x => x.FadeCandyPixel.Channel == channel).ToList()));
+				returnValue.Add(CreateFromOPCPixels(channel,
+					opcPixels.Where(x => x.OPCPixel.Channel == channel).ToList()));
 			}
 
 			return returnValue;
 		}
 
-
-		///// <summary>
-		///// Creates an OPC Pixel Frame from a list of LEDs.
-		///// </summary>
-		///// <param name="channel">Channel this frame will be sent to.</param>
-		///// <param name="leds">List of LEDs to map.</param>
-		//public static OPCPixelFrame CreateFromLEDCollectionOld(byte channel, IList<LED> leds)
-		//{
-		//	var data = new List<byte>();
-
-		//	foreach (LED led in leds)
-		//	{
-		//		data.AddRange(new[]{led.Red, led.Green, led.Blue});
-		//	}
-
-		//	var returnValue = new OPCPixelFrame(channel, data);
-		//	return returnValue;
-		//}
-
 		#endregion
-	}
-
-	public interface IPixelFrame
-	{
 	}
 }
