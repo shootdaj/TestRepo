@@ -18,7 +18,6 @@ namespace ZoneLighting.Communication
         #region Singleton
 
         private static FadeCandyController _instance;
-        private Process FadeCandyServerProcess { get; set; } = new Process();
 
         public static FadeCandyController Instance
             => _instance ?? (_instance = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"]));
@@ -26,6 +25,8 @@ namespace ZoneLighting.Communication
         #endregion
 
         #region CORE
+
+        private Process FadeCandyServerProcess { get; set; } = new Process();
 
         public bool FCServerRunning { get; private set; } = false;
 
@@ -53,9 +54,9 @@ namespace ZoneLighting.Communication
         {
             if (!Initialized)
             {
-                base.Initialize();
                 KillFCServer();
                 StartFCServer(configFilePath ?? ConfigurationManager.AppSettings["FCServerConfigFilePath"]);
+                base.Initialize();
                 Initialized = true;
             }
         }

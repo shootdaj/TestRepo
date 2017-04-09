@@ -62,7 +62,7 @@ namespace WebRemote
 		/// <param name="channel">The channel.</param>
 		/// <returns>The instance of the zone that was added.</returns>
 		
-		public ZoneJsonModel AddFadeCandyZone(string name, PixelType pixelType, int numberOfLights, byte? channel)
+		public ZoneJsonModel AddFadeCandyZone(string name, OPCPixelType pixelType, int numberOfLights, byte? channel)
 		{
 			return ZLM.AddFadeCandyZone(name, pixelType, numberOfLights, channel).ToJsonModel<Zone, ZoneJsonModel>();
 		}

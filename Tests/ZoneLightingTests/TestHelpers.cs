@@ -54,10 +54,10 @@ namespace ZoneLightingTests
 			var notificationSyncContext = new SyncContext("NotificationContext");
 
 			//add zones
-			var zoneA = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneA", PixelType.OPCRGBPixel, 16, 1);
-			var zoneB = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneB", PixelType.OPCRGBPixel, 16, 2);
-			var zoneC = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneC", PixelType.OPCRGBPixel, 16, 3);
-			var zoneD = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneD", PixelType.OPCRGBPixel, 16, 4);
+			var zoneA = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneA", OPCPixelType.OPCRGBPixel, 16, 1);
+			var zoneB = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneB", OPCPixelType.OPCRGBPixel, 16, 2);
+			var zoneC = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneC", OPCPixelType.OPCRGBPixel, 16, 3);
+			var zoneD = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ZoneD", OPCPixelType.OPCRGBPixel, 16, 4);
 
 			zlm.CreateProgramSet("StepperSet", "Stepper", true, null, zlm.Zones);
 

@@ -18,8 +18,8 @@ namespace WebControllerTests
 			
 		}
 
-		[TestCase("FadeCandyZone", PixelType.OPCRGBPixel, 8, (byte)1)]
-	    public void AddFadeCandyZone_Works(string name, PixelType pixelType, int numberOfLights, byte channel)
+		[TestCase("FadeCandyZone", OPCPixelType.OPCRGBPixel, 8, (byte)1)]
+	    public void AddFadeCandyZone_Works(string name, OPCPixelType pixelType, int numberOfLights, byte channel)
 		{
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
@@ -30,7 +30,7 @@ namespace WebControllerTests
 			//assert
 			Assert.That(zone.Name, Is.EqualTo(name));
 			Assert.That(zone.LightCount, Is.EqualTo(numberOfLights));
-			Assert.That(((FadeCandyZone)zlm.Zones.First()).Channel, Is.EqualTo(channel));
+			Assert.That(((OPCZone)zlm.Zones.First()).Channel, Is.EqualTo(channel));
 			Assert.That(zone.Running, Is.EqualTo(false));
 			Assert.That(zone.ZoneProgramName, Is.EqualTo(null));
 
@@ -44,7 +44,7 @@ namespace WebControllerTests
 		{
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			zlm.AddFadeCandyZone("FadeCandyZone", PixelType.OPCRGBPixel, 8, 1);
+			zlm.AddFadeCandyZone("FadeCandyZone", OPCPixelType.OPCRGBPixel, 8, 1);
 
 			var zones = zlm.Zones.Select(z => z.Name).ToList();
 
@@ -68,7 +68,7 @@ namespace WebControllerTests
 		{
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			zlm.AddFadeCandyZone("FadeCandyZone", PixelType.OPCRGBPixel, 8, 1);
+			zlm.AddFadeCandyZone("FadeCandyZone", OPCPixelType.OPCRGBPixel, 8, 1);
 			zlm.CreateProgramSet(programSetName, programName, zlm.Zones.Select(z => z.Name), sync);
 
 			//act
@@ -85,7 +85,7 @@ namespace WebControllerTests
 	    {
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			zlm.AddFadeCandyZone("FadeCandyZone", PixelType.OPCRGBPixel, 8, 1);
+			zlm.AddFadeCandyZone("FadeCandyZone", OPCPixelType.OPCRGBPixel, 8, 1);
 			zlm.CreateProgramSet(programSetName, programName, zlm.Zones.Select(z => z.Name), sync);
 			zlm.Zones.ForEach(zone =>
 			{
@@ -140,7 +140,7 @@ namespace WebControllerTests
 	    {
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			zlm.AddFadeCandyZone("FadeCandyZone", PixelType.OPCRGBPixel, 8, 1);
+			zlm.AddFadeCandyZone("FadeCandyZone", OPCPixelType.OPCRGBPixel, 8, 1);
 			zlm.CreateProgramSet(programSetName, programName, zlm.Zones.Select(z => z.Name), sync);
 			zlm.Zones.ForEach(zone =>
 			{
@@ -168,7 +168,7 @@ namespace WebControllerTests
 
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			zlm.AddFadeCandyZone("FadeCandyZone", PixelType.OPCRGBPixel, 8, 1);
+			zlm.AddFadeCandyZone("FadeCandyZone", OPCPixelType.OPCRGBPixel, 8, 1);
 			zlm.CreateProgramSet(programSetName, programName, zlm.Zones.Select(z => z.Name), true, isv);
 			zlm.Zones.ForEach(zone =>
 			{
@@ -198,7 +198,7 @@ namespace WebControllerTests
 
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			zlm.AddFadeCandyZone("FadeCandyZone", PixelType.OPCRGBPixel, 8, 1);
+			zlm.AddFadeCandyZone("FadeCandyZone", OPCPixelType.OPCRGBPixel, 8, 1);
 			zlm.CreateProgramSet(programSetName, "Stepper", zlm.Zones.Select(z => z.Name));
 			zlm.Zones.ForEach(zone =>
 			{
@@ -225,7 +225,7 @@ namespace WebControllerTests
 
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			zlm.AddFadeCandyZone("FadeCandyZone", PixelType.OPCRGBPixel, 8, 1);
+			zlm.AddFadeCandyZone("FadeCandyZone", OPCPixelType.OPCRGBPixel, 8, 1);
 			zlm.CreateProgramSet(programSetName, "Stepper", zlm.Zones.Select(z => z.Name));
 			zlm.Zones.ForEach(zone =>
 			{
@@ -262,7 +262,7 @@ namespace WebControllerTests
 
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			zlm.AddFadeCandyZone(zoneName, PixelType.OPCRGBPixel, 8, 1);
+			zlm.AddFadeCandyZone(zoneName, OPCPixelType.OPCRGBPixel, 8, 1);
 			zlm.CreateProgramSet(programSetName, programName, zlm.Zones.Select(z => z.Name), true, isv);
 			zlm.Zones.ForEach(zone =>
 			{
@@ -296,8 +296,8 @@ namespace WebControllerTests
 
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			var fadeCandyZone1 = zlm.AddFadeCandyZone("FadeCandyZone1", PixelType.OPCRGBPixel, 8, 1);
-			var fadeCandyZone2 = zlm.AddFadeCandyZone("FadeCandyZone2", PixelType.OPCRGBPixel, 8, 2);
+			var fadeCandyZone1 = zlm.AddFadeCandyZone("FadeCandyZone1", OPCPixelType.OPCRGBPixel, 8, 1);
+			var fadeCandyZone2 = zlm.AddFadeCandyZone("FadeCandyZone2", OPCPixelType.OPCRGBPixel, 8, 2);
 			zlm.CreateProgramSet(programSetName, programName, zlm.Zones.Select(z => z.Name), true, isv);
 			
 			Assert.That(zlm.ProgramSets[programSetName].Zones, Contains.Item(fadeCandyZone1));
@@ -323,7 +323,7 @@ namespace WebControllerTests
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
 			var zoneName = "FadeCandyZone";
-			zlm.AddFadeCandyZone(zoneName, PixelType.OPCRGBPixel, 8, 1);
+			zlm.AddFadeCandyZone(zoneName, OPCPixelType.OPCRGBPixel, 8, 1);
 			zlm.CreateProgramSet(programSetName, "Stepper", zlm.Zones.Select(z => z.Name));
 			Assert.That(zlm.Zones[zoneName].Running, Is.True);
 
@@ -345,7 +345,7 @@ namespace WebControllerTests
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
 			var zoneName = "FadeCandyZone";
-			zlm.AddFadeCandyZone(zoneName, PixelType.OPCRGBPixel, 8, 1);
+			zlm.AddFadeCandyZone(zoneName, OPCPixelType.OPCRGBPixel, 8, 1);
 			zlm.CreateProgramSet(programSetName, "Stepper", zlm.Zones.Select(z => z.Name));
 
 			var zoneSummary = zlmrpc.GetZoneSummary();
@@ -364,7 +364,7 @@ namespace WebControllerTests
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
 			var zoneName = "FadeCandyZone";
-			zlm.AddFadeCandyZone(zoneName, PixelType.OPCRGBPixel, 8, 1);
+			zlm.AddFadeCandyZone(zoneName, OPCPixelType.OPCRGBPixel, 8, 1);
 			
 			var zoneSummary = zlmrpc.GetZoneSummary();
 
@@ -385,8 +385,8 @@ namespace WebControllerTests
 
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			var fadeCandyZone1 = zlm.AddFadeCandyZone("FadeCandyZone1", PixelType.OPCRGBPixel, 8, 1);
-			var fadeCandyZone2 = zlm.AddFadeCandyZone("FadeCandyZone2", PixelType.OPCRGBPixel, 8, 2);
+			var fadeCandyZone1 = zlm.AddFadeCandyZone("FadeCandyZone1", OPCPixelType.OPCRGBPixel, 8, 1);
+			var fadeCandyZone2 = zlm.AddFadeCandyZone("FadeCandyZone2", OPCPixelType.OPCRGBPixel, 8, 2);
 			zlm.CreateProgramSet(programSetName, programName, zlm.Zones.Select(z => z.Name), true, isv);
 
 			var zoneSummary = zlmrpc.GetZoneSummary();
@@ -408,8 +408,8 @@ namespace WebControllerTests
 
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			var fadeCandyZone1 = zlm.AddFadeCandyZone("FadeCandyZone1", PixelType.OPCRGBPixel, 8, 1);
-			var fadeCandyZone2 = zlm.AddFadeCandyZone("FadeCandyZone2", PixelType.OPCRGBPixel, 8, 2);
+			var fadeCandyZone1 = zlm.AddFadeCandyZone("FadeCandyZone1", OPCPixelType.OPCRGBPixel, 8, 1);
+			var fadeCandyZone2 = zlm.AddFadeCandyZone("FadeCandyZone2", OPCPixelType.OPCRGBPixel, 8, 2);
 			
 			var zoneSummary = zlmrpc.GetZoneSummary();
 
@@ -424,7 +424,7 @@ namespace WebControllerTests
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
 
-			var zone1 = zlm.AddFadeCandyZone("Zone1", PixelType.OPCRGBPixel, 8, 1);
+			var zone1 = zlm.AddFadeCandyZone("Zone1", OPCPixelType.OPCRGBPixel, 8, 1);
 
 			zlmrpc.SetZoneColor("Zone1", "Blue", (float)0.5);
 
@@ -445,7 +445,7 @@ namespace WebControllerTests
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
 
-			var zone1 = zlm.AddFadeCandyZone("Zone1", PixelType.OPCRGBPixel, 8, 1);
+			var zone1 = zlm.AddFadeCandyZone("Zone1", OPCPixelType.OPCRGBPixel, 8, 1);
 
 			zlmrpc.SetLightColor("Zone1", "Blue", 0, (float)0.5);
 
@@ -465,8 +465,8 @@ namespace WebControllerTests
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
 
-			var zone1 = zlm.AddFadeCandyZone("Zone1", PixelType.OPCRGBPixel, 8, 1);
-			var zone2 = zlm.AddFadeCandyZone("Zone2", PixelType.OPCRGBPixel, 8, 1);
+			var zone1 = zlm.AddFadeCandyZone("Zone1", OPCPixelType.OPCRGBPixel, 8, 1);
+			var zone2 = zlm.AddFadeCandyZone("Zone2", OPCPixelType.OPCRGBPixel, 8, 1);
 
 			zlmrpc.SetAllZonesColor("Blue", (float)0.5);
 			
@@ -492,8 +492,8 @@ namespace WebControllerTests
 
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			var zone1 = zlm.AddFadeCandyZone("Zone1", PixelType.OPCRGBPixel, 8, 1);
-			var zone2 = zlm.AddFadeCandyZone("Zone2", PixelType.OPCRGBPixel, 8, 1);
+			var zone1 = zlm.AddFadeCandyZone("Zone1", OPCPixelType.OPCRGBPixel, 8, 1);
+			var zone2 = zlm.AddFadeCandyZone("Zone2", OPCPixelType.OPCRGBPixel, 8, 1);
 			zlm.CreateProgramSet(programSetName, programName, zlm.Zones.Select(z => z.Name), true, isv);
 			
 			isv.Speed = 90;
@@ -518,8 +518,8 @@ namespace WebControllerTests
 
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			var zone1 = zlm.AddFadeCandyZone("Zone1", PixelType.OPCRGBPixel, 8, 1);
-			var zone2 = zlm.AddFadeCandyZone("Zone2", PixelType.OPCRGBPixel, 8, 1);
+			var zone1 = zlm.AddFadeCandyZone("Zone1", OPCPixelType.OPCRGBPixel, 8, 1);
+			var zone2 = zlm.AddFadeCandyZone("Zone2", OPCPixelType.OPCRGBPixel, 8, 1);
 			zlm.CreateProgramSet(programSetName, programName, zlm.Zones.Select(z => z.Name), true, isv);
 			
 			//act
@@ -549,8 +549,8 @@ namespace WebControllerTests
 
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			var zone1 = zlm.AddFadeCandyZone("Zone1", PixelType.OPCRGBPixel, 8, 1);
-			var zone2 = zlm.AddFadeCandyZone("Zone2", PixelType.OPCRGBPixel, 8, 1);
+			var zone1 = zlm.AddFadeCandyZone("Zone1", OPCPixelType.OPCRGBPixel, 8, 1);
+			var zone2 = zlm.AddFadeCandyZone("Zone2", OPCPixelType.OPCRGBPixel, 8, 1);
 			
 			//act
 			var zones = zlmrpc.GetZones();
@@ -579,8 +579,8 @@ namespace WebControllerTests
 
 			var zlm = new ZLM(false, false, false);
 			var zlmrpc = new ZLMRPC(zlm);
-			var zone1 = zlm.AddFadeCandyZone("Zone1", PixelType.OPCRGBPixel, 8, 1);
-			var zone2 = zlm.AddFadeCandyZone("Zone2", PixelType.OPCRGBPixel, 8, 1);
+			var zone1 = zlm.AddFadeCandyZone("Zone1", OPCPixelType.OPCRGBPixel, 8, 1);
+			var zone2 = zlm.AddFadeCandyZone("Zone2", OPCPixelType.OPCRGBPixel, 8, 1);
 
 			zlm.CreateProgramSet(programSetName, programName, "Zone2".Listify(), true, isv);
 			

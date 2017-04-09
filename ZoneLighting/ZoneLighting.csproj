@@ -174,7 +174,7 @@
     <Compile Include="TriggerDependencyNS\Trigger.cs" />
     <Compile Include="ZoneNS\SyncLevel.cs" />
     <Compile Include="ZoneNS\ZoneExtensions.cs" />
-    <Compile Include="ZoneNS\FadeCandyZone.cs" />
+    <Compile Include="ZoneNS\OPCZone.cs" />
     <Compile Include="ZoneNS\ZoneAssemblyAttribute.cs" />
     <Compile Include="ZoneNS\ZonesJsonConverter.cs" />
     <Compile Include="LED.cs" />

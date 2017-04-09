@@ -124,7 +124,7 @@ namespace ZoneLighting.ConfigNS
 		}
 		private static void AssignLightingController(Zone zone)
 		{
-			if (zone.GetType() == typeof(FadeCandyZone))
+			if (zone.GetType() == typeof(OPCZone))
 			{
 				zone.SetLightingController(FadeCandyController.Instance);
 			}

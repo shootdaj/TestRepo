@@ -48,9 +48,9 @@ namespace ZoneLighting
 
 		#region C+I
 
-		public LED(Color? color = null, int? logicalIndex = null, byte? fadeCandyChannel = null, int? fadeCandyIndex = null, PixelType pixelType = PixelType.None)
+		public LED(Color? color = null, int? logicalIndex = null, byte? fadeCandyChannel = null, int? fadeCandyIndex = null, OPCPixelType pixelType = OPCPixelType.None)
 		{
-			OPCPixel = GetFadeCandyPixelInstance(pixelType);
+			OPCPixel = GetOPCPixelInstance(pixelType);
 
 			if (color != null)
 				SetColor((Color) color);
@@ -73,13 +73,13 @@ namespace ZoneLighting
 
 		#region API
         
-		public static OPCPixel GetFadeCandyPixelInstance(PixelType pixelType)
+		public static OPCPixel GetOPCPixelInstance(OPCPixelType pixelType)
 		{
 			switch (pixelType)
 			{
-				case PixelType.OPCRBGPixel:
+				case OPCPixelType.OPCRBGPixel:
 					return new OPCRBGPixel();
-				case PixelType.OPCRGBPixel:
+				case OPCPixelType.OPCRGBPixel:
 					return new OPCRGBPixel();
 			}
 

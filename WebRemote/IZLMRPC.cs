@@ -42,7 +42,7 @@ namespace WebRemote
 
 		void SetAllZonesColor(string color, float brightness = 1);
 		void SetInputs(string programSetOrZoneName, ISV isv);
-		ZoneJsonModel AddFadeCandyZone(string name, PixelType pixelType, int numberOfLights, byte? channel);
+		ZoneJsonModel AddFadeCandyZone(string name, OPCPixelType pixelType, int numberOfLights, byte? channel);
 
 	}
 }

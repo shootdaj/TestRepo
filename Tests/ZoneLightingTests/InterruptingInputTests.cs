@@ -11,7 +11,7 @@
 		//	zoneScaffolder.Initialize(ConfigurationManager.AppSettings["TestProgramModuleDirectory"]);
 			
 		//	var leftWing = new FadeCandyZone("LeftWing");
-		//	leftWing.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
+		//	leftWing.AddOPCLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 
 		//	var scrollDotDictionary = new InputStartingValues();
 		//	scrollDotDictionary.Add("DelayTime", 30);

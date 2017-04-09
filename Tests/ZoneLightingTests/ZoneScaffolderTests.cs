@@ -22,7 +22,7 @@ namespace ZoneLightingTests
 		//	var zone = new FadeCandyZone("TestZone");
 
 		//	zones.Add(zone);
-		//	zone.AddFadeCandyLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
+		//	zone.AddOPCLights(PixelType.FadeCandyWS2812Pixel, 6, 1);
 
 		//	var zoneScaffolder = new ZoneScaffolder();
 		//	zoneScaffolder.Initialize(ConfigurationManager.AppSettings["TestProgramModuleDirectory"]);
@@ -61,8 +61,8 @@ namespace ZoneLightingTests
 			var zoneScaffolder = new ZoneScaffolder();
 			zoneScaffolder.Initialize(ConfigurationManager.AppSettings["TestProgramModuleDirectory"]);
 
-			var leftWing = new FadeCandyZone(FadeCandyController.Instance, "TestZone");
-			leftWing.AddFadeCandyLights(PixelType.OPCRGBPixel, 6, 1);
+			var leftWing = new OPCZone(FadeCandyController.Instance, "TestZone");
+			leftWing.AddOPCLights(OPCPixelType.OPCRGBPixel, 6, 1);
 
 			dynamic scrollDotDictionary = new ISV();
 			scrollDotDictionary.DelayTime = 30;

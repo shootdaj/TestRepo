@@ -24,7 +24,7 @@ namespace WebRemote
 
 		#region Admin
 
-		public ZLMJsonModel AddFadeCandyZone(string name, PixelType pixelType, int numberOfLights, byte? channel)
+		public ZLMJsonModel AddFadeCandyZone(string name, OPCPixelType pixelType, int numberOfLights, byte? channel)
 		{
 			ZLMRPC.AddFadeCandyZone(name, pixelType, numberOfLights, channel);
 			return ZLMJsonModel;

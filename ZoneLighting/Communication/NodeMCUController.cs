@@ -1,27 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ZoneLighting.Communication
 {
-    public class NodeMCUController : LightingController
+    public class NodeMCUController : OPCWebSocketController
     {
-        public override void SendPixelFrame(IPixelFrame opcPixelFrame)
+
+        #region Singleton
+
+        private static NodeMCUController _instance;
+
+        public static NodeMCUController Instance
+            => _instance ?? (_instance = new NodeMCUController(ConfigurationManager.AppSettings["NodeMCUServerURL"]));
+
+        #endregion
+
+        public NodeMCUController(string serverURL) : base(serverURL)
         {
-            throw new NotImplementedException();
         }
 
-        public override void SendLEDs(IList<ILightingControllerPixel> leds)
+        public new void Initialize()
         {
-            throw new NotImplementedException();
+            if (!Initialized)
+            {
+                base.Initialize();
+                Initialized = true;
+            }
         }
 
-        public override Type PixelType { get; }
-        public override void Dispose()
+        public new void Uninitialize()
         {
-            throw new NotImplementedException();
+            if (Initialized)
+            {
+                base.Uninitialize();
+                Initialized = false;
+            }
         }
     }
 }

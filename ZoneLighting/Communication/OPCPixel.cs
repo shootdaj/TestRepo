@@ -43,8 +43,8 @@ namespace ZoneLighting.Communication
 		public override int GreenIndex => PhysicalIndex * 3 + 2;
 		public override int BlueIndex => PhysicalIndex * 3 + 1;
 	}
-
-	public enum PixelType
+    
+    public enum OPCPixelType
 	{
 		None,
 		OPCRGBPixel,

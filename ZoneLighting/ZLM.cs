@@ -26,7 +26,7 @@ namespace ZoneLighting
 
 		#region Admin
 
-		public Zone AddFadeCandyZone(string name, PixelType pixelType, int numberOfLights, byte? channel)
+		public Zone AddFadeCandyZone(string name, OPCPixelType pixelType, int numberOfLights, byte? channel)
 		{
 			return ZoneScaffolder.Instance.AddFadeCandyZone(Zones, name, pixelType, numberOfLights, channel);
 		}
@@ -289,7 +289,8 @@ namespace ZoneLighting
 		/// </summary>
 		private void InitLightingControllers(string configFilePath)
 		{
-			FadeCandyController.Instance.Initialize(configFilePath);
+			//FadeCandyController.Instance.Initialize(configFilePath);
+		    NodeMCUController.Instance.Initialize();
 		}
 
 		/// <summary>
@@ -297,7 +298,8 @@ namespace ZoneLighting
 		/// </summary>
 		private void UninitLightingControllers()
 		{
-			FadeCandyController.Instance.Uninitialize();
+			//FadeCandyController.Instance.Uninitialize();
+            NodeMCUController.Instance.Uninitialize();
 		}
 
 		/// <summary>

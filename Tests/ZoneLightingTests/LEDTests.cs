@@ -30,7 +30,7 @@ namespace ZoneLightingTests
 		{
 			byte channel = 1;//A.Dummy<byte>();
 			int physicalIndex = 1;//A.Dummy<int>();
-			var led = new LED(pixelType: PixelType.OPCRGBPixel);
+			var led = new LED(pixelType: OPCPixelType.OPCRGBPixel);
 			led.SetOPCPixel(channel, physicalIndex);
 
 			Assert.AreEqual(led.OPCPixel.Channel, channel);

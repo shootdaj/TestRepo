@@ -5,11 +5,11 @@ using ZoneLighting.ZoneNS;
 namespace ExternalZones
 {
 	[Export(typeof(Zone))]
-	public class RightWing : FadeCandyZone
+	public class RightWing : OPCZone
 	{
-		public RightWing() : base("RightWing")
+		public RightWing() : base(FadeCandyController.Instance, "RightWing")
 		{
-			AddFadeCandyLights(PixelType.OPCRGBPixel, 12, 2);
+			AddOPCLights(OPCPixelType.OPCRGBPixel, 12, 2);
 		}
 	}
 }

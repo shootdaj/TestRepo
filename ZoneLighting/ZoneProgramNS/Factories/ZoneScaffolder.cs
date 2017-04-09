@@ -139,24 +139,35 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 		{
 			get { return ZoneProgramFactories.Select(x => x.Metadata.Name); }
 		}
-
-		public FadeCandyZone AddFadeCandyZone(BetterList<Zone> zones, string name, PixelType pixelType, int numberOfLights, byte? channel, double? brightness = null)
+        
+		public OPCZone AddFadeCandyZone(BetterList<Zone> zones, string name, OPCPixelType pixelType, int numberOfLights, byte? channel, double? brightness = null)
 		{
-			//create new zone
-			var zone = new FadeCandyZone(FadeCandyController.Instance, name, brightness, (byte)channel);
-			
-			//add lights and add zone to collection
-			((FadeCandyZone)zones.Add(zone)).AddFadeCandyLights(pixelType, numberOfLights, (byte)channel);
-			return zone;
+		    return AddOPCZone(zones, name, FadeCandyController.Instance, pixelType, numberOfLights, channel, brightness);
 		}
 
-		public FadeCandyZone AddFadeCandyZone(BetterList<Zone> zones, string name, PixelType pixelType, Dictionary<int,int> logicalPhysicalMapping, byte? channel, double? brightness = null)
+        public OPCZone AddNodeMCUZone(BetterList<Zone> zones, string name, OPCPixelType pixelType, int numberOfLights, byte? channel, double? brightness = null)
+        {
+            return AddOPCZone(zones, name, NodeMCUController.Instance, pixelType, numberOfLights, channel, brightness);
+        }
+
+        public OPCZone AddOPCZone(BetterList<Zone> zones, string name, OPCController lightingController, OPCPixelType pixelType, int numberOfLights,
+	        byte? channel, double? brightness = null)
+	    {
+            //create new zone
+            var zone = new OPCZone(lightingController, name, brightness, (byte)channel);
+
+            //add lights and add zone to collection
+            ((OPCZone)zones.Add(zone)).AddOPCLights(pixelType, numberOfLights, (byte)channel);
+            return zone;
+        }
+
+		public OPCZone AddFadeCandyZone(BetterList<Zone> zones, string name, OPCPixelType pixelType, Dictionary<int,int> logicalPhysicalMapping, byte? channel, double? brightness = null)
 		{
 			//create new zone
-			var zone = new FadeCandyZone(FadeCandyController.Instance, name, brightness, (byte)channel);
+			var zone = new OPCZone(FadeCandyController.Instance, name, brightness, (byte)channel);
 
 			//add lights and add zone to collection
-			((FadeCandyZone)zones.Add(zone)).AddFadeCandyLights(pixelType, logicalPhysicalMapping, (byte)channel);
+			((OPCZone)zones.Add(zone)).AddOPCLights(pixelType, logicalPhysicalMapping, (byte)channel);
 			return zone;
 		}
 
