@@ -1,0 +1,82 @@
+﻿<html>
+<head>
+    <meta charset="UTF-8">
+    <script>
+        // var connection = new WebSocket('ws://'+location.hostname+':81/', ['arduino']);
+        var connection = new WebSocket('ws://192.168.29.113:81/', ['arduino']);
+        connection.onopen = function () { connection.send('Connect ' + new Date()); };
+        connection.onerror = function (error) { console.log('WebSocket Error ', error); };
+        connection.onmessage = function (e) {
+            console.log('Server: ', e.data);
+            //IssueSystemMessage("WebSocket Connected!");
+        };
+        connection.onclose = function (e) {
+            console.log('Server: ', e.data);
+            //IssueSystemMessage("WebSocket Disconnected!");
+        };
+
+        function sendRGB(r, g, b) {
+            //var r = parseInt(document.getElementById('r').value).toString(16);
+            //var g = parseInt(document.getElementById('g').value).toString(16);
+            //var b = parseInt(document.getElementById('b').value).toString(16);
+            if (r.length < 2) { r = '0' + r; }
+            if (g.length < 2) { g = '0' + g; }
+            if (b.length < 2) { b = '0' + b; }
+            if (r == 'NaN') { r = '00'; }
+            if (g == 'NaN') { g = '00'; }
+            if (b == 'NaN') { b = '00'; }
+            var rgb = '#' + r + g + b;
+            console.log('RGB: ' + rgb);
+            connection.send(rgb);
+        }
+
+        //setInterval(function() {
+        while (true) {
+            var i;
+            for (i = 0; i < 255; i++) {
+                //setTimeout(1);
+                sendRGB(i, 0, 0);
+            }
+
+            for (i = 0; i < 255; i++) {
+                //setTimeout(1);
+                sendRGB(255 - i, 0, 0);
+            }
+
+            //setTimeout(10);
+        }
+        //}, 2000);
+
+        
+
+
+        //function OnePixel(){
+        //    var pixel = parseInt(document.getElementById('pixel').value).toString(16);
+        //    console.log('Pixel: ' + pixel);
+        //    r = 'ff'; g = 'ff'; b = 'ff';
+        //    var pixelNumber = '*'+pixel;
+        //    console.log('RGB: ' + pixel);
+        //    connection.send(pixelNumber);
+        //}
+        //function PixelsToggle(){
+        //    var OnOff = document.getElementById('flipper').value;
+        //    console.log('OnOff: ' + OnOff);
+        //    if(r.length < 2) { r = '0' + r; }
+        //    if(g.length < 2) { g = '0' + g; }
+        //    if(b.length < 2) { b = '0' + b; }
+
+        //    if(OnOff == 'off') {r = '00'; g = '00'; b = '00'; }
+        //    if(OnOff == 'on') {r = 'ff'; g = 'ff'; b = 'ff'; }
+        //    var rgb = '#'+r+g+b;
+        //    console.log('RGB: ' + rgb);
+        //    connection.send(rgb);
+        //}
+
+
+
+    </script>
+</head>
+<body>
+    Hi
+</body>
+</html>

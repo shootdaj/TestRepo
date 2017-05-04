@@ -99,10 +99,10 @@ namespace ZoneLighting.Communication
 
 
             var byteArray = ((OPCPixelFrame)opcPixelFrame).Data;
-            //var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
-            //byteArray.ToList().ForEach(x => byteArrayString += x + ",");
-            //byteArrayString += "}";
-            //Debug.Print(byteArrayString);
+            var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
+            byteArray.ToList().ForEach(x => byteArrayString += x + ",");
+            byteArrayString += "}";
+            Debug.Print(byteArrayString);
             //AssertInit();
             if (WebSocket.ReadyState == WebSocketState.Closed)
                 Connect();
