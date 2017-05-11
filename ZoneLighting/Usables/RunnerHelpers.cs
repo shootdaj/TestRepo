@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using Refigure;
 using ZoneLighting.Communication;
+using ZoneLighting.Graphics.Drawing;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
@@ -185,16 +186,43 @@ namespace ZoneLighting.Usables
             isv.Add("MaxFadeDelay", 20);
             isv.Add("Density", 1.0);
             isv.Add("Brightness", 1.0);
-            isv.Add("Random", true);
+            isv.Add("Random", false);
             //isv.Add("ColorScheme", ColorScheme.Primaries);
 
             //dynamic startingParameters = new ExpandoObject();
             //startingParameters.DeviceID = int.Parse(Config.Get("MIDIDeviceID"));
 
-            CreateNodeMCUZone(zlm);
-            zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones, startingParameters: null);
-        }
+            int trailLengthAvg = 4;
+            int trailLengthVariability = 2;
+            int intervalAvg = 70;
+            int intervalVariability = 70;
 
+            dynamic startingParams = new ExpandoObject();
+            startingParams.ClockedTrailShapes = new List<dynamic>();
+
+            for (int i = 0; i < 64; i += 8)
+            {
+                dynamic clockedTrailShape = new ExpandoObject();
+                var trailLength = ProgramCommon.RandomIntBetween(trailLengthAvg - trailLengthVariability, trailLengthAvg + trailLengthVariability);
+                var interval = ProgramCommon.RandomIntBetween(intervalAvg - intervalVariability, intervalAvg + intervalVariability);
+
+                var darkenFactor = (float)0.7;
+                clockedTrailShape.TrailShape = new TrailShape(new Trail(trailLength, ProgramCommon.GetRandomColor().Darken(0.5)),
+                    new Shape(i, i + 1, i + 2, i + 3, i + 4, i + 5, i + 6, i + 7));
+                clockedTrailShape.TrailShape.DarkenFactor = darkenFactor;
+                clockedTrailShape.Interval = interval;
+                clockedTrailShape.GetNewInterval =
+                    (Func<int>) (() => ProgramCommon.RandomIntBetween(intervalAvg - intervalVariability,
+                        intervalAvg + intervalVariability));
+                clockedTrailShape.AutoTrail = true; //todo: implement autotrail 
+                clockedTrailShape.AutoSpeed = true; //todo: implement autospeed
+                startingParams.ClockedTrailShapes.Add(clockedTrailShape);
+            }
+
+            CreateNodeMCUZone(zlm);
+            zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, null /*isv*/, zlm.Zones/*, startingParameters: startingParams*/);
+        }
+        
         public static void RunMidiPlayInLivingRoom(ZLM zlm)
 		{
 			dynamic startingParameters = new ExpandoObject();
@@ -225,7 +253,7 @@ namespace ZoneLighting.Usables
 	    public static Zone CreateNodeMCUZone(ZLM zlm)
 	    {
             var zone  = ZoneScaffolder.Instance.AddNodeMCUZone(zlm.Zones, "NodeMCUZone", OPCPixelType.OPCRGBPixel,
-                6, 1);
+                64, 1);
 
             return zone;
         }
