@@ -13,6 +13,8 @@ namespace ZoneLighting.Communication
 {
     public class OPCWebSocketController : OPCController
     {
+        protected virtual int NodeMCUWifiThreadSleepTime { get; set; } = Config.GetAsInt("NodeMCUWIFIThreadSleepTime");
+
         #region CORE
 
         /// <summary>
@@ -38,7 +40,6 @@ namespace ZoneLighting.Communication
         public OPCWebSocketController(string serverURL)
         {
             ServerURL = serverURL;
-
             //Timer.Interval = 1000;
 
             //Timer.Elapsed += (sender, args) =>
@@ -129,7 +130,8 @@ namespace ZoneLighting.Communication
                 Connect();
             
             WebSocket.Send(byteArray.ToArray()); //TODO: Change this to async?
-            Thread.Sleep(Config.GetAsInt("NodeMCUWIFIThreadSleepTime"));
+            if (NodeMCUWifiThreadSleepTime > 0)
+                Thread.Sleep(NodeMCUWifiThreadSleepTime);
             //Ticks++;
         }
 

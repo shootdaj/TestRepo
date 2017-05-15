@@ -30,6 +30,8 @@ namespace ZoneLighting.Communication
 
         public bool FCServerRunning { get; private set; } = false;
 
+        protected override int NodeMCUWifiThreadSleepTime { get; set; } = 0;
+
         #endregion
 
         #region C+I+D
