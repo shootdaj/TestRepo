@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Anshul.Utilities;
 using Refigure;
 using WebSocketSharp;
-using Timer = System.Timers.Timer;
 
 namespace ZoneLighting.Communication
 {
@@ -27,13 +24,14 @@ namespace ZoneLighting.Communication
         /// </summary>
         public string ServerURL { get; protected set; }
 
-        public IPixelToOPCPixelIndexMapper PixelMapper { get; }
+        public IPixelToOPCPixelMapper PixelMapper { get; }
 
         public bool Initialized { get; protected set; }
 
         public virtual OPCPixelType OPCPixelType { get; }
+	    public byte Channel { get; set; }
 
-        #endregion
+	    #endregion
 
         #region C+I+D
 
@@ -41,13 +39,14 @@ namespace ZoneLighting.Communication
         //Timer Timer = new Timer();
         //private int Ticks;
 
-        public OPCWebSocketController(string serverURL, IPixelToOPCPixelIndexMapper pixelMapper, OPCPixelType opcPixelType)
+        public OPCWebSocketController(string serverURL, IPixelToOPCPixelMapper pixelMapper, OPCPixelType opcPixelType, byte channel)
         {
             ServerURL = serverURL;
             PixelMapper = pixelMapper;
             OPCPixelType = opcPixelType;
+	        Channel = channel;
 
-            //Timer.Interval = 1000;
+	        //Timer.Interval = 1000;
 
             //Timer.Elapsed += (sender, args) =>
             //{
@@ -112,34 +111,22 @@ namespace ZoneLighting.Communication
         /// <param name="opcPixelFrame">The OPCPixelFrame to send to the board.</param>
         public void SendPixelFrame(IPixelFrame opcPixelFrame)
         {
-            //var byteArray = ((OPCPixelFrame)opcPixelFrame).ToByteArray();
-            ////var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
-            ////byteArray.ToList().ForEach(x => byteArrayString += x + ",");
-            ////byteArrayString += "}";
-            ////Debug.Print(byteArrayString);
-            //AssertInit();
-            //if (WebSocket.ReadyState == WebSocketState.Closed)
-            //    Connect();
-            //WebSocket.Send(byteArray); //TODO: Change this to async?
-
-
-
-
-
-
+            
             var byteArray = ((OPCPixelFrame)opcPixelFrame).Data;
-            //var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
-            //byteArray.ToList().ForEach(x => byteArrayString += x + ",");
-            //byteArrayString += "}";
-            //Debug.Print(byteArrayString);
-            //AssertInit();
-            if (WebSocket.ReadyState == WebSocketState.Closed)
+			//var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
+			//byteArray.ToList().ForEach(x => byteArrayString += x + ",");
+			//byteArrayString += "}";
+			//Debug.Print(byteArrayString);
+			//AssertInit();
+
+			if (WebSocket.ReadyState == WebSocketState.Closed)
                 Connect();
             
-            WebSocket.Send(byteArray.ToArray()); //TODO: Change this to async?
+            WebSocket.Send(byteArray.ToArray());
             if (NodeMCUWifiThreadSleepTime > 0)
                 Thread.Sleep(NodeMCUWifiThreadSleepTime);
-            //Ticks++;
+            
+			//Ticks++;
         }
 
 
@@ -156,40 +143,14 @@ namespace ZoneLighting.Communication
         {
             var opcPixels = lights.ToList()
                 .Select(light =>
-                {
-                    var opcPixel = OPCPixel.GetOPCPixelInstance(OPCPixelType,);
-                    opcPixel.PhysicalIndex = PixelMapper.GetOPCPixelIndex(light.Index);
+	            {
+		            var opcPixel = OPCPixel.GetOPCPixelInstance(OPCPixelType, Channel,
+			            PixelMapper.GetOPCPixelIndex(light.Index));
                     opcPixel.Color = light.Color;
                     return opcPixel;
                 });
 
             return opcPixels.ToList();
-
-
-
-            //this is where the map would be loaded - logical to physical map
-            //IList<OPCPixel> opcPixels = new List<OPCPixel>();
-
-            //for (var i = 0; i < lights.ToList().Count; i++)
-            //{
-            //    var light = lights.ToList()[i];
-            //    var opcPixel = OPCPixel.GetOPCPixelInstance(PixelType);
-            //    opcPixel.PhysicalIndex = PixelMapper.GetOPCPixelIndex(light.Index);
-            //    opcPixel.Color = light.Color;
-            //    opcPixels.Add(opcPixel);
-            //}
-
-            //lights.ToList().ForEach(light =>
-            //{
-            //    var opcPixel = OPCPixel.GetOPCPixelInstance(PixelType);
-            //    opcPixel.PhysicalIndex = PixelMapper.GetOPCPixelIndex(light.Index);
-            //    opcPixel.Color = light.Color;
-            //    opcPixels.Add(opcPixel);
-            //});
-
-
-
-
         }
 
         #endregion

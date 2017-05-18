@@ -1,7 +1,8 @@
 namespace ZoneLighting.Communication
 {
-    public interface IPixelToOPCPixelIndexMapper
+    public interface IPixelToOPCPixelMapper
     {
         int GetOPCPixelIndex(int pixelIndex);
+	    byte GetOPCPixelChannel(IPixel pixel);
     }
 }

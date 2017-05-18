@@ -19,14 +19,15 @@ namespace ZoneLighting.Communication
 
         private static FadeCandyController _instance;
 
-        public static FadeCandyController Instance
-            => _instance ?? (_instance = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"], new OneToOnePixelIndexMapper()));
+	    public static FadeCandyController Instance
+		    => _instance ?? (_instance = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"],
+			       new DefaultPixelMapper(), 1)); //TODO: Change channel - make the whole thing IoC'd
 
-        #endregion
+		#endregion
 
-        #region CORE
+		#region CORE
 
-        private Process FadeCandyServerProcess { get; set; } = new Process();
+		private Process FadeCandyServerProcess { get; set; } = new Process();
 
         public bool FCServerRunning { get; private set; } = false;
 
@@ -36,7 +37,7 @@ namespace ZoneLighting.Communication
 
         #region C+I+D
 
-        public FadeCandyController(string serverURL, IPixelToOPCPixelIndexMapper pixelIndexMapper) : base(serverURL, pixelIndexMapper, OPCPixelType.OPCRGBPixel)
+        public FadeCandyController(string serverURL, IPixelToOPCPixelMapper pixelIndexMapper, byte channel) : base(serverURL, pixelIndexMapper, OPCPixelType.OPCRGBPixel, channel)
         {
         }
 

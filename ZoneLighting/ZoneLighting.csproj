@@ -141,9 +141,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Communication\IPixelFrame.cs" />
-    <Compile Include="Communication\IPixelToOPCPixelIndexMapper.cs" />
+    <Compile Include="Communication\IPixelToOPCPixelMapper.cs" />
     <Compile Include="Communication\NodeMCUController.cs" />
-    <Compile Include="Communication\OneToOnePixelIndexMapper.cs" />
+    <Compile Include="Communication\DefaultPixelMapper.cs" />
     <Compile Include="Communication\OPCWebSocketController.cs" />
     <Compile Include="Graphics\Animation.cs" />
     <Compile Include="Graphics\Drawing\ClockedTrailShape.cs" />

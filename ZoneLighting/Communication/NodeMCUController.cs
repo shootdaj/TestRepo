@@ -16,11 +16,11 @@ namespace ZoneLighting.Communication
 
         public static NodeMCUController Instance
             => _instance ?? (_instance = new NodeMCUController(ConfigurationManager.AppSettings["NodeMCUServerURL"],
-                   new OneToOnePixelIndexMapper(), OPCPixelType.OPCRGBPixel));
+                   new DefaultPixelMapper(), OPCPixelType.OPCRGBPixel, 1)); //TODO: Change channel - make the whole thing IoC'd
 
         #endregion
 
-        public NodeMCUController(string serverURL, IPixelToOPCPixelIndexMapper pixelIndexMapper, OPCPixelType opcPixelType) : base(serverURL, pixelIndexMapper, opcPixelType)
+        public NodeMCUController(string serverURL, IPixelToOPCPixelMapper pixelMapper, OPCPixelType opcPixelType, byte channel) : base(serverURL, pixelMapper, opcPixelType, channel)
         {
         }
 

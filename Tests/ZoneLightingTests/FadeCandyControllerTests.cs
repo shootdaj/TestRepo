@@ -11,7 +11,7 @@ namespace ZoneLightingTests
         [Test]
         public void PixelType_ReturnsIFadeCandyPixel()
         {
-            var fadeCandyController = new FadeCandyController(A.Dummy<string>(), new OneToOnePixelIndexMapper());
+            var fadeCandyController = new FadeCandyController(A.Dummy<string>(), new DefaultPixelMapper(), 1);
             var result = fadeCandyController.OPCPixelType == OPCPixelType.OPCRGBPixel;
             fadeCandyController.Dispose();
             Assert.True(result);
@@ -20,7 +20,7 @@ namespace ZoneLightingTests
         [Test]
         public void Initialize_StartsFCServer()
         {
-            var fadeCandyController = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"], new OneToOnePixelIndexMapper());
+            var fadeCandyController = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"], new DefaultPixelMapper(), 1);
             fadeCandyController.Initialize();
             var result = fadeCandyController.ConnectionState == WebSocketState.Open;
             fadeCandyController.Dispose();
