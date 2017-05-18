@@ -27,7 +27,7 @@ namespace ZoneLightingTests
 			byte fcChannel = 1;
 			var zones = new BetterList<Zone>();
 			FadeCandyController.Instance.Initialize();
-			((OPCZone) zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone1"))).AddOPCLights(OPCPixelType.OPCRGBPixel, 6, fcChannel);
+			((OPCZone) zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone1"))).AddOPCLights(6);
 
 			dynamic startingValuesOldTz1 = new ISV();
 			startingValuesOldTz1.DelayTime = 1;
@@ -35,7 +35,7 @@ namespace ZoneLightingTests
 
 			zones[0].Run(new Rainbow(), startingValuesOldTz1);
 
-			((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone2"))).AddOPCLights(OPCPixelType.OPCRGBPixel, 12, fcChannel);
+			((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone2"))).AddOPCLights(12);
 			dynamic startingValuesOldTz2 = new ISV();
 			startingValuesOldTz2.DelayTime = 1;
 			startingValuesOldTz2.DotColor = Color.BlueViolet;
@@ -62,7 +62,7 @@ namespace ZoneLightingTests
 			byte fcChannel = 1;
 			var zones = new BetterList<Zone>();
 			FadeCandyController.Instance.Initialize();
-			((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone1"))).AddOPCLights(OPCPixelType.OPCRGBPixel, 6, fcChannel);
+			((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone1"))).AddOPCLights(6);
 
 			dynamic startingValuesOldTz1 = new ISV();
 			startingValuesOldTz1.DelayTime = 1;
@@ -70,7 +70,7 @@ namespace ZoneLightingTests
 
 			zones[0].Run(new Rainbow(), startingValuesOldTz1);
 
-			((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone2"))).AddOPCLights(OPCPixelType.OPCRGBPixel, 12, fcChannel);
+			((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone2"))).AddOPCLights(12);
 			dynamic startingValuesOldTz2 = new ISV();
 			startingValuesOldTz2.DelayTime = 1;
 			startingValuesOldTz2.DotColor = Color.BlueViolet;
@@ -107,8 +107,8 @@ namespace ZoneLightingTests
             byte fcChannel = 1;
             var zones = new BetterList<Zone>();
             FadeCandyController.Instance.Initialize();
-            ((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone1"))).AddOPCLights(OPCPixelType.OPCRGBPixel, 6, fcChannel);
-            ((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone2"))).AddOPCLights(OPCPixelType.OPCRGBPixel, 12, fcChannel);
+            ((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone1"))).AddOPCLights(6);
+            ((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone2"))).AddOPCLights(12);
 
             var programSets = new BetterList<ProgramSet>
             {
@@ -136,10 +136,10 @@ namespace ZoneLightingTests
             byte fcChannel = 1;
             var zones = new BetterList<Zone>();
             FadeCandyController.Instance.Initialize();
-            ((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone1"))).AddOPCLights(OPCPixelType.OPCRGBPixel, 6, fcChannel);
-            ((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone2"))).AddOPCLights(OPCPixelType.OPCRGBPixel, 12, fcChannel);
-            ((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone3"))).AddOPCLights(OPCPixelType.OPCRGBPixel, 12, fcChannel);
-            ((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone4"))).AddOPCLights(OPCPixelType.OPCRGBPixel, 12, fcChannel);
+            ((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone1"))).AddOPCLights(6);
+            ((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone2"))).AddOPCLights(12);
+            ((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone3"))).AddOPCLights(12);
+            ((OPCZone)zones.Add(new OPCZone(FadeCandyController.Instance, "TestZone4"))).AddOPCLights(12);
 
             var programSets = new BetterList<ProgramSet>
             {

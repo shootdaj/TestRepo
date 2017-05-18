@@ -26,9 +26,9 @@ namespace ZoneLighting
 
 		#region Admin
 
-		public Zone AddFadeCandyZone(string name, OPCPixelType pixelType, int numberOfLights, byte? channel)
+		public Zone AddFadeCandyZone(string name, int numberOfLights)
 		{
-			return ZoneScaffolder.Instance.AddFadeCandyZone(Zones, name, pixelType, numberOfLights, channel);
+			return ZoneScaffolder.Instance.AddFadeCandyZone(Zones, name, numberOfLights);
 		}
 
 		public void Save()

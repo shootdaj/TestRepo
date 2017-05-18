@@ -36,12 +36,12 @@ namespace ZoneLighting.Usables
 			var notificationSyncContext = new SyncContext("NotificationContext");
 
 			//add zones
-			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing", OPCPixelType.OPCRGBPixel, 6,
+			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing", 6,
 				1);
-			var center = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Center", OPCPixelType.OPCRBGPixel, 21, 2);
-			var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing", OPCPixelType.OPCRGBPixel,
+			var center = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Center", 21, 2);
+			var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing", 
 				12, 3);
-			var baiClock = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "BaiClock", OPCPixelType.OPCRGBPixel, 24,
+			var baiClock = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "BaiClock", 24,
 				4);
 
 			zlm.CreateProgramSet("RainbowSet", "Rainbow", true, null, zlm.Zones);
@@ -252,7 +252,7 @@ namespace ZoneLighting.Usables
 
 	    public static Zone CreateNodeMCUZone(ZLM zlm)
 	    {
-            var zone  = ZoneScaffolder.Instance.AddNodeMCUZone(zlm.Zones, "NodeMCUZone", OPCPixelType.OPCRGBPixel,
+            var zone  = ZoneScaffolder.Instance.AddNodeMCUZone(zlm.Zones, "NodeMCUZone",
                 64, 1);
 
             return zone;
@@ -260,7 +260,7 @@ namespace ZoneLighting.Usables
 
 		public static Zone CreateNeoMatrixZone(ZLM zlm)
 		{
-			var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix", OPCPixelType.OPCRGBPixel,
+			var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix",
 				64, 1);
 
 			return neomatrix;
@@ -271,8 +271,7 @@ namespace ZoneLighting.Usables
 			const byte fadeCandyChannel = 1;
 			const OPCPixelType pixelType = OPCPixelType.OPCRGBPixel;
 
-			var livingRoom = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LivingRoom", pixelType, LivingRoomLogicalPhysicalMapping,
-				fadeCandyChannel);
+			var livingRoom = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LivingRoom", 6);
 			
 			return livingRoom;
 		}
@@ -282,8 +281,7 @@ namespace ZoneLighting.Usables
 			var isv = new ISV();
 			isv.Add("Speed", 10);
 			isv.Add("DelayTime", 10);
-			var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix", OPCPixelType.OPCRGBPixel,
-				64, 1, 0.5);
+			var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix", 64, 0.5);
 			zlm.CreateProgramSet("RainbowSet", "Rainbow", false, isv, zlm.Zones);
 		}
 
@@ -295,27 +293,27 @@ namespace ZoneLighting.Usables
 			isv.Add("Density", 1.0);
 			isv.Add("Brightness", 1.0);
 			isv.Add("Random", true);
-			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing", OPCPixelType.OPCRGBPixel,
+			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing",
 				6, 1);
-			var rightwing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing", OPCPixelType.OPCRGBPixel,
+			var rightwing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing",
 				12, 3);
-			var center = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Center", OPCPixelType.OPCRBGPixel,
+			var center = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Center",
 				21, 2);
 			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);
 		}
 
 		public static void RunRainbowInBasement(ZLM zlm)
 		{
-			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing", OPCPixelType.OPCRGBPixel,
+			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing",
 				6, 1);
-			var rightwing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing", OPCPixelType.OPCRGBPixel,
+			var rightwing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing",
 				12, 3);
 			zlm.CreateProgramSet("RainbowSet", "Rainbow", true, null, zlm.Zones);
 		}
 
 	    public static void RunMidiTwoDimensionalFadeOnNeoMatrix(ZLM zlm)
 	    {
-	        var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix", OPCPixelType.OPCRGBPixel,
+	        var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "NeoMatrix",
 	            64, 1);
 	        dynamic startingParameters = new ExpandoObject();
 	        startingParameters.DeviceID = int.Parse(Config.Get("MIDIDeviceID"));
@@ -326,11 +324,11 @@ namespace ZoneLighting.Usables
 	    public static void RunMidiTwoDimensionalFadeInBasement(ZLM zlm)
 	    {
             var isv = new ISV();
-            var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing", OPCPixelType.OPCRGBPixel,
+            var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LeftWing",
                 6, 1);
-            var rightwing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing", OPCPixelType.OPCRGBPixel,
+            var rightwing = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "RightWing",
                 12, 3);
-            var center = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Center", OPCPixelType.OPCRBGPixel,
+            var center = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "Center",
                 21, 2);
 			dynamic startingParameters = new ExpandoObject();
 			startingParameters.DeviceID = int.Parse(Config.Get("MIDIDeviceID"));
@@ -346,10 +344,10 @@ namespace ZoneLighting.Usables
 			isv.Add("Density", 1.0);
 			isv.Add("Brightness", 1.0);
 			isv.Add("Random", true);
-			var firstRow = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "FirstRow", OPCPixelType.OPCRGBPixel, 16, 1);
-			var secondRow = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "SecondRow", OPCPixelType.OPCRGBPixel, 16, 2);
-			var thirdRow = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ThirdRow", OPCPixelType.OPCRGBPixel, 16, 3);
-			var fourthRow = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "FourthRow", OPCPixelType.OPCRGBPixel, 16, 4);
+			var firstRow = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "FirstRow", 16, 1);
+			var secondRow = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "SecondRow", 16, 2);
+			var thirdRow = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "ThirdRow", 16, 3);
+			var fourthRow = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "FourthRow", 16, 4);
 			zlm.CreateProgramSet("ShimmerSet", "Shimmer", false, isv, zlm.Zones);
 		}
 

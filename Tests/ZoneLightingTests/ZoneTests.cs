@@ -30,7 +30,7 @@ namespace ZoneLightingTests
 		{
 			var zone = new OPCZone(FadeCandyController.Instance, "TestZone");
 			var program = new Rainbow();
-			zone.AddOPCLights(OPCPixelType.OPCRGBPixel, 6, 1);
+			zone.AddOPCLights(6);
 			Assert.DoesNotThrow(() => zone.Run(program));
 			Assert.True(zone.Running);
 			Assert.True(program.State == ProgramState.Started);
@@ -42,7 +42,7 @@ namespace ZoneLightingTests
 			var zone = new OPCZone(FadeCandyController.Instance, "TestZone");
 			var program = new Rainbow();
 			var syncContext = new SyncContext();
-			zone.AddOPCLights(OPCPixelType.OPCRGBPixel, 6, 1);
+			zone.AddOPCLights(6);
 			Assert.DoesNotThrow(() => zone.Run(program, null, true, syncContext));
 			Assert.True(zone.Running);
 			Assert.True(program.State == ProgramState.Started);
@@ -55,7 +55,7 @@ namespace ZoneLightingTests
 			lightingController.CallsTo(controller => controller.SendLights(A.Fake<List<IPixel>>())).DoesNothing();
 			var zone = new OPCZone(FadeCandyController.Instance, "TestZone");
 			var program = new Rainbow();
-			zone.AddOPCLights(OPCPixelType.OPCRGBPixel, 6, 1);
+			zone.AddOPCLights(6);
 			zone.Run(program);
 			Assert.DoesNotThrow(() => zone.Stop(true));
 			Assert.False(zone.Running);

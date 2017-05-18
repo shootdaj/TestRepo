@@ -23,7 +23,7 @@ namespace ZoneLighting
 		/// <param name="numberOfLights">Number of lights in the zone</param>
 		/// <param name="channel">FadeCandy channel on which this zone is connected</param>
 		/// <returns></returns>
-		Zone AddFadeCandyZone(string name, OPCPixelType pixelType, int numberOfLights, byte? channel);
+		Zone AddFadeCandyZone(string name, int numberOfLights);
 
 		/// <summary>
 		/// Saves active program sets and zones

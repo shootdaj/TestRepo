@@ -25,8 +25,7 @@ namespace ZoneLightingTests.ProgramTests
                 //act
                 zlm = new ZLM(false, false, false, zlmInner =>
                 {
-                    var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlmInner.Zones, "NeoMatrix",
-                        OPCPixelType.OPCRGBPixel, 64, 1);
+                    var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlmInner.Zones, "NeoMatrix", 64);
                     var midiTwoDimensionalFade = new MidiTwoDimensionalFade();
                     dynamic startingParameters = new ExpandoObject();
                     startingParameters.DeviceID = deviceID;

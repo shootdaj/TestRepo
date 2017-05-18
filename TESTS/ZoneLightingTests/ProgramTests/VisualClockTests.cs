@@ -17,8 +17,7 @@ namespace ZoneLightingTests.ProgramTests
 			
 			var zlm = new ZLM(false, false, false, zlmInner =>
 			{
-				var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlmInner.Zones, "NeoMatrix", OPCPixelType.OPCRGBPixel,
-					64, 1);
+				var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlmInner.Zones, "NeoMatrix", 64);
 				zlmInner.CreateSingularProgramSet("", new VisualClock(), null, neomatrix, null);
 			}, Config.Get("NeoMatrixOneZone"));
 

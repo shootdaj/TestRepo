@@ -25,7 +25,7 @@ namespace ZoneLightingTests.ProgramTests
 				isv.Add("Density", 0.5);
 				isv.Add("Brightness", 0.5);
 				isv.Add("Random", random);
-				var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlmInner.Zones, "NeoMatrix", OPCPixelType.OPCRGBPixel, 64, 1);
+				var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlmInner.Zones, "NeoMatrix", 64);
 				zlmInner.CreateSingularProgramSet("", new Shimmer(), isv, neomatrix);
 			}, Config.Get("NeoMatrixOneZone"));
 
@@ -62,7 +62,7 @@ namespace ZoneLightingTests.ProgramTests
 				isv.Add("Brightness", brightness);
 				isv.Add("Random", random);
 				isv.Add("ColorScheme", ColorScheme.Secondaries);
-				var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlmInner.Zones, "NeoMatrix", OPCPixelType.OPCRGBPixel, 64, 1);
+				var neomatrix = ZoneScaffolder.Instance.AddFadeCandyZone(zlmInner.Zones, "NeoMatrix", 64);
 				zlmInner.CreateSingularProgramSet("", new Shimmer(), isv, neomatrix);
 			}, Config.Get("NeoMatrixOneZone"));
 

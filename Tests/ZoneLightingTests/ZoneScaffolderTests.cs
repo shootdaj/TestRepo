@@ -62,7 +62,7 @@ namespace ZoneLightingTests
 			zoneScaffolder.Initialize(ConfigurationManager.AppSettings["TestProgramModuleDirectory"]);
 
 			var leftWing = new OPCZone(FadeCandyController.Instance, "TestZone");
-			leftWing.AddOPCLights(OPCPixelType.OPCRGBPixel, 6, 1);
+			leftWing.AddOPCLights(6);
 
 			dynamic scrollDotDictionary = new ISV();
 			scrollDotDictionary.DelayTime = 30;

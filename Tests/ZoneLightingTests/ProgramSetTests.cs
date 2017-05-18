@@ -23,8 +23,8 @@ namespace ZoneLightingTests
 			//create zones
 			var zones = new BetterList<Zone>();
 			FadeCandyController.Instance.Initialize();
-			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "LeftWing", OPCPixelType.OPCRGBPixel, 6, 1);
-			var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "RightWing", OPCPixelType.OPCRBGPixel, 21, 2);
+			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "LeftWing", 6);
+			var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "RightWing", 21);
 
 			//act
 			var programSet = new ProgramSet("Stepper", zones.ToList(), true, null, "StepperSet");
@@ -50,8 +50,8 @@ namespace ZoneLightingTests
 
 			var zones = new BetterList<Zone>();
 			FadeCandyController.Instance.Initialize();
-			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "LeftWing", OPCPixelType.OPCRGBPixel, 6, 1);
-			var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "RightWing", OPCPixelType.OPCRBGPixel, 21, 2);
+			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "LeftWing",  6);
+			var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "RightWing", 21);
 
 			//act
 			var programSet = new ProgramSet("Stepper", zones.ToList(), false, null, "StepperSet");
@@ -78,8 +78,8 @@ namespace ZoneLightingTests
 
 			var zones = new BetterList<Zone>();
 			FadeCandyController.Instance.Initialize();
-			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "LeftWing", OPCPixelType.OPCRGBPixel, 6, 1);
-			var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "RightWing", OPCPixelType.OPCRBGPixel, 21, 2);
+			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "LeftWing", 6);
+			var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "RightWing", 21);
 
 			var programSet = new ProgramSet("Stepper", zones.ToList(), false, null, "StepperSet");
 
@@ -114,10 +114,10 @@ namespace ZoneLightingTests
 			//create zones
 			var zones = new BetterList<Zone>();
 			FadeCandyController.Instance.Initialize();
-			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "LeftWing", OPCPixelType.OPCRGBPixel, 6, 1);
-			var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "RightWing", OPCPixelType.OPCRBGPixel, 21, 2);
-			var center = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "Center", OPCPixelType.OPCRBGPixel, 21, 2);
-			var baiClock = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "BaiClock", OPCPixelType.OPCRGBPixel, 24, 4);
+			var leftWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "LeftWing", 6);
+			var rightWing = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "RightWing", 21);
+			var center = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "Center", 21);
+			var baiClock = ZoneScaffolder.Instance.AddFadeCandyZone(zones, "BaiClock",  24);
 
 			//act
 			var stepperSet1 = new ProgramSet("Stepper", new List<Zone>() { leftWing, rightWing }, true, null, "StepperSet1");

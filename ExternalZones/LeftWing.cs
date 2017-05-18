@@ -9,7 +9,7 @@ namespace ExternalZones
 	{
 		public LeftWing() : base(FadeCandyController.Instance, "LeftWing")
 		{
-			AddOPCLights(OPCPixelType.OPCRGBPixel, 6, 1);
+			AddOPCLights(6);
 		}
 	}
 }
