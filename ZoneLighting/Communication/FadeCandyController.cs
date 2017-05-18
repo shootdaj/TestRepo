@@ -20,7 +20,7 @@ namespace ZoneLighting.Communication
         private static FadeCandyController _instance;
 
         public static FadeCandyController Instance
-            => _instance ?? (_instance = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"]));
+            => _instance ?? (_instance = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"], new OneToOnePixelIndexMapper()));
 
         #endregion
 
@@ -36,7 +36,7 @@ namespace ZoneLighting.Communication
 
         #region C+I+D
 
-        public FadeCandyController(string serverURL) : base(serverURL)
+        public FadeCandyController(string serverURL, IPixelToOPCPixelIndexMapper pixelIndexMapper) : base(serverURL, pixelIndexMapper, OPCPixelType.OPCRGBPixel)
         {
         }
 
@@ -110,7 +110,7 @@ namespace ZoneLighting.Communication
             Environment.CurrentDirectory = oldEnvDir;
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
             base.Dispose();
             Uninitialize();

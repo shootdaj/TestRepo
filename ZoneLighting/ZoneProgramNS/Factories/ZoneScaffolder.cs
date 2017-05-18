@@ -150,7 +150,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
             return AddOPCZone(zones, name, NodeMCUController.Instance, pixelType, numberOfLights, channel, brightness);
         }
 
-        public OPCZone AddOPCZone(BetterList<Zone> zones, string name, OPCController lightingController, OPCPixelType pixelType, int numberOfLights,
+        public OPCZone AddOPCZone(BetterList<Zone> zones, string name, OPCWebSocketController lightingController, OPCPixelType pixelType, int numberOfLights,
 	        byte? channel, double? brightness = null)
 	    {
             //create new zone

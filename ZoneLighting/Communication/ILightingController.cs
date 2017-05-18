@@ -5,17 +5,17 @@ namespace ZoneLighting.Communication
 {
 	public interface ILightingController
 	{
-		void SendPixelFrame(IPixelFrame opcPixelFrame);
-		void SendLEDs(IList<ILightingControllerPixel> leds);
+        //void SendPixelFrame(IPixelFrame opcPixelFrame);
+        //void SendLEDs(IList<ILightingControllerPixel> leds);
+
+        //      /// <summary>
+        //      /// Pixel type determines the way pixels will be sent out
+        //      /// </summary>
+        //      //Type PixelType { get; }
 
         /// <summary>
-        /// Pixel type determines the way pixels will be sent out
+        /// Sends a list of Lights to the implementing lighting controller
         /// </summary>
-        Type PixelType { get; }
-
-		/// <summary>
-		/// Sends a list of Lights to the implementing lighting controller
-		/// </summary>
-		void SendLights(IList<ILightingControllerPixel> lights);
-	}
+        void SendLights(IList<IPixel> lights);
+    }
 }

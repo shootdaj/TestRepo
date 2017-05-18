@@ -16,29 +16,29 @@ namespace ZoneLighting.Communication
 
 		#region API
 
-		/// <summary>
-		/// Sends this Pixel Frame instance using the given Lighting Controller.
-		/// </summary>
-		/// <param name="controller">The lighting controller to use to </param>
-		public void Send(ILightingController controller)
-		{
-			controller.SendPixelFrame(this);
-		}
+		///// <summary>
+		///// Sends this Pixel Frame instance using the given Lighting Controller.
+		///// </summary>
+		///// <param name="controller">The lighting controller to use to </param>
+		//public void Send(ILightingController controller)
+		//{
+		//	controller.SendPixelFrame(this);
+		//}
 		
 		/// <summary>
 		/// Creates an OPC Pixel Frame from a list OPC Pixels (or leds)
 		/// </summary>
 		/// <param name="channel">Channel this frame will be sent to.</param>
 		/// <param name="opcPixels">List of LEDs to map.</param>
-		public static OPCPixelFrame CreateFromOPCPixels(byte channel, IList<IOPCPixelContainer> opcPixels)
+		public static OPCPixelFrame CreateFromOPCPixels(byte channel, IList<OPCPixel> opcPixels)
 		{
 			var data = new byte[opcPixels.Count * 3];
 
-			foreach (IOPCPixelContainer led in opcPixels)
+			foreach (OPCPixel led in opcPixels)
 			{
-				data[led.OPCPixel.RedIndex] = led.Color.R;
-				data[led.OPCPixel.GreenIndex] = led.Color.G;
-				data[led.OPCPixel.BlueIndex] = led.Color.B;
+				data[led.RedIndex] = led.Color.R;
+				data[led.GreenIndex] = led.Color.G;
+				data[led.BlueIndex] = led.Color.B;
 			}
 
 			var returnValue = new OPCPixelFrame(channel, data);
@@ -51,14 +51,14 @@ namespace ZoneLighting.Communication
 		/// </summary>
 		/// <param name="opcPixels"></param>
 		/// <returns></returns>
-		public static IList<OPCPixelFrame> CreateChannelBurstFromOPCPixels(IList<IOPCPixelContainer> opcPixels)
+		public static IList<OPCPixelFrame> CreateChannelBurstFromOPCPixels(IList<OPCPixel> opcPixels)
 		{
 			var returnValue = new List<OPCPixelFrame>();
 
-			foreach (var channel in opcPixels.Select(x => x.OPCPixel.Channel).Distinct())
+			foreach (var channel in opcPixels.Select(x => x.Channel).Distinct())
 			{
 				returnValue.Add(CreateFromOPCPixels(channel,
-					opcPixels.Where(x => x.OPCPixel.Channel == channel).ToList()));
+					opcPixels.Where(x => x.Channel == channel).ToList()));
 			}
 
 			return returnValue;

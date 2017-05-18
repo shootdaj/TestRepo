@@ -3,35 +3,35 @@ using System.Collections.Generic;
 
 namespace ZoneLighting.Communication
 {
-	public abstract class LightingController : ILightingController, IDisposable
-	{
-		#region ILightingController
+	//public abstract class LightingController : ILightingController, IDisposable
+	//{
+	//	#region ILightingController
 
-		public abstract void SendPixelFrame(IPixelFrame opcPixelFrame);
-		public abstract void SendLEDs(IList<ILightingControllerPixel> leds);
-		public abstract Type PixelType { get; }
+	//	//public abstract void SendPixelFrame(IPixelFrame opcPixelFrame);
+	//	//public abstract void SendLEDs(IList<ILightingControllerPixel> leds);
+	//	//public abstract Type PixelType { get; }
 
-		#endregion
+	//	#endregion
 
-		#region IInitializable/IDisposable
+	//	#region IInitializable/IDisposable
 
-		//public abstract void Initialize();
-		//public abstract bool Initialized { get; private set; }
-		//public abstract void Uninitialize();
-		public abstract void Dispose();
+	//	//public abstract void Initialize();
+	//	//public abstract bool Initialized { get; private set; }
+	//	//public abstract void Uninitialize();
+	//	public abstract void Dispose();
 
-		#endregion
+ //       #endregion
 
-		#region Helper Methods
+ //       #region Helper Methods
 
-		/// <summary>
-		/// Sends a list of Lights to the implementing lighting controller
-		/// </summary>
-		public void SendLights(IList<ILightingControllerPixel> lights)
-		{
-			SendLEDs(lights);
-		}
+ //       /// <summary>
+ //       /// Sends a list of Lights to the implementing lighting controller
+ //       /// </summary>
+ //       public void SendLights(IList<ILightingControllerPixel> lights)
+ //       {
+ //           SendLEDs(lights);
+ //       }
 
-		#endregion
-	}
+ //       #endregion
+ //   }
 }

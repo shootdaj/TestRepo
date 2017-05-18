@@ -8,7 +8,7 @@ namespace ZoneLighting.ZoneNS
 	public class OPCZone : Zone
 	{
 		[JsonConstructor]
-		public OPCZone(OPCController lightingController = null, string name = "", double? brightness = null, byte? channel = null)
+		public OPCZone(OPCWebSocketController lightingController = null, string name = "", double? brightness = null, byte? channel = null)
 			: base(lightingController, name, brightness)
 		{
 			Channel = channel;
@@ -25,7 +25,7 @@ namespace ZoneLighting.ZoneNS
 		{
 			for (int i = 0; i < numLights; i++)
 			{
-				AddLight(new LED(logicalIndex: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i, pixelType: pixelType));
+				AddLight(new LED(index: i, fadeCandyChannel: fcChannel, fadeCandyIndex: i, pixelType: pixelType));
 			}
 		}
 
@@ -41,7 +41,7 @@ namespace ZoneLighting.ZoneNS
 		{
 			logicalPhysicalMapping.Keys.ToList().ForEach(key =>
 			{
-				AddLight(new LED(logicalIndex: key, fadeCandyChannel: fcChannel, fadeCandyIndex: logicalPhysicalMapping[key],
+				AddLight(new LED(index: key, fadeCandyChannel: fcChannel, fadeCandyIndex: logicalPhysicalMapping[key],
 					pixelType: pixelType));
 			});
 		}

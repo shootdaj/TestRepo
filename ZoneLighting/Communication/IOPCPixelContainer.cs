@@ -1,7 +1,7 @@
 ﻿namespace ZoneLighting.Communication
 {
-	public interface IOPCPixelContainer : ILightingControllerPixel
-	{
-		OPCPixel OPCPixel { get; set; }
-	}
+	//public interface IOPCPixelContainer : IPixel
+	//{
+	//	OPCPixel OPCPixel { get; set; }
+	//}
 }

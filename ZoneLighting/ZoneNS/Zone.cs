@@ -67,14 +67,14 @@ namespace ZoneLighting.ZoneNS
 		/// <param name="color"></param>
 		public void SetAllLightsColor(Color color)
 		{
-			Lights.ToList().ForEach(x => x.SetColor(color));
+			Lights.ToList().ForEach(x => x.Color = color);
 		}
 
 		/// <summary>
 		/// Adds a new light to this zone.
 		/// </summary>
 		/// <param name="light"></param>
-		public void AddLight(ILogicalRGBLight light)
+		public void AddLight(IPixel light)
 		{
 			Lights.Add(light);
 		}
@@ -89,7 +89,7 @@ namespace ZoneLighting.ZoneNS
 		/// </summary>
 		public Color GetColor(int index)
 		{
-			return Lights[index].GetColor();
+			return Lights[index].Color;
 		}
 
 		public void ClearColors()
@@ -110,7 +110,7 @@ namespace ZoneLighting.ZoneNS
 				Lights.SetColor(brightnessAdjustedColor);
 			else
 			{
-				Lights[(int)index].SetColor(brightnessAdjustedColor);
+				Lights[(int)index].Color = brightnessAdjustedColor;
 			}
 
 		}
@@ -163,14 +163,14 @@ namespace ZoneLighting.ZoneNS
 		/// All lights in the zone.
 		/// </summary>
 		[DataMember]
-		private IList<ILogicalRGBLight> Lights { get; set; }
+		private IList<IPixel> Lights { get; set; }
 		
 		/// <summary>
 		/// The Lights list as a dictionary with the logical index as the key and the light as the value.
 		/// </summary>
-		public Dictionary<int, ILogicalRGBLight> SortedLights
+		public Dictionary<int, IPixel> SortedLights
 		{
-			get { return Lights?.ToDictionary(x => x.LogicalIndex); }
+			get { return Lights?.ToDictionary(x => x.Index); }
 		}
 
 		/// <summary>
@@ -225,7 +225,7 @@ namespace ZoneLighting.ZoneNS
 
 		private void Construct()
 		{
-			Lights = new List<ILogicalRGBLight>();
+			Lights = new List<IPixel>();
 		}
 
 		#region Interrupt Processing

@@ -51,8 +51,8 @@ namespace ZoneLightingTests
 		[Test]
 		public void Stop_Works()
 		{
-			var lightingController = A.Fake<LightingController>();
-			lightingController.CallsTo(controller => controller.SendLEDs(A.Fake<List<ILightingControllerPixel>>())).DoesNothing();
+			var lightingController = A.Fake<ILightingController>();
+			lightingController.CallsTo(controller => controller.SendLights(A.Fake<List<IPixel>>())).DoesNothing();
 			var zone = new OPCZone(FadeCandyController.Instance, "TestZone");
 			var program = new Rainbow();
 			zone.AddOPCLights(OPCPixelType.OPCRGBPixel, 6, 1);

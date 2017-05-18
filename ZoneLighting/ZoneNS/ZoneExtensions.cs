@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using ZoneLighting.Communication;
 
 namespace ZoneLighting.ZoneNS
 {
 	public static class ZoneExtensions
 	{
-		public static void SetColor(this IList<ILogicalRGBLight> lights, Color color)//, double brightness)
+		public static void SetColor(this IList<IPixel> lights, Color color)//, double brightness)
 		{
 			//var brightnessAdjustedColor = Color.FromArgb((int) (color.R*brightness), (int) (color.G*brightness),
 			//	(int) (color.B*brightness));
 
-			lights.ToList().ForEach(x => x.SetColor(color));
+			lights.ToList().ForEach(x => x.Color = color);
 		}
 
 		///// <summary>

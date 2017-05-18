@@ -29,7 +29,7 @@ namespace ZoneLighting.StockPrograms
 	    protected override void StartCore(dynamic parameters = null)
 	    {
 		    Clock = new MicroClock(500000,
-			    args => SendColor(Color.ToArgb() != Zone.SortedLights.First().Value.GetColor().ToArgb() ? Color : Color.Black), DriftThreshold);
+			    args => SendColor(Color.ToArgb() != Zone.SortedLights.First().Value.Color.ToArgb() ? Color : Color.Black), DriftThreshold);
 			Clock.Start();
 		}
 

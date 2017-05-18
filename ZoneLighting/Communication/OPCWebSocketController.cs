@@ -11,7 +11,7 @@ using Timer = System.Timers.Timer;
 
 namespace ZoneLighting.Communication
 {
-    public class OPCWebSocketController : OPCController
+    public class OPCWebSocketController : ILightingController, IDisposable
     {
         protected virtual int NodeMCUWifiThreadSleepTime { get; set; } = Config.GetAsInt("NodeMCUWIFIThreadSleepTime");
 
@@ -27,7 +27,11 @@ namespace ZoneLighting.Communication
         /// </summary>
         public string ServerURL { get; protected set; }
 
+        public IPixelToOPCPixelIndexMapper PixelMapper { get; }
+
         public bool Initialized { get; protected set; }
+
+        public virtual OPCPixelType OPCPixelType { get; }
 
         #endregion
 
@@ -37,9 +41,12 @@ namespace ZoneLighting.Communication
         //Timer Timer = new Timer();
         //private int Ticks;
 
-        public OPCWebSocketController(string serverURL)
+        public OPCWebSocketController(string serverURL, IPixelToOPCPixelIndexMapper pixelMapper, OPCPixelType opcPixelType)
         {
             ServerURL = serverURL;
+            PixelMapper = pixelMapper;
+            OPCPixelType = opcPixelType;
+
             //Timer.Interval = 1000;
 
             //Timer.Elapsed += (sender, args) =>
@@ -50,8 +57,8 @@ namespace ZoneLighting.Communication
 
             //Timer.Start();
         }
-
-        public override void Dispose()
+        
+        public void Dispose()
         {
             Uninitialize();
             ServerURL = null;
@@ -103,7 +110,7 @@ namespace ZoneLighting.Communication
         /// Sends a Pixel Frame to the connected FadeCandy board.
         /// </summary>
         /// <param name="opcPixelFrame">The OPCPixelFrame to send to the board.</param>
-        public override void SendPixelFrame(IPixelFrame opcPixelFrame)
+        public void SendPixelFrame(IPixelFrame opcPixelFrame)
         {
             //var byteArray = ((OPCPixelFrame)opcPixelFrame).ToByteArray();
             ////var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
@@ -139,11 +146,54 @@ namespace ZoneLighting.Communication
         /// <summary>
         /// Sends a list of LEDs to the connected FadeCandy board.
         /// </summary>
-        public override void SendLEDs(IList<ILightingControllerPixel> leds)
+        public void SendLights(IList<IPixel> lights)
         {
-            OPCPixelFrame.CreateChannelBurstFromOPCPixels(leds.Cast<IOPCPixelContainer>().ToList()).ToList().ForEach(SendPixelFrame);
+            var opcLights = ConvertToOPCPixels(lights);
+            OPCPixelFrame.CreateChannelBurstFromOPCPixels(opcLights).ToList().ForEach(SendPixelFrame);
+        }
+
+        private IList<OPCPixel> ConvertToOPCPixels(IList<IPixel> lights)
+        {
+            var opcPixels = lights.ToList()
+                .Select(light =>
+                {
+                    var opcPixel = OPCPixel.GetOPCPixelInstance(OPCPixelType,);
+                    opcPixel.PhysicalIndex = PixelMapper.GetOPCPixelIndex(light.Index);
+                    opcPixel.Color = light.Color;
+                    return opcPixel;
+                });
+
+            return opcPixels.ToList();
+
+
+
+            //this is where the map would be loaded - logical to physical map
+            //IList<OPCPixel> opcPixels = new List<OPCPixel>();
+
+            //for (var i = 0; i < lights.ToList().Count; i++)
+            //{
+            //    var light = lights.ToList()[i];
+            //    var opcPixel = OPCPixel.GetOPCPixelInstance(PixelType);
+            //    opcPixel.PhysicalIndex = PixelMapper.GetOPCPixelIndex(light.Index);
+            //    opcPixel.Color = light.Color;
+            //    opcPixels.Add(opcPixel);
+            //}
+
+            //lights.ToList().ForEach(light =>
+            //{
+            //    var opcPixel = OPCPixel.GetOPCPixelInstance(PixelType);
+            //    opcPixel.PhysicalIndex = PixelMapper.GetOPCPixelIndex(light.Index);
+            //    opcPixel.Color = light.Color;
+            //    opcPixels.Add(opcPixel);
+            //});
+
+
+
+
         }
 
         #endregion
+
+
     }
 }

@@ -430,10 +430,10 @@ namespace WebControllerTests
 
 			zlm.Zones["Zone1"].SortedLights.ToList().ForEach(light =>
 			{
-				Assert.That(light.Value.GetColor().A, Is.EqualTo(255));
-				Assert.That(light.Value.GetColor().B, Is.EqualTo(127));
-				Assert.That(light.Value.GetColor().R, Is.EqualTo(0));
-				Assert.That(light.Value.GetColor().G, Is.EqualTo(0));
+				Assert.That(light.Value.Color.A, Is.EqualTo(255));
+				Assert.That(light.Value.Color.B, Is.EqualTo(127));
+				Assert.That(light.Value.Color.R, Is.EqualTo(0));
+				Assert.That(light.Value.Color.G, Is.EqualTo(0));
 			});
 
 			zlmrpc.Dispose();
@@ -449,7 +449,7 @@ namespace WebControllerTests
 
 			zlmrpc.SetLightColor("Zone1", "Blue", 0, (float)0.5);
 
-			var color = zlm.Zones["Zone1"].SortedLights[0].GetColor();
+			var color = zlm.Zones["Zone1"].SortedLights[0].Color;
 
 			Assert.That(color.A, Is.EqualTo(255));
 			Assert.That(color.B, Is.EqualTo(127));
@@ -473,10 +473,10 @@ namespace WebControllerTests
 			zlm.Zones.ToList().ForEach(zone =>
 				zone.SortedLights.ToList().ForEach(light =>
 				{
-					Assert.That(light.Value.GetColor().A, Is.EqualTo(255));
-					Assert.That(light.Value.GetColor().B, Is.EqualTo(127));
-					Assert.That(light.Value.GetColor().R, Is.EqualTo(0));
-					Assert.That(light.Value.GetColor().G, Is.EqualTo(0));
+					Assert.That(light.Value.Color.A, Is.EqualTo(255));
+					Assert.That(light.Value.Color.B, Is.EqualTo(127));
+					Assert.That(light.Value.Color.R, Is.EqualTo(0));
+					Assert.That(light.Value.Color.G, Is.EqualTo(0));
 				}));
 
 			zlmrpc.Dispose();

@@ -15,11 +15,12 @@ namespace ZoneLighting.Communication
         private static NodeMCUController _instance;
 
         public static NodeMCUController Instance
-            => _instance ?? (_instance = new NodeMCUController(ConfigurationManager.AppSettings["NodeMCUServerURL"]));
+            => _instance ?? (_instance = new NodeMCUController(ConfigurationManager.AppSettings["NodeMCUServerURL"],
+                   new OneToOnePixelIndexMapper(), OPCPixelType.OPCRGBPixel));
 
         #endregion
 
-        public NodeMCUController(string serverURL) : base(serverURL)
+        public NodeMCUController(string serverURL, IPixelToOPCPixelIndexMapper pixelIndexMapper, OPCPixelType opcPixelType) : base(serverURL, pixelIndexMapper, opcPixelType)
         {
         }
 

@@ -119,7 +119,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Communication\IPixelFrame.cs" />
+    <Compile Include="Communication\IPixelToOPCPixelIndexMapper.cs" />
     <Compile Include="Communication\NodeMCUController.cs" />
+    <Compile Include="Communication\OneToOnePixelIndexMapper.cs" />
     <Compile Include="Communication\OPCWebSocketController.cs" />
     <Compile Include="Graphics\Animation.cs" />
     <Compile Include="Graphics\Drawing\ClockedTrailShape.cs" />
@@ -160,11 +162,10 @@
     <Compile Include="Communication\FadeCandyController.cs" />
     <Compile Include="Communication\OPCPixel.cs" />
     <Compile Include="Communication\ILightingController.cs" />
-    <Compile Include="Communication\ILightingControllerPixel.cs" />
+    <Compile Include="Communication\IPixel.cs" />
     <Compile Include="Communication\LightingController.cs" />
     <Compile Include="Communication\OPCPacket.cs" />
     <Compile Include="Communication\OPCPixelFrame.cs" />
-    <Compile Include="Communication\PhysicalRGBLight.cs" />
     <Compile Include="Communication\WebSocketOPCPacket.cs" />
     <Compile Include="ConfigNS\Config.cs" />
     <Compile Include="Communication\IOPCPixelContainer.cs" />
@@ -207,7 +208,6 @@
     <Compile Include="ZoneProgramNS\ZoneProgramJsonConverter.cs" />
     <Compile Include="ZoneProgramNS\LoopingZoneProgram.cs" />
     <Compile Include="ZoneNS\Zone.cs" />
-    <Compile Include="ILogicalRGBLight.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ZLM.cs" />
     <Compile Include="ZoneProgramNS\ProgramCommon.cs" />
