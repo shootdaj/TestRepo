@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Drawing;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MIDIator;
+using MIDIator.Engine;
+using MIDIator.Interfaces;
+using MIDIator.Services;
 using Sanford.Multimedia.Midi;
 using ZoneLighting.Graphics;
 using ZoneLighting.StockPrograms.MIDI;
@@ -58,7 +58,7 @@ namespace ZoneLighting.StockPrograms
 
 		//private Random RandomGen { get; } = new Random();
 
-		private MIDIDevice MidiInput { get; set; }
+		private IMIDIInputDevice MidiInput { get; set; }
 
 		public override SyncLevel SyncLevel { get; set; } = SyncLevel.None;
 
@@ -102,35 +102,30 @@ namespace ZoneLighting.StockPrograms
 		{
 			if (parameters != null)
 			{
-				int? deviceID = parameters?.DeviceID;
-				var freeDevices = MIDIManager.FreeDevices;
-				var freeDeviceIDs = freeDevices?.Select(x => x.DeviceID).ToList();
-				var isDeviceNull = parameters?.DeviceID == null;
+				var midiDeviceService = new MIDIDeviceService();
+				var virtualMIDIManager = new VirtualMIDIManager();
+				MIDIManager.Instantiate(midiDeviceService, new ProfileService(midiDeviceService, virtualMIDIManager, null),
+					virtualMIDIManager);
 
-				if (!isDeviceNull && freeDeviceIDs?.Contains(deviceID))
-				{
-					MidiInput = MIDIManager.GetDevice(parameters.DeviceID);
-					MidiInput.AddChannelMessageAction(HandleMidi);
-					MidiInput.StartRecording();
-				}
-				else
-					throw new WarningException("Supplied MIDI Device ID is either in use or invalid.");
+				MidiInput = MIDIManager.Instance.MIDIDeviceService.GetInputDevice(parameters.DeviceID);
+				MidiInput.AddChannelMessageAction(new ChannelMessageAction(message => true, HandleMidi));
+				MidiInput.Start();
 			}
 
 			base.StartCore(null);
 		}
 
-		private void HandleMidi(object sender, ChannelMessageEventArgs args)
+		private void HandleMidi(ChannelMessage message)
 		{
-			switch (args.Message.MidiChannel)
+			switch (message.MidiChannel)
 			{
 				case 0:
 					{
-						switch (args.Message.Data1)
+						switch (message.Data1)
 						{
 							case (int)NumarkOrbitMidiNote.XAxis:
 								{
-									var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 1, 99);
+									var scaledValue = Anshul.Utilities.Math.Scale(message.Data2, 0, 127, 1, 99);
 									//Debug.Print(scaledValue.ToString());
 									MaxFadeDelay = scaledValue;
 									//SetInput("MaxFadeDelay", scaledValue);
@@ -138,13 +133,13 @@ namespace ZoneLighting.StockPrograms
 								break;
 							case (int)NumarkOrbitMidiNote.YAxis:
 								{
-									var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
+									var scaledValue = Anshul.Utilities.Math.Scale(message.Data2, 0, 127, 0.0, 1.0);
 									SetInput("Density", scaledValue);
 								}
 								break;
 							case (int)NumarkOrbitMidiNote.K1_BigKnob:
 								{
-									var scaledValue = Anshul.Utilities.Math.Scale(args.Message.Data2, 0, 127, 0.0, 1.0);
+									var scaledValue = Anshul.Utilities.Math.Scale(message.Data2, 0, 127, 0.0, 1.0);
 									SetInput("Brightness", scaledValue);
 								}
 								break;
@@ -188,10 +183,6 @@ namespace ZoneLighting.StockPrograms
 					}
 				}
 			}
-			else
-			{
-
-			}
 
 			SendColors(ColorsToSend);
 		}
@@ -200,7 +191,7 @@ namespace ZoneLighting.StockPrograms
 
 		protected override void PreStop(bool force)
 		{
-			MidiInput?.StopRecording();
+			MidiInput?.Stop();
 			if (force)
 				ForceStopFlag = true;
 			ShimmerCTS.Cancel();

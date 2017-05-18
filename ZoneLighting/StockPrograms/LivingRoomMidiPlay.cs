@@ -4,6 +4,9 @@ using System.Drawing;
 using System.Dynamic;
 using System.Linq;
 using MIDIator;
+using MIDIator.Engine;
+using MIDIator.Interfaces;
+using MIDIator.Services;
 using Sanford.Multimedia.Midi;
 using ZoneLighting.ZoneProgramNS;
 
@@ -15,25 +18,29 @@ namespace ZoneLighting.StockPrograms
 	{
 		private Dictionary<int, Color> ColorsToSend { get; set; }
 
-		private MIDIDevice MidiInput { get; set; }
+		private IMIDIInputDevice MidiInput { get; set; }
 
 		private bool Random { get; set; } = false;
 
 		protected override void StartCore(dynamic parameters = null)
 		{
-			MidiInput = MIDIManager.GetDevice(parameters?.DeviceID);
-			MidiInput.AddChannelMessageAction(HandleMidi);
-			MidiInput.StartRecording();
+			var midiDeviceService = new MIDIDeviceService();
+			var virtualMIDIManager = new VirtualMIDIManager();
+			MIDIManager.Instantiate(midiDeviceService, new ProfileService(midiDeviceService, virtualMIDIManager, null),
+				virtualMIDIManager);
+			MidiInput = MIDIManager.Instance.MIDIDeviceService.GetInputDevice(parameters?.DeviceID);
+			MidiInput.AddChannelMessageAction(new ChannelMessageAction(message => true, HandleMidi));
+			MidiInput.Start();
 
 			ColorsToSend = new Dictionary<int, Color>();
 			Zone.SortedLights.Keys.ToList().ForEach(lightIndex => ColorsToSend.Add(lightIndex, Color.Black));
 		}
 
-		private void HandleMidi(object sender, ChannelMessageEventArgs args)
+		private void HandleMidi(ChannelMessage message)
 		{
-			var values = GetLightPositionAndColor(args);
+			var values = GetLightPositionAndColor(message);
 
-			if (args.Message.Data2 == 0)
+			if (message.Data2 == 0)
 			{
 				TurnOffLight(values.LightPosition);
 			}
@@ -43,11 +50,11 @@ namespace ZoneLighting.StockPrograms
 			}
 		}
 
-		private dynamic GetLightPositionAndColor(ChannelMessageEventArgs args)
+		private dynamic GetLightPositionAndColor(ChannelMessage message)
 		{
 			dynamic returnValue = new ExpandoObject();
 
-			var adjustedGridStart = args.Message.Data1 - 0x24; //0x24 is the value of the top left button on the Numark Orbit and each subsequent button goes up by one horizontally
+			var adjustedGridStart = message.Data1 - 0x24; //0x24 is the value of the top left button on the Numark Orbit and each subsequent button goes up by one horizontally
 			returnValue.LightPosition = adjustedGridStart % 4;
 			returnValue.LightColor = Color.Black;
 

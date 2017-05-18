@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.Composition;
 using System.Drawing;
-using MIDIator;
+using MIDIator.Engine;
+using MIDIator.Interfaces;
+using MIDIator.Services;
 using Sanford.Multimedia.Midi;
 using ZoneLighting.ZoneProgramNS;
 
@@ -13,19 +15,25 @@ namespace ExternalPrograms
 	[ExportMetadata("Name", "MidiTwoDimensionalFade")]
 	public class MidiTwoDimensionalFade : ReactiveZoneProgram
 	{
-		private MIDIDevice MidiInput { get; set; }
+		private IMIDIInputDevice MidiInput { get; set; }
 
 		protected override void StartCore(dynamic parameters = null)
 		{
-			MidiInput = MIDIManager.GetDevice(parameters?.DeviceID);
-			MidiInput.AddChannelMessageAction(TwoDimensionalFade);
-			MidiInput.StartRecording();
+			var midiDeviceService = new MIDIDeviceService();
+			var virtualMIDIManager = new VirtualMIDIManager();
+			MIDIManager.Instantiate(midiDeviceService, new ProfileService(midiDeviceService, virtualMIDIManager, null),
+				virtualMIDIManager);
+
+			MidiInput = MIDIManager.Instance.MIDIDeviceService.GetInputDevice(parameters?.DeviceID);
+			MidiInput.AddChannelMessageAction(new ChannelMessageAction(message => true, TwoDimensionalFade));
+			MidiInput.Start();
 		}
+
 
 		private int X { get; set; }
 		private int Y { get; set; }
 
-		private void TwoDimensionalFade(object sender, ChannelMessageEventArgs args)
+		private void TwoDimensionalFade(ChannelMessage message)
 		{
 			//ProgramCommon.Blink(new List<Tuple<Color, int>>
 			//{
@@ -33,13 +41,13 @@ namespace ExternalPrograms
 			//	{Color.Empty, 200}
 			//}, OutputColor, SyncContext);
 
-			if (args.Message.Data1 == (int)Axis.X)
+			if (message.Data1 == (int)Axis.X)
 			{
-				X = args.Message.Data2;
+				X = message.Data2;
 			}
-			else if (args.Message.Data1 == (int)Axis.Y)
+			else if (message.Data1 == (int)Axis.Y)
 			{
-				Y = args.Message.Data2;
+				Y = message.Data2;
 			}
 
 			SendColor(Color.FromArgb(X, Y, 50));
@@ -51,8 +59,8 @@ namespace ExternalPrograms
 
 		protected override void StopCore(bool force)
 		{
-			MidiInput.StopRecording();
-			MIDIManager.RemoveDevice(MidiInput);
+			MidiInput.Stop();
+			MidiInput = null;
 		}
 
 		public enum Axis
