@@ -236,8 +236,6 @@
     <Compile Include="ZoneProgramNS\ZoneProgram.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="tevirtualMIDI.dll" />
-    <Content Include="teVirtualMIDI32.dll" />
     <Content Include="Typelite\TypeLite.Net4.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TypeLite.Net4.d.ts</LastGenOutput>
@@ -283,12 +281,6 @@
     </None>
     <None Include="FadeCandy\neopixeltest.json" />
     <None Include="FadeCandy\README.md" />
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
