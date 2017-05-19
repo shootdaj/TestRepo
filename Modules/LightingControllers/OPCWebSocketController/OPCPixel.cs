@@ -1,7 +1,7 @@
 using System.Drawing;
 using System.Runtime.Serialization;
 
-namespace ZoneLighting.Communication
+namespace OPCWebSocketController
 {
     /// <summary>
     /// Represents a pixel that can be controlled by the Open Pixel Control protocol.

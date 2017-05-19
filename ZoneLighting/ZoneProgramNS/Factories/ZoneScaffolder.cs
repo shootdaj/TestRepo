@@ -140,24 +140,24 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 			get { return ZoneProgramFactories.Select(x => x.Metadata.Name); }
 		}
         
-		public OPCZone AddFadeCandyZone(BetterList<Zone> zones, string name, int numberOfLights, double? brightness = null)
+		public Zone AddFadeCandyZone(BetterList<Zone> zones, string name, int numberOfLights, double? brightness = null)
 		{
-		    return AddOPCZone(zones, name, FadeCandyController.Instance, numberOfLights, brightness);
+		    return AddZone(zones, name, FadeCandyController.Instance, numberOfLights, brightness);
 		}
 
-        public OPCZone AddNodeMCUZone(BetterList<Zone> zones, string name, int numberOfLights, double? brightness = null)
+        public Zone AddNodeMCUZone(BetterList<Zone> zones, string name, int numberOfLights, double? brightness = null)
         {
-            return AddOPCZone(zones, name, NodeMCUController.Instance, numberOfLights, brightness);
+            return AddZone(zones, name, NodeMCUController.Instance, numberOfLights, brightness);
         }
 
-        public OPCZone AddOPCZone(BetterList<Zone> zones, string name, OPCWebSocketController lightingController, int numberOfLights,
+        public Zone AddZone(BetterList<Zone> zones, string name, ILightingController lightingController, int numberOfLights,
 	        double? brightness = null)
 	    {
             //create new zone
-            var zone = new OPCZone(lightingController, name, brightness);
+            var zone = new Zone(lightingController, name, brightness);
 
             //add lights and add zone to collection
-            ((OPCZone)zones.Add(zone)).AddOPCLights(numberOfLights);
+            zones.Add(zone).AddLights(numberOfLights);
             return zone;
         }
 

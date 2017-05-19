@@ -122,12 +122,15 @@ namespace ZoneLighting.ConfigNS
 			var json = SerializeProgramSets(programSets);
 			File.WriteAllText(filename, json);
 		}
-		private static void AssignLightingController(Zone zone)
+
+        private static void AssignLightingController(Zone zone)
 		{
-			if (zone.GetType() == typeof(OPCZone))
-			{
-				zone.SetLightingController(FadeCandyController.Instance);
-			}
+            //TODO: This is where during the reloading of the zone, its previous lighting controller need to be attached back to it.
+            
+			//if (zone.GetType() == typeof(OPCZone))
+			//{
+			//	zone.SetLightingController(FadeCandyController.Instance);
+			//}
 		}
 
 		public static IEnumerable<Zone> LoadZones(string filename = "", string zoneConfiguration = "")

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ZoneLighting.Communication
+namespace OPCWebSocketController
 {
 	/// <summary>
 	/// Represents an OPC Packet that can be sent as a WebSocket message. Currently,

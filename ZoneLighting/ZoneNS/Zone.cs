@@ -79,10 +79,22 @@ namespace ZoneLighting.ZoneNS
 			Lights.Add(light);
 		}
 
-		/// <summary>
-		/// Gets the number of lights in this zone.
-		/// </summary>
-		public int LightCount => Lights.Count;
+        /// <summary>
+        /// Adds an array of lights with the given number of total lights.
+        /// </summary>
+        /// <param name="numLights"></param>
+	    public void AddLights(int numLights)
+	    {
+	        for (var i = 0; i < numLights; i++)
+	        {
+	            AddLight(new LED(index: i));
+	        }
+	    }
+
+        /// <summary>
+        /// Gets the number of lights in this zone.
+        /// </summary>
+        public int LightCount => Lights.Count;
 
 		/// <summary>
 		/// Gets the color of the light at the given index.

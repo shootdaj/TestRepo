@@ -1,4 +1,6 @@
-namespace ZoneLighting.Communication
+using ZoneLighting.Communication;
+
+namespace OPCWebSocketController
 {
     public interface IPixelToOPCPixelMapper
     {

@@ -18,24 +18,24 @@ namespace WebControllerTests
 			
 		}
 
-		[TestCase("FadeCandyZone", OPCPixelType.OPCRGBPixel, 8, (byte)1)]
-	    public void AddFadeCandyZone_Works(string name, OPCPixelType pixelType, int numberOfLights, byte channel)
-		{
-			var zlm = new ZLM(false, false, false);
-			var zlmrpc = new ZLMRPC(zlm);
+		//[TestCase("FadeCandyZone", OPCPixelType.OPCRGBPixel, 8, (byte)1)]
+	 //   public void AddFadeCandyZone_Works(string name, OPCPixelType pixelType, int numberOfLights, byte channel)
+		//{
+		//	var zlm = new ZLM(false, false, false);
+		//	var zlmrpc = new ZLMRPC(zlm);
 
-			//act
-			var zone = zlmrpc.AddFadeCandyZone(name, pixelType, numberOfLights, channel);
+		//	//act
+		//	var zone = zlmrpc.AddFadeCandyZone(name, pixelType, numberOfLights, channel);
 			
-			//assert
-			Assert.That(zone.Name, Is.EqualTo(name));
-			Assert.That(zone.LightCount, Is.EqualTo(numberOfLights));
-			Assert.That(((OPCZone)zlm.Zones.First()).Channel, Is.EqualTo(channel));
-			Assert.That(zone.Running, Is.EqualTo(false));
-			Assert.That(zone.ZoneProgramName, Is.EqualTo(null));
+		//	//assert
+		//	Assert.That(zone.Name, Is.EqualTo(name));
+		//	Assert.That(zone.LightCount, Is.EqualTo(numberOfLights));
+		//	Assert.That(((OPCZone)zlm.Zones.First()).Channel, Is.EqualTo(channel));
+		//	Assert.That(zone.Running, Is.EqualTo(false));
+		//	Assert.That(zone.ZoneProgramName, Is.EqualTo(null));
 
-			zlmrpc.Dispose();
-		}
+		//	zlmrpc.Dispose();
+		//}
 
 		[Test]
 		[Category("Integration")]

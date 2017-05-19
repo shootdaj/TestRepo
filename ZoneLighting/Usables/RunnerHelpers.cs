@@ -268,11 +268,7 @@ namespace ZoneLighting.Usables
 
 		public static Zone CreateLivingRoomZone(ZLM zlm)
 		{
-			const byte fadeCandyChannel = 1;
-			const OPCPixelType pixelType = OPCPixelType.OPCRGBPixel;
-
 			var livingRoom = ZoneScaffolder.Instance.AddFadeCandyZone(zlm.Zones, "LivingRoom", 6);
-			
 			return livingRoom;
 		}
 

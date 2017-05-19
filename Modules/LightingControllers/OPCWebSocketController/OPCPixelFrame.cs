@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ZoneLighting.Communication
+namespace OPCWebSocketController
 {
 	/// <summary>
 	/// Represents a single frame of pixels that will be reflected on the channel on which it's sent.
 	/// This can be seen as a unit of data that can be sent to the OPC device (FadeCandy or whatever).
 	/// </summary>
-	public class OPCPixelFrame : WebSocketOPCPacket, IPixelFrame
+	public class OPCPixelFrame : WebSocketOPCPacket
 	{
 		public OPCPixelFrame(byte channel, IList<byte> data)
 			: base(channel, data, OPCCommand.SetPixelColors)

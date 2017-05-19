@@ -140,11 +140,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Communication\IPixelFrame.cs" />
-    <Compile Include="Communication\IPixelToOPCPixelMapper.cs" />
-    <Compile Include="Communication\NodeMCUController.cs" />
-    <Compile Include="Communication\DefaultPixelMapper.cs" />
-    <Compile Include="Communication\OPCWebSocketController.cs" />
     <Compile Include="Graphics\Animation.cs" />
     <Compile Include="Graphics\Drawing\ClockedTrailShape.cs" />
     <Compile Include="Helpers.cs" />
@@ -181,16 +176,10 @@
     <Compile Include="ZLEventSource.cs" />
     <Compile Include="Usables\IBetterListType.cs" />
     <Compile Include="ZoneNS\SyncContext.cs" />
-    <Compile Include="Communication\FadeCandyController.cs" />
-    <Compile Include="Communication\OPCPixel.cs" />
     <Compile Include="Communication\ILightingController.cs" />
     <Compile Include="Communication\IPixel.cs" />
     <Compile Include="Communication\LightingController.cs" />
-    <Compile Include="Communication\OPCPacket.cs" />
-    <Compile Include="Communication\OPCPixelFrame.cs" />
-    <Compile Include="Communication\WebSocketOPCPacket.cs" />
     <Compile Include="ConfigNS\Config.cs" />
-    <Compile Include="Communication\IOPCPixelContainer.cs" />
     <Compile Include="DebugTools.cs" />
     <Compile Include="TriggerDependencyNS\Dependency.cs" />
     <Compile Include="TriggerDependencyNS\Interfaces.cs" />

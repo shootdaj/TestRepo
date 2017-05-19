@@ -38,6 +38,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{938478E9-985
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NodeMCULightRelay", "NodeMCULightRelay\NodeMCULightRelay.vcxproj", "{C5F80730-F44F-4478-BDAE-6634EFC2CA88}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{2DE95A6E-A310-4A77-B735-6FBF1401D2C4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LightingControllers", "LightingControllers", "{F429E1AD-6E64-4957-8EAD-6F234E8D6FA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OPCWebSocketController", "Modules\LightingControllers\OPCWebSocketController\OPCWebSocketController.csproj", "{041513F8-7C33-4E98-9656-F5AF9840EA6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -189,6 +195,22 @@ Global
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.ActiveCfg = Release|Win32
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.Build.0 = Release|Win32
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Debug|ARM.Build.0 = Debug|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Debug|x86.Build.0 = Debug|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Release|ARM.ActiveCfg = Release|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Release|ARM.Build.0 = Release|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Release|x86.ActiveCfg = Release|Any CPU
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -197,6 +219,8 @@ Global
 		{C4A346A2-F4A2-49E6-81B8-B56C2632DF72} = {4CF8894A-26F4-444E-B3D6-038B853AE2F8}
 		{4269C72A-8D3A-4737-8F89-72EAA33EA9E1} = {1E6AD0D7-62BB-4132-8094-6C44476EB6D6}
 		{78F92D31-CA64-4CA8-9305-23B9484BB0E2} = {4CF8894A-26F4-444E-B3D6-038B853AE2F8}
+		{F429E1AD-6E64-4957-8EAD-6F234E8D6FA5} = {2DE95A6E-A310-4A77-B735-6FBF1401D2C4}
+		{041513F8-7C33-4E98-9656-F5AF9840EA6F} = {F429E1AD-6E64-4957-8EAD-6F234E8D6FA5}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = AustinHarris.JsonRpc.vsmdi

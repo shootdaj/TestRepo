@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Anshul.Utilities;
+using Refigure;
 using WebSocketSharp;
-using Config = Refigure.Config;
 
-namespace ZoneLighting.Communication
+namespace OPCWebSocketController
 {
     /// <summary>
 	/// This class is used to connect and send/receive messages to a FadeCandy
@@ -20,7 +19,7 @@ namespace ZoneLighting.Communication
         private static FadeCandyController _instance;
 
 	    public static FadeCandyController Instance
-		    => _instance ?? (_instance = new FadeCandyController(ConfigurationManager.AppSettings["FadeCandyServerURL"],
+		    => _instance ?? (_instance = new FadeCandyController(Config.Get("FadeCandyServerURL"),
 			       new DefaultPixelMapper(), 1)); //TODO: Change channel - make the whole thing IoC'd
 
 		#endregion
@@ -58,7 +57,7 @@ namespace ZoneLighting.Communication
             if (!Initialized)
             {
                 KillFCServer();
-                StartFCServer(configFilePath ?? ConfigurationManager.AppSettings["FCServerConfigFilePath"]);
+                StartFCServer(configFilePath ?? Config.Get("FCServerConfigFilePath"));
                 base.Initialize();
                 Initialized = true;
             }
@@ -72,7 +71,7 @@ namespace ZoneLighting.Communication
             var oldEnvDir = Environment.CurrentDirectory;
             Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
-            var execExists = File.Exists(ConfigurationManager.AppSettings["FCServerExecutablePath"]);
+            var execExists = File.Exists(Config.Get("FCServerExecutablePath"));
             var configExists = File.Exists(configFilePath);
             if (!execExists)
                 throw new Exception(

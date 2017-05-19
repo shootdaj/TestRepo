@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ZoneLighting.Communication
+namespace OPCWebSocketController
 {
 	/// <summary>
 	/// Represents an Open Pixel Control packet. One packet maps to one channel and one command.

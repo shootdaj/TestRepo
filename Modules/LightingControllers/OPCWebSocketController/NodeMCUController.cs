@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Refigure;
 
-namespace ZoneLighting.Communication
+namespace OPCWebSocketController
 {
     public class NodeMCUController : OPCWebSocketController
     {
@@ -15,7 +10,7 @@ namespace ZoneLighting.Communication
         private static NodeMCUController _instance;
 
         public static NodeMCUController Instance
-            => _instance ?? (_instance = new NodeMCUController(ConfigurationManager.AppSettings["NodeMCUServerURL"],
+            => _instance ?? (_instance = new NodeMCUController(Config.Get("NodeMCUServerURL"),
                    new DefaultPixelMapper(), OPCPixelType.OPCRGBPixel, 1)); //TODO: Change channel - make the whole thing IoC'd
 
         #endregion

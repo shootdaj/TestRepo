@@ -5,8 +5,9 @@ using System.Threading;
 using Anshul.Utilities;
 using Refigure;
 using WebSocketSharp;
+using ZoneLighting.Communication;
 
-namespace ZoneLighting.Communication
+namespace OPCWebSocketController
 {
     public class OPCWebSocketController : ILightingController, IDisposable
     {
@@ -109,7 +110,7 @@ namespace ZoneLighting.Communication
         /// Sends a Pixel Frame to the connected FadeCandy board.
         /// </summary>
         /// <param name="opcPixelFrame">The OPCPixelFrame to send to the board.</param>
-        public void SendPixelFrame(IPixelFrame opcPixelFrame)
+        public void SendPixelFrame(OPCPixelFrame opcPixelFrame)
         {
             
             var byteArray = ((OPCPixelFrame)opcPixelFrame).Data;
