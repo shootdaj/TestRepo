@@ -1,15 +1,14 @@
-﻿using System.ComponentModel.Composition;
-using ZoneLighting.Communication;
-using ZoneLighting.ZoneNS;
+﻿//using System.ComponentModel.Composition;
+//using ZoneLighting.ZoneNS;
 
-namespace ExternalZones
-{
-	[Export(typeof(Zone))]
-	public class LeftWing : OPCZone
-	{
-		public LeftWing() : base(FadeCandyController.Instance, "LeftWing")
-		{
-			AddOPCLights(6);
-		}
-	}
-}
+//namespace ExternalZones
+//{
+//	[Export(typeof(Zone))]
+//	public class LeftWing : Zone
+//	{
+//		public LeftWing() : base(FadeCandyController.Instance, "LeftWing")
+//		{
+//			AddOPCLights(6);
+//		}
+//	}
+//}

@@ -4,7 +4,6 @@ using System.Configuration;
 using System.Linq;
 using NUnit.Framework;
 using ZoneLighting;
-using ZoneLighting.Communication;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS.Factories;

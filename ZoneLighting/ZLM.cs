@@ -8,7 +8,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using ZoneLighting.Communication;
+using Anshul.Utilities;
+using ZoneLighting.MEF;
 using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
@@ -26,10 +27,10 @@ namespace ZoneLighting
 
 		#region Admin
 
-		public Zone AddFadeCandyZone(string name, int numberOfLights)
-		{
-			return ZoneScaffolder.Instance.AddFadeCandyZone(Zones, name, numberOfLights);
-		}
+		//public Zone AddFadeCandyZone(string name, int numberOfLights)
+		//{
+		//	return ZoneScaffolder.Instance.AddFadeCandyZone(Zones, name, numberOfLights);
+		//}
 
 		public void Save()
 		{
@@ -269,13 +270,11 @@ namespace ZoneLighting
 		/// <param name="loadZonesFromConfig">if set to <c>true</c>, loads external zones from the saved configuration file provided in the application configuration (app/web.config) appSetting with key "ZoneConfigurationSaveFile".</param>
 		/// <param name="loadProgramSetsFromConfig">if set to <c>true</c>, loads program sets from the saved configuration file provided in the application configuration appSetting (app/web.config) with key "ProgramSetConfigurationSaveFile".</param>
 		/// <param name="initAction">If provided, this action will be executed after this instance is initialized.</param>
-		/// <param name="fadeCandyConfigFilePath">The path at which the FadeCandy configuration file is located.</param>
-		public ZLM(bool loadZoneModules = false, bool loadZonesFromConfig = true, bool loadProgramSetsFromConfig = true,
-			Action<ZLM> initAction = null, string fadeCandyConfigFilePath = null)
+		public ZLM(ILightingControllerConfig config = null /* <---this should not be null*/, bool loadZoneModules = false, bool loadZonesFromConfig = true, bool loadProgramSetsFromConfig = true, Action<ZLM> initAction = null)
 		{
-			InitLightingControllers(fadeCandyConfigFilePath);
 			InitZoneScaffolder();
-			if (loadZoneModules && ExternalZoneContainer != null)
+		    InitLightingControllers(config);
+            if (loadZoneModules && ExternalZoneContainer != null)
 				ComposeWithExternalModules();
 			if (loadZonesFromConfig)
 				LoadZonesFromConfig();
@@ -284,13 +283,13 @@ namespace ZoneLighting
 			initAction?.Invoke(this);
 		}
 
-		/// <summary>
-		/// Add code here to initialize any other lighting controllers.
-		/// </summary>
-		private void InitLightingControllers(string configFilePath)
+	    /// <summary>
+	    /// Add code here to initialize any other lighting controllers.
+	    /// </summary>
+	    /// <param name="config"></param>
+	    private void InitLightingControllers(ILightingControllerConfig config)
 		{
-			//FadeCandyController.Instance.Initialize(configFilePath);
-		    NodeMCUController.Instance.Initialize();
+            ZoneScaffolder.Instance.InitLightingControllers(config);
 		}
 
 		/// <summary>
@@ -298,16 +297,15 @@ namespace ZoneLighting
 		/// </summary>
 		private void UninitLightingControllers()
 		{
-			//FadeCandyController.Instance.Uninitialize();
-            NodeMCUController.Instance.Uninitialize();
-		}
+		    ZoneScaffolder.Instance.UninitLightingControllers();
+        }
 
 		/// <summary>
 		/// Initializes the ZoneScaffolder singleton instance by feeding the factories into it.
 		/// </summary>
 		private void InitZoneScaffolder()
 		{
-			ZoneScaffolder.Instance.Initialize(ConfigurationManager.AppSettings["ProgramDLLFolder"]);
+			ZoneScaffolder.Instance.Initialize(ConfigurationManager.AppSettings["ProgramDLLFolder"], ConfigurationManager.AppSettings["LightingControllerDLLFolder"]);
 		}
 
 		/// <summary>

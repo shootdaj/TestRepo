@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using ZoneLighting.Communication;
+using ZoneLighting.MEF;
 using ZoneLighting.ZoneNS;
 
 namespace ZoneLighting.ZoneProgramNS

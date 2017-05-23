@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ZoneLighting.Communication;
+using Anshul.Utilities;
 using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
@@ -15,15 +15,15 @@ namespace ZoneLighting
 
 		void Dispose();
 
-		/// <summary>
-		/// Adds a fade candy zone to the manager.
-		/// </summary>
-		/// <param name="name">Name of the zone</param>
-		/// <param name="pixelType">Type of pixel for the zone</param>
-		/// <param name="numberOfLights">Number of lights in the zone</param>
-		/// <param name="channel">FadeCandy channel on which this zone is connected</param>
-		/// <returns></returns>
-		Zone AddFadeCandyZone(string name, int numberOfLights);
+		///// <summary>
+		///// Adds a fade candy zone to the manager.
+		///// </summary>
+		///// <param name="name">Name of the zone</param>
+		///// <param name="pixelType">Type of pixel for the zone</param>
+		///// <param name="numberOfLights">Number of lights in the zone</param>
+		///// <param name="channel">FadeCandy channel on which this zone is connected</param>
+		///// <returns></returns>
+		//Zone AddFadeCandyZone(string name, int numberOfLights);
 
 		/// <summary>
 		/// Saves active program sets and zones

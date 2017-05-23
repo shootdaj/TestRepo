@@ -1,31 +1,21 @@
-﻿using Refigure;
+﻿using System.ComponentModel.Composition;
 
 namespace OPCWebSocketController
 {
     public class NodeMCUController : OPCWebSocketController
     {
-
-        #region Singleton
-
-        private static NodeMCUController _instance;
-
-        public static NodeMCUController Instance
-            => _instance ?? (_instance = new NodeMCUController(Config.Get("NodeMCUServerURL"),
-                   new DefaultPixelMapper(), OPCPixelType.OPCRGBPixel, 1)); //TODO: Change channel - make the whole thing IoC'd
-
-        #endregion
-
-        public NodeMCUController(string serverURL, IPixelToOPCPixelMapper pixelMapper, OPCPixelType opcPixelType, byte channel) : base(serverURL, pixelMapper, opcPixelType, channel)
+        [ImportingConstructor]
+        public NodeMCUController()
         {
         }
 
-        public new void Initialize()
+        public override void Initialize(dynamic parameters)
         {
-            if (!Initialized)
-            {
-                base.Initialize();
-                Initialized = true;
-            }
+            //base.Initialize((string) parameters.Name, (string) parameters.ServerURL,
+            //    (IPixelToOPCPixelMapper) parameters.PixelMapper, (OPCPixelType) parameters.OPCPixelType,
+            //    (byte) parameters.Channel);
+            base.Initialize("NodeMCUController1", "ws://192.168.29.113:81/", new DefaultPixelMapper(), OPCPixelType.OPCRGBPixel, 1);
+            Initialized = true;
         }
 
         public new void Uninitialize()

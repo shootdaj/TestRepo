@@ -1,4 +1,4 @@
-using ZoneLighting.Communication;
+using ZoneLighting.MEF;
 
 namespace OPCWebSocketController
 {

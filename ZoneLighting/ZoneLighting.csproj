@@ -148,6 +148,7 @@
     <Compile Include="Int32DictionaryConverter.cs" />
     <Compile Include="ISVConverter.cs" />
     <Compile Include="IZLM.cs" />
+    <Compile Include="MEF\ILightingControllerMetadata.cs" />
     <Compile Include="OPCController.cs" />
     <Compile Include="StockPrograms\LivingRoomMidiPlay.cs" />
     <Compile Include="StockPrograms\MicroClockBlink.cs" />
@@ -176,9 +177,8 @@
     <Compile Include="ZLEventSource.cs" />
     <Compile Include="Usables\IBetterListType.cs" />
     <Compile Include="ZoneNS\SyncContext.cs" />
-    <Compile Include="Communication\ILightingController.cs" />
-    <Compile Include="Communication\IPixel.cs" />
-    <Compile Include="Communication\LightingController.cs" />
+    <Compile Include="MEF\ILightingController.cs" />
+    <Compile Include="MEF\IPixel.cs" />
     <Compile Include="ConfigNS\Config.cs" />
     <Compile Include="DebugTools.cs" />
     <Compile Include="TriggerDependencyNS\Dependency.cs" />
@@ -198,6 +198,8 @@
     <Compile Include="ZoneProgramNS\Clock\MicroTimerEventArgs.cs" />
     <Compile Include="ZoneProgramNS\Clock\MicroClock.cs" />
     <Compile Include="ZoneProgramNS\ColorScheme.cs" />
+    <Compile Include="MEF\LightingControllerAssemblyAttribute.cs" />
+    <Compile Include="MEF\ILightingControllerConfig.cs" />
     <Compile Include="ZoneProgramNS\HSLColor.cs" />
     <Compile Include="ZoneProgramNS\IClock.cs" />
     <Compile Include="ZoneProgramNS\LightingPattern.cs" />
@@ -206,14 +208,14 @@
     <Compile Include="ZoneProgramNS\InterruptInfo.cs" />
     <Compile Include="ZoneProgramNS\InterruptingInput.cs" />
     <Compile Include="ZoneProgramNS\IZoneProgramInput.cs" />
-    <Compile Include="ZoneProgramNS\IZoneProgramMetadata.cs" />
+    <Compile Include="MEF\IZoneProgramMetadata.cs" />
     <Compile Include="ZoneProgramNS\Clock\MilliTimer.cs" />
     <Compile Include="ZoneProgramNS\PauseToken.cs" />
     <Compile Include="ZoneProgramNS\ProgramSet.cs" />
     <Compile Include="StockPrograms\Raindrops.cs" />
     <Compile Include="ZoneProgramNS\ReactiveZoneProgram.cs" />
     <Compile Include="ZoneProgramNS\UnderlyingTypeConverter.cs" />
-    <Compile Include="ZoneProgramNS\ZoneLightingProgramAssemblyAttribute.cs" />
+    <Compile Include="MEF\ZoneProgramAssemblyAttribute.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgramInput.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgramInputCollection.cs" />
     <Compile Include="ZoneProgramNS\ZoneProgramJsonConverter.cs" />

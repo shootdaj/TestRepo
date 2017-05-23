@@ -5,7 +5,6 @@ using WebRemote.Extensions;
 using WebRemote.IoC;
 using WebRemote.Models;
 using ZoneLighting;
-using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgramNS;
 
 namespace WebRemote
@@ -24,11 +23,11 @@ namespace WebRemote
 
 		#region Admin
 
-		public ZLMJsonModel AddFadeCandyZone(string name, OPCPixelType pixelType, int numberOfLights, byte? channel)
-		{
-			ZLMRPC.AddFadeCandyZone(name, pixelType, numberOfLights, channel);
-			return ZLMJsonModel;
-		}
+		//public ZLMJsonModel AddFadeCandyZone(string name, int numberOfLights)
+		//{
+		//	ZLMRPC.AddFadeCandyZone(name, numberOfLights);
+		//	return ZLMJsonModel;
+		//}
 
 		public ZLMJsonModel GetZLM()
 		{

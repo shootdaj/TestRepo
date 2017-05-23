@@ -3,7 +3,7 @@ using System.Drawing;
 using FakeItEasy;
 using FakeItEasy.ExtensionSyntax.Full;
 using NUnit.Framework;
-using ZoneLighting.Communication;
+using ZoneLighting.MEF;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;

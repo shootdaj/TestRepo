@@ -3,7 +3,6 @@ using NUnit.Framework;
 using WebRemote;
 using WebRemote.IoC;
 using ZoneLighting;
-using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 

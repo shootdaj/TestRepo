@@ -8,7 +8,6 @@ using WebRemote.Extensions;
 using WebRemote.IoC;
 using WebRemote.Models;
 using ZoneLighting;
-using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 
@@ -53,19 +52,19 @@ namespace WebRemote
 
 		#region Admin 
 
-		/// <summary>
-		/// Adds a FadeCandy zone to ZLM. This 
-		/// </summary>
-		/// <param name="name">Name of zone</param>
-		/// <param name="pixelType">Type of the pixel to use for the zone</param>
-		/// <param name="numberOfLights">The number of lights.</param>
-		/// <param name="channel">The channel.</param>
-		/// <returns>The instance of the zone that was added.</returns>
+		///// <summary>
+		///// Adds a FadeCandy zone to ZLM. This 
+		///// </summary>
+		///// <param name="name">Name of zone</param>
+		///// <param name="pixelType">Type of the pixel to use for the zone</param>
+		///// <param name="numberOfLights">The number of lights.</param>
+		///// <param name="channel">The channel.</param>
+		///// <returns>The instance of the zone that was added.</returns>
 		
-		public ZoneJsonModel AddFadeCandyZone(string name, OPCPixelType pixelType, int numberOfLights, byte? channel)
-		{
-			return ZLM.AddFadeCandyZone(name, numberOfLights).ToJsonModel<Zone, ZoneJsonModel>();
-		}
+		//public ZoneJsonModel AddFadeCandyZone(string name, int numberOfLights)
+		//{
+		//	return ZLM.AddFadeCandyZone(name, numberOfLights).ToJsonModel<Zone, ZoneJsonModel>();
+		//}
 
 		/// <summary>
 		/// Creates a ZoneLightingManager. This method is intended to be used on re-creations rather than the initial create.

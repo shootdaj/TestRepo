@@ -5,6 +5,7 @@ using Refigure;
 using WebRemote.Automapper;
 using WebRemote.Models;
 using ZoneLighting;
+using ZoneLighting.MEF;
 using ZoneLighting.Usables;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
@@ -39,10 +40,18 @@ namespace WebRemote.IoC
 				initAction = (Action<ZLM>)Delegate.CreateDelegate(typeof(Action<ZLM>), initActionInfo);
 			}
 
-			ZLM = new ZLM(loadZonesFromConfig: !firstRun,
+
+		    //var lightingControllerConfig = GetLightingControllerConfig();
+            
+		    ZLM = new ZLM(null, loadZonesFromConfig: !firstRun,
 				loadProgramSetsFromConfig: !firstRun,
 				loadZoneModules: loadZoneModules, initAction: initAction);
 		}
+
+	    //private static ILightingControllerConfig GetLightingControllerConfig()
+	    //{
+	    //    return new NodeMCULightingControllerConfig();
+	    //}
 
 		public static void CreateZLMRPC()
 		{

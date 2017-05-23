@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using WebRemote.Models;
-using ZoneLighting.Communication;
 using ZoneLighting.ZoneProgramNS;
 
 namespace WebRemote
@@ -42,7 +41,7 @@ namespace WebRemote
 
 		void SetAllZonesColor(string color, float brightness = 1);
 		void SetInputs(string programSetOrZoneName, ISV isv);
-		ZoneJsonModel AddFadeCandyZone(string name, OPCPixelType pixelType, int numberOfLights, byte? channel);
+		//ZoneJsonModel AddFadeCandyZone(string name, int numberOfLights);
 
 	}
 }

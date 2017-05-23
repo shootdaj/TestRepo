@@ -1,7 +1,10 @@
-﻿namespace ZoneLighting.Usables
-{
-	public interface IBetterListType
-	{
-		string Name { get; }
-	}
-}
+﻿//using System.Collections;
+//using System.Collections.Generic;
+
+//namespace ZoneLighting.Usables
+//{
+//	public interface IBetterListType<in T>
+//	{
+//        string Name { get; }
+//	}
+//}

@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
 using Anshul.Utilities;
 using Refigure;
 using WebSocketSharp;
-using ZoneLighting.Communication;
+using ZoneLighting.MEF;
 
 namespace OPCWebSocketController
 {
-    public class OPCWebSocketController : ILightingController, IDisposable
+    public  abstract class OPCWebSocketController : ILightingController, IDisposable
     {
         protected virtual int NodeMCUWifiThreadSleepTime { get; set; } = Config.GetAsInt("NodeMCUWIFIThreadSleepTime");
 
         #region CORE
+
+        public string Name { get; protected set; }
 
         /// <summary>
         /// The WebSocket that will be used to send/receive messages to/from the FadeCandy board.
@@ -25,14 +28,14 @@ namespace OPCWebSocketController
         /// </summary>
         public string ServerURL { get; protected set; }
 
-        public IPixelToOPCPixelMapper PixelMapper { get; }
+        public IPixelToOPCPixelMapper PixelMapper { get; private set; }
 
         public bool Initialized { get; protected set; }
 
-        public virtual OPCPixelType OPCPixelType { get; }
-	    public byte Channel { get; set; }
+        public virtual OPCPixelType OPCPixelType { get; private set; }
+        public byte Channel { get; set; }
 
-	    #endregion
+        #endregion
 
         #region C+I+D
 
@@ -40,14 +43,22 @@ namespace OPCWebSocketController
         //Timer Timer = new Timer();
         //private int Ticks;
 
-        public OPCWebSocketController(string serverURL, IPixelToOPCPixelMapper pixelMapper, OPCPixelType opcPixelType, byte channel)
+        [ImportingConstructor]
+        protected OPCWebSocketController()
         {
+            
+        }
+
+
+        protected OPCWebSocketController(string name, string serverURL, IPixelToOPCPixelMapper pixelMapper, OPCPixelType opcPixelType, byte channel)
+        {
+            Name = name;
             ServerURL = serverURL;
             PixelMapper = pixelMapper;
             OPCPixelType = opcPixelType;
-	        Channel = channel;
+            Channel = channel;
 
-	        //Timer.Interval = 1000;
+            //Timer.Interval = 1000;
 
             //Timer.Elapsed += (sender, args) =>
             //{
@@ -57,23 +68,35 @@ namespace OPCWebSocketController
 
             //Timer.Start();
         }
-        
+
         public void Dispose()
         {
             Uninitialize();
             ServerURL = null;
         }
 
-        protected void Initialize()
+        protected void Initialize(string name, string serverURL, IPixelToOPCPixelMapper pixelMapper, OPCPixelType opcPixelType, byte channel)
         {
+            Name = name;
+            ServerURL = serverURL;
+            PixelMapper = pixelMapper;
+            OPCPixelType = opcPixelType;
+            Channel = channel;
+
             WebSocket = new WebSocket(ServerURL);
             Connect();
         }
+
+        public abstract void Initialize(dynamic parameters);
 
         public virtual void Uninitialize()
         {
             Disconnect();
             WebSocket = null;
+            Channel = default(byte);
+            OPCPixelType = default(OPCPixelType);
+            ServerURL = null;
+            Name = null;
         }
 
         /// <summary>
@@ -101,7 +124,7 @@ namespace OPCWebSocketController
             if (!Initialized)
                 throw new Exception("OPCWebSocketController instance is not initialized.");
         }
-        
+
         #endregion
 
         #region API
@@ -112,22 +135,22 @@ namespace OPCWebSocketController
         /// <param name="opcPixelFrame">The OPCPixelFrame to send to the board.</param>
         public void SendPixelFrame(OPCPixelFrame opcPixelFrame)
         {
-            
-            var byteArray = ((OPCPixelFrame)opcPixelFrame).Data;
-			//var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
-			//byteArray.ToList().ForEach(x => byteArrayString += x + ",");
-			//byteArrayString += "}";
-			//Debug.Print(byteArrayString);
-			//AssertInit();
 
-			if (WebSocket.ReadyState == WebSocketState.Closed)
+            var byteArray = ((OPCPixelFrame)opcPixelFrame).Data;
+            //var byteArrayString = DateTime.Now.ToLongTimeString() + ":" + "Sending {";
+            //byteArray.ToList().ForEach(x => byteArrayString += x + ",");
+            //byteArrayString += "}";
+            //Debug.Print(byteArrayString);
+            //AssertInit();
+
+            if (WebSocket.ReadyState == WebSocketState.Closed)
                 Connect();
-            
+
             WebSocket.Send(byteArray.ToArray());
             if (NodeMCUWifiThreadSleepTime > 0)
                 Thread.Sleep(NodeMCUWifiThreadSleepTime);
-            
-			//Ticks++;
+
+            //Ticks++;
         }
 
 
@@ -140,13 +163,15 @@ namespace OPCWebSocketController
             OPCPixelFrame.CreateChannelBurstFromOPCPixels(opcLights).ToList().ForEach(SendPixelFrame);
         }
 
+        
+
         private IList<OPCPixel> ConvertToOPCPixels(IList<IPixel> lights)
         {
             var opcPixels = lights.ToList()
                 .Select(light =>
-	            {
-		            var opcPixel = OPCPixel.GetOPCPixelInstance(OPCPixelType, Channel,
-			            PixelMapper.GetOPCPixelIndex(light.Index));
+                {
+                    var opcPixel = OPCPixel.GetOPCPixelInstance(OPCPixelType, Channel,
+                        PixelMapper.GetOPCPixelIndex(light.Index));
                     opcPixel.Color = light.Color;
                     return opcPixel;
                 });
@@ -155,7 +180,5 @@ namespace OPCWebSocketController
         }
 
         #endregion
-
-
     }
 }

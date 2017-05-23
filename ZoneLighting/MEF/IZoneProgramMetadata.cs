@@ -1,4 +1,4 @@
-﻿namespace ZoneLighting.ZoneProgramNS
+﻿namespace ZoneLighting.MEF
 {
 	public interface IZoneProgramMetadata
 	{

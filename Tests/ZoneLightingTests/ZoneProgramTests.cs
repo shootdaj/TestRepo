@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Threading;
 using NUnit.Framework;
 using ZoneLighting;
-using ZoneLighting.Communication;
 using ZoneLighting.ZoneNS;
 using ZoneLighting.ZoneProgramNS;
 using ZoneLighting.ZoneProgramNS.Factories;

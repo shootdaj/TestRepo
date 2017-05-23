@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 using System.Runtime.Serialization;
-using ZoneLighting.Communication;
+using ZoneLighting.MEF;
 
 namespace ZoneLighting
 {

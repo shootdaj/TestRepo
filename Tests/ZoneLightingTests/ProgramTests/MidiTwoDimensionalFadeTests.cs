@@ -4,7 +4,6 @@ using System.Threading;
 using NUnit.Framework;
 using Refigure;
 using ZoneLighting;
-using ZoneLighting.Communication;
 using ZoneLighting.StockPrograms;
 using ZoneLighting.ZoneProgramNS.Factories;
 

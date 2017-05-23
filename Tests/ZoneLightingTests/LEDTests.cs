@@ -2,7 +2,6 @@
 using FakeItEasy;
 using NUnit.Framework;
 using ZoneLighting;
-using ZoneLighting.Communication;
 
 namespace ZoneLightingTests
 {

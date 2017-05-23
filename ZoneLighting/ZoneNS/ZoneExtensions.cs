@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using ZoneLighting.Communication;
+using ZoneLighting.MEF;
 
 namespace ZoneLighting.ZoneNS
 {

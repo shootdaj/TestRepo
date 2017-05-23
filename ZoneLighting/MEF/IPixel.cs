@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace ZoneLighting.Communication
+namespace ZoneLighting.MEF
 {
 	public interface IPixel
 	{
