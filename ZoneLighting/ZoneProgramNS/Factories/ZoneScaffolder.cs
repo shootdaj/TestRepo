@@ -132,7 +132,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
             }
 
 			//lighting controller modules
-	        foreach (var file in Directory.GetFiles(lightingControllerModuleDirectory, "OPCWebSocketController.dll").ToList())
+	        foreach (var file in Directory.GetFiles(lightingControllerModuleDirectory, "*.dll").ToList())
 			{
 				var assembly = Assembly.LoadFrom(file);
 
