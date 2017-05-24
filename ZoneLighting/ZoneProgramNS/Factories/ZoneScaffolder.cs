@@ -36,6 +36,8 @@ namespace ZoneLighting.ZoneProgramNS.Factories
         #endregion
 
         #region MEF
+		//test
+
 
 		[ImportMany(typeof(ZoneProgram), AllowRecomposition = true)]
         public IList<ExportFactory<ZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; }
