@@ -106,7 +106,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
         /// </summary>
         private void LoadModules(string programModuleDirectory, string lightingControllerModuleDirectory)
         {
-            List<ComposablePartCatalog> fileCatalogs = new List<ComposablePartCatalog>();
+            var fileCatalogs = new List<ComposablePartCatalog>();
 
             //need to set this because otherwise for WebController, the file is loaded from c:\windows\system32\inetsrv probably
             //because that's where w3wp.exe is or something.. who knows.
@@ -123,6 +123,11 @@ namespace ZoneLighting.ZoneProgramNS.Factories
         private static void LoadLightingControllerModules(string lightingControllerModuleDirectory, List<ComposablePartCatalog> fileCatalogs)
         {
             LoadModulesCore(lightingControllerModuleDirectory, fileCatalogs, typeof(LightingControllerAssemblyAttribute));
+        }
+
+        private static void LoadProgramModules(string programModuleDirectory, List<ComposablePartCatalog> fileCatalogs)
+        {
+            LoadModulesCore(programModuleDirectory, fileCatalogs, typeof(ZoneProgramAssemblyAttribute));
         }
 
         private static void LoadModulesCore(string moduleDirectory, List<ComposablePartCatalog> fileCatalogs, Type assemblyAttribute)
@@ -151,11 +156,6 @@ namespace ZoneLighting.ZoneProgramNS.Factories
                     }
                 }
             }
-        }
-
-        private static void LoadProgramModules(string programModuleDirectory, List<ComposablePartCatalog> fileCatalogs)
-        {
-            LoadModulesCore(programModuleDirectory, fileCatalogs, typeof(ZoneProgramAssemblyAttribute));
         }
 
         #endregion
