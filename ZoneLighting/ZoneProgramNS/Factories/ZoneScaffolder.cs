@@ -111,56 +111,51 @@ namespace ZoneLighting.ZoneProgramNS.Factories
             //need to set this because otherwise for WebController, the file is loaded from c:\windows\system32\inetsrv probably
             //because that's where w3wp.exe is or something.. who knows.
             Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
-
-			//program modules
-            foreach (var file in Directory.GetFiles(programModuleDirectory, "*.dll").ToList())
-            {
-                var assembly = Assembly.LoadFrom(file);
-
-                if (assembly.GetCustomAttributesData()
-                    .Any(ass => ass.AttributeType == typeof(ZoneProgramAssemblyAttribute)))
-                {
-                    fileCatalogs.Add(new AssemblyCatalog(assembly));
-                    //File.Copy(file, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(file)), true);
-
-					foreach (var referencedFile in Directory.GetFiles(Path.GetDirectoryName(file), "*.dll").ToList())
-	                {
-		                File.Copy(referencedFile, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(referencedFile)),
-			                true);
-	                }
-				}
-            }
-
-			//lighting controller modules
-	        foreach (var file in Directory.GetFiles(lightingControllerModuleDirectory, "*.dll").ToList())
-			{
-				var assembly = Assembly.LoadFrom(file);
-
-				if (assembly.GetCustomAttributesData()
-					.Any(ass => ass.AttributeType == typeof(LightingControllerAssemblyAttribute)))
-				{
-					fileCatalogs.Add(new AssemblyCatalog(assembly));
-					//File.Copy(file, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(file)), true);
-
-					foreach (var referencedFile in Directory.GetFiles(Path.GetDirectoryName(file), "*.dll").ToList())
-					{
-					    try
-					    {
-					        File.Copy(referencedFile,
-					            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(referencedFile)),
-					            true);
-					    }
-					    catch (Exception ex)
-					    {
-					        // ignored
-					    }
-					}
-				}
-			}
+            
+            LoadProgramModules(programModuleDirectory, fileCatalogs);
+            LoadLightingControllerModules(lightingControllerModuleDirectory, fileCatalogs);
 
 			var aggregateCatalog = new AggregateCatalog(fileCatalogs);
             ModuleContainer = new CompositionContainer(aggregateCatalog);
             ModuleContainer.ComposeParts(this);
+        }
+
+        private static void LoadLightingControllerModules(string lightingControllerModuleDirectory, List<ComposablePartCatalog> fileCatalogs)
+        {
+            LoadModulesCore(lightingControllerModuleDirectory, fileCatalogs, typeof(LightingControllerAssemblyAttribute));
+        }
+
+        private static void LoadModulesCore(string moduleDirectory, List<ComposablePartCatalog> fileCatalogs, Type assemblyAttribute)
+        {
+            foreach (var file in Directory.GetFiles(moduleDirectory, "*.dll").ToList())
+            {
+                var assembly = Assembly.LoadFrom(file);
+
+                if (assembly.GetCustomAttributesData()
+                    .Any(ass => ass.AttributeType == assemblyAttribute))
+                {
+                    fileCatalogs.Add(new AssemblyCatalog(assembly));
+
+                    foreach (var referencedFile in Directory.GetFiles(Path.GetDirectoryName(file), "*.dll").ToList())
+                    {
+                        try
+                        {
+                            File.Copy(referencedFile,
+                                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(referencedFile)),
+                                false);
+                        }
+                        catch (Exception ex)
+                        {
+                            // only copy if file is not in use
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void LoadProgramModules(string programModuleDirectory, List<ComposablePartCatalog> fileCatalogs)
+        {
+            LoadModulesCore(programModuleDirectory, fileCatalogs, typeof(ZoneProgramAssemblyAttribute));
         }
 
         #endregion
