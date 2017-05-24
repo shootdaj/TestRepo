@@ -75,7 +75,7 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
     <Reference Include="Refigure, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Refigure.1.0.13.0\lib\net45\Refigure.dll</HintPath>
+      <HintPath>..\packages\Refigure.1.0.15.0\lib\net45\Refigure.dll</HintPath>
     </Reference>
     <Reference Include="Sanford.Collections, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Sanford.Win10.1.0.0\lib\net45\Sanford.Collections.dll</HintPath>
@@ -133,9 +133,8 @@
     <Reference Include="TypeLite.Net4, Version=1.8.1.0, Culture=neutral, PublicKeyToken=8cd4b9c9ac23d744, processorArchitecture=MSIL">
       <HintPath>..\packages\MIDIator.CoreLib.1.0.287\lib\net461\TypeLite.Net4.dll</HintPath>
     </Reference>
-    <Reference Include="websocket-sharp, Version=1.0.2.36589, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebSocketSharp.1.0.3-rc9\lib\websocket-sharp.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="websocket-sharp, Version=1.0.2.59611, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebSocketSharp.1.0.3-rc11\lib\websocket-sharp.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>

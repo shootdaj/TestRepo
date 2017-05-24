@@ -132,7 +132,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
             }
 
 			//lighting controller modules
-	        foreach (var file in Directory.GetFiles(lightingControllerModuleDirectory, "*.dll").ToList())
+	        foreach (var file in Directory.GetFiles(lightingControllerModuleDirectory, "OPCWebSocketController.dll").ToList())
 			{
 				var assembly = Assembly.LoadFrom(file);
 
@@ -144,8 +144,16 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 
 					foreach (var referencedFile in Directory.GetFiles(Path.GetDirectoryName(file), "*.dll").ToList())
 					{
-						File.Copy(referencedFile, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(referencedFile)),
-							true);
+					    try
+					    {
+					        File.Copy(referencedFile,
+					            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(referencedFile)),
+					            true);
+					    }
+					    catch (Exception ex)
+					    {
+					        // ignored
+					    }
 					}
 				}
 			}
