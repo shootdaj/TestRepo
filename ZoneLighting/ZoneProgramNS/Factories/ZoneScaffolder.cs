@@ -37,6 +37,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
 
         #region MEF
 		//test
+		//test
 
 
 		[ImportMany(typeof(ZoneProgram), AllowRecomposition = true)]
