@@ -1,8 +1,11 @@
 ﻿using System.ComponentModel.Composition;
+using ZoneLighting.MEF;
 
 namespace OPCWebSocketController
 {
-    public class NodeMCUController : OPCWebSocketController
+	[Export(typeof(ILightingController))]
+	[ExportMetadata("Name", "NodeMCUController")]
+	public class NodeMCUController : OPCWebSocketController
     {
         [ImportingConstructor]
         public NodeMCUController()

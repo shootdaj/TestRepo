@@ -40,54 +40,47 @@ namespace ZoneLighting.ZoneProgramNS.Factories
         [ImportMany(typeof(ZoneProgram), AllowRecomposition = true)]
         public IList<ExportFactory<ZoneProgram, IZoneProgramMetadata>> ZoneProgramFactories { get; set; }
 
-        /// <summary>
-            /// Container for the external programs.
-        /// </summary>
-        private CompositionContainer ExternalProgramContainer { get; set; }
+		[ImportMany(typeof(ILightingController), AllowRecomposition = true)]
+	    public IList<ExportFactory<ILightingController, ILightingControllerMetadata>> LightingControllerFactories { get; set; }
 
+		/// <summary>
+		/// Container for the external modules.
+		/// </summary>
+		private CompositionContainer ModuleContainer { get; set; }
 
-        //[ImportMany(typeof(ILightingController), AllowRecomposition = true)]
-        //public IList<ExportFactory<ILightingController, ILightingControllerMetadata>> LightingControllerFactories { get; set; }
+		#endregion
 
-        ///// <summary>
-        ///// Container for lighting controllers.
-        ///// </summary>
-        //private CompositionContainer LightingControllerContainer { get; set; }
+		#region C+I
 
-        #endregion
-
-        #region C+I
-
-        public bool Initialized { get; private set; }
+		public bool Initialized { get; private set; }
 
         public void Initialize(string programModuleDirectory, string lightingControllerModuleDirectory)
         {
             if (!Initialized)
             {
-                //LightingControllerFactories = new List<ExportFactory<ILightingController, ILightingControllerMetadata>>();
-                
-                LoadProgramModules(programModuleDirectory);
-                //LoadLightingControllerModules(lightingControllerModuleDirectory);
+                LightingControllerFactories = new List<ExportFactory<ILightingController, ILightingControllerMetadata>>();
+	            ZoneProgramFactories = new List<ExportFactory<ZoneProgram, IZoneProgramMetadata>>();
+				LoadModules(programModuleDirectory, lightingControllerModuleDirectory);
                 Initialized = true;
             }
         }
 
         public void InitLightingControllers(ILightingControllerConfig config)
         {
-            //for now - initialize a lighting controller for each of the lighting controller types imported
-            //later - this needs to be driven by the user somehow - maybe during setup of ZL
-            //or manually when they wanna add new controllers
-            //LightingControllerFactories.ToList().ForEach(factory =>
-            //{
-            //    var lightingController = factory.CreateExport().Value;
+			//for now - initialize a lighting controller for each of the lighting controller types imported
+			//later - this needs to be driven by the user somehow - maybe during setup of ZL
+			//or manually when they wanna add new controllers
+			LightingControllerFactories.ToList().ForEach(factory =>
+			{
+				var lightingController = factory.CreateExport().Value;
 
-            //    //var parameters = config.ToExpandoObject();
-            //    var parameters = "yooy";
+				//var parameters = config.ToExpandoObject();
+				var parameters = "yooy";
 
-            //    lightingController.Initialize(parameters);
-            //    LightingControllers.Add(lightingController);
-            //});
-        }
+				lightingController.Initialize(parameters);
+				LightingControllers.Add(lightingController);
+			});
+		}
 
 
 
@@ -101,47 +94,17 @@ namespace ZoneLighting.ZoneProgramNS.Factories
             if (Initialized)
             {
                 UninitLightingControllers();
-                ExternalProgramContainer?.Dispose();
-                ExternalProgramContainer = null;
+                ModuleContainer?.Dispose();
+                ModuleContainer = null;
                 ZoneProgramFactories = null;
                 Initialized = false;
             }
         }
 
-        ///// <summary>
-        ///// Loads external ILightingController modules.
-        ///// </summary>
-        //private void LoadLightingControllerModules(string moduleDirectory)
-        //{
-        //    var fileCatalogs = new List<ComposablePartCatalog>();
-
-        //    //need to set this because otherwise for WebController, the file is loaded from c:\windows\system32\inetsrv probably
-        //    //because that's where w3wp.exe is or something.. who knows.
-        //    Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
-
-        //    foreach (var file in Directory.GetFiles(moduleDirectory, "*.dll").ToList())
-        //    {
-        //        var assembly = Assembly.LoadFrom(file);
-
-        //        if (assembly.GetCustomAttributesData()
-        //            .Any(ass => ass.AttributeType == typeof(LightingControllerAssemblyAttribute)))
-        //        {
-        //            fileCatalogs.Add(new AssemblyCatalog(assembly));
-        //            File.Copy(file, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(file)), true);
-        //        }
-        //    }
-
-        //    var aggregateCatalog = new AggregateCatalog(fileCatalogs);
-        //    LightingControllerContainer = new CompositionContainer(aggregateCatalog);
-        //    LightingControllerContainer.ComposeParts(this);
-        //}
-
-
-
         /// <summary>
         /// Loads external ZoneProgram modules.
         /// </summary>
-        private void LoadProgramModules(string programModuleDirectory)
+        private void LoadModules(string programModuleDirectory, string lightingControllerModuleDirectory)
         {
             List<ComposablePartCatalog> fileCatalogs = new List<ComposablePartCatalog>();
 
@@ -149,6 +112,7 @@ namespace ZoneLighting.ZoneProgramNS.Factories
             //because that's where w3wp.exe is or something.. who knows.
             Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
+			//program modules
             foreach (var file in Directory.GetFiles(programModuleDirectory, "*.dll").ToList())
             {
                 var assembly = Assembly.LoadFrom(file);
@@ -157,14 +121,38 @@ namespace ZoneLighting.ZoneProgramNS.Factories
                     .Any(ass => ass.AttributeType == typeof(ZoneProgramAssemblyAttribute)))
                 {
                     fileCatalogs.Add(new AssemblyCatalog(assembly));
-                    File.Copy(file, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(file)), true);
-                }
+                    //File.Copy(file, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(file)), true);
+
+					foreach (var referencedFile in Directory.GetFiles(Path.GetDirectoryName(file), "*.dll").ToList())
+	                {
+		                File.Copy(referencedFile, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(referencedFile)),
+			                true);
+	                }
+				}
             }
 
-            var aggregateCatalog = new AggregateCatalog(fileCatalogs);
-            ExternalProgramContainer = new CompositionContainer(aggregateCatalog);
-            ZoneProgramFactories = new List<ExportFactory<ZoneProgram, IZoneProgramMetadata>>();
-            ExternalProgramContainer.ComposeParts(this);
+			//lighting controller modules
+	        foreach (var file in Directory.GetFiles(lightingControllerModuleDirectory, "*.dll").ToList())
+			{
+				var assembly = Assembly.LoadFrom(file);
+
+				if (assembly.GetCustomAttributesData()
+					.Any(ass => ass.AttributeType == typeof(LightingControllerAssemblyAttribute)))
+				{
+					fileCatalogs.Add(new AssemblyCatalog(assembly));
+					//File.Copy(file, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(file)), true);
+
+					foreach (var referencedFile in Directory.GetFiles(Path.GetDirectoryName(file), "*.dll").ToList())
+					{
+						File.Copy(referencedFile, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(referencedFile)),
+							true);
+					}
+				}
+			}
+
+			var aggregateCatalog = new AggregateCatalog(fileCatalogs);
+            ModuleContainer = new CompositionContainer(aggregateCatalog);
+            ModuleContainer.ComposeParts(this);
         }
 
         #endregion
