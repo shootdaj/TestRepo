@@ -1,9 +1,12 @@
+using System.ComponentModel.Composition;
 using System.Dynamic;
 using ZoneLighting.MEF;
 
 namespace OPCWebSocketController
 {
-    public class NodeMCULightingControllerConfig : ILightingControllerConfig
+	[Export(typeof(ILightingControllerConfig))]
+	[ExportMetadata("Name", "NodeMCUController")]
+	public class NodeMCULightingControllerConfig : ILightingControllerConfig
     {
         public string ServerURL { get; set; }
         public string Name { get; set; } = "NodeMCUController1";
